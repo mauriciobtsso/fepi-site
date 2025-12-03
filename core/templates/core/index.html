@@ -1,9 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Federação Espírita do Piauí</title>
+        <title>Federação Espírita do Piauí</title>
+        <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}">
     <style>
         /* --- ESTILOS GERAIS (CSS) --- */
         :root {
@@ -325,7 +327,8 @@
     <header>
         <div class="container nav-bar">
             <div class="logo">
-                <div class="logo-icon"></div> FEPI
+                <img src="{% static 'img/logo.png' %}" alt="Logo FEPI" style="height: 50px; margin-right: 10px;">
+                FEPI
             </div>
             <nav>
                 <ul>
@@ -418,7 +421,7 @@
                     <span class="livro-autor">{{ livro.autor }}</span>
                     <span class="livro-preco">R$ {{ livro.preco }}</span>
                     
-                    <button class="btn-login" style="border:none; cursor:pointer;">Ver Detalhes</button>
+                    <a href="{% url 'detalhe_livro' livro.id %}" class="btn-login" style="display:inline-block; text-align:center;">Ver Detalhes</a>
                 </div>
                 {% empty %}
                 <p>Nenhum livro cadastrado no momento.</p>
