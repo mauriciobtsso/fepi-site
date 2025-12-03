@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federação Espírita do Piauí - Protótipo</title>
+    <style>
+        /* --- ESTILOS GERAIS (CSS) --- */
+        :root {
+            --cor-primaria: #006d77; /* Verde Petróleo - Institucional */
+            --cor-secundaria: #83c5be; /* Verde Água Suave - Detalhes */
+            --cor-fundo: #f4f6f8; /* Cinza muito claro - Fundo */
+            --cor-texto: #333;
+            --cor-branca: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            line-height: 1.6;
+        }
+
+        /* --- CABEÇALHO --- */
+        header {
+            background-color: var(--cor-branca);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 15px 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--cor-primaria);
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Simulação de logo */
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--cor-primaria);
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--cor-texto);
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: var(--cor-primaria);
+        }
+
+        .btn-login {
+            background-color: var(--cor-primaria);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        /* --- HERO SECTION (DESTAQUE) --- */
+        .hero {
+            background-color: var(--cor-secundaria);
+            color: var(--cor-primaria);
+            padding: 60px 0;
+            text-align: center;
+            /* Placeholder para imagem de fundo */
+            background-image: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)); 
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .btn-cta {
+            background-color: var(--cor-primaria);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: 0.3s;
+        }
+
+        .btn-cta:hover {
+            background-color: #004d55;
+        }
+
+        /* --- HUB SOCIAL (YOUTUBE + INSTA) --- */
+        .social-hub {
+            padding: 50px 0;
+            background-color: white;
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Duas colunas iguais */
+            gap: 30px;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--cor-primaria);
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .video-box {
+            background: #000;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .insta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .insta-photo {
+            background-color: #ddd;
+            height: 145px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-size: 0.8em;
+        }
+
+        /* --- LIVRARIA (CATÁLOGO) --- */
+        .livraria {
+            padding: 50px 0;
+        }
+
+        .livros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .livro-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .livro-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .capa-placeholder {
+            width: 100%;
+            height: 250px;
+            background-color: #ccc;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .livro-titulo {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .livro-autor {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* --- RODAPÉ --- */
+        footer {
+            background-color: var(--cor-primaria);
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        footer a {
+            color: var(--cor-secundaria);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Responsividade para celulares */
+        @media (max-width: 768px) {
+            .social-grid, .footer-grid, .nav-bar {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-bar {
+                gap: 15px;
+            }
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-bar">
+            <div class="logo">
+                <div class="logo-icon"></div> FEPI
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Institucional</a></li>
+                    <li><a href="#">Doutrina</a></li>
+                    <li><a href="#">Livraria</a></li>
+                    <li><a href="#">Notícias</a></li>
+                    <li><a href="#" class="btn-login">Área Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Federação Espírita do Piauí</h1>
+            <p>Unindo corações, esclarecendo mentes e consolando almas.</p>
+            <a href="#" class="btn-cta">Conheça Nossas Atividades</a>
+        </div>
+    </section>
+
+    <section class="social-hub">
+        <div class="container">
+            <h2 class="section-title">Conecte-se Conosco</h2>
+            <div class="social-grid">
+                <div class="youtube-area">
+                    <h3>Ao Vivo / Último Vídeo</h3>
+                    <div class="video-box">
+                        [Player do YouTube]
+                    </div>
+                </div>
+                
+                <div class="instagram-area">
+                    <h3>Últimas do Instagram</h3>
+                    <div class="insta-grid">
+                        <div class="insta-photo">Foto 1</div>
+                        <div class="insta-photo">Foto 2</div>
+                        <div class="insta-photo">Foto 3</div>
+                        <div class="insta-photo">Foto 4</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="livraria">
+        <div class="container">
+            <h2 class="section-title">Nossa Livraria</h2>
+            <p style="text-align: center; margin-bottom: 30px;">Conheça as obras disponíveis em nossa sede.</p>
+            
+            <div class="livros-grid">
+                <div class="livro-card">
+                    <div class="capa-placeholder"></div>
+                    <span class="livro-titulo">O Livro dos Espíritos</span>
+                    <span class="livro-autor">Allan Kardec</span>
+                    <button class="btn-login" style="border:none; cursor:pointer;">Ver Detalhes</button>
+                </div>
+                <div class="livro-card">
+                    <div class="capa-placeholder"></div>
+                    <span class="livro-titulo">Nosso Lar</span>
+                    <span class="livro-autor">André Luiz / Chico Xavier</span>
+                    <button class="btn-login" style="border:none; cursor:pointer;">Ver Detalhes</button>
+                </div>
+                <div class="livro-card">
+                    <div class="capa-placeholder"></div>
+                    <span class="livro-titulo">O Evangelho Segundo o Espiritismo</span>
+                    <span class="livro-autor">Allan Kardec</span>
+                    <button class="btn-login" style="border:none; cursor:pointer;">Ver Detalhes</button>
+                </div>
+                <div class="livro-card">
+                    <div class="capa-placeholder"></div>
+                    <span class="livro-titulo">Paulo e Estêvão</span>
+                    <span class="livro-autor">Emmanuel / Chico Xavier</span>
+                    <button class="btn-login" style="border:none; cursor:pointer;">Ver Detalhes</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid">
+            <div>
+                <h3>FEPI</h3>
+                <p>Rua Olavo Bilac, Teresina - PI</p>
+                <p>(86) 9999-9999</p>
+            </div>
+            <div>
+                <h3>Links Rápidos</h3>
+                <a href="#">Sobre a Federação</a>
+                <a href="#">Horários de Palestras</a>
+                <a href="#">Como Chegar</a>
+            </div>
+            <div>
+                <h3>Redes Sociais</h3>
+                <p>Siga-nos para acompanhar as novidades.</p>
+                <span>[Insta]</span> <span>[Face]</span> <span>[Youtube]</span>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
