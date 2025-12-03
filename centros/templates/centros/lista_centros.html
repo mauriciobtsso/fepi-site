@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Centros Espíritas - FEPI</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f6f8; margin: 0; color: #333; }
+        header { background: white; padding: 15px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
+        .logo-img { height: 40px; vertical-align: middle; }
+        
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+        .btn-voltar { display: inline-block; margin-bottom: 30px; color: #006d77; text-decoration: none; font-weight: bold; }
+        
+        h1 { color: #006d77; text-align: center; margin-bottom: 40px; }
+        h2 { background-color: #006d77; color: white; padding: 10px 20px; border-radius: 5px; margin-top: 40px; }
+        
+        .grid-centros { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        
+        .card-centro { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 4px solid #83c5be; transition: transform 0.2s; }
+        .card-centro:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        .centro-nome { font-weight: bold; font-size: 1.1em; color: #004d40; display: block; margin-bottom: 5px; }
+        .centro-info { font-size: 0.9em; color: #666; margin-bottom: 5px; display: block; }
+        
+        .btn-mapa { display: inline-block; margin-top: 10px; background-color: #fff; border: 1px solid #006d77; color: #006d77; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 0.85em; }
+        .btn-mapa:hover { background-color: #006d77; color: white; }
+        
+        .logo-centro { width: 50px; height: 50px; object-fit: contain; float: right; margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/"><img src="{% static 'img/logo.png' %}" alt="FEPI" class="logo-img"></a>
+    </header>
+
+    <div class="container">
+        <a href="/" class="btn-voltar">← Voltar para o Início</a>
+        <h1>Onde Encontrar um Centro Espírita</h1>
+
+        <h2>Em Teresina (Capital)</h2>
+        <div class="grid-centros">
+            {% for centro in capital %}
+            <div class="card-centro">
+                {% if centro.foto %}
+                    <img src="{{ centro.foto.url }}" class="logo-centro">
+                {% endif %}
+                <span class="centro-nome">{{ centro.nome }}</span>
+                <span class="centro-info">{{ centro.endereco }} - {{ centro.bairro }}</span>
+                {% if centro.telefone %}<span class="centro-info">📞 {{ centro.telefone }}</span>{% endif %}
+                
+                <a href="https://www.google.com/maps/search/?api=1&query={{ centro.endereco }} {{ centro.cidade }}" target="_blank" class="btn-mapa">📍 Ver no Mapa</a>
+            </div>
+            {% empty %}
+            <p>Nenhum centro cadastrado.</p>
+            {% endfor %}
+        </div>
+
+        <h2>No Interior</h2>
+        <div class="grid-centros">
+            {% for centro in interior %}
+            <div class="card-centro">
+                <span class="centro-nome">{{ centro.nome }}</span>
+                <span class="centro-info"><strong>{{ centro.cidade }}</strong></span>
+                <span class="centro-info">{{ centro.endereco }}</span>
+                <a href="https://www.google.com/maps/search/?api=1&query={{ centro.endereco }} {{ centro.cidade }} Piaui" target="_blank" class="btn-mapa">📍 Ver no Mapa</a>
+            </div>
+            {% empty %}
+            <p>Nenhum centro cadastrado.</p>
+            {% endfor %}
+        </div>
+        
+        <h2>Entidades Especializadas</h2>
+        <div class="grid-centros">
+            {% for centro in especializadas %}
+            <div class="card-centro">
+                <span class="centro-nome">{{ centro.nome }}</span>
+                <span class="centro-info">{{ centro.endereco }}</span>
+                <a href="https://www.google.com/maps/search/?api=1&query={{ centro.endereco }} Teresina" target="_blank" class="btn-mapa">📍 Ver no Mapa</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from core.views import home, institucional
 from livraria.views import detalhe_livro
 from noticias.views import detalhe_noticia
+from centros.views import lista_centros
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,6 +19,7 @@ urlpatterns = [
     # Rotas de Detalhes
     path('livro/<int:livro_id>/', detalhe_livro, name='detalhe_livro'),
     path('noticia/<int:noticia_id>/', detalhe_noticia, name='detalhe_noticia'),
+    path('centros/', lista_centros, name='lista_centros'),
 ]
 
 # Configuração para imagens e estáticos funcionarem
