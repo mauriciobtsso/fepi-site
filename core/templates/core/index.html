@@ -208,6 +208,14 @@
             margin-bottom: 10px;
             display: block;
         }
+        
+        /* Adicionei uma cor para o preço */
+        .livro-preco {
+            color: var(--cor-primaria);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
 
         /* --- RODAPÉ --- */
         footer {
@@ -260,8 +268,7 @@
                     <li><a href="#">Doutrina</a></li>
                     <li><a href="#">Livraria</a></li>
                     <li><a href="#">Notícias</a></li>
-                    <li><a href="#" class="btn-login">Área Admin</a></li>
-                </ul>
+                    <li><a href="/admin" class="btn-login">Área Admin</a></li> </ul>
             </nav>
         </div>
     </header>
@@ -304,31 +311,19 @@
             <p style="text-align: center; margin-bottom: 30px;">Conheça as obras disponíveis em nossa sede.</p>
             
             <div class="livros-grid">
+                
+                {% for livro in livros %}
                 <div class="livro-card">
-                    <div class="capa-placeholder"></div>
-                    <span class="livro-titulo">O Livro dos Espíritos</span>
-                    <span class="livro-autor">Allan Kardec</span>
+                    <div class="capa-placeholder"></div> <span class="livro-titulo">{{ livro.titulo }}</span>
+                    <span class="livro-autor">{{ livro.autor }}</span>
+                    <span class="livro-preco">R$ {{ livro.preco }}</span>
+                    
                     <button class="btn-login" style="border:none; cursor:pointer;">Ver Detalhes</button>
                 </div>
-                <div class="livro-card">
-                    <div class="capa-placeholder"></div>
-                    <span class="livro-titulo">Nosso Lar</span>
-                    <span class="livro-autor">André Luiz / Chico Xavier</span>
-                    <button class="btn-login" style="border:none; cursor:pointer;">Ver Detalhes</button>
+                {% empty %}
+                <p>Nenhum livro cadastrado no momento.</p>
+                {% endfor %}
                 </div>
-                <div class="livro-card">
-                    <div class="capa-placeholder"></div>
-                    <span class="livro-titulo">O Evangelho Segundo o Espiritismo</span>
-                    <span class="livro-autor">Allan Kardec</span>
-                    <button class="btn-login" style="border:none; cursor:pointer;">Ver Detalhes</button>
-                </div>
-                <div class="livro-card">
-                    <div class="capa-placeholder"></div>
-                    <span class="livro-titulo">Paulo e Estêvão</span>
-                    <span class="livro-autor">Emmanuel / Chico Xavier</span>
-                    <button class="btn-login" style="border:none; cursor:pointer;">Ver Detalhes</button>
-                </div>
-            </div>
         </div>
     </section>
 
