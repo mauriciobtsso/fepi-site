@@ -332,14 +332,16 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#">Institucional</a></li>
+                    <li><a href="{% url 'institucional' %}">Institucional</a></li>
+                    
                     <li><a href="#">Doutrina</a></li>
-                    <li><a href="#">Livraria</a></li>
-                    <li><a href="#">Notícias</a></li>
+                    
+                    <li><a href="/#livraria">Livraria</a></li>
+                    <li><a href="/#noticias">Notícias</a></li>
+                    
                     <li><a href="/admin" class="btn-login">Área Admin</a></li>
                 </ul>
-            </nav>
-        </div>
+            </nav>        </div>
     </header>
 
     <section class="hero">
@@ -350,23 +352,27 @@
         </div>
     </section>
 
-    <section class="noticias">
+    <section class="noticias" id="noticias">
         <div class="container">
             <h2 class="section-title">Fique por Dentro</h2>
             
             <div class="noticias-grid">
                 {% for noticia in noticias %}
                 <div class="noticia-card">
-                    {% if noticia.imagem %}
-                        <img src="{{ noticia.imagem.url }}" alt="{{ noticia.titulo }}" class="noticia-img">
-                    {% else %}
-                        <div style="height:200px; background:#ddd; display:flex; align-items:center; justify-content:center; color:#888;">Sem Imagem</div>
-                    {% endif %}
+                    <a href="{% url 'detalhe_noticia' noticia.id %}">
+                        {% if noticia.imagem %}
+                            <img src="{{ noticia.imagem.url }}" alt="{{ noticia.titulo }}" class="noticia-img">
+                        {% else %}
+                            <div style="height:200px; background:#ddd; display:flex; align-items:center; justify-content:center; color:#888;">Sem   Imagem</div>
+                        {% endif %}
+                    </a>
                     
                     <div class="noticia-content">
                         <span class="noticia-data">{{ noticia.data_publicacao|date:"d M Y" }}</span>
                         
-                        <span class="noticia-titulo">{{ noticia.titulo }}</span>
+                        <a href="{% url 'detalhe_noticia' noticia.id %}" style="text-decoration:none;">
+                            <span class="noticia-titulo">{{ noticia.titulo }}</span>
+                        </a>
                         
                         <p class="noticia-resumo">{{ noticia.resumo }}</p>
                     </div>
@@ -402,7 +408,7 @@
         </div>
     </section>
 
-    <section class="livraria">
+    <section class="livraria" id="livraria">
         <div class="container">
             <h2 class="section-title">Nossa Livraria</h2>
             <p style="text-align: center; margin-bottom: 30px;">Conheça as obras disponíveis em nossa sede.</p>
