@@ -216,6 +216,15 @@
             display: block;
             margin-bottom: 10px;
         }
+        
+        /* Adiciona isto no teu CSS */
+        .capa-livro-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover; /* Garante que a imagem preenche o espaço sem distorcer */
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
 
         /* --- RODAPÉ --- */
         footer {
@@ -314,7 +323,7 @@
                 
                 {% for livro in livros %}
                 <div class="livro-card">
-                    <div class="capa-placeholder"></div> <span class="livro-titulo">{{ livro.titulo }}</span>
+                    <img src="{{ livro.capa.url }}" alt="Capa de {{ livro.titulo }}" class="capa-livro-img"> <span class="livro-titulo">{{ livro.titulo }}</span>
                     <span class="livro-autor">{{ livro.autor }}</span>
                     <span class="livro-preco">R$ {{ livro.preco }}</span>
                     

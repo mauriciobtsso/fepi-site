@@ -7,7 +7,9 @@ class Livro(models.Model):
     preco = models.DecimalField(max_digits=6, decimal_places=2, default=0.00, verbose_name="Preço")
     disponivel = models.BooleanField(default=True, verbose_name="Disponível em Estoque")
     
-    # Esta função diz ao Django para mostrar o nome do livro e não "Objeto Livro 1"
+    # Novo campo de imagem!
+    capa = models.ImageField(upload_to='capas/', blank=True, null=True, verbose_name="Capa do Livro")
+    
     def __str__(self):
         return self.titulo
         
