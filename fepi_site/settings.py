@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'livraria',
     'noticias',
     'centros',
+    'programacao'
 ]
 
 MIDDLEWARE = [

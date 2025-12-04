@@ -1,0 +1,111 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Programação Doutrinária - FEPI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .grid-palestras {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 30px;
+        margin-top: 20px;
+    }
+
+    .card-palestra {
+        background: white;
+        border-radius: var(--radius);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        transition: 0.3s;
+    }
+    .card-palestra:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+
+    /* Imagem Inteligente (Blur + Contain) */
+    .img-container {
+        position: relative;
+        width: 100%;
+        height: 320px; /* Altura fixa */
+        overflow: hidden;
+        background-color: #f0f0f0;
+    }
+    .img-blur-bg {
+        position: absolute; inset: 0;
+        background-size: cover; background-position: center;
+        filter: blur(15px) brightness(0.9);
+        transform: scale(1.1);
+    }
+    .img-main {
+        position: relative; width: 100%; height: 100%;
+        object-fit: contain; z-index: 2;
+    }
+
+    .info-box { padding: 20px; }
+    
+    .data-badge {
+        background-color: var(--azul-claro);
+        color: var(--azul-escuro);
+        font-size: 0.8rem; font-weight: 700;
+        padding: 5px 10px; border-radius: 20px;
+        display: inline-block; margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .tema {
+        font-size: 1.25rem; font-weight: 700;
+        color: var(--texto); line-height: 1.3;
+        margin-bottom: 5px;
+    }
+
+    .palestrante {
+        color: var(--dourado); font-weight: 600;
+        margin-bottom: 15px; display: block;
+    }
+
+    .detalhes {
+        font-size: 0.9rem; color: #666;
+        border-top: 1px solid #eee; padding-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="section-header">
+        <div>
+            <h2>Programação Doutrinária</h2>
+            <p style="color: #666;">Próximas palestras públicas, presenciais e online.</p>
+        </div>
+    </div>
+
+    <div class="grid-palestras">
+        {% for palestra in palestras %}
+        <div class="card-palestra">
+            {% if palestra.imagem %}
+                <div class="img-container">
+                    <div class="img-blur-bg" style="background-image: url('{{ palestra.imagem.url }}');"></div>
+                    <img src="{{ palestra.imagem.url }}" class="img-main" alt="Cartaz">
+                </div>
+            {% else %}
+                <div class="img-container" style="display:flex; align-items:center; justify-content:center; color:#999;">
+                    Sem Cartaz
+                </div>
+            {% endif %}
+
+            <div class="info-box">
+                <span class="data-badge">{{ palestra.data_hora|date:"d M Y • H:i" }}h</span>
+                <div class="tema">{{ palestra.tema }}</div>
+                <span class="palestrante">Expositor: {{ palestra.palestrante }}</span>
+                
+                {% if palestra.descricao %}
+                    <div class="detalhes">{{ palestra.descricao|linebreaksbr }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p style="text-align: center; grid-column: 1/-1; color: #777;">Nenhuma palestra agendada.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

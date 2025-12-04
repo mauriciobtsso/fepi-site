@@ -1,113 +1,69 @@
+{% extends 'core/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Institucional - FEPI</title>
-    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}">
-    <style>
-        /* Reutilizando estilos base */
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f6f8; margin: 0; color: #333; line-height: 1.8; }
-        
-        /* Cabeçalho */
-        header { background: white; padding: 15px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
-        .logo-img { height: 40px; vertical-align: middle; }
-        
-        /* Conteúdo */
-        .container { max-width: 900px; margin: 40px auto; background: white; padding: 50px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .btn-voltar { display: inline-block; margin-bottom: 30px; color: #006d77; text-decoration: none; font-weight: bold; border: 1px solid #006d77; padding: 5px 15px; border-radius: 4px; transition: 0.3s; }
-        .btn-voltar:hover { background-color: #006d77; color: white; }
-        
-        h1 { color: #006d77; font-size: 2.2em; margin-bottom: 20px; border-bottom: 2px solid #83c5be; display: inline-block; padding-bottom: 10px; }
-        h2 { color: #006d77; margin-top: 50px; border-left: 5px solid #006d77; padding-left: 15px; }
-        h3 { color: #555; margin-top: 30px; font-size: 1.3em; }
-        
-        p { margin-bottom: 20px; text-align: justify; color: #444; }
-        
-        /* Destaque para nomes importantes na história */
-        .historico-nome { font-weight: bold; color: #006d77; }
 
-        /* Estilo da Diretoria */
-        .diretoria-box { background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin-top: 20px; border: 1px solid #e9ecef; }
-        .cargo-item { margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; display: flex; justify-content: space-between; }
-        .cargo-titulo { font-weight: bold; color: #006d77; }
-        .cargo-nome { color: #555; }
+{% block title %}Institucional - FEPI{% endblock %}
 
-        @media (max-width: 600px) { 
-            .container { margin: 15px; padding: 20px; } 
-            .cargo-item { flex-direction: column; }
-        }
-    </style>
-</head>
-<body>
+{% block extra_css %}
+<style>
+    /* Estilos específicos do texto */
+    h1 { color: #006d77; font-size: 2.2em; margin-bottom: 20px; border-bottom: 2px solid #83c5be; display: inline-block; padding-bottom: 10px; }
+    h2 { color: #006d77; margin-top: 50px; border-left: 5px solid #006d77; padding-left: 15px; }
+    
+    .texto-historia { margin-bottom: 20px; text-align: justify; color: #444; line-height: 1.8; font-size: 1.05em; }
+    .destaque-box { background-color: #e0f2f1; padding: 20px; border-left: 5px solid #006d77; margin: 30px 0; border-radius: 0 5px 5px 0; font-style: italic; color: #004d40; font-size: 1.1em; }
+    
+    /* Diretoria */
+    .diretoria-box { background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin-top: 20px; border: 1px solid #e9ecef; }
+    .cargo-item { margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; display: flex; justify-content: space-between; }
+    .cargo-titulo { font-weight: bold; color: #006d77; }
+</style>
+{% endblock %}
 
-    <header>
-        <a href="/">
-            <img src="{% static 'img/logo.png' %}" alt="FEPI" class="logo-img">
-        </a>
-    </header>
-
-    <div class="container">
-        <a href="/" class="btn-voltar">← Voltar para o Início</a>
-        
-        <div style="text-align: center; margin-bottom: 40px;">
-            <h1>Nossa História</h1>
+{% block content %}
+<div class="pagina-conteudo">
+    
+    <h1>{{ pagina.titulo|default:"Nossa História" }}</h1>
+    
+    {% if pagina.conteudo %}
+        <div class="texto-historia">
+            {{ pagina.conteudo|safe }}
         </div>
+    {% else %}
+        <p>Conteúdo em atualização.</p>
+    {% endif %}
 
-        <p>A <strong>Federação Espírita Piauiense</strong> surge como consequência natural do processo de unificação do movimento espírita brasileiro, estabelecido através do Pacto Áureo, acordo celebrado em 05 de outubro de 1949 na cidade do Rio de Janeiro entre a Federação Espírita Brasileira e outras entidades espíritas.</p>
-
-        <p>Por solicitação de Wantuil de Freitas, então presidente da FEB, <span class="historico-nome">Leopoldo Machado</span> e outros colaboradores empreendem uma viagem às regiões Norte e Nordeste do Brasil, iniciada em outubro de 1950. Essa excursão, que ficou conhecida como a <strong>Caravana da Fraternidade</strong>, embora não tivesse caráter oficial, tinha claros propósitos de integrar as federativas estaduais em torno do Conselho Federativo Nacional.</p>
-
-        <p>Os registros históricos indicam que o Piauí possuía naquele período, apenas cinco instituições espíritas. Em Parnaíba, funcionavam o Centro Espírita Perseverança no Bem e o Centro Espírita Vida e Progresso. Na capital Teresina, existiam o Centro Espírita Bezerra de Menezes, o Centro Espírita Irmão Adriano e o Centro Espírita Piauiense, este último, transformado em 1931 a partir do Centro Espírita Amor e Caridade, surgido em 1927. No entanto, ainda não havia um ente de caráter federativo que congregasse todas aquelas casas espíritas.</p>
-
-        <p>Antes de iniciada a excursão, porém, <span class="historico-nome">Arthur Lins de Vasconcellos (PR)</span>, profundo idealista e batalhador pela unificação do movimento espírita brasileiro e que integrou a caravana desde a sua partida até a cidade de Recife (PE), já vinha se correspondendo com o presidente do Centro Espírita Piauiense, <span class="historico-nome">João Rodrigues Vieira</span>, mais conhecido como Joca Vieira, que manifestava amplo apoio aos trabalhos de unificação e à FEB.</p>
-
-        <p>No Piauí, os caravaneiros chegam primeiro à cidade de Parnaíba, onde realizam visitas, fazem palestras e se reúnem com os trabalhadores espíritas. Em Teresina, no dia <strong>27 de novembro de 1950</strong>, após uma palestra proferida por Leopoldo Machado no Centro Espírita Piauiense, realizam uma mesa-redonda, na qual os Centros Espíritas decidem fundar a Federação Espírita Piauiense, na época, abreviada como “F.E.P.”, transformada a partir do próprio Centro Espírita Piauiense. A iniciativa fora apoiada pelo movimento espírita de Parnaíba – o qual já havia manifestado sua vontade na passagem dos caravaneiros por lá.</p>
-
-        <p>No dia seguinte, antes da realização de nova palestra por Leopoldo Machado no Centro Espírita Piauiense, é lida a ata de fundação e empossada a primeira Diretoria da Federação, cuja presidência foi exercida por Joca Vieira até o ano de 1969.</p>
-
-        <p>Integravam a caravana que chegou ao nosso Estado, Leopoldo Machado (RJ), Francisco Spinelli (RS), Luiz Burgos Filho (PE) e Carlos Jordão da Silva (SP). Dentre os trabalhadores piauienses, ficaram registrados os nomes de Alarico da Cunha, presidente do Centro Espírita Perseverança no Bem, Francisco de Abreu, presidente do Centro Espírita Vida e Progresso e os nomes de Benedito Freire, Raimundo Belém e José Mourão, todos da cidade de Parnaíba. Da capital, ficaram registrados os nomes de Joca Vieira, do Desembargador Odorico Rosa, do Juiz de Direito Pedro de Morais Brito Conde e do Dr. Heli da Rocha Nunes e outros mais que assinaram a ata de fundação.</p>
-
-        <h2>Administração e Diretoria</h2>
-        <p>A gestão da Federação é composta por trabalhadores voluntários. Abaixo, a estrutura organizacional:</p>
-
-        <div class="diretoria-box">
-            <h3>Diretoria Executiva</h3>
-            <div class="cargo-item">
-                <span class="cargo-titulo">Presidência</span>
-                <span class="cargo-nome">[Nome Atual]</span>
-            </div>
-            <div class="cargo-item">
-                <span class="cargo-titulo">Vice-Presidência</span>
-                <span class="cargo-nome">[Nome Atual]</span>
-            </div>
-            <div class="cargo-item">
-                <span class="cargo-titulo">Secretaria Geral</span>
-                <span class="cargo-nome">[Nome Atual]</span>
-            </div>
-            <div class="cargo-item">
-                <span class="cargo-titulo">Tesouraria</span>
-                <span class="cargo-nome">[Nome Atual]</span>
-            </div>
-        </div>
-
-        <div class="diretoria-box">
-            <h3>Conselho Fiscal</h3>
-            <div class="cargo-item">
-                <span class="cargo-titulo">Conselheiro(a)</span>
-                <span class="cargo-nome">[Nome]</span>
-            </div>
-            <div class="cargo-item">
-                <span class="cargo-titulo">Conselheiro(a)</span>
-                <span class="cargo-nome">[Nome]</span>
-            </div>
-            <div class="cargo-item">
-                <span class="cargo-titulo">Conselheiro(a)</span>
-                <span class="cargo-nome">[Nome]</span>
-            </div>
-        </div>
-
+    {% if pagina.frase_destaque %}
+    <div class="destaque-box">
+        "{{ pagina.frase_destaque }}"
     </div>
+    {% endif %}
 
-</body>
-</html>
+    <h2>Administração e Diretoria</h2>
+    <p>A gestão da Federação é composta por trabalhadores voluntários:</p>
+
+    {% if executiva %}
+    <div class="diretoria-box">
+        <h3>Diretoria Executiva</h3>
+        {% for membro in executiva %}
+        <div class="cargo-item">
+            <span class="cargo-titulo">{{ membro.cargo }}</span>
+            <span class="cargo-nome">{{ membro.nome }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% if fiscal %}
+    <div class="diretoria-box">
+        <h3>Conselho Fiscal</h3>
+        {% for membro in fiscal %}
+        <div class="cargo-item">
+            <span class="cargo-titulo">{{ membro.cargo }}</span>
+            <span class="cargo-nome">{{ membro.nome }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

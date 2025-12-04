@@ -1,0 +1,100 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Calendário Anual - FEPI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Cabeçalho do Mês */
+    .mes-header {
+        color: var(--azul-escuro);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 40px 0 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--azul-claro);
+        text-transform: capitalize;
+    }
+
+    /* Linha do Evento */
+    .evento-card {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 20px;
+        background: white;
+        border-radius: var(--radius);
+        padding: 0;
+        margin-bottom: 15px;
+        border: 1px solid #eee;
+        transition: 0.2s;
+        overflow: hidden;
+    }
+    .evento-card:hover { 
+        transform: translateX(5px); 
+        border-color: var(--dourado); 
+    }
+
+    /* Bloco da Data */
+    .evento-data {
+        background-color: var(--azul-claro);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--azul-escuro);
+    }
+    .dia-num { font-size: 1.8rem; font-weight: 800; line-height: 1; }
+    .dia-sem { font-size: 0.75rem; text-transform: uppercase; margin-top: 2px; }
+
+    /* Bloco de Info */
+    .evento-info { padding: 15px 20px 15px 0; display: flex; flex-direction: column; justify-content: center; }
+    
+    .evento-hora { 
+        font-size: 0.85rem; font-weight: 700; color: #888; 
+        text-transform: uppercase; margin-bottom: 4px;
+    }
+    .evento-tema { 
+        font-size: 1.1rem; font-weight: 700; color: var(--texto); margin-bottom: 4px; 
+    }
+    .evento-palestrante { font-size: 0.95rem; color: var(--azul-medio); }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="section-header">
+        <div>
+            <h2>Calendário de Eventos</h2>
+            <p style="color: #666;">Agenda completa de atividades anuais.</p>
+        </div>
+    </div>
+
+    {% if eventos %}
+        {% regroup eventos by data_hora|date:"F Y" as eventos_por_mes %}
+
+        {% for mes in eventos_por_mes %}
+            <div class="mes-header">{{ mes.grouper }}</div>
+            
+            {% for evento in mes.list %}
+            <div class="evento-card">
+                <div class="evento-data">
+                    <span class="dia-num">{{ evento.data_hora|date:"d" }}</span>
+                    <span class="dia-sem">{{ evento.data_hora|date:"D" }}</span>
+                </div>
+                <div class="evento-info">
+                    <span class="evento-hora">🕒 {{ evento.data_hora|date:"H:i" }}h</span>
+                    <span class="evento-tema">{{ evento.tema }}</span>
+                    <span class="evento-palestrante">Expositor(a): {{ evento.palestrante }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        {% endfor %}
+
+    {% else %}
+        <div style="text-align: center; padding: 60px; background: white; border-radius: var(--radius);">
+            <p style="color: #888; font-size: 1.1rem;">Nenhum evento futuro encontrado.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
