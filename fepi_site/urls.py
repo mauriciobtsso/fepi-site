@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from recursos.views import links_uteis, downloads
 
 # 1. Imports do Core (Home, Institucional, Fale Conosco)
 # REMOVIDO: livraria_completa daqui
@@ -45,6 +46,8 @@ urlpatterns = [
     path('livro/<int:livro_id>/', detalhe_livro, name='detalhe_livro'),
     path('noticia/<int:noticia_id>/', detalhe_noticia, name='detalhe_noticia'),
     path('noticias/', lista_noticias, name='lista_noticias'),
+    path('links-uteis/', links_uteis, name='links_uteis'), # NOVO
+    path('downloads/', downloads, name='downloads'),       # NOVO
 ]
 
 # Configuração para imagens e estáticos funcionarem no modo Debug

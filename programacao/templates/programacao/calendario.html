@@ -11,7 +11,7 @@
         margin: 30px 0 15px; padding-bottom: 5px; border-bottom: 2px solid var(--azul-claro);
         text-transform: capitalize; display: flex; align-items: center; gap: 10px;
     }
-    .mes-header i { color: var(--dourado); }
+    .mes-header i { color: var(--dourado); font-size: 1.2rem; }
 
     /* Linha do Evento */
     .evento-card {
@@ -39,8 +39,10 @@
     .evento-hora { 
         font-size: 0.85rem; font-weight: 700; color: #888; 
         text-transform: uppercase; margin-bottom: 4px;
-        display: flex; align-items: center; gap: 5px;
+        display: flex; align-items: center; gap: 5px; /* Alinha o ícone do relógio */
     }
+    .evento-info i { font-size: 0.95rem; }
+
     .evento-tema { font-size: 1.1rem; font-weight: 700; color: var(--texto); margin-bottom: 4px; }
     .evento-palestrante { font-size: 0.95rem; color: var(--azul-medio); }
 
@@ -88,6 +90,7 @@
     {% else %}
         <p style="color:#888; margin-bottom:40px;">Nenhum evento futuro agendado.</p>
     {% endif %}
+
 
     {% if passados %}
         <div class="historico-divider">Histórico de Eventos</div>

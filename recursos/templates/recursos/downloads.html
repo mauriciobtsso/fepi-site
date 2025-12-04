@@ -1,0 +1,61 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Downloads - FEPI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .header-pagina { text-align: center; margin-bottom: 50px; }
+    .header-pagina h2 { font-size: 2rem; color: var(--azul-escuro); margin-bottom: 10px; }
+    
+    .downloads-grid { 
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+        gap: 30px; 
+    }
+
+    .card-download {
+        background: white; border-radius: 12px; padding: 25px; 
+        box-shadow: var(--shadow); border: 1px solid #eee;
+        display: flex; flex-direction: column; justify-content: space-between;
+    }
+
+    .download-titulo { color: var(--azul-escuro); font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+    .download-descricao { color: #666; font-size: 0.95rem; margin-bottom: 15px; }
+
+    .btn-download {
+        background-color: var(--dourado); color: var(--azul-escuro);
+        padding: 12px 20px; border-radius: 6px; font-weight: 700;
+        text-align: center; display: block; margin-top: 15px;
+        transition: 0.2s;
+    }
+    .btn-download:hover { background-color: #ffd270; transform: translateY(-2px); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-pagina">
+        <h2>Downloads</h2>
+        <p>Documentos de apoio, apostilas e materiais de estudo para download.</p>
+    </div>
+
+    <div class="downloads-grid">
+        {% for item in downloads %}
+        <div class="card-download">
+            <div>
+                <h3 class="download-titulo">{{ item.titulo }}</h3>
+                {% if item.descricao %}
+                    <p class="download-descricao">{{ item.descricao }}</p>
+                {% endif %}
+            </div>
+            
+            <a href="{{ item.url }}" target="_blank" class="btn-download">
+                <i class="fa-solid fa-download"></i> Baixar Arquivo
+            </a>
+        </div>
+        {% empty %}
+        <p style="grid-column: 1 / -1; text-align: center; color:#888;">Nenhum arquivo disponível para download no momento.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

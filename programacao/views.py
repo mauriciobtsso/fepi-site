@@ -21,8 +21,10 @@ def atividades(request):
     return render(request, 'programacao/atividades.html', {'atividades': atividades})
 
 def doutrinarias(request):
-    hoje = timezone.now()
-    palestras = Doutrinaria.objects.filter(data_hora__gte=hoje).order_by('data_hora')
+    # ANTES: palestras = Doutrinaria.objects.filter(data_hora__gte=hoje).order_by('data_hora')
+    
+    # AGORA: MOSTRA TUDO (PASSADO E FUTURO) PARA CONFIRMAR QUE EXISTE
+    palestras = Doutrinaria.objects.all().order_by('data_hora')
     return render(request, 'programacao/doutrinarias.html', {'palestras': palestras})
 
 def calendario(request):

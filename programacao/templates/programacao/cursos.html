@@ -7,22 +7,35 @@
 <style>
     .header-pagina { text-align: center; margin-bottom: 50px; }
     .header-pagina h2 { font-size: 2rem; color: var(--azul-escuro); margin-bottom: 10px; }
-    .grid-cursos { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
+
+    /* GRID */
+    .grid-cursos { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+
     .card-curso { 
         background: white; border-radius: 12px; overflow: hidden; 
         border: 1px solid #e5e7eb; transition: 0.3s; display: flex; flex-direction: column;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
     }
     .card-curso:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-color: var(--dourado); }
+
     .img-curso { height: 200px; width: 100%; object-fit: cover; }
     .info-curso { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    
     .data-badge { 
         background: var(--azul-claro); color: var(--azul-escuro); font-weight: 800; font-size: 0.8rem; 
         padding: 5px 10px; border-radius: 4px; width: fit-content; margin-bottom: 10px; text-transform: uppercase;
+        display: flex; align-items: center; gap: 5px; /* Alinha o ícone */
     }
+    .data-badge i { font-size: 0.9rem; color: var(--azul-medio); }
+
     .titulo-curso { font-size: 1.2rem; font-weight: 700; color: var(--azul-escuro); margin-bottom: 10px; line-height: 1.3; }
-    .local-curso { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
+    .local-curso { font-size: 0.9rem; color: #666; margin-bottom: 15px; display: flex; align-items: center; gap: 5px; }
     .btn-inscrever { margin-top: auto; color: var(--azul-medio); font-weight: 700; text-decoration: none; }
+
+    /* Estilo Passado (Histórico) */
     .passado { opacity: 0.7; filter: grayscale(100%); }
+    .passado:hover { filter: none; opacity: 1; }
+    
     .divider { margin: 60px 0 30px; border-top: 1px solid #ddd; text-align: center; }
     .divider span { background: #f4f6f8; padding: 0 15px; position: relative; top: -12px; color: #888; font-weight: bold; text-transform: uppercase; }
 </style>
@@ -47,9 +60,16 @@
                 {% endif %}
             </a>
             <div class="info-curso">
-                <span class="data-badge">📅 {{ curso.data_evento|date:"d/m/Y • H:i" }}h</span>
+                <span class="data-badge">
+                    <i class="fa-solid fa-calendar-alt"></i> {{ curso.data_evento|date:"d/m/Y" }}
+                    <i class="fa-regular fa-clock" style="margin-left: 10px;"></i> {{ curso.data_evento|date:"H:i" }}h
+                </span>
+                
                 <div class="titulo-curso">{{ curso.titulo }}</div>
-                <div class="local-curso">📍 {{ curso.local }}</div>
+                <div class="local-curso">
+                    <i class="fa-solid fa-location-dot" style="color:var(--dourado); font-size: 0.9rem;"></i> 
+                    {{ curso.local }}
+                </div>
                 <a href="{% url 'detalhe_curso' curso.id %}" class="btn-inscrever">Saiba mais e Inscreva-se →</a>
             </div>
         </div>
@@ -65,7 +85,9 @@
         {% for curso in passados %}
         <div class="card-curso passado">
             <div class="info-curso">
-                <span class="data-badge" style="background:#eee; color:#666;">Realizado em {{ curso.data_evento|date:"d/m/Y" }}</span>
+                <span class="data-badge" style="background:#eee; color:#666;">
+                    <i class="fa-solid fa-calendar-alt"></i> Realizado em {{ curso.data_evento|date:"d/m/Y" }}
+                </span>
                 <div class="titulo-curso">{{ curso.titulo }}</div>
                 <a href="{% url 'detalhe_curso' curso.id %}" class="btn-inscrever">Ver detalhes</a>
             </div>

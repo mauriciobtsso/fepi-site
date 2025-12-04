@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Links Úteis - FEPI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .header-pagina { text-align: center; margin-bottom: 50px; }
+    .header-pagina h2 { font-size: 2rem; color: var(--azul-escuro); margin-bottom: 10px; }
+    
+    .secao-links { background: white; border-radius: 12px; padding: 30px; box-shadow: var(--shadow); margin-bottom: 40px; }
+    
+    .titulo-secao {
+        color: var(--azul-medio); font-size: 1.5rem; font-weight: 700;
+        margin-bottom: 20px; border-bottom: 2px solid var(--azul-claro); padding-bottom: 5px;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .titulo-secao i { color: var(--dourado); }
+
+    .lista-links { list-style: none; padding: 0; }
+    .lista-links li { margin-bottom: 15px; padding: 10px; border-bottom: 1px dashed #eee; }
+    
+    .link-titulo { color: var(--azul-escuro); font-weight: 600; font-size: 1.1rem; display: block; }
+    .link-descricao { color: #666; font-size: 0.9rem; margin-top: 5px; }
+    .link-url { color: var(--azul-medio); font-size: 0.9rem; display: block; margin-top: 5px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-pagina">
+        <h2>Links Úteis</h2>
+        <p>Acesse o portal de instituições federativas, centros parceiros e sites de estudo.</p>
+    </div>
+
+    {% for secao in secoes %}
+        <div class="secao-links">
+            <h3 class="titulo-secao">
+                <i class="{{ secao.icone_fa }}"></i>
+                {{ secao.nome }}
+            </h3>
+
+            <ul class="lista-links">
+                {% for item in secao.linkitem_set.all %}
+                <li>
+                    <a href="{{ item.url }}" target="_blank" class="link-titulo">{{ item.titulo }}</a>
+                    {% if item.descricao %}
+                        <p class="link-descricao">{{ item.descricao }}</p>
+                    {% endif %}
+                    <a href="{{ item.url }}" target="_blank" class="link-url">
+                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.8rem; margin-right:5px;"></i>
+                        Acessar Link
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% empty %}
+        <p style="text-align:center; color:#888;">Nenhuma seção de links ativa.</p>
+    {% endfor %}
+
+</div>
+{% endblock %}
