@@ -5,81 +5,32 @@
 
 {% block extra_css %}
 <style>
-    /* Layout em duas colunas para desktop */
-    .contato-grid {
-        display: grid;
-        grid-template-columns: 1fr 1.5fr;
-        gap: 30px;
-        margin-top: 30px;
-    }
-
-    /* Cartão de Informações */
-    .info-card {
-        background-color: var(--azul-claro);
-        padding: 30px;
-        border-radius: var(--radius);
-        border: 1px solid rgba(28,86,127,0.1);
-        height: 100%;
-    }
-
+    .contato-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; margin-top: 30px; }
+    .info-card { background-color: var(--azul-claro); padding: 30px; border-radius: var(--radius); border: 1px solid rgba(28,86,127,0.1); height: 100%; }
     .info-item { margin-bottom: 25px; }
-    .info-label { 
-        display: block; 
-        font-size: 0.85rem; 
-        text-transform: uppercase; 
-        color: #6b7280; 
-        margin-bottom: 5px; 
-        font-weight: bold;
-        letter-spacing: 0.5px;
-    }
-    .info-text { 
-        font-size: 1.1rem; 
-        color: var(--azul-escuro); 
-        font-weight: 500;
-        line-height: 1.4;
-    }
-
-    /* Mapa */
-    .mapa-wrapper {
-        border-radius: var(--radius);
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        height: 450px;
-        border: 1px solid #eee;
-        position: relative;
-    }
     
-    .mapa-iframe {
-        width: 100%;
-        height: 100%;
-        border: 0;
+    .info-label { 
+        display: flex; align-items: center; gap: 8px; /* Alinha icone com texto */
+        font-size: 0.85rem; text-transform: uppercase; color: #6b7280; 
+        margin-bottom: 5px; font-weight: bold; letter-spacing: 0.5px;
     }
+    .info-label i { color: var(--dourado); font-size: 1.1rem; } /* Cor do ícone */
 
-    /* Botão de Rota (Sobre o mapa) */
+    .info-text { font-size: 1.1rem; color: var(--azul-escuro); font-weight: 500; line-height: 1.4; padding-left: 24px; /* Recuo para alinhar com texto acima */ }
+
+    .mapa-wrapper { border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 450px; border: 1px solid #eee; position: relative; }
+    .mapa-iframe { width: 100%; height: 100%; border: 0; }
+
     .btn-rota {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        background-color: white;
-        color: var(--azul-escuro);
-        padding: 10px 20px;
-        border-radius: 30px;
-        font-weight: bold;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.9rem;
-        transition: 0.2s;
+        position: absolute; bottom: 20px; left: 20px;
+        background-color: white; color: var(--azul-escuro);
+        padding: 10px 20px; border-radius: 30px; font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2); text-decoration: none;
+        display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: 0.2s;
     }
-    .btn-rota:hover { transform: translateY(-3px); }
+    .btn-rota:hover { transform: translateY(-3px); color: var(--dourado); }
 
-    /* Responsividade */
-    @media (max-width: 800px) {
-        .contato-grid { grid-template-columns: 1fr; }
-        .mapa-wrapper { height: 300px; }
-    }
+    @media (max-width: 800px) { .contato-grid { grid-template-columns: 1fr; } .mapa-wrapper { height: 300px; } }
 </style>
 {% endblock %}
 
@@ -97,7 +48,7 @@
         <div>
             <div class="info-card">
                 <div class="info-item">
-                    <span class="info-label">📍 Endereço</span>
+                    <span class="info-label"><i class="fa-solid fa-location-dot"></i> Endereço</span>
                     <div class="info-text">
                         {{ contato.endereco }}<br>
                         {{ contato.cidade }}<br>
@@ -106,12 +57,12 @@
                 </div>
 
                 <div class="info-item">
-                    <span class="info-label">📞 Telefone / WhatsApp</span>
+                    <span class="info-label"><i class="fa-brands fa-whatsapp"></i> Telefone / WhatsApp</span>
                     <div class="info-text">{{ contato.telefone }}</div>
                 </div>
 
                 <div class="info-item">
-                    <span class="info-label">✉️ E-mail</span>
+                    <span class="info-label"><i class="fa-solid fa-envelope"></i> E-mail</span>
                     <div class="info-text">
                         {% if contato.email %}
                             <a href="mailto:{{ contato.email }}" style="color:var(--azul-medio);">{{ contato.email }}</a>
@@ -122,22 +73,19 @@
                 </div>
 
                 <div class="info-item" style="margin-bottom: 0;">
-                    <span class="info-label">🕒 Horário da Livraria</span>
+                    <span class="info-label"><i class="fa-solid fa-clock"></i> Horário da Livraria</span>
                     <div class="info-text">{{ contato.horario_livraria }}</div>
                 </div>
             </div>
         </div>
 
         <div class="mapa-wrapper">
-            <iframe class="mapa-iframe"
-                loading="lazy" 
-                allowfullscreen 
-                referrerpolicy="no-referrer-when-downgrade"
+            <iframe class="mapa-iframe" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3974.2690786377745!2d-42.81281192414776!3d-5.094434421525666!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x78e39f8a3b0b0b5%3A0x7b0b0b0b0b0b0b0b!2sRua%20Olavo%20Bilac%2C%201394%20-%20Centro%20(Sul)%2C%20Teresina%20-%20PI%2C%2064001-280!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr">
             </iframe>
             
             <a href="https://www.google.com/maps/dir//-5.0944344,-42.8106233" target="_blank" class="btn-rota">
-                📍 Traçar Rota no GPS
+                <i class="fa-solid fa-map-location-dot"></i> Traçar Rota no GPS
             </a>
         </div>
 

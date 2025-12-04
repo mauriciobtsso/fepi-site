@@ -7,33 +7,23 @@
 <style>
     .header-pagina { text-align: center; margin-bottom: 50px; }
     .header-pagina h2 { font-size: 2rem; color: var(--azul-escuro); margin-bottom: 10px; }
-
-    /* Grid de Cursos */
     .grid-cursos { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
-
     .card-curso { 
         background: white; border-radius: 12px; overflow: hidden; 
         border: 1px solid #e5e7eb; transition: 0.3s; display: flex; flex-direction: column;
     }
     .card-curso:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-color: var(--dourado); }
-
     .img-curso { height: 200px; width: 100%; object-fit: cover; }
     .info-curso { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-    
     .data-badge { 
         background: var(--azul-claro); color: var(--azul-escuro); font-weight: 800; font-size: 0.8rem; 
         padding: 5px 10px; border-radius: 4px; width: fit-content; margin-bottom: 10px; text-transform: uppercase;
     }
-    
     .titulo-curso { font-size: 1.2rem; font-weight: 700; color: var(--azul-escuro); margin-bottom: 10px; line-height: 1.3; }
     .local-curso { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
     .btn-inscrever { margin-top: auto; color: var(--azul-medio); font-weight: 700; text-decoration: none; }
-
-    /* Estilo Passado (Cinza) */
     .passado { opacity: 0.7; filter: grayscale(100%); }
-    .passado:hover { filter: none; opacity: 1; }
-    
-    .divider { margin: 60px 0 30px; border-top: 1px solid #ddd; position: relative; text-align: center; }
+    .divider { margin: 60px 0 30px; border-top: 1px solid #ddd; text-align: center; }
     .divider span { background: #f4f6f8; padding: 0 15px; position: relative; top: -12px; color: #888; font-weight: bold; text-transform: uppercase; }
 </style>
 {% endblock %}
@@ -45,7 +35,7 @@
         <p>Inscreva-se em nossas atividades especiais.</p>
     </div>
 
-    {% if futures %}
+    {% if futuros %}
     <div class="grid-cursos">
         {% for curso in futuros %}
         <div class="card-curso">
