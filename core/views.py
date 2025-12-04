@@ -4,7 +4,7 @@ from livraria.models import Livro, Categoria
 from django.db.models import Q 
 from noticias.models import Noticia
 from core.models import InformacaoContato
-from programacao.models import Doutrinaria
+from programacao.models import Doutrinaria, CursoEvento
 from .models import ConfiguracaoHome, PostInstagram, InformacaoContato, PaginaInstitucional, MembroDiretoria
 import re
 
@@ -26,6 +26,16 @@ def home(request):
     # 5. Instagram
     posts_insta = PostInstagram.objects.all()[:4]
     
+    # Pega cursos futuros para mostrar na Home
+    agora = timezone.now()
+    cursos_home = CursoEvento.objects.filter(data_evento__gte=agora).order_by('data_evento')[:3]
+
+    contexto = {
+        # ... (contexto existente)
+        'cursos': cursos_home, # <--- Novo item no contexto
+    }
+    return render(request, 'core/index.html', contexto)
+
     contexto = {
         'noticias': lista_noticias,
         'agenda': lista_agenda,

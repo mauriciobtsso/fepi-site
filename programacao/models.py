@@ -38,3 +38,19 @@ class Doutrinaria(models.Model):
         verbose_name = "Palestra Doutrinária"
         verbose_name_plural = "Doutrinárias (Agenda)"
         ordering = ['data_hora']
+
+class CursoEvento(models.Model):
+    titulo = models.CharField(max_length=200, verbose_name="Nome do Evento/Curso")
+    data_evento = models.DateTimeField(verbose_name="Data e Horário")
+    local = models.CharField(max_length=200, default="Sede da FEPI", verbose_name="Local")
+    imagem = models.ImageField(upload_to='cursos/', verbose_name="Cartaz de Divulgação")
+    descricao = models.TextField(verbose_name="Descrição Detalhada")
+    link_inscricao = models.URLField(blank=True, null=True, verbose_name="Link para Inscrição (Forms/Whats)")
+    
+    def __str__(self):
+        return f"{self.data_evento.strftime('%d/%m')} - {self.titulo}"
+
+    class Meta:
+        verbose_name = "Curso ou Evento Especial"
+        verbose_name_plural = "Cursos & Eventos"
+        ordering = ['data_evento']

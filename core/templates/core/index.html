@@ -519,6 +519,31 @@
         {% endif %}
     </section>
 
+{% if cursos %}
+    <section class="section-padrao" style="background-color: #f8fbfb; border-top:1px solid #eee; border-bottom:1px solid #eee;">
+        <div class="section-header">
+            <h2>Cursos & Eventos</h2>
+            <a href="{% url 'lista_cursos' %}" class="btn-link">Ver programação completa →</a>
+        </div>
+        
+        <div class="news-grid"> {% for curso in cursos %}
+            <a href="{% url 'detalhe_curso' curso.id %}" class="news-card" style="border-left: 4px solid var(--dourado);">
+                {% if curso.imagem %}
+                    <img src="{{ curso.imagem.url }}" class="news-thumb">
+                {% else %}
+                    <div class="news-thumb"></div>
+                {% endif %}
+                <div class="news-info">
+                    <span class="news-date" style="color:var(--azul-medio);">{{ curso.data_evento|date:"d M Y • H:i" }}h</span>
+                    <span class="news-title">{{ curso.titulo }}</span>
+                    <span style="font-size:0.8rem; color:#666; margin-top:5px;">📍 {{ curso.local }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
     <!-- AGENDA + LIVRARIA -->
     <section class="mixed-grid">
 

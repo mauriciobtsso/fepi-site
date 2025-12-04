@@ -18,7 +18,7 @@ from noticias.views import detalhe_noticia, lista_noticias
 from centros.views import lista_centros
 
 # 5. Imports de Programação
-from programacao.views import atividades, doutrinarias, calendario
+from programacao.views import atividades, doutrinarias, calendario, lista_cursos, detalhe_curso
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +31,8 @@ urlpatterns = [
     path('atividades/', atividades, name='atividades'),
     path('doutrinarias/', doutrinarias, name='doutrinarias'),
     path('calendario/', calendario, name='calendario'),
+    path('cursos/', lista_cursos, name='lista_cursos'),
+    path('curso/<int:curso_id>/', detalhe_curso, name='detalhe_curso'),
     
     # Contato e Livraria Geral
     path('fale-conosco/', fale_conosco, name='fale_conosco'),

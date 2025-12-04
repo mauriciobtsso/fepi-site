@@ -1,10 +1,10 @@
-from django.shortcuts import render
+# Importações Necessárias
+from django.shortcuts import render, get_object_or_404  # <--- ADICIONEI get_object_or_404 AQUI
 from django.db.models import Case, When, Value, IntegerField
-from django.utils import timezone # <--- Importante
-from .models import AtividadeSemanal, Doutrinaria
+from django.utils import timezone
+from .models import AtividadeSemanal, Doutrinaria, CursoEvento
 
 def atividades(request):
-    # Ordenação dos dias da semana
     atividades = AtividadeSemanal.objects.annotate(
         ordem_dia=Case(
             When(dia='SEG', then=Value(1)),
@@ -21,21 +21,28 @@ def atividades(request):
     return render(request, 'programacao/atividades.html', {'atividades': atividades})
 
 def doutrinarias(request):
-    # Mostra apenas as futuras para a lista de "Próximas"
     hoje = timezone.now()
     palestras = Doutrinaria.objects.filter(data_hora__gte=hoje).order_by('data_hora')
     return render(request, 'programacao/doutrinarias.html', {'palestras': palestras})
 
 def calendario(request):
     hoje = timezone.now()
-    
-    # Lista 1: Futuros (Ordenado por data crescente: mais próximo primeiro)
     futuros = Doutrinaria.objects.filter(data_hora__gte=hoje).order_by('data_hora')
-    
-    # Lista 2: Passados (Ordenado por data decrescente: mais recente primeiro)
     passados = Doutrinaria.objects.filter(data_hora__lt=hoje).order_by('-data_hora')
     
     return render(request, 'programacao/calendario.html', {
         'futuros': futuros,
         'passados': passados
     })
+
+def lista_cursos(request):
+    hoje = timezone.now()
+    futuros = CursoEvento.objects.filter(data_evento__gte=hoje).order_by('data_evento')
+    passados = CursoEvento.objects.filter(data_evento__lt=hoje).order_by('-data_evento')
+    
+    return render(request, 'programacao/cursos.html', {'futuros': futuros, 'passados': passados})
+
+def detalhe_curso(request, curso_id):
+    # Agora esta linha vai funcionar porque importamos a função lá em cima
+    curso = get_object_or_404(CursoEvento, pk=curso_id)
+    return render(request, 'programacao/detalhe_curso.html', {'curso': curso})
