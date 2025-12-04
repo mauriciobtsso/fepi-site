@@ -1,6 +1,27 @@
 from django.db import models
+from django.db.models.signals import post_save # Para garantir que existe 1 config
+from django.dispatch import receiver
 
-# 1. Nova Tabela de Categorias (Dinâmica)
+# 1. Tabela de Configuração da Livraria (Logo e Redes)
+class LivrariaConfig(models.Model):
+    logo = models.ImageField(upload_to='livraria_config/', blank=True, null=True, verbose_name="Logo da Livraria (Branding)")
+    instagram_widget_code = models.TextField(blank=True, verbose_name="Código do Widget do Instagram (SnapWidget)")
+    
+    # Singleton: Garante que só existe 1 registo
+    def save(self, *args, **kwargs):
+        if not self.pk and LivrariaConfig.objects.exists():
+            return
+        super(LivrariaConfig, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Configuração da Livraria"
+        verbose_name_plural = "Configuração da Livraria"
+
+    def __str__(self):
+        return "Configuração Ramiro Gama"
+
+
+# 2. Tabela de Categorias (Mantida)
 class Categoria(models.Model):
     nome = models.CharField(max_length=100, verbose_name="Nome da Categoria")
     
@@ -12,25 +33,20 @@ class Categoria(models.Model):
         verbose_name_plural = "Categorias"
         ordering = ['nome']
 
-# 2. Modelo do Livro (Atualizado)
+
+# 3. Modelo do Livro (Adicionado Campo Destaque)
 class Livro(models.Model):
-    # O campo 'codigo' continua igual
+    # ... campos existentes
     codigo = models.CharField(max_length=20, verbose_name="Código / ISBN", default="0000")
-    
     titulo = models.CharField(max_length=100, verbose_name="Título")
     autor = models.CharField(max_length=100, verbose_name="Autor")
-    
-    # AGORA SIM: O campo está ativo e é uma Chave Estrangeira (ForeignKey)
-    categoria = models.ForeignKey(
-        Categoria, 
-        on_delete=models.SET_NULL, # Se apagar a categoria, o livro não é apagado
-        null=True, 
-        blank=True, 
-        verbose_name="Categoria"
-    )
-    
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Categoria")
     descricao = models.TextField(blank=True, null=True, verbose_name="Descrição")
     preco = models.DecimalField(max_digits=6, decimal_places=2, default=0.00, verbose_name="Preço")
+    
+    # NOVO CAMPO: Destaque Rotativo na Home
+    destaque_home = models.BooleanField(default=False, verbose_name="Destaque Rotativo na Home")
+    
     disponivel = models.BooleanField(default=True, verbose_name="Disponível em Estoque")
     capa = models.ImageField(upload_to='capas/', blank=True, null=True, verbose_name="Capa do Livro")
     
@@ -41,3 +57,10 @@ class Livro(models.Model):
         verbose_name = "Livro"
         verbose_name_plural = "Livros"
         ordering = ['titulo']
+
+
+# SINAL para criar o objeto de configuração automaticamente se não existir
+@receiver(post_save, sender=LivrariaConfig)
+def ensure_singleton_exists(sender, **kwargs):
+    if not LivrariaConfig.objects.exists():
+        LivrariaConfig.objects.create()

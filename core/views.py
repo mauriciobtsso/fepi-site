@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.utils import timezone
 from itertools import chain 
 from .models import ConfiguracaoHome, PostInstagram, InformacaoContato, PaginaInstitucional, MembroDiretoria
-from livraria.models import Livro
+from livraria.models import Livro, LivrariaConfig
 from noticias.models import Noticia
 from programacao.models import Doutrinaria, CursoEvento
 
@@ -17,13 +17,18 @@ def home(request):
     # 2. Agenda
     lista_agenda = Doutrinaria.objects.filter(data_hora__gte=agora).order_by('data_hora')[:3]
     
-    # 3. LIVROS (ALTERADO AQUI!)
-    # order_by('?') embaralha a lista. [:4] pega os 4 primeiros sorteados.
-    lista_livros = Livro.objects.all().order_by('?')[:4]
+    # 3. LIVROS (Lógica de Segurança)
+    # Tenta pegar 4 destaques aleatórios
+    lista_livros = Livro.objects.filter(destaque_home=True).order_by('?')[:4]
+    
+    # Se não houver nenhum livro marcado como destaque, mostra os 4 últimos para a seção não ficar vazia.
+    if not lista_livros.exists():
+        lista_livros = Livro.objects.all().order_by('-titulo')[:4] 
     
     # 4. Configurações
     config_home = ConfiguracaoHome.objects.first()
     contato = InformacaoContato.objects.first()
+    livraria_config = LivrariaConfig.objects.first() 
     posts_insta = PostInstagram.objects.all()[:4]
     
     contexto = {
@@ -33,6 +38,7 @@ def home(request):
         'livros': lista_livros,
         'config': config_home,
         'contato': contato,
+        'livraria_config': livraria_config,
         'instagram': posts_insta
     }
     return render(request, 'core/index.html', contexto)
