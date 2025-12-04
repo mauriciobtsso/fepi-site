@@ -1,63 +1,151 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}{{ curso.titulo }} - FEPI{% endblock %}
+{% block title %}Curso: {{ curso.titulo }} - FEPI{% endblock %}
 
 {% block extra_css %}
 <style>
-    .page-wrapper { max-width: 900px; margin: 40px auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
-    .img-banner { width: 100%; max-height: 400px; object-fit: cover; }
-    .content-box { padding: 40px; }
-    
-    .meta-info { display: flex; gap: 20px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px; flex-wrap: wrap; }
-    .meta-item { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #555; }
-    .meta-icon { color: var(--dourado); font-size: 1.2rem; }
+    .page-header { background: var(--azul-escuro); color: white; padding: 40px 0; margin-bottom: 40px; }
+    .header-content { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
+    .header-content h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; line-height: 1.2; }
+    .header-content p { opacity: 0.8; font-size: 1.1rem; }
 
-    .titulo-grande { font-size: 2.2rem; color: var(--azul-escuro); margin-bottom: 10px; line-height: 1.2; }
-    .descricao-texto { font-size: 1.1rem; line-height: 1.8; color: #444; margin-bottom: 30px; text-align: justify; }
-
-    .cta-box { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 25px; border-radius: 8px; text-align: center; }
-    .btn-inscricao { 
-        background-color: #16a34a; color: white; font-size: 1.1rem; font-weight: 700; 
-        padding: 12px 30px; border-radius: 30px; text-decoration: none; display: inline-block;
-        transition: 0.2s; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+    .main-content-grid { 
+        display: grid; grid-template-columns: 2fr 1fr; gap: 40px; 
+        max-width: 1200px; margin: 0 auto; padding: 0 1.25rem 60px;
     }
-    .btn-inscricao:hover { background-color: #15803d; transform: translateY(-2px); }
+    
+    /* Coluna Lateral de Info */
+    .info-card { 
+        background: var(--azul-claro); padding: 30px; border-radius: var(--radius); 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 100px;
+    }
+    
+    .info-item { 
+        padding: 15px 0; border-bottom: 1px solid rgba(28,86,127,0.1); 
+        display: flex; align-items: flex-start; gap: 15px;
+    }
+    .info-item:last-child { border-bottom: none; }
+    
+    .info-icon { 
+        font-size: 1.5rem; color: var(--dourado); 
+        min-width: 30px; text-align: center;
+    }
+    
+    .info-text strong { 
+        display: block; font-size: 1.1rem; color: var(--azul-escuro); 
+        font-weight: 700; margin-bottom: 3px; 
+    }
+    .info-text span { 
+        font-size: 0.95rem; color: #555; display: block; 
+    }
+
+    .btn-inscricao {
+        display: block; width: 100%; text-align: center;
+        background-color: var(--dourado); color: var(--azul-escuro);
+        padding: 12px 20px; border-radius: 8px; font-size: 1.1rem;
+        font-weight: bold; margin-top: 20px; transition: 0.2s;
+    }
+    .btn-inscricao:hover { background-color: #ffc14d; }
+
+    /* Conteúdo Principal */
+    .curso-descricao h2 { 
+        font-size: 1.8rem; color: var(--azul-escuro); font-weight: 800; 
+        margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; 
+    }
+    .curso-descricao p { margin-bottom: 1.5rem; line-height: 1.7; }
+    .curso-descricao ul { margin-left: 20px; margin-bottom: 1.5rem; }
+    .curso-descricao li { margin-bottom: 8px; }
+
+    .imagem-curso {
+        width: 100%; height: auto; border-radius: var(--radius); 
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 30px;
+    }
+    
+    @media (max-width: 900px) {
+        .main-content-grid { grid-template-columns: 1fr; gap: 30px; }
+        .info-card { position: static; margin-bottom: 30px; }
+        .page-header h1 { font-size: 2rem; }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <a href="{% url 'lista_cursos' %}" class="btn-voltar">← Voltar para Cursos</a>
+<div class="page-header">
+    <div class="header-content">
+        <p>Curso, Evento ou Atividade</p>
+        <h1>{{ curso.titulo }}</h1>
+    </div>
+</div>
 
-    <div class="page-wrapper">
+<div class="main-content-grid">
+    
+    <div>
         {% if curso.imagem %}
-            <img src="{{ curso.imagem.url }}" class="img-banner">
+            <img src="{{ curso.imagem.url }}" alt="Imagem do {{ curso.titulo }}" class="imagem-curso">
         {% endif %}
 
-        <div class="content-box">
-            <h1 class="titulo-grande">{{ curso.titulo }}</h1>
+        <div class="curso-descricao">
+            <h2>Detalhes</h2>
+            {{ curso.descricao|safe }}
+
+            {% if curso.palestrante %}
+                <h2>Ministrante</h2>
+                <p>O curso será ministrado por <strong>{{ curso.palestrante }}</strong>.</p>
+            {% endif %}
             
-            <div class="meta-info">
-                <div class="meta-item"><span class="meta-icon">📅</span> {{ curso.data_evento|date:"d \d\e F \d\e Y" }}</div>
-                <div class="meta-item"><span class="meta-icon">🕒</span> {{ curso.data_evento|date:"H:i" }}h</div>
-                <div class="meta-item"><span class="meta-icon">📍</span> {{ curso.local }}</div>
-            </div>
-
-            <div class="descricao-texto">
-                {{ curso.descricao|linebreaks }}
-            </div>
-
-            {% if curso.link_inscricao %}
-            <div class="cta-box">
-                <h3 style="margin-top:0; color:#166534;">Inscrições Abertas</h3>
-                <p style="margin-bottom:20px;">Garanta sua vaga clicando no botão abaixo.</p>
+            {% if curso.link_inscricao and curso.data_evento|date:"Y-m-d" >= "now"|date:"Y-m-d" %}
+                <h2>Inscrição</h2>
+                <p>Garanta sua vaga! As inscrições estão abertas.</p>
                 <a href="{{ curso.link_inscricao }}" target="_blank" class="btn-inscricao">
-                    FAZER INSCRIÇÃO AGORA
+                    Quero me Inscrever Agora
                 </a>
-            </div>
             {% endif %}
         </div>
     </div>
+
+    <div>
+        <div class="info-card">
+            
+            <div class="info-item">
+                <i class="fa-solid fa-clock info-icon"></i>
+                <div class="info-text">
+                    <strong>Data e Hora</strong>
+                    <span>{{ curso.data_evento|date:"d de F \à\s H:i" }}h</span>
+                </div>
+            </div>
+
+            {% if curso.local %}
+            <div class="info-item">
+                <i class="fa-solid fa-location-dot info-icon"></i>
+                <div class="info-text">
+                    <strong>Local</strong>
+                    <span>{{ curso.local }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if curso.palestrante %}
+            <div class="info-item">
+                <i class="fa-solid fa-user info-icon"></i>
+                <div class="info-text">
+                    <strong>Expositor(a)</strong>
+                    <span>{{ curso.palestrante }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if curso.link_inscricao and curso.data_evento|date:"Y-m-d" >= "now"|date:"Y-m-d" %}
+                <a href="{{ curso.link_inscricao }}" target="_blank" class="btn-inscricao">
+                    Fazer Inscrição
+                </a>
+            {% else %}
+                <p style="text-align: center; color: #888; font-size: 0.9rem; margin-top: 20px;">
+                    Inscrições encerradas ou evento passado.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    
 </div>
 {% endblock %}
