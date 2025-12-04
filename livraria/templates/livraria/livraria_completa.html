@@ -5,66 +5,75 @@
 
 {% block extra_css %}
 <style>
-    /* Cabeçalho da Página */
-    .livraria-header { 
-        text-align: center; margin-bottom: 50px; 
-        background-color: var(--azul-claro); padding: 40px 20px; border-radius: var(--radius);
-    }
-    .livraria-header h1 { color: var(--azul-escuro); margin-bottom: 10px; font-size: 2.5em; }
-    .livraria-header p { color: #666; max-width: 600px; margin: 0 auto; font-size: 1.1em; }
+    /* Cabeçalho */
+    .livraria-header { text-align: center; margin-bottom: 30px; }
+    .livraria-header h1 { color: var(--azul-escuro); margin-bottom: 10px; }
 
-    /* Grid de Livros */
+    /* Área de Busca e Filtros */
+    .filtros-container { 
+        background-color: var(--azul-claro); padding: 25px; 
+        border-radius: var(--radius); margin-bottom: 40px; 
+    }
+
+    /* Busca */
+    .search-form { display: flex; max-width: 600px; margin: 0 auto 20px; gap: 10px; }
+    .search-input { flex: 1; padding: 10px 20px; border-radius: 30px; border: 1px solid #ccc; outline: none; }
+    .search-btn { background-color: var(--azul-escuro); color: white; border: none; padding: 0 25px; border-radius: 30px; cursor: pointer; }
+
+    /* Tags de Categoria */
+    .tags-wrapper { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .tag-link {
+        text-decoration: none; font-size: 0.85rem; padding: 6px 15px;
+        border-radius: 20px; border: 1px solid var(--azul-medio);
+        color: var(--azul-medio); transition: 0.2s; background: white;
+    }
+    .tag-link:hover, .tag-link.active {
+        background-color: var(--azul-medio); color: white;
+    }
+
+    /* GRID COMPACTO DE LIVROS */
     .catalogo-grid { 
         display: grid; 
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-        gap: 30px; 
+        /* Colunas estreitas (mínimo 160px) para caberem 4 ou 5 por linha */
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+        gap: 25px; 
     }
 
-    /* Card do Livro */
     .card-livro { 
-        background: white; border-radius: var(--radius); overflow: hidden; 
+        background: white; border-radius: 8px; overflow: hidden; 
         transition: 0.3s; border: 1px solid #eee; position: relative;
-        display: flex; flex-direction: column;
+        display: flex; flex-direction: column; text-decoration: none;
+        height: 100%;
     }
     .card-livro:hover { 
         transform: translateY(-5px); 
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-        border-color: var(--azul-medio);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+        border-color: var(--dourado);
     }
 
-    /* Área da Imagem */
+    /* Imagem */
     .capa-wrapper {
-        width: 100%; height: 320px; background-color: #f4f4f4;
-        position: relative; overflow: hidden;
-        border-bottom: 1px solid #eee;
+        width: 100%; height: 240px; /* Altura fixa da capa */
+        background-color: #f9f9f9; position: relative; overflow: hidden;
+        border-bottom: 1px solid #f0f0f0;
     }
-    .capa-livro { 
-        width: 100%; height: 100%; object-fit: cover; transition: 0.3s; 
-    }
+    .capa-livro { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
     .card-livro:hover .capa-livro { transform: scale(1.05); }
 
-    /* Corpo do Card */
-    .info-livro { padding: 15px; text-align: center; flex: 1; display: flex; flex-direction: column; }
+    /* Info */
+    .info-livro { padding: 12px; text-align: center; flex: 1; display: flex; flex-direction: column; }
     
     .titulo { 
-        font-weight: 700; color: var(--azul-escuro); margin-bottom: 5px; 
-        font-size: 1.1em; line-height: 1.3;
+        font-weight: 700; color: var(--azul-escuro); margin-bottom: 4px; 
+        font-size: 0.95rem; line-height: 1.2;
     }
-    .autor { color: #777; font-size: 0.9em; margin-bottom: 10px; flex: 1; }
+    .autor { color: #777; font-size: 0.8rem; margin-bottom: 8px; flex: 1; }
     
     .preco-badge {
         background-color: var(--azul-claro); color: var(--azul-escuro);
-        font-weight: bold; padding: 5px 10px; border-radius: 20px;
-        display: inline-block; margin-bottom: 15px;
+        font-weight: 800; font-size: 0.9rem; padding: 4px 10px; border-radius: 4px;
+        align-self: center; margin-top: auto;
     }
-
-    .btn-detalhes {
-        display: block; width: 100%; padding: 10px 0;
-        background-color: var(--azul-escuro); color: white;
-        text-align: center; font-weight: 600; font-size: 0.9em;
-        text-decoration: none; border-radius: 6px; transition: 0.2s;
-    }
-    .btn-detalhes:hover { background-color: var(--dourado); color: #111; }
 
 </style>
 {% endblock %}
@@ -74,41 +83,47 @@
     
     <div class="livraria-header">
         <h1>Livraria Ramiro Gama</h1>
-        <p>Conheça as obras da codificação espírita e literatura complementar disponíveis em nossa sede.</p>
+        <p>Catálogo de obras espíritas disponíveis para pronta entrega.</p>
     </div>
 
-    <div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-        <span style="font-weight: bold; color: var(--azul-escuro);">{{ livros|length }} obras disponíveis</span>
+    <div class="filtros-container">
+        <form method="GET" action="." class="search-form">
+            <input type="text" name="q" class="search-input" placeholder="Buscar livro ou autor..." value="{{ busca_ativa|default:'' }}">
+            <button type="submit" class="search-btn">🔍</button>
+        </form>
+
+<div class="tags-wrapper">
+            <a href="{% url 'livraria' %}" class="tag-link {% if not cat_ativa %}active{% endif %}">Todos</a>
+            
+            {% for cat in categorias %}
+            <a href="?cat={{ cat.id }}" class="tag-link {% if cat_ativa == cat.id %}active{% endif %}">
+                {{ cat.nome }}
+            </a>
+            {% endfor %}
         </div>
+    </div>
 
     <div class="catalogo-grid">
         {% for livro in livros %}
-        <div class="card-livro">
-            <a href="{% url 'detalhe_livro' livro.id %}" class="capa-wrapper">
+        <a href="{% url 'detalhe_livro' livro.id %}" class="card-livro">
+            <div class="capa-wrapper">
                 {% if livro.capa %}
                     <img src="{{ livro.capa.url }}" class="capa-livro" alt="{{ livro.titulo }}">
                 {% else %}
-                    <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#999; flex-direction:column;">
-                        <span style="font-size:2em;">📚</span>
-                        <span>Sem Capa</span>
-                    </div>
+                    <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:2rem;">📚</div>
                 {% endif %}
-            </a>
+            </div>
             
             <div class="info-livro">
-                <div class="titulo">{{ livro.titulo }}</div>
+                <div class="titulo">{{ livro.titulo|truncatechars:35 }}</div>
                 <div class="autor">{{ livro.autor }}</div>
-                
-                <div>
-                    <span class="preco-badge">R$ {{ livro.preco }}</span>
-                </div>
-
-                <a href="{% url 'detalhe_livro' livro.id %}" class="btn-detalhes">Ver Detalhes</a>
+                <div class="preco-badge">R$ {{ livro.preco }}</div>
             </div>
-        </div>
+        </a>
         {% empty %}
-        <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
-            <p>Nenhum livro cadastrado no momento.</p>
+        <div style="grid-column: 1 / -1; text-align: center; padding: 60px;">
+            <p style="color:#888; font-size:1.2rem;">Nenhum livro encontrado com esses filtros.</p>
+            <a href="{% url 'livraria' %}" style="color:var(--azul-medio); font-weight:bold;">Limpar filtros</a>
         </div>
         {% endfor %}
     </div>

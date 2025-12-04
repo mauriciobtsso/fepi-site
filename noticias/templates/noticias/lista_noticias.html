@@ -1,0 +1,152 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Notícias - FEPI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Cabeçalho da Página */
+    .header-pagina { text-align: center; margin-bottom: 50px; }
+    .header-pagina h2 { font-size: 2rem; color: var(--azul-escuro); margin-bottom: 10px; }
+    .header-pagina p { color: #666; font-size: 1.1rem; }
+
+    /* GRID DE NOTÍCIAS */
+    .news-grid { 
+        display: grid; 
+        /* Cria colunas de no mínimo 300px e no máximo 1 fração do espaço */
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+        gap: 30px; 
+    }
+    
+    /* O Card em si */
+    .news-card { 
+        background: white; 
+        border-radius: 12px; 
+        overflow: hidden; 
+        border: 1px solid #e5e7eb; 
+        transition: all 0.3s ease; 
+        display: flex; 
+        flex-direction: column; /* Organiza verticalmente */
+        height: 100%; /* Força todos os cards a terem a mesma altura na linha */
+        position: relative;
+    }
+
+    .news-card:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+        border-color: var(--dourado); 
+    }
+    
+    /* Área da Imagem (Tamanho fixo para não ficar gigante) */
+    .img-wrapper {
+        width: 100%;
+        height: 200px; /* Altura fixa para padronizar */
+        overflow: hidden;
+        background-color: #f4f4f4;
+        border-bottom: 1px solid #eee;
+    }
+
+    .news-img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; /* Garante que a imagem preenche sem distorcer */
+        transition: 0.3s;
+    }
+    
+    .news-card:hover .news-img { transform: scale(1.05); } /* Zoom suave ao passar o mouse */
+
+    /* Corpo do Texto */
+    .news-body { 
+        padding: 25px; 
+        display: flex; 
+        flex-direction: column; 
+        flex: 1; /* Ocupa o espaço restante */
+    }
+
+    .news-date { 
+        font-size: 0.75rem; 
+        color: #888; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        margin-bottom: 10px; 
+        letter-spacing: 0.5px;
+    }
+
+    .news-title { 
+        font-size: 1.15rem; 
+        font-weight: 700; 
+        color: var(--azul-escuro); 
+        margin-bottom: 10px; 
+        line-height: 1.4;
+    }
+    
+    .news-desc { 
+        font-size: 0.95rem; 
+        color: #666; 
+        line-height: 1.6; 
+        margin-bottom: 20px; 
+        flex: 1; /* Empurra o botão para baixo */
+    }
+
+    /* Botão */
+    .btn-read { 
+        align-self: flex-start; /* Alinha à esquerda */
+        color: var(--azul-medio); 
+        font-weight: 700; 
+        text-decoration: none; 
+        font-size: 0.9rem; 
+        border: 1px solid var(--azul-medio);
+        padding: 8px 20px;
+        border-radius: 30px;
+        transition: 0.2s;
+    }
+    .btn-read:hover {
+        background-color: var(--azul-medio);
+        color: white;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    
+    <div class="header-pagina">
+        <h2>Notícias e Artigos</h2>
+        <p>Acompanhe as novidades e conteúdos doutrinários da FEPI.</p>
+    </div>
+
+    <div class="news-grid">
+        {% for noticia in noticias %}
+        <div class="news-card">
+            <a href="{% url 'detalhe_noticia' noticia.id %}" class="img-wrapper">
+                {% if noticia.imagem %}
+                    <img src="{{ noticia.imagem.url }}" class="news-img" alt="{{ noticia.titulo }}">
+                {% else %}
+                    <div style="height:100%; display:flex; align-items:center; justify-content:center; color:#ccc; font-weight:bold;">
+                        FEPI
+                    </div>
+                {% endif %}
+            </a>
+
+            <div class="news-body">
+                <span class="news-date">📅 {{ noticia.data_publicacao|date:"d \d\e F, Y" }}</span>
+                
+                <a href="{% url 'detalhe_noticia' noticia.id %}" style="text-decoration:none;">
+                    <h3 class="news-title">{{ noticia.titulo }}</h3>
+                </a>
+                
+                <p class="news-desc">{{ noticia.resumo|truncatechars:120 }}</p>
+                
+                <a href="{% url 'detalhe_noticia' noticia.id %}" class="btn-read">Ler completa →</a>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align:center; padding: 50px; color:#888;">
+            <p>Nenhuma notícia publicada ainda.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

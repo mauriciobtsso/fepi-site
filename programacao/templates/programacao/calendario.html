@@ -8,55 +8,48 @@
     /* Cabeçalho do Mês */
     .mes-header {
         color: var(--azul-escuro);
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin: 40px 0 20px;
-        padding-bottom: 10px;
+        font-size: 1.5rem; font-weight: 700;
+        margin: 30px 0 15px; padding-bottom: 5px;
         border-bottom: 2px solid var(--azul-claro);
         text-transform: capitalize;
     }
 
     /* Linha do Evento */
     .evento-card {
-        display: grid;
-        grid-template-columns: 80px 1fr;
-        gap: 20px;
-        background: white;
-        border-radius: var(--radius);
-        padding: 0;
-        margin-bottom: 15px;
-        border: 1px solid #eee;
-        transition: 0.2s;
-        overflow: hidden;
+        display: grid; grid-template-columns: 80px 1fr;
+        gap: 20px; background: white; border-radius: var(--radius);
+        padding: 0; margin-bottom: 15px; border: 1px solid #eee;
+        transition: 0.2s; overflow: hidden;
     }
-    .evento-card:hover { 
-        transform: translateX(5px); 
-        border-color: var(--dourado); 
-    }
+    .evento-card:hover { transform: translateX(5px); border-color: var(--dourado); }
+
+    /* Passado (Visual diferente) */
+    .evento-passado { opacity: 0.6; filter: grayscale(100%); }
+    .evento-passado:hover { opacity: 1; filter: none; }
 
     /* Bloco da Data */
     .evento-data {
-        background-color: var(--azul-claro);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: var(--azul-escuro);
+        background-color: var(--azul-claro); color: var(--azul-escuro);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
+    .evento-passado .evento-data { background-color: #eee; color: #666; }
+
     .dia-num { font-size: 1.8rem; font-weight: 800; line-height: 1; }
     .dia-sem { font-size: 0.75rem; text-transform: uppercase; margin-top: 2px; }
 
     /* Bloco de Info */
     .evento-info { padding: 15px 20px 15px 0; display: flex; flex-direction: column; justify-content: center; }
-    
-    .evento-hora { 
-        font-size: 0.85rem; font-weight: 700; color: #888; 
-        text-transform: uppercase; margin-bottom: 4px;
-    }
-    .evento-tema { 
-        font-size: 1.1rem; font-weight: 700; color: var(--texto); margin-bottom: 4px; 
-    }
+    .evento-hora { font-size: 0.85rem; font-weight: 700; color: #888; text-transform: uppercase; margin-bottom: 4px; }
+    .evento-tema { font-size: 1.1rem; font-weight: 700; color: var(--texto); margin-bottom: 4px; }
     .evento-palestrante { font-size: 0.95rem; color: var(--azul-medio); }
+
+    /* Divisor */
+    .historico-divider {
+        margin: 60px 0 30px; text-align: center; color: #888; 
+        font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
+        display: flex; align-items: center; gap: 20px;
+    }
+    .historico-divider::before, .historico-divider::after { content: ""; flex: 1; height: 1px; background: #ddd; }
 
 </style>
 {% endblock %}
@@ -66,35 +59,56 @@
     <div class="section-header">
         <div>
             <h2>Calendário de Eventos</h2>
-            <p style="color: #666;">Agenda completa de atividades anuais.</p>
+            <p style="color: #666;">Acompanhe a nossa agenda anual.</p>
         </div>
     </div>
 
-    {% if eventos %}
-        {% regroup eventos by data_hora|date:"F Y" as eventos_por_mes %}
+    {% if futuros %}
+        {% regroup futuros by data_hora|date:"F Y" as eventos_futuros_mes %}
 
-        {% for mes in eventos_por_mes %}
-            <div class="mes-header">{{ mes.grouper }}</div>
-            
+        {% for mes in eventos_futuros_mes %}
+            <div class="mes-header">📅 {{ mes.grouper }}</div>
             {% for evento in mes.list %}
-            <div class="evento-card">
-                <div class="evento-data">
-                    <span class="dia-num">{{ evento.data_hora|date:"d" }}</span>
-                    <span class="dia-sem">{{ evento.data_hora|date:"D" }}</span>
+                <div class="evento-card">
+                    <div class="evento-data">
+                        <span class="dia-num">{{ evento.data_hora|date:"d" }}</span>
+                        <span class="dia-sem">{{ evento.data_hora|date:"D" }}</span>
+                    </div>
+                    <div class="evento-info">
+                        <span class="evento-hora">🕒 {{ evento.data_hora|date:"H:i" }}h</span>
+                        <span class="evento-tema">{{ evento.tema }}</span>
+                        <span class="evento-palestrante">Expositor: {{ evento.palestrante }}</span>
+                    </div>
                 </div>
-                <div class="evento-info">
-                    <span class="evento-hora">🕒 {{ evento.data_hora|date:"H:i" }}h</span>
-                    <span class="evento-tema">{{ evento.tema }}</span>
-                    <span class="evento-palestrante">Expositor(a): {{ evento.palestrante }}</span>
-                </div>
-            </div>
             {% endfor %}
         {% endfor %}
-
     {% else %}
-        <div style="text-align: center; padding: 60px; background: white; border-radius: var(--radius);">
-            <p style="color: #888; font-size: 1.1rem;">Nenhum evento futuro encontrado.</p>
-        </div>
+        <p style="color:#888; margin-bottom:40px;">Nenhum evento futuro agendado.</p>
     {% endif %}
+
+
+    {% if passados %}
+        <div class="historico-divider">Histórico de Eventos</div>
+
+        {% regroup passados by data_hora|date:"F Y" as eventos_passados_mes %}
+
+        {% for mes in eventos_passados_mes %}
+            <div class="mes-header" style="color:#888; border-color:#eee;">{{ mes.grouper }}</div>
+            {% for evento in mes.list %}
+                <div class="evento-card evento-passado">
+                    <div class="evento-data">
+                        <span class="dia-num">{{ evento.data_hora|date:"d" }}</span>
+                        <span class="dia-sem">{{ evento.data_hora|date:"D" }}</span>
+                    </div>
+                    <div class="evento-info">
+                        <span class="evento-hora">Realizado às {{ evento.data_hora|date:"H:i" }}h</span>
+                        <span class="evento-tema">{{ evento.tema }}</span>
+                        <span class="evento-palestrante">{{ evento.palestrante }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
 </div>
 {% endblock %}
