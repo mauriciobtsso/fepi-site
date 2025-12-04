@@ -1,34 +1,99 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Downloads - FEPI{% endblock %}
+{% block title %}FEPI | Downloads{% endblock %}
 
 {% block extra_css %}
 <style>
-    .header-pagina { text-align: center; margin-bottom: 50px; }
-    .header-pagina h2 { font-size: 2rem; color: var(--azul-escuro); margin-bottom: 10px; }
-    
-    .downloads-grid { 
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
-        gap: 30px; 
+    .header-pagina { 
+        text-align: center; 
+        margin-bottom: 55px; 
     }
+
+    .header-pagina h2 { 
+        font-size: 1.9rem; 
+        color: var(--azul-escuro); 
+        margin-bottom: 8px; 
+    }
+
+    .header-pagina p {
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+   .downloads-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+    gap: 20px; 
+    margin-top: 40px;   /* AQUI CRIA O ESPAÇO DOS CARDS PRA BAIXO */
+   }
 
     .card-download {
-        background: white; border-radius: 12px; padding: 25px; 
-        box-shadow: var(--shadow); border: 1px solid #eee;
-        display: flex; flex-direction: column; justify-content: space-between;
+        background: #fff; 
+        border-radius: 10px; 
+        padding: 18px 18px 16px; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
+        border: 1px solid #e3e6ec;
+        display: flex; 
+        flex-direction: column; 
+        justify-content: space-between;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
-    .download-titulo { color: var(--azul-escuro); font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
-    .download-descricao { color: #666; font-size: 0.95rem; margin-bottom: 15px; }
+    .card-download:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+        border-color: var(--dourado);
+    }
+
+    .download-titulo { 
+        color: var(--azul-escuro); 
+        font-size: 1rem; 
+        font-weight: 700; 
+        margin-bottom: 6px; 
+    }
+
+    .download-descricao { 
+        color: #666; 
+        font-size: 0.85rem; 
+        margin-bottom: 10px; 
+        line-height: 1.4;
+        max-height: 4.2em; /* ~3 linhas */
+        overflow: hidden;
+    }
 
     .btn-download {
-        background-color: var(--dourado); color: var(--azul-escuro);
-        padding: 12px 20px; border-radius: 6px; font-weight: 700;
-        text-align: center; display: block; margin-top: 15px;
-        transition: 0.2s;
+        background-color: var(--azul-medio); 
+        color: #fff;
+        padding: 0.45rem 0.9rem; 
+        border-radius: 999px; 
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-align: center; 
+        display: inline-flex; 
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 8px;
+        transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
     }
-    .btn-download:hover { background-color: #ffd270; transform: translateY(-2px); }
+
+    .btn-download i {
+        font-size: 0.9rem;
+    }
+
+    .btn-download:hover { 
+        background-color: var(--dourado); 
+        color: var(--azul-escuro);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    @media (max-width: 768px) {
+        .header-pagina { 
+            margin-bottom: 25px; 
+        }
+    }
 </style>
 {% endblock %}
 
@@ -50,11 +115,13 @@
             </div>
             
             <a href="{{ item.url }}" target="_blank" class="btn-download">
-                <i class="fa-solid fa-download"></i> Baixar Arquivo
+                <i class="fa-solid fa-download"></i> Baixar arquivo
             </a>
         </div>
         {% empty %}
-        <p style="grid-column: 1 / -1; text-align: center; color:#888;">Nenhum arquivo disponível para download no momento.</p>
+        <p style="grid-column: 1 / -1; text-align: center; color:#888;">
+            Nenhum arquivo disponível para download no momento.
+        </p>
         {% endfor %}
     </div>
 </div>

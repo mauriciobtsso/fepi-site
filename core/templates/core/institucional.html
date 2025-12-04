@@ -1,25 +1,53 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Institucional - FEPI{% endblock %}
+{% block title %}FEPI | Institucional{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Estilos específicos do texto */
-    h1 { color: #006d77; font-size: 2.2em; margin-bottom: 20px; border-bottom: 2px solid #83c5be; display: inline-block; padding-bottom: 10px; }
-    h2 { color: #006d77; margin-top: 50px; border-left: 5px solid #006d77; padding-left: 15px; }
-    
-    /* Adiciona espaço entre os parágrafos da história */
-    .texto-historia p {
-        margin-bottom: 30px;  /* Aumenta este número se quiseres mais espaço */
-        text-indent: 30px;    /* Opcional: Dá aquele recuo de parágrafo no início (estilo livro) */
+    /* Container Principal */
+    .pagina-conteudo { 
+        max-width: 900px; margin: 40px auto; background: white; 
+        padding: 50px; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.08); 
     }
 
-    
-    /* Diretoria */
+    /* Estilos do Título e Gestão */
+    h1 { color: var(--azul-escuro); font-size: 2.2em; margin-bottom: 20px; border-bottom: 2px solid var(--azul-claro); display: inline-block; padding-bottom: 10px; }
+    h2 { color: var(--azul-escuro); margin-top: 50px; border-left: 5px solid var(--dourado); padding-left: 15px; font-size: 1.5rem; }
+    h3 { color: #555; margin-top: 30px; font-size: 1.3em; }
+
+    /* Estilos de Texto */
+    .texto-historia { margin-bottom: 20px; text-align: justify; color: #444; line-height: 1.8; font-size: 1.05em; }
+    .texto-historia p { margin-bottom: 25px; } /* FIX: Espaçamento de parágrafo */
+    .destaque-box { background-color: var(--azul-claro); padding: 25px; border-left: 5px solid var(--dourado); margin: 30px 0; border-radius: 0 8px 8px 0; font-style: italic; color: var(--azul-escuro); font-size: 1.1em; }
+
+    /* Box da Diretoria */
     .diretoria-box { background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin-top: 20px; border: 1px solid #e9ecef; }
-    .cargo-item { margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; display: flex; justify-content: space-between; }
-    .cargo-titulo { font-weight: bold; color: #006d77; }
+    
+    /* Linha dos Cargos */
+    .cargo-item { 
+        margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #ccc; 
+        grid-template-columns: 3fr 2fr; gap: 15px; display: grid;
+    }
+    .cargo-item:last-child { border-bottom: none; }
+    
+    .cargo-info { font-weight: 700; color: var(--azul-medio); font-size: 1.05rem; }
+    .cargo-info strong { color: var(--texto); font-weight: 700; margin-left: 5px; }
+
+    .cargo-contato { font-size: 0.9rem; color: #666; text-align: right; }
+    .cargo-contato i { margin-right: 5px; color: var(--dourado); }
+
+    /* Estilo da Gestão */
+    .gestao-periodo-texto {
+        font-size: 1rem; color: var(--azul-escuro); font-weight: 700; 
+        margin-bottom: 20px; display: block;
+        padding: 5px 0;
+    }
+
+    @media (max-width: 600px) { 
+        .cargo-item { grid-template-columns: 1fr; gap: 5px; }
+        .cargo-contato { text-align: left; }
+    }
 </style>
 {% endblock %}
 
@@ -28,46 +56,86 @@
     
     <h1>{{ pagina.titulo|default:"Nossa História" }}</h1>
     
-    {% if pagina.conteudo %}
-        <div class="texto-historia">
-            {{ pagina.conteudo|safe }}
-        </div>
-    {% else %}
-        <p>Conteúdo em atualização.</p>
-    {% endif %}
-
     {% if pagina.frase_destaque %}
     <div class="destaque-box">
         "{{ pagina.frase_destaque }}"
     </div>
     {% endif %}
 
-    <h2>Administração e Diretoria</h2>
-    <p>A gestão da Federação é composta por trabalhadores voluntários:</p>
+    {% if pagina.conteudo %}
+        <div class="texto-historia">
+            {{ pagina.conteudo|safe }}
+        </div>
+    {% endif %}
 
-    {% if executiva %}
+
+    <h2>Administração e Responsáveis</h2>
+    <p>Estrutura do Conselho Diretor e responsáveis pelos departamentos:</p>
+    
+    {% if pagina.ano_inicio and pagina.ano_fim %}
+    <span class="gestao-periodo-texto">
+        Período da Gestão: <strong>{{ pagina.ano_inicio }} — {{ pagina.ano_fim }}</strong>
+    </span>
+    {% endif %}
+    
+{% if executiva %}
     <div class="diretoria-box">
         <h3>Diretoria Executiva</h3>
         {% for membro in executiva %}
         <div class="cargo-item">
-            <span class="cargo-titulo">{{ membro.cargo }}</span>
-            <span class="cargo-nome">{{ membro.nome }}</span>
+            <span class="cargo-info" style="color:var(--azul-medio);">
+                {{ membro.cargo.nome }}: <span style="color:var(--texto); font-weight:normal;">{{ membro.nome }}</span>
+            </span>
+            
+            <div class="cargo-contato">
+                {% if membro.telefone %}<i class="fa-solid fa-phone"></i> {{ membro.telefone }}{% endif %}
+                {% if membro.email %}<i class="fa-solid fa-envelope"></i> {{ membro.email }}{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+{% if fiscal %}
+    <div class="diretoria-box" style="margin-top: 30px;">
+        <h3>Conselho Fiscal</h3>
+        {% for membro in fiscal %}
+        <div class="cargo-item">
+            <span class="cargo-info" style="color:var(--azul-medio);">
+                {{ membro.cargo.nome }}: <span style="color:var(--texto); font-weight:normal;">{{ membro.nome }}</span>
+            </span>
+            
+            <div class="cargo-contato">
+                 {% if membro.telefone %}<i class="fa-solid fa-phone"></i> {{ membro.telefone }}{% endif %}
+            </div>
         </div>
         {% endfor %}
     </div>
     {% endif %}
     
-    {% if fiscal %}
-    <div class="diretoria-box">
-        <h3>Conselho Fiscal</h3>
-        {% for membro in fiscal %}
-        <div class="cargo-item">
-            <span class="cargo-titulo">{{ membro.cargo }}</span>
-            <span class="cargo-nome">{{ membro.nome }}</span>
-        </div>
+    <h2 style="margin-top: 60px;">Outros Departamentos e Coordenadorias</h2>
+    <p>Responsáveis pelas áreas de estudo, evangelização e assistência:</p>
+    
+<div class="diretoria-box">
+        {% for departamento in membros_departamentos %}
+            <h3 style="margin-top: 10px; font-size: 1.2rem; color: var(--azul-medio);">
+                {{ departamento.grouper.nome }}
+            </h3>
+            {% for membro in departamento.list %}
+                <div class="cargo-item" style="border-bottom: 1px dotted #ccc;">
+                    <span class="cargo-info" style="color:var(--azul-medio);">
+                        {{ membro.cargo.nome }}: <span style="color:var(--texto); font-weight:normal;">{{ membro.nome }}</span>
+                    </span>
+                    <div class="cargo-contato">
+                        {% if membro.email %}<i class="fa-solid fa-envelope"></i> {{ membro.email }}{% endif %}
+                        {% if membro.telefone %}<i class="fa-solid fa-phone" style="margin-left: 10px;"></i> {{ membro.telefone }}{% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% empty %}
+            <p>Nenhum responsável de departamento cadastrado ainda.</p>
         {% endfor %}
     </div>
-    {% endif %}
 
 </div>
 {% endblock %}

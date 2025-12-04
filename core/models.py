@@ -22,17 +22,49 @@ class InformacaoContato(models.Model):
     def __str__(self):
         return "Dados de Contato da FEPI"
 
+# --- NOVOS MODELOS DE ESTRUTURA ---
+
+class TipoDiretoria(models.Model):
+    """ Define o grupo hierárquico: Diretoria Executiva, Conselho Fiscal, DIJ, ESDE, etc. """
+    nome = models.CharField(max_length=100, unique=True, verbose_name="Tipo de Diretoria/Departamento")
+    descricao = models.CharField(max_length=255, blank=True, verbose_name="Descrição Breve")
+    ordem = models.IntegerField(default=1, verbose_name="Ordem de Exibição")
+
+    def __str__(self):
+        return self.nome
+    
+    class Meta:
+        verbose_name = "Tipo/Departamento"
+        verbose_name_plural = "Tipos e Departamentos"
+        ordering = ['ordem']
+
+class Cargo(models.Model):
+    """ Define o cargo específico: Presidente, Secretário, Coordenador, Conselheiro. """
+    nome = models.CharField(max_length=100, unique=True, verbose_name="Nome do Cargo")
+
+    def __str__(self):
+        return self.nome
+    
+    class Meta:
+        verbose_name = "Cargo"
+        verbose_name_plural = "Cargos"
+        ordering = ['nome']
+
 
 # 2. Página Institucional (Texto e História)
 class PaginaInstitucional(models.Model):
+    """ Conteúdo Fixo da página Institucional + Ano da Gestão """
     titulo = models.CharField(max_length=200, default="Nossa História")
     conteudo = models.TextField(verbose_name="Texto da História")
     frase_destaque = models.CharField(max_length=300, verbose_name="Frase de Destaque (Missão)", blank=True)
     
-    # Singleton
+    # NOVO: Gestão Anual (Requisito 1)
+    ano_inicio = models.IntegerField(default=2024, verbose_name="Ano Início da Gestão")
+    ano_fim = models.IntegerField(default=2027, verbose_name="Ano Fim da Gestão")
+    
+    # Singleton: garante que só existe 1 registo
     def save(self, *args, **kwargs):
-        if not self.pk and PaginaInstitucional.objects.exists():
-            return
+        if not self.pk and PaginaInstitucional.objects.exists(): return
         super(PaginaInstitucional, self).save(*args, **kwargs)
 
     class Meta:
@@ -40,28 +72,30 @@ class PaginaInstitucional(models.Model):
         verbose_name_plural = "Página Institucional (Texto)"
 
     def __str__(self):
-        return self.titulo
+        return f"Configuração da Página Principal ({self.ano_inicio}-{self.ano_fim})"
 
 
-# 3. Membros da Diretoria
 class MembroDiretoria(models.Model):
-    TIPO_CHOICES = (
-        ('EXECUTIVA', 'Diretoria Executiva'),
-        ('FISCAL', 'Conselho Fiscal'),
-    )
+    """ Membro específico (Requisito 4: Responsáveis por Departamento) """
+    nome = models.CharField(max_length=200, verbose_name="Nome do Responsável")
     
-    nome = models.CharField(max_length=200)
-    cargo = models.CharField(max_length=100)
-    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='EXECUTIVA')
-    ordem = models.IntegerField(default=0, help_text="Use números para ordenar (1 aparece primeiro)")
+    # NOVO: Foreign Keys para as tabelas dinâmicas
+    cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT, verbose_name="Cargo") # Requisito 2
+    tipo = models.ForeignKey(TipoDiretoria, on_delete=models.PROTECT, verbose_name="Tipo/Departamento") # Requisito 3
+    
+    # NOVO: Informações de Contato (Requisito 4)
+    telefone = models.CharField(max_length=20, blank=True, verbose_name="Telefone")
+    email = models.EmailField(blank=True, verbose_name="Email")
+
+    ordem = models.IntegerField(default=0, help_text="Para ordenar dentro do Tipo/Departamento")
 
     class Meta:
-        verbose_name = "Membro da Diretoria"
-        verbose_name_plural = "Membros da Diretoria"
-        ordering = ['tipo', 'ordem']
-
+        verbose_name = "Membro/Responsável"
+        verbose_name_plural = "Membros e Responsáveis"
+        ordering = ['tipo__ordem', 'ordem', 'nome'] # Ordena pelo tipo primeiro
+    
     def __str__(self):
-        return f"{self.cargo}: {self.nome}"
+        return f"{self.cargo.nome} ({self.nome})"
 
 
 # 4. Configuração da Home (Banner e YouTube)

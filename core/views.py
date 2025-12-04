@@ -5,6 +5,7 @@ from .models import ConfiguracaoHome, PostInstagram, InformacaoContato, PaginaIn
 from livraria.models import Livro, LivrariaConfig
 from noticias.models import Noticia
 from programacao.models import Doutrinaria, CursoEvento
+from django.db.models import Q
 
 def home(request):
     agora = timezone.now()
@@ -44,15 +45,36 @@ def home(request):
     return render(request, 'core/index.html', contexto)
 
 def institucional(request):
+    # OBTEM DADOS
     pagina = PaginaInstitucional.objects.first()
-    executiva = MembroDiretoria.objects.filter(tipo='EXECUTIVA').order_by('ordem')
-    fiscal = MembroDiretoria.objects.filter(tipo='FISCAL').order_by('ordem')
     contato = InformacaoContato.objects.first()
     
+    # NOVAS BUSCAS: Membros por Tipo (CORRIGIDO AQUI!)
+    membros = MembroDiretoria.objects.all()
+    
+    # 1. Diretoria Executiva: Filtramos pelo CAMPO 'nome' na tabela relacionada (tipo__nome)
+    executiva = membros.filter(tipo__nome='Diretoria Executiva').order_by('ordem')
+    
+    # 2. Conselho Fiscal
+    fiscal = membros.filter(tipo__nome='Conselho Fiscal').order_by('ordem')
+    
+    # 3. Departamentos
+    outros_departamentos = membros.exclude(
+        Q(tipo__nome='Diretoria Executiva') | Q(tipo__nome='Conselho Fiscal')
+    ).order_by('tipo__ordem', 'ordem')
+    
+    # Agrupamento para o Template
+    membros_departamentos = []
+    if outros_departamentos.exists():
+        from django.template import Context 
+        membros_departamentos = regroup(outros_departamentos, 'tipo')
+
+
     contexto = {
         'pagina': pagina,
         'executiva': executiva,
         'fiscal': fiscal,
+        'membros_departamentos': membros_departamentos,
         'contato': contato
     }
     return render(request, 'core/institucional.html', contexto)

@@ -57,7 +57,7 @@
 
         .brand { display: flex; align-items: center; gap: 0.75rem; color: #fff; }
         .brand-logo { 
-            width: 50px; height: 50px; /* Sem borda, apenas tamanho */
+            width: 50px; height: 50px;
             display: flex; align-items: center; justify-content: center;
         }
         .brand-logo img { 
@@ -65,18 +65,55 @@
             filter: brightness(0) invert(1); /* Logo branca */
         }
         
-        .brand-text small { font-size: 0.75rem; text-transform: uppercase; opacity: 0.85; letter-spacing: 0.05em; display: block;}
-        .brand-text strong { font-size: 1.05rem; letter-spacing: 0.03em; }
+        .brand-text small { 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            opacity: 0.85; 
+            letter-spacing: 0.05em; 
+            display: block;
+        }
+        .brand-text strong { 
+            font-size: 1.05rem; 
+            letter-spacing: 0.03em; 
+        }
 
         /* MENU */
-        nav ul { list-style: none; display: flex; gap: 1.25rem; font-size: 0.9rem; }
-        nav li { position: relative; padding-bottom: 2px; }
-        nav li:hover { color: var(--dourado); }
+        nav ul { 
+            list-style: none; 
+            display: flex; 
+            gap: 1.25rem; 
+            font-size: 0.9rem; 
+        }
+        nav li { 
+            position: relative; 
+            padding-bottom: 2px; 
+        }
+        nav li:hover { 
+            color: var(--dourado); 
+        }
         
-        .nav-toggle { display: none; background: transparent; border: 1px solid rgba(255,255,255,0.5); color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        .nav-toggle { 
+            display: none; 
+            background: transparent; 
+            border: 1px solid rgba(255,255,255,0.5); 
+            color: white; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
 
         @media (max-width: 900px) {
-            nav ul { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: var(--azul-escuro); padding: 20px; text-align: center; }
+            nav ul { 
+                display: none; 
+                flex-direction: column; 
+                position: absolute; 
+                top: 100%; 
+                left: 0; 
+                width: 100%; 
+                background: var(--azul-escuro); 
+                padding: 20px; 
+                text-align: center; 
+            }
             nav ul.active { display: flex; }
             .nav-toggle { display: block; }
             .topbar { display: none; }
@@ -94,7 +131,13 @@
             display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem; font-size: 0.9rem;
         }
-        .footer-title { color: #fff; font-weight: 600; margin-bottom: 1rem; border-left: 3px solid var(--dourado); padding-left: 10px; }
+        .footer-title { 
+            color: #fff; 
+            font-weight: 600; 
+            margin-bottom: 1rem; 
+            border-left: 3px solid var(--dourado); 
+            padding-left: 10px; 
+        }
         .footer-list { list-style: none; }
         .footer-list li { margin-bottom: 0.5rem; }
         .footer-list a:hover { color: var(--dourado); }
@@ -105,13 +148,22 @@
         }
 
         /* --- CONTEÚDO PADRÃO --- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 1.5rem 1.25rem; 
+        }
         
         .pagina-conteudo {
             max-width: 900px; margin: 40px auto; background-color: white;
             padding: 50px; border-radius: 8px; box-shadow: var(--shadow);
         }
-        @media (max-width: 768px) { .pagina-conteudo { margin: 20px; padding: 25px; } }
+        @media (max-width: 768px) { 
+            .pagina-conteudo { 
+                margin: 20px; 
+                padding: 25px; 
+            } 
+        }
 
         {% block extra_css %}{% endblock %}
     </style>
@@ -120,7 +172,10 @@
 
 <header>
     <div class="topbar">
-        <span><i class="fa-solid fa-location-dot"></i> {{ contato.endereco|default:"Rua Olavo Bilac, 1394 - Teresina/PI" }}</span>
+        <span>
+            <i class="fa-solid fa-location-dot"></i> 
+            {{ contato.endereco|default:"Rua Olavo Bilac, 1394 - Teresina/PI" }}
+        </span>
         
         <a href="https://www.instagram.com/fepiaui/" target="_blank">
             <i class="fa-brands fa-instagram"></i> Instagram
@@ -178,8 +233,14 @@
         <div>
             <div class="footer-title">Contato</div>
             <ul class="footer-list">
-                <li><i class="fa-solid fa-location-dot" style="color:var(--dourado);"></i> {{ contato.endereco }}</li>
-                <li><i class="fa-brands fa-whatsapp" style="color:var(--dourado);"></i> {{ contato.telefone }}</li>
+                <li>
+                    <i class="fa-solid fa-location-dot" style="color:var(--dourado);"></i>
+                    {{ contato.endereco|default:"Rua Olavo Bilac, 1394 - Teresina/PI" }}
+                </li>
+                <li>
+                    <i class="fa-brands fa-whatsapp" style="color:var(--dourado);"></i>
+                    {{ contato.telefone|default:"(86) 3221-2500" }}
+                </li>
             </ul>
         </div>
         <div>
@@ -188,6 +249,7 @@
                 <li><a href="{% url 'lista_centros' %}">Encontre um Centro</a></li>
                 <li><a href="{% url 'atividades' %}">Nossos Horários</a></li>
                 <li><a href="{% url 'fale_conosco' %}">Como Chegar</a></li>
+                <li><a href="{% url 'admin:index' %}">Área Administrativa</a></li>
             </ul>
         </div>
     </div>
