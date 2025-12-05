@@ -3,6 +3,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from recursos.views import links_uteis, downloads
+from doacoes.views import doacoes_view
 
 # 1. Imports do Core (Home, Institucional, Fale Conosco)
 # REMOVIDO: livraria_completa daqui
@@ -48,6 +49,7 @@ urlpatterns = [
     path('noticias/', lista_noticias, name='lista_noticias'),
     path('links-uteis/', links_uteis, name='links_uteis'), # NOVO
     path('downloads/', downloads, name='downloads'),       # NOVO
+    path('doar/', doacoes_view, name='doacoes_view'),
 ]
 
 # Configuração para imagens e estáticos funcionarem no modo Debug

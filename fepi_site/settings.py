@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'noticias',
     'centros',
     'programacao',
-    'recursos'
+    'recursos',
+    'doacoes',
 ]
 
 MIDDLEWARE = [
