@@ -78,7 +78,7 @@
         .submenu {
             display: none;
             position: absolute;
-            top: 100%; /* Aparece abaixo do item principal */
+            top: 100%; 
             left: -10px;
             min-width: 240px;
             background: var(--azul-escuro);
@@ -90,20 +90,21 @@
         }
 
         .submenu li {
-            padding: 0; /* Remove padding vertical */
+            padding: 0; 
             padding-bottom: 0;
             white-space: nowrap;
         }
         .submenu a {
-            padding: 8px 15px; /* Espaçamento interno dos itens do submenu */
+            padding: 8px 15px; 
             display: block;
             color: #f1f5f9;
             font-weight: 400;
         }
         .submenu a:hover { background: var(--azul-medio); color: white; }
 
-        /* Ativação por Hover */
-        .has-submenu:hover > .submenu {
+        /* Ativação por Hover & Touch */
+        .has-submenu:hover > .submenu,
+        .has-submenu.toggled > .submenu {
             display: block;
         }
 
@@ -124,6 +125,7 @@
             .topbar { display: none; }
             /* Esconde submenus no mobile por simplicidade */
             .submenu { display: none !important; }
+            .has-submenu.toggled > .submenu { display: flex !important; flex-direction: column; position: static; box-shadow: none; border: none; padding: 0; }
         }
 
         main { flex: 1; }
@@ -147,7 +149,7 @@
             max-width: 1200px; margin: 2rem auto 0; padding-top: 1rem;
             border-top: 1px solid rgba(255,255,255,0.1);
             text-align: center; 
-            font-size: 0.75rem; /* AJUSTE AQUI: Tamanho menor para o copyright */
+            font-size: 0.75rem; 
             opacity: 0.8;
         }
 
@@ -187,16 +189,17 @@
 
         <nav>
             <ul id="menu-principal">
-                <li class="has-submenu">
-                    <a href="{% url 'institucional' %}">A FEPI</a>
+                
+                <li class="has-submenu" onclick="toggleSubmenu(this)">
+                    <a href="javascript:void(0);">A FEPI</a>
                     <ul class="submenu">
                         <li><a href="{% url 'institucional' %}">História e Diretoria</a></li>
                         <li><a href="{% url 'fale_conosco' %}">Fale Conosco</a></li>
                     </ul>
                 </li>
                 
-                <li class="has-submenu">
-                    <a href="{% url 'calendario' %}">Programação</a>
+                <li class="has-submenu" onclick="toggleSubmenu(this)">
+                    <a href="javascript:void(0);">Programação</a>
                     <ul class="submenu">
                         <li><a href="{% url 'calendario' %}">Agenda de Eventos</a></li>
                         <li><a href="{% url 'doutrinarias' %}">Palestras Doutrinárias</a></li>
@@ -204,18 +207,18 @@
                         <li><a href="{% url 'atividades' %}">Horários Semanais</a></li>
                     </ul>
                 </li>
-                
-                <li><a href="{% url 'lista_centros' %}">Centros</a></li>
 
-                <li><a href="{% url 'livraria' %}">Livraria</a></li>
-
-                <li class="has-submenu">
-                    <a href="{% url 'links_uteis' %}">Recursos</a>
+                <li class="has-submenu" onclick="toggleSubmenu(this)">
+                    <a href="javascript:void(0);">Recursos</a>
                     <ul class="submenu">
                         <li><a href="{% url 'links_uteis' %}">Links Úteis</a></li>
                         <li><a href="{% url 'downloads' %}">Downloads</a></li>
                     </ul>
                 </li>
+                
+                <li><a href="{% url 'lista_centros' %}">Centros</a></li>
+
+                <li><a href="{% url 'livraria' %}">Livraria</a></li>
                 
                 <li><a href="{% url 'doacoes_view' %}" class="btn-doar">Quero Doar</a></li>
 
@@ -251,13 +254,12 @@
             <div class="footer-title">Acesso Rápido</div>
             <ul class="footer-list">
                 <li><a href="{% url 'lista_centros' %}">Encontre um Centro</a></li>
-                <li><a href="{% url 'fale_conosco' %}">Fale Conosco</a></li>
+                <li><a href="{% url 'fale_conosco' %}">Como Chegar</a></li>
                 <li><a href="{% url 'atividades' %}">Horários Semanais</a></li>
                 <li><a href="{% url 'doacoes_view' %}">Quero Doar</a></li>
-                <li><a href="/admin" target="_blank">Área Administrativa</a></li>
+                <li><a href="/admin" target="_blank">Área Administrativa</a></li> 
             </ul>
         </div>
-
     </div>
     {% endwith %}
     <div class="footer-bottom">
@@ -269,6 +271,46 @@
     function toggleMenu() {
         document.getElementById('menu-principal').classList.toggle('active');
     }
+    
+    // SCRIPT PARA FUNCIONAR EM TELAS TOUCH
+    function toggleSubmenu(liElement) {
+        // Se a tela for desktop (maior que 900px), não faz nada com o JS (deixa o CSS hover funcionar)
+        if (window.innerWidth > 900) return;
+        
+        // Impede a navegação do link principal para que o submenu abra
+        event.preventDefault(); 
+        
+        // Remove a classe 'toggled' de qualquer outro menu que possa estar aberto
+        document.querySelectorAll('.has-submenu.toggled').forEach(openMenu => {
+            if (openMenu !== liElement) {
+                openMenu.classList.remove('toggled');
+            }
+        });
+        // Alterna o estado do menu clicado
+        liElement.classList.toggle('toggled');
+    }
+
+    // Código para fechar o menu ao clicar fora dele
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.has-submenu') && window.innerWidth > 900) {
+            document.querySelectorAll('.has-submenu.toggled').forEach(menu => {
+                menu.classList.remove('toggled');
+            });
+        }
+    });
+
+    // Garante que o clique nos links principais chama a função para expandir
+    document.querySelectorAll('.has-submenu > a').forEach(a => {
+        a.addEventListener('click', function(event) {
+            if (window.innerWidth <= 900) {
+                // Impede que navegue no mobile
+                event.preventDefault();
+                // Chama a função no elemento LI pai
+                toggleSubmenu(a.closest('li'));
+            }
+        });
+    });
+
 </script>
 
 </body>
