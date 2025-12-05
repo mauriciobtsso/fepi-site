@@ -1,0 +1,1 @@
+web: gunicorn fepi_site.wsgi:application --log-file -
