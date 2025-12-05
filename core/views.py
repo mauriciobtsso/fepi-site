@@ -1,11 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from itertools import chain 
-from .models import ConfiguracaoHome, PostInstagram, InformacaoContato, PaginaInstitucional, MembroDiretoria
+from .models import (
+ConfiguracaoHome, PostInstagram, InformacaoContato,
+PaginaInstitucional, MembroDiretoria
+)
 from livraria.models import Livro, LivrariaConfig
 from noticias.models import Noticia
 from programacao.models import Doutrinaria, CursoEvento
 from django.db.models import Q
+from .forms import ContatoForm
 
 def home(request):
     agora = timezone.now()
@@ -81,4 +85,42 @@ def institucional(request):
 
 def fale_conosco(request):
     contato = InformacaoContato.objects.first()
-    return render(request, 'core/fale_conosco.html', {'contato': contato})
+    
+    if request.method == 'POST':
+        form = ContatoForm(request.POST)
+        if form.is_valid():
+            # Dados limpos
+            topico = form.cleaned_data['topico']
+            nome = form.cleaned_data['nome']
+            email = form.cleaned_data['email']
+            mensagem = form.cleaned_data['mensagem']
+            
+            # Montagem do Email
+            subject = f"[{topico.upper()}] Novo Contato do Site - {nome}"
+            body = (
+                f"Mensagem de: {nome}\n"
+                f"Email: {email}\n"
+                f"Assunto: {form.get_topico_display(topico)}\n\n"
+                f"--- Mensagem ---\n{mensagem}"
+            )
+            
+            try:
+                # Envio (usa as configurações do settings.py)
+                send_mail(
+                    subject,
+                    body,
+                    settings.DEFAULT_FROM_EMAIL, # Remetente
+                    [settings.EMAIL_RECEIVER],   # Destinatário (FEPI)
+                    fail_silently=False
+                )
+                # Redireciona para evitar reenvio de formulário no F5
+                return render(request, 'core/fale_conosco.html', {'contato': contato, 'sucesso': True})
+            except Exception as e:
+                # Loga o erro, se houver
+                print(f"ERRO DE EMAIL: {e}")
+                return render(request, 'core/fale_conosco.html', {'contato': contato, 'form': form, 'erro': True})
+        
+    else:
+        form = ContatoForm()
+    
+    return render(request, 'core/fale_conosco.html', {'contato': contato, 'form': form})

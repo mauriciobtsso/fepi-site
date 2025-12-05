@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.site_wide_context',
             ],
         },
     },
@@ -137,3 +138,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Permite que o YouTube saiba que o vídeo está no teu site (Corrige Erro 153)
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+
+# ----------------------------------------------------
+# CONFIGURAÇÃO DE EMAIL (Para que o formulário funcione)
+# ----------------------------------------------------
+
+# ENDEREÇO PARA ONDE OS EMAILS SERÃO ENVIADOS
+EMAIL_RECEIVER = 'contato@fepiaui.org.br' # <--- ALtere para o email real da FEPI
+
+# CONFIGURAÇÕES DO SERVIDOR SMTP (EXEMPLO GMAIL)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Se usar outro (ex: Outlook, use smtp.office365.com)
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'seu_email_remetente@gmail.com') # Seu email de envio
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'sua_senha_de_app_aqui') # Senha de App do Google/Microsoft
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

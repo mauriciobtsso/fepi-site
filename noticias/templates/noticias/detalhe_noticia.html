@@ -1,89 +1,78 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}{{ noticia.titulo }} - FEPI{% endblock %}
+{% block title %}{{ noticia.titulo }} | FEPI{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Cabeçalho da Notícia */
-    .news-header { 
-        border-bottom: 1px solid #eee; 
-        padding-bottom: 20px; 
-        margin-bottom: 30px; 
-    }
+    .news-header { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
     
-    .news-date { 
-        color: #888; 
-        font-size: 0.9rem; 
-        font-weight: 700; 
-        text-transform: uppercase; 
-        letter-spacing: 1px; 
-        display: block; 
-        margin-bottom: 10px; 
+    .news-meta { /* Estilo para Autor e Data */
+        color: #888; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; 
+        letter-spacing: 1px; margin-bottom: 10px;
     }
+    .news-meta-item { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .news-meta-item i { color: var(--dourado); } 
     
-    .news-title { 
-        color: var(--azul-escuro); 
-        font-size: 2.2rem; 
-        line-height: 1.2; 
-        margin: 0; 
-        font-weight: 800;
+    .news-title { color: var(--azul-escuro); font-size: 2.2rem; line-height: 1.2; margin: 0; font-weight: 800; }
+    
+    /* CORREÇÃO DO ZOOM DA IMAGEM */
+    .news-img-container {
+        width: 100%;
+        max-height: 450px; /* Altura máxima ligeiramente menor */
+        overflow: hidden;
+        display: flex; /* Para centralizar verticalmente, se necessário */
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px;
+        border-radius: 8px; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-
-    /* Imagem de Destaque */
     .news-img-full { 
         width: 100%; 
-        max-height: 500px; 
-        object-fit: cover; 
-        border-radius: 8px; 
-        margin-bottom: 30px; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-    }
-
-    /* Corpo do Texto */
-    .news-content { 
-        font-size: 1.15rem; 
-        line-height: 1.8; 
-        color: #333; 
-        text-align: justify; 
+        height: 100%; 
+        object-fit: contain; /* Ajusta a imagem dentro do container, mantendo a proporção */
     }
     
-    /* Botão Voltar específico */
+    .news-content { font-size: 1.15rem; line-height: 1.8; color: #333; text-align: justify; }
+    
     .btn-voltar-news {
-        display: inline-block; 
-        margin-bottom: 30px; 
-        color: var(--azul-medio); 
-        text-decoration: none; 
-        font-weight: bold; 
-        border: 1px solid var(--azul-medio); 
-        padding: 8px 15px; 
-        border-radius: 20px; 
-        transition: 0.2s;
-        font-size: 0.9rem;
+        display: inline-flex; margin-bottom: 30px; color: var(--azul-medio); 
+        text-decoration: none; font-weight: bold; border: 1px solid var(--azul-medio); 
+        padding: 8px 15px; border-radius: 20px; transition: 0.2s; font-size: 0.9rem;
+        align-items: center; gap: 8px; 
     }
     .btn-voltar-news:hover { background-color: var(--azul-medio); color: white; }
 
-    /* Responsividade */
-    @media (max-width: 600px) { 
-        .news-title { font-size: 1.8rem; } 
-        .pagina-conteudo { padding: 25px; } /* Ajuste se o padding for muito grande no mobile */
-    }
+    @media (max-width: 600px) { .news-title { font-size: 1.8rem; } }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="pagina-conteudo">
     
-    <a href="/" class="btn-voltar-news">← Voltar para o Início</a>
+    <a href="{% url 'lista_noticias' %}" class="btn-voltar-news">
+        <i class="fa-solid fa-arrow-left"></i> Voltar para as Notícias
+    </a>
 
     <article>
         <div class="news-header">
-            <span class="news-date">📅 {{ noticia.data_publicacao|date:"d \d\e F \d\e Y" }}</span>
+            <div class="news-meta">
+                <span class="news-meta-item">
+                    <i class="fa-solid fa-calendar-alt"></i> {{ noticia.data_publicacao|date:"d \d\e F \d\e Y" }}
+                </span>
+                <span class="news-meta-item">
+                    <i class="fa-solid fa-user-circle"></i> Publicado por: {{ noticia.autor|default:"FEPI" }}
+                </span>
+            </div>
+            
             <h1 class="news-title">{{ noticia.titulo }}</h1>
         </div>
 
         {% if noticia.imagem %}
-            <img src="{{ noticia.imagem.url }}" alt="{{ noticia.titulo }}" class="news-img-full">
+            <div class="news-img-container">
+                <img src="{{ noticia.imagem.url }}" alt="{{ noticia.titulo }}" class="news-img-full">
+            </div>
         {% endif %}
 
         <div class="news-content">

@@ -2,15 +2,22 @@ from django.db import models
 
 class Noticia(models.Model):
     titulo = models.CharField(max_length=200, verbose_name="Título")
-    resumo = models.TextField(verbose_name="Resumo (para a capa)", help_text="Um texto curto para chamar a atenção na página inicial.")
-    conteudo = models.TextField(verbose_name="Conteúdo Completo")
-    imagem = models.ImageField(upload_to='noticias/', blank=True, null=True, verbose_name="Imagem de Destaque")
-    data_publicacao = models.DateTimeField(auto_now_add=True, verbose_name="Data de Publicação")
+    resumo = models.TextField(blank=True, verbose_name="Resumo (para lista)")
+    conteudo = models.TextField()
     
+    # Campo para quem publicou
+    autor = models.CharField(max_length=100, default="FEPI", verbose_name="Autor da Publicação")
+    
+    imagem = models.ImageField(upload_to='noticias_capas/', blank=True, null=True)
+    data_publicacao = models.DateTimeField(auto_now_add=True)
+    
+    # CAMPO QUE ESTAVA A FALTAR E CAUSAVA O ERRO DE ADMIN
+    foi_publicada = models.BooleanField(default=True, verbose_name="Publicada no Site") 
+
     def __str__(self):
         return self.titulo
-        
+    
     class Meta:
         verbose_name = "Notícia"
         verbose_name_plural = "Notícias"
-        ordering = ['-data_publicacao'] # Garante que a mais recente aparece primeiro
+        ordering = ['-data_publicacao']

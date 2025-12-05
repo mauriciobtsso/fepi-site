@@ -5,32 +5,65 @@
 
 {% block extra_css %}
 <style>
-    .contato-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; margin-top: 30px; }
-    .info-card { background-color: var(--azul-claro); padding: 30px; border-radius: var(--radius); border: 1px solid rgba(28,86,127,0.1); height: 100%; }
-    .info-item { margin-bottom: 25px; }
-    
-    .info-label { 
-        display: flex; align-items: center; gap: 8px; /* Alinha icone com texto */
-        font-size: 0.85rem; text-transform: uppercase; color: #6b7280; 
-        margin-bottom: 5px; font-weight: bold; letter-spacing: 0.5px;
+    /* Estilos para formulários (Mantido) */
+    .form-box {
+        background: white; padding: 30px; border-radius: var(--radius);
+        box-shadow: var(--shadow); border: 1px solid #eee;
     }
-    .info-label i { color: var(--dourado); font-size: 1.1rem; } /* Cor do ícone */
+    .form-box label { font-weight: 600; color: var(--azul-escuro); margin-bottom: 5px; display: block; font-size: 0.95rem; }
+    .form-control { 
+        width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; 
+        margin-bottom: 15px; font-size: 0.95rem;
+    }
+    textarea.form-control { resize: vertical; }
+    .btn-enviar { 
+        background-color: var(--azul-escuro); color: white; padding: 12px 25px; 
+        border-radius: 30px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s;
+    }
+    .btn-enviar:hover { background-color: var(--dourado); color: var(--azul-escuro); }
 
-    .info-text { font-size: 1.1rem; color: var(--azul-escuro); font-weight: 500; line-height: 1.4; padding-left: 24px; /* Recuo para alinhar com texto acima */ }
+    /* Estilos dos Cards (Compactos) */
+    .info-card {
+        background-color: white; padding: 20px; border-radius: var(--radius);
+        box-shadow: var(--shadow); border: 1px solid #eee; height: 100%; /* Garante que estica com o Mapa */
+    }
+    .info-item { margin-bottom: 15px; }
+    .info-label { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; text-transform: uppercase; color: #6b7280; margin-bottom: 4px; font-weight: bold; letter-spacing: 0.5px; }
+    .info-label i { color: var(--dourado); font-size: 1rem; }
+    .info-text { font-size: 0.95rem; color: var(--azul-escuro); font-weight: 500; line-height: 1.4; padding-left: 24px; }
 
-    .mapa-wrapper { border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 450px; border: 1px solid #eee; position: relative; }
+    /* Mapa */
+    .mapa-wrapper { 
+        border-radius: var(--radius); overflow: hidden; height: 100%; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative;
+    }
     .mapa-iframe { width: 100%; height: 100%; border: 0; }
-
     .btn-rota {
-        position: absolute; bottom: 20px; left: 20px;
-        background-color: white; color: var(--azul-escuro);
-        padding: 10px 20px; border-radius: 30px; font-weight: bold;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2); text-decoration: none;
-        display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: 0.2s;
+        position: absolute; bottom: 20px; left: 20px; background-color: white; color: var(--azul-escuro);
+        padding: 10px 20px; border-radius: 30px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: 0.2s;
+        z-index: 10;
     }
     .btn-rota:hover { transform: translateY(-3px); color: var(--dourado); }
 
-    @media (max-width: 800px) { .contato-grid { grid-template-columns: 1fr; } .mapa-wrapper { height: 300px; } }
+    /* --- LAYOUT GRID (O ponto de correção) --- */
+    .top-contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* 50% / 50% para Info e Mapa */
+        gap: 30px;
+        margin-bottom: 40px; 
+        align-items: stretch; /* Garante que ambos tenham altura igual */
+    }
+
+    /* O formulário debaixo do grid */
+    .form-full-width {
+        margin-bottom: 40px; 
+    }
+
+    @media (max-width: 800px) {
+        .top-contact-grid { grid-template-columns: 1fr; } 
+        .mapa-wrapper { height: 250px; }
+    }
 </style>
 {% endblock %}
 
@@ -39,25 +72,32 @@
     <div class="section-header">
         <div>
             <h2>Fale Conosco</h2>
-            <p style="color: #666;">Entre em contato ou visite nossa sede.</p>
+            <p style="color: #666;">Entre em contato conosco ou envie uma mensagem.</p>
         </div>
     </div>
 
-    <div class="contato-grid">
+    {% if sucesso %}
+    <div style="background-color: #d1e7dd; color: #0f5132; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 30px; font-weight: bold;">
+        ✅ Mensagem enviada com sucesso! Em breve entraremos em contato.
+    </div>
+    {% endif %}
+
+    <div class="top-contact-grid">
         
         <div>
             <div class="info-card">
+                <h3 style="color: var(--azul-escuro); margin-bottom: 20px;">Informações de Contato</h3>
+                
                 <div class="info-item">
                     <span class="info-label"><i class="fa-solid fa-location-dot"></i> Endereço</span>
                     <div class="info-text">
                         {{ contato.endereco }}<br>
-                        {{ contato.cidade }}<br>
-                        CEP: {{ contato.cep }}
+                        {{ contato.cidade }} - CEP: {{ contato.cep }}
                     </div>
                 </div>
 
                 <div class="info-item">
-                    <span class="info-label"><i class="fa-brands fa-whatsapp"></i> Telefone / WhatsApp</span>
+                    <span class="info-label"><i class="fa-brands fa-whatsapp"></i> Telefone</span>
                     <div class="info-text">{{ contato.telefone }}</div>
                 </div>
 
@@ -73,22 +113,53 @@
                 </div>
 
                 <div class="info-item" style="margin-bottom: 0;">
-                    <span class="info-label"><i class="fa-solid fa-clock"></i> Horário da Livraria</span>
+                    <span class="info-label"><i class="fa-solid fa-clock"></i> Horário Livraria</span>
                     <div class="info-text">{{ contato.horario_livraria }}</div>
                 </div>
             </div>
         </div>
 
-        <div class="mapa-wrapper">
-            <iframe class="mapa-iframe" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3974.2690786377745!2d-42.81281192414776!3d-5.094434421525666!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x78e39f8a3b0b0b5%3A0x7b0b0b0b0b0b0b0b!2sRua%20Olavo%20Bilac%2C%201394%20-%20Centro%20(Sul)%2C%20Teresina%20-%20PI%2C%2064001-280!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr">
-            </iframe>
-            
-            <a href="https://www.google.com/maps/dir//-5.0944344,-42.8106233" target="_blank" class="btn-rota">
-                <i class="fa-solid fa-map-location-dot"></i> Traçar Rota no GPS
-            </a>
+        <div>
+            <div class="mapa-wrapper">
+                <iframe class="mapa-iframe" loading="lazy" allowfullscreen 
+                    src="https://maps.google.com/maps?q=Rua+Olavo+Bilac,+1394+Teresina+PI&hl=pt-BR&z=15&output=embed">
+                </iframe>
+                
+                <a href="https://www.google.com/maps/dir/?api=1&destination=-5.094434,-42.810623" target="_blank" class="btn-rota">
+                    <i class="fa-solid fa-route"></i> Traçar Rota no GPS
+                </a>
+            </div>
         </div>
+    </div>
 
+    <div class="form-full-width">
+        <div class="form-box">
+            <h3 style="color: var(--azul-escuro); margin-bottom: 25px;">Envie sua Mensagem</h3>
+            
+            {% if erro %}
+            <p style="color: #842029; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                ❌ Erro ao enviar. Verifique o seu e-mail e tente novamente.
+            </p>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                
+                {{ form.topico.label_tag }}
+                {{ form.topico }}
+
+                {{ form.nome.label_tag }}
+                {{ form.nome }}
+
+                {{ form.email.label_tag }}
+                {{ form.email }}
+
+                {{ form.mensagem.label_tag }}
+                {{ form.mensagem }}
+                
+                <button type="submit" class="btn-enviar">ENVIAR MENSAGEM</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
