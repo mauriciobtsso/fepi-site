@@ -123,8 +123,7 @@
             nav ul.active { display: flex; }
             .nav-toggle { display: block; }
             .topbar { display: none; }
-            /* Esconde submenus no mobile por simplicidade */
-            .submenu { display: none !important; }
+            /* Garante que submenus se expandam no mobile */
             .has-submenu.toggled > .submenu { display: flex !important; flex-direction: column; position: static; box-shadow: none; border: none; padding: 0; }
         }
 
@@ -189,17 +188,16 @@
 
         <nav>
             <ul id="menu-principal">
-                
-                <li class="has-submenu" onclick="toggleSubmenu(this)">
-                    <a href="javascript:void(0);">A FEPI</a>
+                <li class="has-submenu">
+                    <a href="javascript:void(0);" onclick="handleMenuClick(event, this)">A FEPI</a>
                     <ul class="submenu">
                         <li><a href="{% url 'institucional' %}">História e Diretoria</a></li>
                         <li><a href="{% url 'fale_conosco' %}">Fale Conosco</a></li>
                     </ul>
                 </li>
                 
-                <li class="has-submenu" onclick="toggleSubmenu(this)">
-                    <a href="javascript:void(0);">Programação</a>
+                <li class="has-submenu">
+                    <a href="javascript:void(0);" onclick="handleMenuClick(event, this)">Programação</a>
                     <ul class="submenu">
                         <li><a href="{% url 'calendario' %}">Agenda de Eventos</a></li>
                         <li><a href="{% url 'doutrinarias' %}">Palestras Doutrinárias</a></li>
@@ -208,8 +206,8 @@
                     </ul>
                 </li>
 
-                <li class="has-submenu" onclick="toggleSubmenu(this)">
-                    <a href="javascript:void(0);">Recursos</a>
+                <li class="has-submenu">
+                    <a href="javascript:void(0);" onclick="handleMenuClick(event, this)">Recursos</a>
                     <ul class="submenu">
                         <li><a href="{% url 'links_uteis' %}">Links Úteis</a></li>
                         <li><a href="{% url 'downloads' %}">Downloads</a></li>
@@ -273,42 +271,43 @@
     }
     
     // SCRIPT PARA FUNCIONAR EM TELAS TOUCH
-    function toggleSubmenu(liElement) {
-        // Se a tela for desktop (maior que 900px), não faz nada com o JS (deixa o CSS hover funcionar)
-        if (window.innerWidth > 900) return;
-        
-        // Impede a navegação do link principal para que o submenu abra
-        event.preventDefault(); 
-        
-        // Remove a classe 'toggled' de qualquer outro menu que possa estar aberto
-        document.querySelectorAll('.has-submenu.toggled').forEach(openMenu => {
-            if (openMenu !== liElement) {
-                openMenu.classList.remove('toggled');
-            }
-        });
-        // Alterna o estado do menu clicado
-        liElement.classList.toggle('toggled');
+    function handleMenuClick(event, aElement) {
+        // Encontra o elemento LI pai que contém a classe .has-submenu
+        const liElement = aElement.closest('li');
+
+        // Se for um link de submenu E estiver em tela touch (ou no desktop, para dar suporte ao JS)
+        if (liElement.classList.contains('has-submenu')) {
+            // Se a tela for desktop e o usuário está usando o mouse, deixa o CSS hover funcionar
+            if (window.innerWidth > 900) return;
+
+            // 1. Impede a navegação do link principal
+            event.preventDefault(); 
+            
+            // 2. Remove a classe 'toggled' de qualquer outro menu que possa estar aberto
+            document.querySelectorAll('.has-submenu.toggled').forEach(openMenu => {
+                if (openMenu !== liElement) {
+                    openMenu.classList.remove('toggled');
+                }
+            });
+            
+            // 3. Alterna o estado do menu clicado (abrindo ou fechando)
+            liElement.classList.toggle('toggled');
+        }
     }
 
     // Código para fechar o menu ao clicar fora dele
     document.addEventListener('click', function(event) {
-        if (!event.target.closest('.has-submenu') && window.innerWidth > 900) {
+        if (!event.target.closest('.has-submenu')) {
+            // Fecha todos os menus abertos, tanto no desktop quanto no mobile
             document.querySelectorAll('.has-submenu.toggled').forEach(menu => {
                 menu.classList.remove('toggled');
             });
         }
     });
 
-    // Garante que o clique nos links principais chama a função para expandir
+    // Garante que todos os links principais chamam a função
     document.querySelectorAll('.has-submenu > a').forEach(a => {
-        a.addEventListener('click', function(event) {
-            if (window.innerWidth <= 900) {
-                // Impede que navegue no mobile
-                event.preventDefault();
-                // Chama a função no elemento LI pai
-                toggleSubmenu(a.closest('li'));
-            }
-        });
+        a.setAttribute('onclick', 'handleMenuClick(event, this)');
     });
 
 </script>
