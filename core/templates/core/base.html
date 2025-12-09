@@ -8,24 +8,27 @@
     <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     
     <style>
         /* --- DESIGN SYSTEM --- */
         :root {
-            --azul-escuro: #12324a;
-            --azul-medio: #1c567f;
-            --azul-claro: #e9f2f9;
-            --dourado: #c6a15b;
+            --azul-escuro: #003366; /* Azul Marinho */
+            --azul-medio: #004080; /* Azul um pouco mais claro para hover */
+            --azul-claro: #66CCCC; /* Verde-Água Suave (Secundário) */
+            --dourado: #CCAA66; /* Dourado Suave (Acento) */
             --cinza-claro: #f5f5f5;
             --texto: #222;
-            --radius: 12px;
-            --shadow: 0 8px 20px rgba(0,0,0,0.08);
+            --radius: 8px; /* Raio de borda mais sutil */
+            --shadow: 0 4px 10px rgba(0,0,0,0.05); /* Sombra mais suave */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            font-family: 'Inter', sans-serif;
             color: var(--texto); background: #fff; line-height: 1.5;
             display: flex; flex-direction: column; min-height: 100vh;
         }
@@ -36,7 +39,7 @@
         /* --- CABEÇALHO --- */
         header {
             position: sticky; top: 0; z-index: 50;
-            background: rgba(18,50,74,0.98);
+            background: var(--azul-escuro); /* Usando a variável */
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.2); color: #fff;
         }
@@ -83,7 +86,7 @@
             min-width: 240px;
             background: var(--azul-escuro);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
+            border-radius: var(--radius); /* Aplicando o radius */
             padding: 10px 0;
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
             z-index: 60;
@@ -110,7 +113,7 @@
 
         /* Botão Doar */
         .btn-doar { 
-            background: linear-gradient(135deg, #FFCC00, #c6a15b); color: var(--azul-escuro) !important; 
+            background: var(--azul-claro); color: var(--azul-escuro) !important; /* Usando a nova cor secundária */
             padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;
             transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
@@ -155,9 +158,16 @@
         /* --- CONTEÚDO PADRÃO --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1.25rem; }
         
+        /* Estilo para títulos */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+            color: var(--azul-escuro);
+            margin-bottom: 0.5em;
+        }
+
         .pagina-conteudo {
             max-width: 900px; margin: 40px auto; background-color: white;
-            padding: 50px; border-radius: 8px; box-shadow: var(--shadow);
+            padding: 50px; border-radius: var(--radius); box-shadow: var(--shadow); /* Aplicando o radius e shadow */
         }
         @media (max-width: 768px) { .pagina-conteudo { margin: 20px; padding: 25px; } }
 
@@ -189,7 +199,7 @@
         <nav>
             <ul id="menu-principal">
                 <li class="has-submenu">
-                    <a href="javascript:void(0);" onclick="handleMenuClick(event, this)">A FEPI</a>
+                    <a href="{% url 'institucional' %}" onclick="handleMenuClick(event, this)">A FEPI</a>
                     <ul class="submenu">
                         <li><a href="{% url 'institucional' %}">História e Diretoria</a></li>
                         <li><a href="{% url 'fale_conosco' %}">Fale Conosco</a></li>
