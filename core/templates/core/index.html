@@ -6,7 +6,7 @@
     /* --- ESTRUTURA GERAL --- */
     .top-section { 
         margin-top: 30px; 
-        margin-bottom: 80px; /* AUMENTEI AQUI: Mais espaço entre o topo e as notícias */
+        margin-bottom: 80px; 
     }
     
     .section-padrao { 
@@ -21,7 +21,7 @@
     }
     .section-header h2 { font-size: 1.6rem; color: var(--azul-escuro); margin: 0; font-weight: 800; }
     .btn-link { color: var(--azul-medio); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
-    .btn-link:hover { color: var(--verde-limao); }
+    .btn-link:hover { color: var(--destaque); }
 
     /* --- 1. DESTAQUES --- */
     .top-grid {
@@ -43,15 +43,27 @@
     }
     .carousel-slide.active { opacity: 1; z-index: 1; pointer-events: auto; }
     .slide-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+    
+    /* CAPTION E TÍTULO */
     .slide-caption {
         position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 30px;
         background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); color: white; z-index: 2;
     }
     .slide-tag {
-        background-color: var(--verde-limao); color: var(--texto); padding: 4px 10px; border-radius: 4px;
+        background-color: var(--destaque); color: white; padding: 4px 10px; border-radius: 4px;
         font-weight: bold; font-size: 0.75rem; text-transform: uppercase; display: inline-block; margin-bottom: 10px;
     }
-    .slide-title { font-size: 1.8rem; font-weight: 800; margin: 0 0 5px 0; line-height: 1.2; text-shadow: 0 0 8px rgba(0,0,0,0.9); }
+    
+    /* CORREÇÃO DA COR DO TÍTULO AQUI */
+    .slide-title { 
+        font-size: 1.8rem; 
+        font-weight: 800; 
+        margin: 0 0 5px 0; 
+        line-height: 1.2; 
+        color: white !important; /* FORÇA BRANCO */
+        text-shadow: 0 0 8px rgba(0,0,0,0.9); 
+    }
+    
     .slide-meta { font-size: 0.9rem; opacity: 0.9; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
     .carousel-btn {
@@ -61,7 +73,7 @@
         padding: 0; cursor: pointer; z-index: 10; font-size: 1.5rem; transition: 0.3s;
         border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
     }
-    .carousel-btn:hover { background-color: var(--verde-limao); color: var(--azul-escuro); border-color: var(--verde-limao); }
+    .carousel-btn:hover { background-color: var(--destaque); color: white; border-color: var(--destaque); }
     .carousel-btn.prev { left: 20px; }
     .carousel-btn.next { right: 20px; }
 
@@ -80,7 +92,7 @@
 
     /* --- 2. NOTÍCIAS (Slider Horizontal) --- */
     .section-noticias {
-    margin-top: 30px;  /* ajusta esse valor até ficar do jeito que você quer */
+    margin-top: 30px; 
     }
 
     .news-slider-container {
@@ -135,7 +147,7 @@
     }
     .livro-mini h4 { font-size: 0.85rem; color: var(--azul-escuro); font-weight: 700; margin-bottom: 5px; line-height: 1.2; }
     .livro-preco { 
-        font-size: 0.8rem; color: var(--texto); background: var(--verde-limao); 
+        font-size: 0.8rem; color: white; background: var(--destaque); 
         padding: 3px 10px; border-radius: 20px; font-weight: 600; 
         align-self: center; margin-top: auto; 
     }
@@ -149,7 +161,7 @@
         display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
     .quick-card:hover { background: var(--azul-escuro); color: white; transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-    .quick-card i { font-size: 2rem; color: var(--verde-limao); display: block; margin-bottom: 10px; transition: 0.3s; }
+    .quick-card i { font-size: 2rem; color: var(--destaque); display: block; margin-bottom: 10px; transition: 0.3s; }
     .quick-card:hover i { color: white; }
     .quick-card strong { display: block; font-size: 1.1rem; font-weight: 700; }
 
@@ -181,7 +193,7 @@
                         <h2 class="slide-title">{{ item.titulo|truncatechars:60 }}</h2>
                         <span class="slide-meta">{{ item.data_publicacao|date:"d \d\e F" }}</span>
                     {% else %}
-                        <span class="slide-tag" style="background-color:var(--verde-limao); color:var(--texto);">Inscrições Abertas</span>
+                        <span class="slide-tag" style="background-color:var(--destaque); color:white;">Inscrições Abertas</span>
                         <h2 class="slide-title">{{ item.titulo|truncatechars:60 }}</h2>
                         <span class="slide-meta">Evento: {{ item.data_evento|date:"d/m - H:i" }}h</span>
                     {% endif %}
@@ -242,15 +254,16 @@
                 <a href="{% url 'calendario' %}" class="btn-link">Calendário →</a>
             </div>
             <div class="media-box-white">
-                {% for evento in agenda %}
+                {% for item in agenda %}
                 <div class="agenda-row">
                     <div class="agenda-date-box">
-                        <span class="agenda-day">{{ evento.data_hora|date:"d" }}</span>
-                        <span class="agenda-month">{{ evento.data_hora|date:"M" }}</span>
+                        <span class="agenda-day">{{ item.data_hora|date:"d" }}</span>
+                        <span class="agenda-month">{{ item.data_hora|date:"M" }}</span>
                     </div>
                     <div>
-                        <div style="font-weight:700; color:var(--azul-escuro); font-size:1.05rem;">{{ evento.tema }}</div> <div style="font-size:0.9rem; color:#666; margin-top:3px;">
-                            {{ evento.palestrante }} • {{ evento.data_hora|date:"H:i" }}h
+                        <div style="font-weight:700; color:var(--azul-escuro); font-size:1.05rem;">{{ item.tema }}</div>
+                        <div style="font-size:0.9rem; color:#666; margin-top:3px;">
+                            {{ item.palestrante }} • {{ item.data_hora|date:"H:i" }}h
                         </div>
                     </div>
                 </div>
