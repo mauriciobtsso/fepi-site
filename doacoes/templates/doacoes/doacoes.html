@@ -11,11 +11,11 @@
     .doacao-card { background-color: var(--azul-claro); padding: 30px; border-radius: 12px; margin-bottom: 25px; }
     .doacao-header { 
         display: flex; align-items: center; justify-content: space-between; 
-        border-bottom: 2px solid var(--dourado); padding-bottom: 10px; margin-bottom: 20px;
+        border-bottom: 2px solid var(--azul-escuro); padding-bottom: 10px; margin-bottom: 20px; /* Corrigido: Azul Escuro para contraste */
     }
     
     .doacao-header h3 { color: var(--azul-escuro); margin: 0; font-size: 1.5rem; font-weight: 700; }
-    .doacao-header i { font-size: 1.5rem; color: var(--dourado); }
+    .doacao-header i { font-size: 1.5rem; color: var(--azul-escuro); } /* Corrigido: Azul Escuro para contraste */
 
     .qrcode-box { 
         display: flex; gap: 30px; align-items: center; 
@@ -77,9 +77,9 @@
 
                 {% elif forma.tipo == 'CONTA' %}
                 <div class="detalhes-conta">
-                    <p style="margin-bottom:5px;"><i class="fa-solid fa-bank" style="color:var(--dourado); margin-right:5px;"></i> <strong>Banco:</strong> {{ forma.banco }}</p>
-                    <p style="margin-bottom:5px;"><i class="fa-solid fa-credit-card" style="color:var(--dourado); margin-right:5px;"></i> <strong>Agência:</strong> {{ forma.agencia }}</p>
-                    <p style="margin-bottom:0;"><i class="fa-solid fa-user-check" style="color:var(--dourado); margin-right:5px;"></i> <strong>Favorecido/Conta:</strong> {{ forma.conta }}</p>
+                    <p style="margin-bottom:5px;"><i class="fa-solid fa-bank" style="color:var(--azul-escuro); margin-right:5px;"></i> <strong>Banco:</strong> {{ forma.banco }}</p>
+                    <p style="margin-bottom:5px;"><i class="fa-solid fa-credit-card" style="color:var(--azul-escuro); margin-right:5px;"></i> <strong>Agência:</strong> {{ forma.agencia }}</p>
+                    <p style="margin-bottom:0;"><i class="fa-solid fa-user-check" style="color:var(--azul-escuro); margin-right:5px;"></i> <strong>Favorecido/Conta:</strong> {{ forma.conta }}</p>
                 </div>
                 {% endif %}
             </div>
