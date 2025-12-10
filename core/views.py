@@ -1,3 +1,5 @@
+# core/views.py
+
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from itertools import chain 
@@ -10,23 +12,52 @@ from noticias.models import Noticia
 from programacao.models import Doutrinaria, CursoEvento
 from django.db.models import Q
 from .forms import ContatoForm
+from django.core.mail import send_mail # Adicionar se ainda não estiver aqui
+from django.conf import settings # Adicionar se ainda não estiver aqui
+
+# Adicionar importação necessária para usar regroup no template institucional
+try:
+    from django.template.defaulttags import regroup
+except ImportError:
+    # Fallback caso a importação falhe, embora não deva acontecer em Django 5
+    def regroup(value, arg):
+        return []
+
 
 def home(request):
     agora = timezone.now()
 
-    # 1. CARROSSEL
+    # 1. CARROSSEL (Lógica de Carrossel é mista)
     ultimas_noticias = Noticia.objects.all().order_by('-data_publicacao')[:4]
     proximos_cursos = CursoEvento.objects.filter(data_evento__gte=agora).order_by('data_evento')[:3]
     lista_carrossel = list(chain(ultimas_noticias, proximos_cursos))
 
-    # 2. Agenda
-    lista_agenda = Doutrinaria.objects.filter(data_hora__gte=agora).order_by('data_hora')[:3]
+    # 2. Agenda (CORREÇÃO: Lista Mista de Eventos para a Home)
+    palestras_agenda = Doutrinaria.objects.filter(data_hora__gte=agora)
+    cursos_agenda = CursoEvento.objects.filter(data_evento__gte=agora)
     
+    # Combina e ordena os eventos futuros (Limitado a 3)
+    eventos_agenda_temp = sorted(
+        chain(palestras_agenda, cursos_agenda),
+        key=lambda evento: evento.data_hora if hasattr(evento, 'data_hora') else evento.data_evento
+    )
+    
+    # Normaliza e limita a 3
+    eventos_agenda = []
+    for item in eventos_agenda_temp[:3]:
+        # Adiciona um campo 'tema' genérico que resolve o problema na Home
+        if hasattr(item, 'tema'):
+            item.tema = item.tema
+            item.palestrante = item.palestrante
+        else: # É um CursoEvento
+            item.tema = item.titulo
+            item.palestrante = item.local
+        eventos_agenda.append(item)
+
+
     # 3. LIVROS (Lógica de Segurança)
-    # Tenta pegar 4 destaques aleatórios
     lista_livros = Livro.objects.filter(destaque_home=True).order_by('?')[:4]
     
-    # Se não houver nenhum livro marcado como destaque, mostra os 4 últimos para a seção não ficar vazia.
     if not lista_livros.exists():
         lista_livros = Livro.objects.all().order_by('-titulo')[:4] 
     
@@ -39,7 +70,7 @@ def home(request):
     contexto = {
         'carrossel': lista_carrossel,
         'noticias': ultimas_noticias,
-        'agenda': lista_agenda,
+        'agenda': eventos_agenda, # Passando a lista MISTA
         'livros': lista_livros,
         'config': config_home,
         'contato': contato,
@@ -70,7 +101,6 @@ def institucional(request):
     # Agrupamento para o Template
     membros_departamentos = []
     if outros_departamentos.exists():
-        from django.template import Context 
         membros_departamentos = regroup(outros_departamentos, 'tipo')
 
 

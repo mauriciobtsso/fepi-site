@@ -15,14 +15,14 @@
     <style>
         /* --- DESIGN SYSTEM --- */
         :root {
-            --azul-escuro: #003366; /* Azul Marinho */
-            --azul-medio: #004080; /* Azul um pouco mais claro para hover */
-            --azul-claro: #66CCCC; /* Verde-Água Suave (Secundário) */
-            --dourado: #CCAA66; /* Dourado Suave (Acento) */
+            --azul-escuro: #003366; 
+            --azul-medio: #004080; 
+            --azul-claro: #66CCCC; 
+            --destaque: #F39C12; /* NOVO: Laranja Acolhedor (Substitui o Verde Limão) */
             --cinza-claro: #f5f5f5;
             --texto: #222;
-            --radius: 8px; /* Raio de borda mais sutil */
-            --shadow: 0 4px 10px rgba(0,0,0,0.05); /* Sombra mais suave */
+            --radius: 8px; 
+            --shadow: 0 4px 10px rgba(0,0,0,0.05); 
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,7 +39,7 @@
         /* --- CABEÇALHO --- */
         header {
             position: sticky; top: 0; z-index: 50;
-            background: var(--azul-escuro); /* Usando a variável */
+            background: var(--azul-escuro); 
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.2); color: #fff;
         }
@@ -50,8 +50,8 @@
             font-size: 0.8rem; opacity: 0.95; border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
-        .topbar i { margin-right: 5px; color: var(--dourado); }
-        .topbar a:hover { color: var(--dourado); }
+        .topbar i { margin-right: 5px; color: var(--destaque); } 
+        .topbar a:hover { color: var(--destaque); } 
 
         .navbar {
             max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.25rem;
@@ -65,11 +65,11 @@
         .brand-text small { font-size: 0.75rem; text-transform: uppercase; opacity: 0.85; letter-spacing: 0.05em; display: block;}
         .brand-text strong { font-size: 1.05rem; letter-spacing: 0.03em; }
 
-        /* --- MENU PRINCIPAL (NOVA HIERARQUIA) --- */
+        /* --- MENU PRINCIPAL --- */
         nav ul { list-style: none; display: flex; gap: 1rem; font-size: 0.9rem; margin: 0; padding: 0; }
         nav li { position: relative; padding: 10px 0; cursor: pointer; }
         nav a { color: #e7edf4; transition: 0.2s; }
-        nav a:hover { color: var(--dourado); }
+        nav a:hover { color: var(--destaque); } 
 
         /* Seta Dropdown */
         .has-submenu > a::after {
@@ -86,7 +86,7 @@
             min-width: 240px;
             background: var(--azul-escuro);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: var(--radius); /* Aplicando o radius */
+            border-radius: var(--radius); 
             padding: 10px 0;
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
             z-index: 60;
@@ -113,7 +113,7 @@
 
         /* Botão Doar */
         .btn-doar { 
-            background: var(--azul-claro); color: var(--azul-escuro) !important; /* Usando a nova cor secundária */
+            background: var(--azul-claro); color: #fff !important; 
             padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;
             transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
@@ -126,7 +126,6 @@
             nav ul.active { display: flex; }
             .nav-toggle { display: block; }
             .topbar { display: none; }
-            /* Garante que submenus se expandam no mobile */
             .has-submenu.toggled > .submenu { display: flex !important; flex-direction: column; position: static; box-shadow: none; border: none; padding: 0; }
         }
 
@@ -142,11 +141,14 @@
             display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem; font-size: 0.9rem;
         }
-        .footer-title { color: #fff; font-weight: 600; margin-bottom: 1rem; border-left: 3px solid var(--dourado); padding-left: 10px; }
+        .footer-title { color: #fff; font-weight: 600; margin-bottom: 1rem; border-left: 3px solid var(--destaque); padding-left: 10px; } 
         .footer-list { list-style: none; }
         .footer-list li { margin-bottom: 0.5rem; }
         .footer-list a { color: #9ca3af; }
-        .footer-list a:hover { color: var(--dourado); }
+        .footer-list a:hover { color: var(--destaque); } 
+        
+        .footer-list li i { color: var(--destaque); } 
+
         .footer-bottom {
             max-width: 1200px; margin: 2rem auto 0; padding-top: 1rem;
             border-top: 1px solid rgba(255,255,255,0.1);
@@ -155,10 +157,8 @@
             opacity: 0.8;
         }
 
-        /* --- CONTEÚDO PADRÃO --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1.25rem; }
         
-        /* Estilo para títulos */
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Lora', serif;
             color: var(--azul-escuro);
@@ -167,9 +167,43 @@
 
         .pagina-conteudo {
             max-width: 900px; margin: 40px auto; background-color: white;
-            padding: 50px; border-radius: var(--radius); box-shadow: var(--shadow); /* Aplicando o radius e shadow */
+            padding: 50px; border-radius: var(--radius); box-shadow: var(--shadow); 
         }
         @media (max-width: 768px) { .pagina-conteudo { margin: 20px; padding: 25px; } }
+        
+        /* --- CORREÇÃO DE CONTRASTE (Laranja Acolhedor) --- */
+        .btn-inscrever,
+        .btn-download,
+        .btn-dourado-bg,
+        input[type="submit"], 
+        .tag-link.active,
+        .preco-badge {
+            background-color: var(--destaque) !important;
+            color: white !important; /* Branco sobre Laranja fica ótimo */
+            border: 1px solid var(--destaque);
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 10px 20px; 
+            border-radius: var(--radius);
+            display: inline-block;
+            text-align: center;
+        }
+        
+        /* Hover vai para Azul */
+        .btn-inscrever:hover,
+        .btn-download:hover,
+        input[type="submit"]:hover {
+            background-color: var(--azul-escuro) !important; 
+            color: white !important; 
+            border-color: var(--azul-escuro) !important;
+        }
+
+        /* Botões Mini */
+        .btn-mini.btn-rota:hover {
+            background-color: var(--destaque);
+            color: white !important;
+        }
 
         {% block extra_css %}{% endblock %}
     </style>
@@ -206,6 +240,8 @@
                     </ul>
                 </li>
                 
+                <li><a href="{% url 'lista_noticias' %}">Notícias</a></li>
+
                 <li class="has-submenu">
                     <a href="javascript:void(0);" onclick="handleMenuClick(event, this)">Programação</a>
                     <ul class="submenu">
@@ -225,12 +261,9 @@
                 </li>
                 
                 <li><a href="{% url 'lista_centros' %}">Centros</a></li>
-
                 <li><a href="{% url 'livraria' %}">Livraria</a></li>
-                
                 <li><a href="{% url 'doacoes_view' %}" class="btn-doar">Quero Doar</a></li>
-
-                </ul>
+            </ul>
         </nav>
     </div>
 </header>
@@ -254,8 +287,8 @@
         <div>
             <div class="footer-title">Contato</div>
             <ul class="footer-list">
-                <li><i class="fa-solid fa-location-dot" style="color:var(--dourado);"></i> {{ contato.endereco|default:"Endereço" }}</li>
-                <li><i class="fa-brands fa-whatsapp" style="color:var(--dourado);"></i> {{ contato.telefone|default:"(86) 3221-3021" }}</li>
+                <li><i class="fa-solid fa-location-dot"></i> {{ contato.endereco|default:"Endereço" }}</li>
+                <li><i class="fa-brands fa-whatsapp"></i> {{ contato.telefone|default:"(86) 3221-3021" }}</li>
             </ul>
         </div>
         <div>
@@ -280,46 +313,29 @@
         document.getElementById('menu-principal').classList.toggle('active');
     }
     
-    // SCRIPT PARA FUNCIONAR EM TELAS TOUCH
     function handleMenuClick(event, aElement) {
-        // Encontra o elemento LI pai que contém a classe .has-submenu
         const liElement = aElement.closest('li');
-
-        // Se for um link de submenu E estiver em tela touch (ou no desktop, para dar suporte ao JS)
         if (liElement.classList.contains('has-submenu')) {
-            // Se a tela for desktop e o usuário está usando o mouse, deixa o CSS hover funcionar
             if (window.innerWidth > 900) return;
-
-            // 1. Impede a navegação do link principal
             event.preventDefault(); 
-            
-            // 2. Remove a classe 'toggled' de qualquer outro menu que possa estar aberto
             document.querySelectorAll('.has-submenu.toggled').forEach(openMenu => {
-                if (openMenu !== liElement) {
-                    openMenu.classList.remove('toggled');
-                }
+                if (openMenu !== liElement) openMenu.classList.remove('toggled');
             });
-            
-            // 3. Alterna o estado do menu clicado (abrindo ou fechando)
             liElement.classList.toggle('toggled');
         }
     }
 
-    // Código para fechar o menu ao clicar fora dele
     document.addEventListener('click', function(event) {
         if (!event.target.closest('.has-submenu')) {
-            // Fecha todos os menus abertos, tanto no desktop quanto no mobile
             document.querySelectorAll('.has-submenu.toggled').forEach(menu => {
                 menu.classList.remove('toggled');
             });
         }
     });
 
-    // Garante que todos os links principais chamam a função
     document.querySelectorAll('.has-submenu > a').forEach(a => {
         a.setAttribute('onclick', 'handleMenuClick(event, this)');
     });
-
 </script>
 
 </body>

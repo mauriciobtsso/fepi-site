@@ -1,4 +1,5 @@
 from django.db import models
+from ckeditor.fields import RichTextField # <--- NOVO: IMPORTAÇÃO CORRIGIDA
 
 # 1. Informações de Contato (Rodapé e Fale Conosco)
 class InformacaoContato(models.Model):
@@ -55,7 +56,7 @@ class Cargo(models.Model):
 class PaginaInstitucional(models.Model):
     """ Conteúdo Fixo da página Institucional + Ano da Gestão """
     titulo = models.CharField(max_length=200, default="Nossa História")
-    conteudo = models.TextField(verbose_name="Texto da História")
+    conteudo = RichTextField(verbose_name="Texto da História") # <-- Agora o RichTextField será reconhecido
     frase_destaque = models.CharField(max_length=300, verbose_name="Frase de Destaque (Missão)", blank=True)
     
     # NOVO: Gestão Anual (Requisito 1)

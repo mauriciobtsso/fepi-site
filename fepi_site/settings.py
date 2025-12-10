@@ -39,7 +39,7 @@ if IS_RAILWAY_PROD:
         'localhost', 
         'seusitedjango.railway.app', 
         # Adicione o domínio do seu PythonAnywhere aqui se for específico:
-        # 'seudominio.pythonanywhere.com' 
+        'mauriciobts.pythonanywhere.com' 
     ]
     
     # DATABASES: Usa PostgreSQL
@@ -47,7 +47,7 @@ if IS_RAILWAY_PROD:
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
             conn_max_age=600,
-            conn_health_checks=True, # <--- CORRIGIDO: Adicionado o 's'
+            conn_health_checks=True,
         )
     }
 
@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize', # <-- CORREÇÃO: NOVO APP PARA O CALENDÁRIO
     # Minhas Apps
     'core',
     'livraria',
@@ -84,6 +85,8 @@ INSTALLED_APPS = [
     'programacao',
     'recursos',
     'doacoes',
+    # CKEditor (para formatação de texto)
+    'ckeditor',
 ]
 
 MIDDLEWARE = [

@@ -1,9 +1,10 @@
 from django.db import models
+from ckeditor.fields import RichTextField
 
 class Noticia(models.Model):
     titulo = models.CharField(max_length=200, verbose_name="Título")
     resumo = models.TextField(blank=True, verbose_name="Resumo (para lista)")
-    conteudo = models.TextField()
+    conteudo = RichTextField()
     
     # Campo para quem publicou
     autor = models.CharField(max_length=100, default="FEPI", verbose_name="Autor da Publicação")

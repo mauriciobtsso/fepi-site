@@ -11,7 +11,7 @@
         margin: 30px 0 15px; padding-bottom: 5px; border-bottom: 2px solid var(--azul-claro);
         text-transform: capitalize; display: flex; align-items: center; gap: 10px;
     }
-    .mes-header i { color: var(--dourado); font-size: 1.2rem; }
+    .mes-header i { color: var(--destaque); font-size: 1.2rem; } 
 
     /* Linha do Evento */
     .evento-card {
@@ -20,7 +20,10 @@
         padding: 0; margin-bottom: 15px; border: 1px solid #eee;
         transition: 0.2s; overflow: hidden;
     }
-    .evento-card:hover { transform: translateX(5px); border-color: var(--dourado); }
+    .evento-card:hover { transform: translateX(5px); border-color: var(--destaque); } 
+    
+    .evento-card.curso { border-left: 5px solid var(--azul-medio); }
+    .evento-card.curso:hover { border-color: var(--destaque); }
 
     .evento-passado { opacity: 0.6; filter: grayscale(100%); }
     .evento-passado:hover { opacity: 1; filter: none; }
@@ -39,13 +42,15 @@
     .evento-hora { 
         font-size: 0.85rem; font-weight: 700; color: #888; 
         text-transform: uppercase; margin-bottom: 4px;
-        display: flex; align-items: center; gap: 5px; /* Alinha o ícone do relógio */
+        display: flex; align-items: center; gap: 5px; 
     }
     .evento-info i { font-size: 0.95rem; }
 
     .evento-tema { font-size: 1.1rem; font-weight: 700; color: var(--texto); margin-bottom: 4px; }
+    .evento-tipo { font-size: 0.8rem; color: var(--azul-escuro); font-weight: 700; background: var(--azul-claro); padding: 2px 5px; border-radius: 4px; width: fit-content; margin-bottom: 5px;}
+    .evento-tipo.curso-badge { background-color: var(--destaque); color: white; }
     .evento-palestrante { font-size: 0.95rem; color: var(--azul-medio); }
-
+    
     .historico-divider {
         margin: 60px 0 30px; text-align: center; color: #888; 
         font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
@@ -65,26 +70,45 @@
     </div>
 
     {% if futuros %}
-        {% regroup futuros by data_hora|date:"F Y" as eventos_futuros_mes %}
-
-        {% for mes in eventos_futuros_mes %}
+        {% for grupo in futuros %}
             <div class="mes-header">
-                <i class="fa-regular fa-calendar-check"></i> {{ mes.grouper }}
+                <i class="fa-regular fa-calendar-check"></i> {{ grupo.mes_ano }}
             </div>
-            {% for evento in mes.list %}
-                <div class="evento-card">
+            {% for evento in grupo.list %}
+                
+                <div class="evento-card {% if not evento.is_palestra %}curso{% endif %}">
                     <div class="evento-data">
-                        <span class="dia-num">{{ evento.data_hora|date:"d" }}</span>
-                        <span class="dia-sem">{{ evento.data_hora|date:"D" }}</span>
+                        <span class="dia-num">{{ evento.sort_date|date:"d" }}</span>
+                        <span class="dia-sem">{{ evento.sort_date|date:"D" }}</span>
                     </div>
                     <div class="evento-info">
+                        
+                        {% if evento.is_palestra %}
+                            <span class="evento-tipo">Palestra Doutrinária</span>
+                        {% else %}
+                            <span class="evento-tipo curso-badge">Curso/Evento</span>
+                        {% endif %}
+
                         <span class="evento-hora">
-                            <i class="fa-regular fa-clock"></i> {{ evento.data_hora|date:"H:i" }}h
+                            <i class="fa-regular fa-clock"></i> {{ evento.sort_date|date:"H:i" }}h
                         </span>
-                        <span class="evento-tema">{{ evento.tema }}</span>
-                        <span class="evento-palestrante">Expositor: {{ evento.palestrante }}</span>
+                        
+                        <span class="evento-tema">
+                            <a href="{% if evento.is_palestra %}{% url 'doutrinarias' %}{% else %}{% url 'detalhe_curso' evento.pk %}{% endif %}" style="color:inherit;">
+                                {% if evento.is_palestra %}{{ evento.tema }}{% else %}{{ evento.titulo }}{% endif %}
+                            </a>
+                        </span>
+                        
+                        <span class="evento-palestrante">
+                            {% if evento.is_palestra %}
+                                Expositor: {{ evento.palestrante }}
+                            {% else %}
+                                Local: {{ evento.local }}
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
+
             {% endfor %}
         {% endfor %}
     {% else %}
@@ -95,24 +119,26 @@
     {% if passados %}
         <div class="historico-divider">Histórico de Eventos</div>
 
-        {% regroup passados by data_hora|date:"F Y" as eventos_passados_mes %}
-
-        {% for mes in eventos_passados_mes %}
+        {% for grupo in passados %}
             <div class="mes-header" style="color:#888; border-color:#eee;">
-                <i class="fa-regular fa-calendar-xmark"></i> {{ mes.grouper }}
+                <i class="fa-regular fa-calendar-xmark"></i> {{ grupo.mes_ano }}
             </div>
-            {% for evento in mes.list %}
-                <div class="evento-card evento-passado">
+            {% for evento in grupo.list %}
+                <div class="evento-card evento-passado {% if not evento.is_palestra %}curso{% endif %}">
                     <div class="evento-data">
-                        <span class="dia-num">{{ evento.data_hora|date:"d" }}</span>
-                        <span class="dia-sem">{{ evento.data_hora|date:"D" }}</span>
+                        <span class="dia-num">{{ evento.sort_date|date:"d" }}</span>
+                        <span class="dia-sem">{{ evento.sort_date|date:"D" }}</span>
                     </div>
                     <div class="evento-info">
                         <span class="evento-hora">
-                            <i class="fa-solid fa-check"></i> Realizado às {{ evento.data_hora|date:"H:i" }}h
+                            <i class="fa-solid fa-check"></i> Realizado em {{ evento.sort_date|date:"d/m/Y" }}
                         </span>
-                        <span class="evento-tema">{{ evento.tema }}</span>
-                        <span class="evento-palestrante">{{ evento.palestrante }}</span>
+                        <span class="evento-tema">
+                            {% if evento.is_palestra %}{{ evento.tema }}{% else %}{{ evento.titulo }}{% endif %}
+                        </span>
+                        <span class="evento-palestrante">
+                            {% if evento.is_palestra %}Palestra{% else %}Curso/Evento{% endif %}
+                        </span>
                     </div>
                 </div>
             {% endfor %}

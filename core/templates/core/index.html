@@ -21,7 +21,7 @@
     }
     .section-header h2 { font-size: 1.6rem; color: var(--azul-escuro); margin: 0; font-weight: 800; }
     .btn-link { color: var(--azul-medio); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
-    .btn-link:hover { color: var(--dourado); }
+    .btn-link:hover { color: var(--verde-limao); }
 
     /* --- 1. DESTAQUES --- */
     .top-grid {
@@ -48,11 +48,11 @@
         background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); color: white; z-index: 2;
     }
     .slide-tag {
-        background-color: var(--dourado); color: #000; padding: 4px 10px; border-radius: 4px;
+        background-color: var(--verde-limao); color: var(--texto); padding: 4px 10px; border-radius: 4px;
         font-weight: bold; font-size: 0.75rem; text-transform: uppercase; display: inline-block; margin-bottom: 10px;
     }
-    .slide-title { font-size: 1.8rem; font-weight: 800; margin: 0 0 5px 0; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    .slide-meta { font-size: 0.9rem; opacity: 0.9; }
+    .slide-title { font-size: 1.8rem; font-weight: 800; margin: 0 0 5px 0; line-height: 1.2; text-shadow: 0 0 8px rgba(0,0,0,0.9); }
+    .slide-meta { font-size: 0.9rem; opacity: 0.9; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
     .carousel-btn {
         position: absolute; top: 50%; transform: translateY(-50%);
@@ -61,7 +61,7 @@
         padding: 0; cursor: pointer; z-index: 10; font-size: 1.5rem; transition: 0.3s;
         border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
     }
-    .carousel-btn:hover { background-color: var(--dourado); color: var(--azul-escuro); border-color: var(--dourado); }
+    .carousel-btn:hover { background-color: var(--verde-limao); color: var(--azul-escuro); border-color: var(--verde-limao); }
     .carousel-btn.prev { left: 20px; }
     .carousel-btn.next { right: 20px; }
 
@@ -79,7 +79,6 @@
     .video-frame { border: none; width: 100%; height: 100%; object-fit: cover; }
 
     /* --- 2. NOTÍCIAS (Slider Horizontal) --- */
-    /* Espaço extra entre carrossel/YouTube e as notícias */
     .section-noticias {
     margin-top: 30px;  /* ajusta esse valor até ficar do jeito que você quer */
     }
@@ -117,7 +116,6 @@
     /* LIVRARIA (Grid de 4) */
     .livros-mini-grid { 
         display: grid; 
-        /* Ajuste para caberem 4 em monitores médios/grandes */
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
         gap: 15px; 
     }
@@ -131,13 +129,13 @@
     .livro-mini:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.12); }
     
     .livro-mini img { 
-        height: 160px; /* Um pouco menor para ficar proporcional */
+        height: 160px; 
         width: 100%; object-fit: cover; border-radius: 6px; 
         margin-bottom: 10px; box-shadow: 0 3px 8px rgba(0,0,0,0.15);
     }
     .livro-mini h4 { font-size: 0.85rem; color: var(--azul-escuro); font-weight: 700; margin-bottom: 5px; line-height: 1.2; }
     .livro-preco { 
-        font-size: 0.8rem; color: white; background: var(--azul-medio); 
+        font-size: 0.8rem; color: var(--texto); background: var(--verde-limao); 
         padding: 3px 10px; border-radius: 20px; font-weight: 600; 
         align-self: center; margin-top: auto; 
     }
@@ -151,7 +149,7 @@
         display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
     .quick-card:hover { background: var(--azul-escuro); color: white; transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-    .quick-card i { font-size: 2rem; color: var(--dourado); display: block; margin-bottom: 10px; transition: 0.3s; }
+    .quick-card i { font-size: 2rem; color: var(--verde-limao); display: block; margin-bottom: 10px; transition: 0.3s; }
     .quick-card:hover i { color: white; }
     .quick-card strong { display: block; font-size: 1.1rem; font-weight: 700; }
 
@@ -183,7 +181,7 @@
                         <h2 class="slide-title">{{ item.titulo|truncatechars:60 }}</h2>
                         <span class="slide-meta">{{ item.data_publicacao|date:"d \d\e F" }}</span>
                     {% else %}
-                        <span class="slide-tag" style="background-color:#22c55e; color:white;">Inscrições Abertas</span>
+                        <span class="slide-tag" style="background-color:var(--verde-limao); color:var(--texto);">Inscrições Abertas</span>
                         <h2 class="slide-title">{{ item.titulo|truncatechars:60 }}</h2>
                         <span class="slide-meta">Evento: {{ item.data_evento|date:"d/m - H:i" }}h</span>
                     {% endif %}
@@ -251,8 +249,7 @@
                         <span class="agenda-month">{{ evento.data_hora|date:"M" }}</span>
                     </div>
                     <div>
-                        <div style="font-weight:700; color:var(--azul-escuro); font-size:1.05rem;">{{ evento.tema }}</div>
-                        <div style="font-size:0.9rem; color:#666; margin-top:3px;">
+                        <div style="font-weight:700; color:var(--azul-escuro); font-size:1.05rem;">{{ evento.tema }}</div> <div style="font-size:0.9rem; color:#666; margin-top:3px;">
                             {{ evento.palestrante }} • {{ evento.data_hora|date:"H:i" }}h
                         </div>
                     </div>
