@@ -13,6 +13,78 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     
     <style>
+
+/* --- POP-UP MODAL MARKETING --- */
+    .modal-overlay {
+        display: none; 
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 2000; /* Bem alto para ficar sobre o menu */
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        padding: 20px;
+    }
+
+    .modal-overlay.active { display: flex; opacity: 1; }
+
+    .modal-box {
+        background: white;
+        width: 100%; max-width: 500px;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden; /* Para a imagem não sair borda */
+        box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+        text-align: center;
+    }
+
+    .modal-overlay.active .modal-box { transform: translateY(0); }
+
+    .modal-close {
+        position: absolute; top: 10px; right: 15px;
+        font-size: 2rem; cursor: pointer; color: white;
+        text-shadow: 0 0 5px rgba(0,0,0,0.5); z-index: 10;
+        line-height: 1;
+    }
+    .modal-close:hover { color: var(--destaque); }
+
+    /* Imagem do Pop-up */
+    .modal-img { 
+        width: 100%; height: auto; display: block; 
+        max-height: 400px; object-fit: cover; 
+    }
+
+    /* Área de Conteúdo */
+    .modal-content { padding: 25px; }
+    
+    .modal-titulo { 
+        font-size: 1.4rem; color: var(--azul-escuro); 
+        font-weight: 800; margin-bottom: 10px; line-height: 1.2;
+    }
+    
+    .btn-popup {
+        background-color: var(--destaque);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        display: inline-block;
+        margin-top: 10px;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        transition: 0.2s;
+    }
+    .btn-popup:hover { 
+        background-color: var(--azul-escuro); 
+        color: white; transform: translateY(-2px); 
+    }
+
         /* --- DESIGN SYSTEM --- */
         :root {
             --azul-escuro: #003366; 
@@ -266,6 +338,32 @@
     </div>
 </header>
 
+{% if popup_ativo %}
+<div id="siteModal" class="modal-overlay">
+    <div class="modal-box">
+        <span class="modal-close" onclick="fecharModal()">&times;</span>
+        
+        <a href="{{ popup_ativo.popup_link|default:'#' }}">
+            {% if popup_ativo.popup_imagem %}
+                <img src="{{ popup_ativo.popup_imagem.url }}" alt="{{ popup_ativo.popup_titulo }}" class="modal-img">
+            {% endif %}
+        </a>
+
+        <div class="modal-content">
+            {% if popup_ativo.popup_titulo %}
+                <h3 class="modal-titulo">{{ popup_ativo.popup_titulo }}</h3>
+            {% endif %}
+            
+            {% if popup_ativo.popup_link %}
+                <a href="{{ popup_ativo.popup_link }}" class="btn-popup" onclick="fecharModal()">
+                    {{ popup_ativo.popup_botao_texto }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <main>
     {% block content %}{% endblock %}
 </main>
@@ -334,6 +432,35 @@
     document.querySelectorAll('.has-submenu > a').forEach(a => {
         a.setAttribute('onclick', 'handleMenuClick(event, this)');
     });
+
+// --- LÓGICA DO POP-UP ---
+    {% if popup_ativo %}
+    document.addEventListener('DOMContentLoaded', function() {
+        // Verifica se o usuário já fechou este popup especifico hoje
+        // Usamos o ID do popup (ou data) para garantir que se você mudar o popup, ele aparece de novo
+        const popupId = "popup_fepi_{{ popup_ativo.id }}"; 
+        const jaViu = sessionStorage.getItem(popupId); // sessionStorage = reseta ao fechar navegador
+
+        if (!jaViu) {
+            setTimeout(() => {
+                document.getElementById('siteModal').classList.add('active');
+            }, 1000); // Delay de 1 segundo
+        }
+    });
+
+    function fecharModal() {
+        document.getElementById('siteModal').classList.remove('active');
+        // Marca como visto na sessão atual
+        const popupId = "popup_fepi_{{ popup_ativo.id }}";
+        sessionStorage.setItem(popupId, 'true');
+    }
+
+    // Fecha ao clicar fora
+    document.getElementById('siteModal').addEventListener('click', function(e) {
+        if (e.target === this) fecharModal();
+    });
+    {% endif %}
+
 </script>
 
 </body>
