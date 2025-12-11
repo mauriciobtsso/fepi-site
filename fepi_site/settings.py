@@ -153,9 +153,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Configuração de Media (Imagens/Uploads) - Agora vai para o Cloudinary
-MEDIA_URL = '/media/'  # URL base (gerida pelo Cloudinary)
-MEDIA_ROOT = BASE_DIR / 'media' # Fallback local
+# Configuração de Media (Imagens/Uploads)
+MEDIA_URL = '/media/' 
+MEDIA_ROOT = BASE_DIR / 'media' 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
@@ -186,5 +186,12 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': 'PRLSa_vmaDRFTE0TJnDBsec-N24',
 }
 
-# Define que os uploads (FileField, ImageField) usarão o Cloudinary
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# CONFIGURAÇÃO PARA DJANGO 5+ (IMPORTANTE!)
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
