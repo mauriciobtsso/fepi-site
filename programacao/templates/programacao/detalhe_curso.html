@@ -3,6 +3,21 @@
 
 {% block title %}Curso: {{ curso.titulo }} - FEPI{% endblock %}
 
+{% block meta_tags %}
+    <meta name="description" content="Participe: {{ curso.titulo }}. Saiba mais no site da FEPI.">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ curso.titulo }} - Inscrições Abertas">
+    <meta property="og:description" content="{{ curso.descricao|striptags|truncatechars:140 }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    
+    {% if curso.imagem %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ curso.imagem.url }}">
+    {% else %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.png' %}">
+    {% endif %}
+{% endblock %}
+
 {% block extra_css %}
 <style>
     .page-header { background: var(--azul-escuro); color: white; padding: 40px 0; margin-bottom: 40px; }

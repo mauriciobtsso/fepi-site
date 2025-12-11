@@ -141,3 +141,7 @@ def fale_conosco(request):
         form = ContatoForm()
     
     return render(request, 'core/fale_conosco.html', {'contato': contato, 'form': form})
+
+def privacidade(request):
+    contato = InformacaoContato.objects.first()
+    return render(request, 'core/privacidade.html', {'contato': contato})

@@ -1,0 +1,80 @@
+{% extends 'core/base.html' %}
+{% block title %}Intranet FEPI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .doc-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    .doc-card { 
+        background: #f9f9f9; border-left: 5px solid var(--azul-medio); 
+        padding: 20px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+        transition: 0.3s;
+    }
+    .doc-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .doc-meta { font-size: 0.85rem; color: #666; margin-bottom: 10px; }
+    .badge-cat { 
+        background: #eee; padding: 2px 8px; border-radius: 10px; 
+        font-weight: bold; font-size: 0.75rem; text-transform: uppercase; 
+    }
+    .user-bar {
+        background: var(--azul-claro); color: white; padding: 15px; 
+        border-radius: 8px; margin-bottom: 30px; display: flex; 
+        justify-content: space-between; align-items: center;
+    }
+    .btn-logout { background: rgba(0,0,0,0.2); color: white; padding: 5px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; }
+    .btn-logout:hover { background: rgba(0,0,0,0.4); color: white; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pagina-conteudo" style="max-width: 1100px;">
+    
+    <div class="user-bar">
+        <div>
+            <strong>Olá, {{ user.first_name|default:user.username }}!</strong>
+            <span style="opacity: 0.9; font-size: 0.9rem;">(Acesso Restrito)</span>
+        </div>
+        
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout" style="border:none; cursor:pointer;">
+                <i class="fa-solid fa-sign-out-alt"></i> Sair
+            </button>
+        </form>
+    </div>
+
+    <h1>Documentos Administrativos</h1>
+    <p>Área destinada à disponibilização de atas, circulares e relatórios para as Casas Espíritas.</p>
+    <hr>
+
+    {% if documentos %}
+        <div class="doc-grid">
+            {% for doc in documentos %}
+            <div class="doc-card">
+                <div class="doc-meta">
+                    <span class="badge-cat">{{ doc.get_categoria_display }}</span>
+                    <span style="float: right;">{{ doc.data_publicacao|date:"d/m/Y" }}</span>
+                </div>
+                
+                <h3 style="font-size: 1.2rem; margin-bottom: 10px; color: var(--azul-escuro);">
+                    <i class="fa-regular fa-file-pdf"></i> {{ doc.titulo }}
+                </h3>
+                
+                {% if doc.descricao %}
+                    <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">{{ doc.descricao }}</p>
+                {% endif %}
+
+                <a href="{{ doc.arquivo.url }}" target="_blank" class="btn-download" style="width: 100%; font-size: 0.9rem; padding: 8px;">
+                    <i class="fa-solid fa-download"></i> Baixar Arquivo
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 40px; background: #f5f5f5; border-radius: 10px;">
+            <i class="fa-regular fa-folder-open" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>
+            <p>Nenhum documento disponível no momento.</p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

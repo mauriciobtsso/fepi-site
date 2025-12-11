@@ -3,6 +3,21 @@
 
 {% block title %}{{ noticia.titulo }} | FEPI{% endblock %}
 
+{% block meta_tags %}
+    <meta name="description" content="{{ noticia.conteudo|striptags|truncatechars:150 }}">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ noticia.titulo }}">
+    <meta property="og:description" content="{{ noticia.conteudo|striptags|truncatechars:150 }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    
+    {% if noticia.imagem %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ noticia.imagem.url }}">
+    {% else %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.png' %}">
+    {% endif %}
+{% endblock %}
+
 {% block extra_css %}
 <style>
     .news-header { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }

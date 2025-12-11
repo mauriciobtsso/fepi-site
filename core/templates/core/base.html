@@ -4,6 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    {% block meta_tags %}
+    <meta name="description" content="Portal oficial da Federação Espírita Piauiense. Unindo corações, esclarecendo mentes e consolando almas.">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="Federação Espírita do Piauí">
+    <meta property="og:description" content="Acompanhe notícias, eventos e a doutrina espírita no Piauí.">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.png' %}">
+    {% endblock %}
     <title>{% block title %}Federação Espírita do Piauí{% endblock %}</title>
     <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}">
     
@@ -393,6 +403,7 @@
                 <li><a href="{% url 'fale_conosco' %}">Como Chegar</a></li>
                 <li><a href="{% url 'atividades' %}">Horários Semanais</a></li>
                 <li><a href="{% url 'doacoes_view' %}">Quero Doar</a></li>
+                <li><a href="{% url 'privacidade' %}">Política de Privacidade</a></li>
                 <li><a href="/admin" target="_blank">Área Administrativa</a></li> 
             </ul>
         </div>
@@ -460,6 +471,17 @@
     });
     {% endif %}
 
+</script>
+
+<div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+    </div>
+</div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
 </script>
 
 </body>
