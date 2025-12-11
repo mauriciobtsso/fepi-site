@@ -7,16 +7,23 @@ from pathlib import Path
 import os
 import dj_database_url
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECRET_KEY
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-#up2mw6n4z7=cl@*$c$y@!!la*(*-!idc+0y_dabnogc$2zjj(')
 
-# Configuração de Ambiente
+# --------------------------------------------------------
+# 🚀 Configuração Dinâmica de Ambientes (DEBUG, HOSTS, DB)
+# --------------------------------------------------------
+
+# Verifica se a variável de ambiente DATABASE_URL existe (só existirá no Railway)
 IS_RAILWAY_PROD = 'DATABASE_URL' in os.environ
 
 if IS_RAILWAY_PROD:
+    # MODO PRODUÇÃO (RAILWAY - PostgreSQL)
     DEBUG = False
+    
     ALLOWED_HOSTS = [
         '127.0.0.1', 
         '.railway.app', 
@@ -24,6 +31,8 @@ if IS_RAILWAY_PROD:
         'seusitedjango.railway.app', 
         'mauriciobts.pythonanywhere.com' 
     ]
+    
+    # DATABASES: Usa PostgreSQL
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
@@ -31,9 +40,22 @@ if IS_RAILWAY_PROD:
             conn_health_checks=True,
         )
     }
+
+    # --- CONFIGURAÇÕES DE SEGURANÇA (HTTPS / SSL) ---
+    # Isto garante que o Django sabe que está em HTTPS e carrega as imagens no WhatsApp
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    
+    # Lista de domínios confiáveis para evitar erro 403 Forbidden no Login
+    CSRF_TRUSTED_ORIGINS = ['https://mauriciobts.pythonanywhere.com', 'https://seusitedjango.railway.app']
+
 else:
+    # MODO DESENVOLVIMENTO (Local - SQLite)
     DEBUG = True 
     ALLOWED_HOSTS = ['*'] 
+    
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -41,7 +63,9 @@ else:
         }
     }
 
+
 # Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -58,7 +82,7 @@ INSTALLED_APPS = [
     'programacao',
     'recursos',
     'doacoes',
-    'intranet', # <--- NOVA APP ADICIONADA
+    'intranet', # <--- APP DA INTRANET
     # Libs
     'ckeditor',
 ]
@@ -93,21 +117,37 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fepi_site.wsgi.application'
 
+
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
+
+# Internationalization
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
+
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles' 
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -115,7 +155,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
-# EMAIL CONFIG
+# ----------------------------------------------------
+# CONFIGURAÇÃO DE EMAIL
+# ----------------------------------------------------
 EMAIL_RECEIVER = 'contato@fepiaui.org.br' 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

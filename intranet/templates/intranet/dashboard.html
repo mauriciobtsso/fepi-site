@@ -1,27 +1,91 @@
 {% extends 'core/base.html' %}
+{% load static %}
+
 {% block title %}Intranet FEPI{% endblock %}
 
 {% block extra_css %}
 <style>
-    .doc-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
-    .doc-card { 
-        background: #f9f9f9; border-left: 5px solid var(--azul-medio); 
-        padding: 20px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-        transition: 0.3s;
-    }
-    .doc-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    .doc-meta { font-size: 0.85rem; color: #666; margin-bottom: 10px; }
-    .badge-cat { 
-        background: #eee; padding: 2px 8px; border-radius: 10px; 
-        font-weight: bold; font-size: 0.75rem; text-transform: uppercase; 
-    }
+    /* Barra de Usuário */
     .user-bar {
-        background: var(--azul-claro); color: white; padding: 15px; 
-        border-radius: 8px; margin-bottom: 30px; display: flex; 
-        justify-content: space-between; align-items: center;
+        background: linear-gradient(135deg, var(--azul-escuro) 0%, var(--azul-medio) 100%);
+        color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px;
+        display: flex; justify-content: space-between; align-items: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .btn-logout { background: rgba(0,0,0,0.2); color: white; padding: 5px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; }
-    .btn-logout:hover { background: rgba(0,0,0,0.4); color: white; }
+    .btn-logout { 
+        background: rgba(255,255,255,0.2); color: white; padding: 8px 20px; 
+        border-radius: 30px; text-decoration: none; font-size: 0.9rem; border: none; 
+        cursor: pointer; transition: 0.2s; font-weight: 600;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.3); }
+
+    /* Filtros */
+    .filter-section { 
+        background: #f8f9fa; padding: 20px; border-radius: 8px; 
+        margin-bottom: 30px; border: 1px solid #e9ecef; 
+    }
+    .search-form { display: flex; gap: 10px; margin-bottom: 15px; }
+    .search-input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; }
+    .btn-search { background: var(--destaque); color: white; border: none; padding: 0 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn-search:hover { background: #e67e22; }
+
+    .category-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill { 
+        text-decoration: none; padding: 6px 16px; border-radius: 20px; 
+        font-size: 0.85rem; background: #fff; color: #555; 
+        border: 1px solid #ddd; transition: 0.2s;
+    }
+    .pill:hover { border-color: var(--azul-medio); color: var(--azul-medio); }
+    .pill.active { background: var(--azul-escuro); color: white; border-color: var(--azul-escuro); }
+
+    /* --- NOVO LAYOUT DE LISTA (Tipo Tabela) --- */
+    .section-header {
+        display: flex; align-items: center; gap: 10px; margin-top: 30px; margin-bottom: 15px;
+        padding-bottom: 10px; border-bottom: 2px solid #eee;
+    }
+    .section-title { font-size: 1.4rem; color: var(--azul-escuro); font-weight: 700; margin: 0; }
+    .section-icon { color: var(--destaque); font-size: 1.2rem; }
+
+    .doc-list { list-style: none; padding: 0; margin: 0; }
+    
+    .doc-item {
+        display: flex; align-items: center; justify-content: space-between;
+        background: white; border: 1px solid #eee; padding: 15px 20px;
+        margin-bottom: 10px; border-radius: 6px; transition: 0.2s;
+        border-left: 4px solid transparent;
+    }
+    /* Cores por tipo na borda esquerda */
+    .doc-item.cat-ATA { border-left-color: #e74c3c; } /* Vermelho */
+    .doc-item.cat-CIRCULAR { border-left-color: #3498db; } /* Azul */
+    .doc-item.cat-FINANCEIRO { border-left-color: #27ae60; } /* Verde */
+    .doc-item.cat-ADMIN { border-left-color: #f1c40f; } /* Amarelo */
+
+    .doc-item:hover { transform: translateX(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-color: #ddd; }
+
+    .doc-main { flex: 1; padding-right: 20px; }
+    .doc-title { font-size: 1.05rem; font-weight: 700; color: #333; display: block; margin-bottom: 4px; }
+    .doc-meta { font-size: 0.8rem; color: #888; }
+    .doc-desc { font-size: 0.9rem; color: #666; margin-top: 5px; display: block; }
+
+    .doc-actions { display: flex; gap: 10px; flex-shrink: 0; }
+    .btn-action-mini {
+        padding: 6px 12px; border-radius: 4px; text-decoration: none;
+        font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px;
+    }
+    .btn-dl { background: #eef2f7; color: var(--azul-escuro); border: 1px solid #dae1e7; }
+    .btn-dl:hover { background: #dfe6ed; }
+    
+    .btn-lnk { background: #fff8e1; color: #d35400; border: 1px solid #ffeebb; }
+    .btn-lnk:hover { background: #ffecb3; }
+
+    /* Estado Vazio */
+    .empty-state { text-align: center; padding: 50px; background: #f9f9f9; border-radius: 8px; margin-top: 20px; }
+
+    @media (max-width: 600px) {
+        .doc-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+        .doc-actions { width: 100%; justify-content: flex-start; }
+        .btn-action-mini { flex: 1; justify-content: center; }
+    }
 </style>
 {% endblock %}
 
@@ -30,50 +94,81 @@
     
     <div class="user-bar">
         <div>
-            <strong>Olá, {{ user.first_name|default:user.username }}!</strong>
-            <span style="opacity: 0.9; font-size: 0.9rem;">(Acesso Restrito)</span>
+            <div style="font-size: 0.8rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">Área Restrita</div>
+            <div style="font-size: 1.4rem; font-weight: 700;">Olá, {{ user.first_name|default:user.username }}</div>
         </div>
-        
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="btn-logout" style="border:none; cursor:pointer;">
-                <i class="fa-solid fa-sign-out-alt"></i> Sair
-            </button>
+            <button type="submit" class="btn-logout"><i class="fa-solid fa-power-off"></i> Sair</button>
         </form>
     </div>
 
-    <h1>Documentos Administrativos</h1>
-    <p>Área destinada à disponibilização de atas, circulares e relatórios para as Casas Espíritas.</p>
-    <hr>
-
-    {% if documentos %}
-        <div class="doc-grid">
-            {% for doc in documentos %}
-            <div class="doc-card">
-                <div class="doc-meta">
-                    <span class="badge-cat">{{ doc.get_categoria_display }}</span>
-                    <span style="float: right;">{{ doc.data_publicacao|date:"d/m/Y" }}</span>
-                </div>
-                
-                <h3 style="font-size: 1.2rem; margin-bottom: 10px; color: var(--azul-escuro);">
-                    <i class="fa-regular fa-file-pdf"></i> {{ doc.titulo }}
-                </h3>
-                
-                {% if doc.descricao %}
-                    <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">{{ doc.descricao }}</p>
-                {% endif %}
-
-                <a href="{{ doc.arquivo.url }}" target="_blank" class="btn-download" style="width: 100%; font-size: 0.9rem; padding: 8px;">
-                    <i class="fa-solid fa-download"></i> Baixar Arquivo
+    <div class="filter-section">
+        <form method="get" class="search-form">
+            <input type="text" name="q" value="{{ busca_atual }}" placeholder="Pesquisar documento (ex: Ata 2024)..." class="search-input">
+            {% if categoria_atual %}
+                <input type="hidden" name="categoria" value="{{ categoria_atual }}">
+            {% endif %}
+            <button type="submit" class="btn-search">Pesquisar</button>
+            {% if busca_atual or categoria_atual %}
+                <a href="{% url 'area_federado' %}" style="padding: 12px; color: #666; display: flex; align-items: center;" title="Limpar">
+                    <i class="fa-solid fa-times"></i>
                 </a>
-            </div>
+            {% endif %}
+        </form>
+
+        <div class="category-pills">
+            <a href="?{% if busca_atual %}q={{ busca_atual }}{% endif %}" class="pill {% if not categoria_atual %}active{% endif %}">
+                Todos
+            </a>
+            {% for codigo, nome in categorias %}
+                <a href="?categoria={{ codigo }}{% if busca_atual %}&q={{ busca_atual }}{% endif %}" 
+                   class="pill {% if categoria_atual == codigo %}active{% endif %}">
+                   {{ nome }}
+                </a>
             {% endfor %}
         </div>
+    </div>
+
+    {% if modo_exibicao == 'agrupado' %}
+        {% if grupos %}
+            {% for grupo in grupos %}
+                <div class="section-header">
+                    <div class="section-title">{{ grupo.titulo_categoria }}</div>
+                    <span style="background: #eee; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; color: #666;">
+                        {{ grupo.lista|length }}
+                    </span>
+                </div>
+
+                <ul class="doc-list">
+                    {% for doc in grupo.lista %}
+                        {% include "intranet/includes/doc_item.html" with doc=doc %}
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fa-regular fa-folder-open" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                <p>Nenhum documento disponível na Intranet no momento.</p>
+            </div>
+        {% endif %}
+
     {% else %}
-        <div style="text-align: center; padding: 40px; background: #f5f5f5; border-radius: 10px;">
-            <i class="fa-regular fa-folder-open" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>
-            <p>Nenhum documento disponível no momento.</p>
-        </div>
+        {% if documentos %}
+            <h3 style="margin-bottom: 20px;">Resultados da pesquisa:</h3>
+            <ul class="doc-list">
+                {% for doc in documentos %}
+                    {% include "intranet/includes/doc_item.html" with doc=doc %}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-state">
+                <i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                <p>Nenhum documento encontrado para sua pesquisa.</p>
+                <a href="{% url 'area_federado' %}" class="btn-search" style="text-decoration: none; display: inline-block; margin-top: 10px;">Voltar ao Início</a>
+            </div>
+        {% endif %}
+
     {% endif %}
 
 </div>

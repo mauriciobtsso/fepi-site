@@ -117,6 +117,24 @@
                 </a>
             {% endif %}
         </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h4 style="font-size: 1rem; color: #555; margin-bottom: 15px;">Ajude a divulgar este evento:</h4>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="https://api.whatsapp.com/send?text=Olha%20este%20evento%20na%20FEPI:%20*{{ curso.titulo|urlencode }}*%0A{{ request.build_absolute_uri|urlencode }}" 
+                   target="_blank" 
+                   style="background: #25D366; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </a>
+                
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}" 
+                   target="_blank" 
+                   style="background: #1877F2; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+                    <i class="fa-brands fa-facebook"></i> Facebook
+                </a>
+            </div>
+        </div>
+
     </div>
 
     <div>

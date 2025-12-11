@@ -11,7 +11,12 @@ class DocumentoRestrito(models.Model):
 
     titulo = models.CharField("Título do Documento", max_length=200)
     descricao = models.TextField("Descrição/Observação", blank=True, null=True)
-    arquivo = models.FileField(upload_to='intranet_docs/')
+    
+    # Arquivo agora é opcional (blank=True, null=True)
+    arquivo = models.FileField(upload_to='intranet_docs/', blank=True, null=True)
+    # Novo campo de Link
+    link = models.URLField("Link Externo (Google Drive, etc)", blank=True, null=True)
+    
     categoria = models.CharField(max_length=20, choices=CATEGORIAS, default='OUTROS')
     data_publicacao = models.DateTimeField(auto_now_add=True)
 

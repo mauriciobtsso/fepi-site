@@ -1,0 +1,1051 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Federação Espírita Piauiense (FEPI)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Prototype simples, sem dependências externas -->
+  <style>
+    :root {
+      --azul-escuro: #12324a;
+      --azul-medio: #1c567f;
+      --azul-claro: #e9f2f9;
+      --dourado: #c6a15b;
+      --cinza-claro: #f5f5f5;
+      --texto: #222;
+      --radius: 12px;
+      --shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--texto);
+      background: #fff;
+      line-height: 1.5;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* LAYOUT GERAL */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(18,50,74,0.96);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .topbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.5rem 1.25rem;
+      display: flex;
+      justify-content: flex-end;
+      gap: 1.5rem;
+      font-size: 0.75rem;
+      color: #f7f7f7;
+      opacity: 0.9;
+    }
+
+    .topbar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .topbar span.badge {
+      font-size: 0.65rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.75rem 1.25rem 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #f9fafb;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .brand-text small {
+      font-size: 0.75rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    .brand-text strong {
+      font-size: 1.05rem;
+      letter-spacing: 0.03em;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.25rem;
+      font-size: 0.9rem;
+      color: #e7edf4;
+    }
+
+    nav li {
+      position: relative;
+      padding-bottom: 0.25rem;
+      cursor: pointer;
+    }
+
+    nav li::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--dourado), #fff);
+      border-radius: 999px;
+      transition: width 0.2s ease;
+    }
+
+    nav li:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 0.45rem 1.1rem;
+      font-size: 0.8rem;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+
+    .btn-light {
+      background: #f9fafb;
+      color: var(--azul-escuro);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #f9fafb;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+
+    /* MENU MOBILE SIMPLES */
+    .nav-toggle {
+      display: none;
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 999px;
+      background: transparent;
+      color: #fff;
+      padding: 0.2rem 0.65rem;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 840px) {
+      nav ul {
+        display: none; /* só protótipo, sem JS */
+      }
+      .nav-cta {
+        display: none;
+      }
+      .nav-toggle {
+        display: inline-flex;
+      }
+      .navbar {
+        padding-bottom: 0.75rem;
+      }
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+    }
+
+    /* HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: center;
+      padding: 1.75rem;
+      margin-top: 0.5rem;
+      margin-bottom: 2rem;
+      background: radial-gradient(circle at top left, #2c6fa5 0, var(--azul-escuro) 45%, #0a1823 100%);
+      border-radius: 24px;
+      color: #f9fafb;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      border: 1px solid rgba(255,255,255,0.07);
+      pointer-events: none;
+    }
+
+    .hero-left > span {
+      font-size: 0.78rem;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      margin: 0.75rem 0;
+      line-height: 1.15;
+    }
+
+    .hero h1 strong {
+      color: #fffbf0;
+    }
+
+    .hero p.sub {
+      font-size: 0.95rem;
+      max-width: 32rem;
+      opacity: 0.9;
+    }
+
+    .hero-highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      margin: 1.4rem 0 1.6rem;
+    }
+
+    .hero-pill {
+      padding: 0.55rem 0.8rem;
+      background: rgba(15,59,93,0.8);
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+    }
+
+    .hero-actions .btn-main {
+      background: linear-gradient(135deg, #f8e3a2, var(--dourado));
+      color: #382b12;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+    }
+
+    .hero-actions .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #f1f5f9;
+    }
+
+    .hero-actions small {
+      font-size: 0.78rem;
+      opacity: 0.85;
+    }
+
+    .hero-right {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .hero-card {
+      background: rgba(10,20,31,0.85);
+      border-radius: 20px;
+      padding: 1rem 1.1rem;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.45);
+      border: 1px solid rgba(148,163,184,0.28);
+      backdrop-filter: blur(6px);
+    }
+
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-card-header h3 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      opacity: 0.9;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(248,113,113,0.16);
+      border: 1px solid rgba(248,113,113,0.6);
+      font-size: 0.75rem;
+    }
+
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #ef4444;
+      box-shadow: 0 0 0 5px rgba(248,113,113,0.4);
+    }
+
+    .hero-stream-info {
+      font-size: 0.82rem;
+      margin-bottom: 0.8rem;
+      color: #e5e7eb;
+    }
+
+    .hero-stream-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 0.6rem;
+      font-size: 0.78rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .hero-chip {
+      border-radius: 999px;
+      border: 1px dashed rgba(148,163,184,0.6);
+      padding: 0.25rem 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+      color: #e5e7eb;
+    }
+
+    .hero-card-footer .btn-watch {
+      background: #f97316;
+      color: #111827;
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      border: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+    }
+
+    .hero-bg-circle {
+      position: absolute;
+      width: 230px;
+      height: 230px;
+      background: radial-gradient(circle, rgba(248,250,252,0.2), transparent 60%);
+      border-radius: 999px;
+      top: -40px;
+      right: -40px;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    @media (max-width: 920px) {
+      .hero {
+        grid-template-columns: minmax(0,1fr);
+        padding: 1.3rem 1.2rem 1.4rem;
+      }
+      .hero-right {
+        order: -1;
+      }
+    }
+
+    /* SEÇÕES */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.35rem;
+      color: var(--azul-escuro);
+    }
+
+    .section-header p {
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .section-header a {
+      font-size: 0.8rem;
+      color: var(--azul-medio);
+      font-weight: 600;
+    }
+
+    /* TRÊS PILARES (INSTITUCIONAL / ESTUDOS / ASSISTÊNCIA) */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 920px) {
+      .grid-3 {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 1.1rem 1rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(15,23,42,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-tag {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #6b7280;
+      margin-bottom: 0.35rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+      color: var(--azul-escuro);
+    }
+
+    .card p {
+      font-size: 0.86rem;
+      color: #4b5563;
+      margin-bottom: 0.8rem;
+    }
+
+    .card ul {
+      list-style: none;
+      font-size: 0.82rem;
+      color: #4b5563;
+      margin-bottom: 0.5rem;
+    }
+
+    .card ul li {
+      padding-left: 0.9rem;
+      position: relative;
+      margin-bottom: 0.15rem;
+    }
+
+    .card ul li::before {
+      content: "•";
+      position: absolute;
+      left: 0.2rem;
+      top: 0;
+      color: var(--dourado);
+    }
+
+    .card a.more {
+      font-size: 0.8rem;
+      color: var(--azul-medio);
+      font-weight: 600;
+    }
+
+    .card-ribbon {
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle at 30% 30%, #fef9c3, transparent 60%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    /* AGENDA + NOTÍCIAS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0,1.1fr) minmax(0,1fr);
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 920px) {
+      .grid-2 {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .agenda-list,
+    .news-list {
+      list-style: none;
+      font-size: 0.88rem;
+    }
+
+    .agenda-item,
+    .news-item {
+      display: grid;
+      grid-template-columns: 80px minmax(0,1fr);
+      gap: 0.75rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .agenda-date {
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      text-align: center;
+      padding: 0.4rem 0.2rem;
+      background: #f9fafb;
+    }
+
+    .agenda-date span.dia {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--azul-escuro);
+      line-height: 1.1;
+    }
+
+    .agenda-date span.mes {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #6b7280;
+    }
+
+    .agenda-info strong {
+      font-size: 0.9rem;
+      color: var(--azul-escuro);
+    }
+
+    .agenda-info span {
+      display: block;
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin-top: 0.15rem;
+    }
+
+    .news-thumb {
+      width: 80px;
+      height: 60px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--azul-medio), var(--dourado));
+      opacity: 0.12;
+    }
+
+    .news-info strong {
+      font-size: 0.9rem;
+      color: var(--azul-escuro);
+    }
+
+    .news-meta {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 0.1rem;
+    }
+
+    /* BLOCOS DE CHAMADA RÁPIDA */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 1rem;
+      margin-top: 0.2rem;
+    }
+
+    @media (max-width: 920px) {
+      .quick-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .quick-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .quick-card {
+      border-radius: 14px;
+      padding: 0.85rem 0.9rem;
+      background: var(--azul-claro);
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 0.82rem;
+      color: #1f2933;
+    }
+
+    .quick-card strong {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 0.15rem;
+      color: var(--azul-escuro);
+    }
+
+    /* RODAPÉ */
+    footer {
+      border-top: 1px solid #e5e7eb;
+      background: #0b1721;
+      color: #cbd5f5;
+      padding: 2rem 1.25rem 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0,1.2fr) repeat(2, minmax(0,1fr));
+      gap: 2rem;
+      font-size: 0.84rem;
+    }
+
+    @media (max-width: 920px) {
+      .footer-inner {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .footer-brand {
+      display: flex;
+      gap: 0.9rem;
+      align-items: flex-start;
+    }
+
+    .footer-brand .brand-logo {
+      border-color: rgba(203,213,225,0.9);
+    }
+
+    .footer-brand p {
+      color: #9ca3af;
+      margin-top: 0.35rem;
+    }
+
+    .footer-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: #e5e7eb;
+    }
+
+    .footer-list {
+      list-style: none;
+    }
+
+    .footer-list li {
+      margin-bottom: 0.25rem;
+    }
+
+    .footer-list a {
+      color: #9ca3af;
+      font-size: 0.83rem;
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 1.4rem auto 0;
+      font-size: 0.75rem;
+      color: #6b7280;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      border-top: 1px solid rgba(55,65,81,0.7);
+      padding-top: 0.8rem;
+    }
+
+    .footer-bottom a {
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <a href="#"><span class="badge">Ao Vivo</span> Palestra pública de hoje</a>
+    <a href="#">Agenda</a>
+    <a href="#">Biblioteca</a>
+    <a href="#">Transparência</a>
+  </div>
+
+  <div class="navbar">
+    <a href="#" class="brand">
+      <div class="brand-logo">FE</div>
+      <div class="brand-text">
+        <small>Federação Espírita</small><br>
+        <strong>Piauiense • FEPI</strong>
+      </div>
+    </a>
+
+    <nav>
+      <ul>
+        <li>Início</li>
+        <li>Institucional</li>
+        <li>Estudos & Cursos</li>
+        <li>Assistência & Atendimento</li>
+        <li>Agenda</li>
+        <li>Notícias</li>
+        <li>Transparência</li>
+        <li>Contato</li>
+      </ul>
+    </nav>
+
+    <div class="nav-cta">
+      <button class="btn btn-outline">Conheça o Espiritismo</button>
+      <button class="btn btn-light">Seja Doador</button>
+    </div>
+
+    <button class="nav-toggle">Menu</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO PRINCIPAL -->
+  <section class="hero">
+    <div class="hero-left">
+      <span>Estudo • Prática • Difusão do Espiritismo</span>
+      <h1>
+        Federação Espírita Piauiense<br>
+        <strong>unindo corações em torno do Evangelho</strong>
+      </h1>
+      <p class="sub">
+        A FEPI é o ponto de encontro do movimento espírita no Piauí:
+        casas integradas, estudos sistematizados, atendimento fraterno e
+        ações de solidariedade à luz da Doutrina Espírita.
+      </p>
+
+      <div class="hero-highlights">
+        <div class="hero-pill">📘 Estudos presenciais e online</div>
+        <div class="hero-pill">🤝 Atendimento fraterno e apoio espiritual</div>
+        <div class="hero-pill">👧 Evangelização infantojuvenil</div>
+      </div>
+
+      <div class="hero-actions">
+        <button class="btn btn-main">
+          Ver agenda completa →
+        </button>
+        <button class="btn btn-ghost">
+          Conheça o Espiritismo
+        </button>
+        <small>Encontre um centro espírita próximo e participe das atividades.</small>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-bg-circle"></div>
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <h3>Próxima transmissão</h3>
+          <div class="live-badge">
+            <span class="live-dot"></span>
+            Ao vivo às 19h30
+          </div>
+        </div>
+        <div class="hero-stream-info">
+          Tema: <strong>Evangelho e Esperança em Tempos Difíceis</strong><br>
+          Expositor(a): <span>Convidado(a) da FEPI</span>
+        </div>
+        <div class="hero-stream-meta">
+          <div class="hero-chip">📍 Sede da FEPI / Teresina-PI</div>
+          <div class="hero-chip">🌐 Youtube • Facebook</div>
+        </div>
+        <div class="hero-card-footer">
+          <div>
+            Próxima palestra pública da semana, com transmissão ao vivo
+            e presença de público na sede.
+          </div>
+          <button class="btn-watch">
+            Assistir online →
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 PILARES -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2>Nossos eixos de atuação</h2>
+        <p>Inspirado na organização das federativas estaduais: estudo, prática e unificação.</p>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <article class="card">
+        <div class="card-ribbon"></div>
+        <div class="card-tag">Institucional</div>
+        <h3>FEPI e Movimento Espírita</h3>
+        <p>
+          Conheça a história, a missão e a estrutura da Federação Espírita Piauiense,
+          além das casas espíritas integradas em todo o estado.
+        </p>
+        <ul>
+          <li>História da FEPI</li>
+          <li>Diretoria e Conselhos</li>
+          <li>Casas espíritas por cidade</li>
+          <li>Orientação ao centro espírita</li>
+        </ul>
+        <a href="#" class="more">Ver mais sobre a FEPI →</a>
+      </article>
+
+      <article class="card">
+        <div class="card-ribbon"></div>
+        <div class="card-tag">Estudos & Cursos</div>
+        <h3>Formação e aprofundamento doutrinário</h3>
+        <p>
+          Programação de estudos sistematizados, cursos, evangelização
+          infantojuvenil e formações específicas para trabalhadores espíritas.
+        </p>
+        <ul>
+          <li>ESDE e estudo das obras básicas</li>
+          <li>Evangelização de crianças e jovens</li>
+          <li>Formação de trabalhadores</li>
+          <li>Estudos presenciais e online</li>
+        </ul>
+        <a href="#" class="more">Ver área de estudos →</a>
+      </article>
+
+      <article class="card">
+        <div class="card-ribbon"></div>
+        <div class="card-tag">Assistência & Difusão</div>
+        <h3>Cuidado com a alma e com o próximo</h3>
+        <p>
+          Atendimentos fraternos, ações sociais, campanhas e
+          comunicação espírita para consolo e esclarecimento.
+        </p>
+        <ul>
+          <li>Atendimento fraterno</li>
+          <li>Campanhas de solidariedade</li>
+          <li>Palestras públicas e seminários</li>
+          <li>Conteúdos em áudio e vídeo</li>
+        </ul>
+        <a href="#" class="more">Conhecer atividades →</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- AGENDA + NOTÍCIAS -->
+  <section class="section">
+    <div class="grid-2">
+
+      <!-- Agenda -->
+      <div>
+        <div class="section-header">
+          <div>
+            <h2>Agenda de eventos</h2>
+            <p>Palestras, estudos, seminários e encontros do movimento espírita piauiense.</p>
+          </div>
+          <a href="#">Ver agenda completa →</a>
+        </div>
+
+        <ul class="agenda-list">
+          <li class="agenda-item">
+            <div class="agenda-date">
+              <span class="dia">07</span>
+              <span class="mes">dez</span>
+            </div>
+            <div class="agenda-info">
+              <strong>Palestra pública na sede da FEPI</strong>
+              <span>19h30 • Tema: “O Evangelho no lar e no coração”</span>
+              <span>Expositor(a) convidado(a) • Transmissão ao vivo</span>
+            </div>
+          </li>
+
+          <li class="agenda-item">
+            <div class="agenda-date">
+              <span class="dia">10</span>
+              <span class="mes">dez</span>
+            </div>
+            <div class="agenda-info">
+              <strong>Encontro de Evangelizadores</strong>
+              <span>18h30 • Formação continuada para evangelizadores infantojuvenis</span>
+              <span>Inscrições abertas • Vagas limitadas</span>
+            </div>
+          </li>
+
+          <li class="agenda-item">
+            <div class="agenda-date">
+              <span class="dia">15</span>
+              <span class="mes">dez</span>
+            </div>
+            <div class="agenda-info">
+              <strong>Seminário Doutrinário da FEPI</strong>
+              <span>08h às 12h • Estudo das obras básicas e unificação</span>
+              <span>Aberto a trabalhadores das casas espíritas do Piauí</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Notícias -->
+      <div>
+        <div class="section-header">
+          <div>
+            <h2>Notícias & conteúdos</h2>
+            <p>Destaques do movimento espírita e materiais de estudo.</p>
+          </div>
+          <a href="#">Ver todas as notícias →</a>
+        </div>
+
+        <ul class="news-list">
+          <li class="news-item">
+            <div class="news-thumb"></div>
+            <div class="news-info">
+              <strong>Mensagem especial de final de ano da FEPI</strong>
+              <div class="news-meta">Publicado em 03 de dezembro de 2025 • FEPI</div>
+            </div>
+          </li>
+
+          <li class="news-item">
+            <div class="news-thumb"></div>
+            <div class="news-info">
+              <strong>Lançamento de novo ciclo do ESDE nas casas espíritas</strong>
+              <div class="news-meta">Publicado em 28 de novembro de 2025 • Estudos</div>
+            </div>
+          </li>
+
+          <li class="news-item">
+            <div class="news-thumb"></div>
+            <div class="news-info">
+              <strong>Campanhas de solidariedade: “Construamos a paz promovendo o bem”</strong>
+              <div class="news-meta">Publicado em 20 de novembro de 2025 • Ações sociais</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ACESSOS RÁPIDOS -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2>Acessos rápidos</h2>
+        <p>Atalhos para os serviços mais procurados da FEPI.</p>
+      </div>
+    </div>
+
+    <div class="quick-grid">
+      <a href="#" class="quick-card">
+        <strong>📍 Encontre um centro espírita</strong>
+        Lista de casas espíritas integradas à FEPI em todo o estado.
+      </a>
+      <a href="#" class="quick-card">
+        <strong>📘 Materiais de estudo</strong>
+        Apostilas, roteiros, textos e downloads para estudo e prática.
+      </a>
+      <a href="#" class="quick-card">
+        <strong>🤝 Atendimento fraterno</strong>
+        Como funciona, horários e orientações para quem busca acolhimento.
+      </a>
+      <a href="#" class="quick-card">
+        <strong>💛 Seja doador da FEPI</strong>
+        Informações sobre contribuições, parcerias e transparência financeira.
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="brand-logo">FE</div>
+      <div>
+        <div class="brand-text">
+          <small>Federação Espírita</small><br>
+          <strong>Piauiense • FEPI</strong>
+        </div>
+        <p>
+          Instituição federativa que integra, orienta e apoia o movimento espírita
+          no Estado do Piauí, promovendo o estudo, a prática e a difusão do
+          Espiritismo em seu tríplice aspecto: científico, filosófico e religioso.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-title">Contato e endereço</div>
+      <ul class="footer-list">
+        <li>Endereço da sede (rua, número, bairro, cidade/UF)</li>
+        <li>CEP 00000-000 • Teresina - PI</li>
+        <li>Telefone: (86) 0000-0000</li>
+        <li>E-mail: contato@fepiaui.org.br</li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-title">Links úteis</div>
+      <ul class="footer-list">
+        <li><a href="#">Casas espíritas federadas</a></li>
+        <li><a href="#">Agenda de eventos</a></li>
+        <li><a href="#">Transparência e documentos</a></li>
+        <li><a href="#">Política de privacidade</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© FEPI – Federação Espírita Piauiense. Todos os direitos reservados.</span>
+    <span>Inspirado na organização das federativas espíritas brasileiras.</span>
+  </div>
+</footer>
+
+</body>
+</html>
+```
