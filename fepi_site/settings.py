@@ -11,12 +11,15 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECRET_KEY
+# Tenta obter a chave do ambiente (Railway/PythonAnywhere) ou usa o fallback local
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-#up2mw6n4z7=cl@*$c$y@!!la*(*-!idc+0y_dabnogc$2zjj(')
+
 
 # --------------------------------------------------------
 # 🚀 Configuração Dinâmica de Ambientes (DEBUG, HOSTS, DB)
 # --------------------------------------------------------
 
+# Verifica se a variável de ambiente DATABASE_URL existe (só existirá no Railway)
 IS_RAILWAY_PROD = 'DATABASE_URL' in os.environ
 
 if IS_RAILWAY_PROD:
@@ -24,6 +27,7 @@ if IS_RAILWAY_PROD:
     DEBUG = False
     
     ALLOWED_HOSTS = [
+        '*', # Aceita qualquer domínio (Importante para evitar erros no Railway)
         '127.0.0.1', 
         '.railway.app', 
         'localhost', 
@@ -31,6 +35,7 @@ if IS_RAILWAY_PROD:
         'mauriciobts.pythonanywhere.com' 
     ]
     
+    # DATABASES: Usa PostgreSQL
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
@@ -39,18 +44,19 @@ if IS_RAILWAY_PROD:
         )
     }
 
-    # Segurança HTTPS
+    # Segurança HTTPS (Ativa apenas em produção)
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    CSRF_TRUSTED_ORIGINS = ['https://mauriciobts.pythonanywhere.com', 'https://seusitedjango.railway.app']
+    CSRF_TRUSTED_ORIGINS = ['https://mauriciobts.pythonanywhere.com', 'https://*.railway.app']
 
 else:
     # MODO DESENVOLVIMENTO (Local - SQLite)
     DEBUG = True 
     ALLOWED_HOSTS = ['*'] 
     
+    # DATABASES: Usa SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -84,7 +90,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # <--- FUNDAMENTAL PARA O RAILWAY
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -145,17 +151,21 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# ADICIONA ISTO PARA O WHITENOISE FUNCIONAR NO RAILWAY
+# CONFIGURAÇÃO DO WHITENOISE (DJANGO 5+)
+# "CompressedStaticFilesStorage" é mais seguro que o "Manifest" para evitar erros 500
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
-# Media Files (Armazenamento Local)
+
+# Media Files (Uploads de Imagens)
+# Nota: No Railway sem Volumes, estes arquivos apagam-se a cada deploy.
+# Recomendação: Usar Links Externos na Intranet para arquivos importantes.
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -170,6 +180,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+# Usa variáveis de ambiente para credenciais, ou fallback seguro
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'seu_email_remetente@gmail.com') 
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'sua_senha_de_app_aqui') 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
