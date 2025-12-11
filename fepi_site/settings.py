@@ -17,7 +17,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-#up2mw6n4z7=cl@*$c$y@
 # 🚀 Configuração Dinâmica de Ambientes (DEBUG, HOSTS, DB)
 # --------------------------------------------------------
 
-# Verifica se a variável de ambiente DATABASE_URL existe (só existirá no Railway)
 IS_RAILWAY_PROD = 'DATABASE_URL' in os.environ
 
 if IS_RAILWAY_PROD:
@@ -32,7 +31,6 @@ if IS_RAILWAY_PROD:
         'mauriciobts.pythonanywhere.com' 
     ]
     
-    # DATABASES: Usa PostgreSQL
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
@@ -41,14 +39,11 @@ if IS_RAILWAY_PROD:
         )
     }
 
-    # --- CONFIGURAÇÕES DE SEGURANÇA (HTTPS / SSL) ---
-    # Isto garante que o Django sabe que está em HTTPS e carrega as imagens no WhatsApp
+    # Segurança HTTPS
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    
-    # Lista de domínios confiáveis para evitar erro 403 Forbidden no Login
     CSRF_TRUSTED_ORIGINS = ['https://mauriciobts.pythonanywhere.com', 'https://seusitedjango.railway.app']
 
 else:
@@ -72,10 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    # CLOUDINARY (Deve vir ANTES de staticfiles)
-    'cloudinary_storage',
     'django.contrib.staticfiles',
-    'cloudinary',
     'django.contrib.humanize',
     # Minhas Apps
     'core',
@@ -92,6 +84,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -146,16 +139,25 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# Arquivos estáticos (CSS, JS) continuam no PythonAnywhere
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles' 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Configuração de Media (Imagens/Uploads)
-MEDIA_URL = '/media/' 
-MEDIA_ROOT = BASE_DIR / 'media' 
+# ADICIONA ISTO PARA O WHITENOISE FUNCIONAR NO RAILWAY
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# Media Files (Armazenamento Local)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
@@ -175,23 +177,4 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # --- CONFIGURAÇÃO DE LOGIN / INTRANET ---
 LOGIN_URL = 'login'               
 LOGIN_REDIRECT_URL = 'area_federado' 
-LOGOUT_REDIRECT_URL = 'home'      
-
-# ----------------------------------------------------
-# CONFIGURAÇÃO DO CLOUDINARY (Armazenamento de Arquivos)
-# ----------------------------------------------------
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dym1yoj68',
-    'API_KEY': '283348431723888',
-    'API_SECRET': 'PRLSa_vmaDRFTE0TJnDBsec-N24',
-}
-
-# CONFIGURAÇÃO PARA DJANGO 5+ (IMPORTANTE!)
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
+LOGOUT_REDIRECT_URL = 'home'
