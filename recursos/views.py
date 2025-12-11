@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from django.db.models import Prefetch # Permite otimizar a busca
+from django.db.models import Prefetch 
 from .models import SecaoLink, LinkItem
 
 def links_uteis(request):
-    # Busca apenas as seções que contêm links (is_download=False)
+    # Busca seções que têm links úteis (is_download=False)
     secoes = SecaoLink.objects.filter(
         linkitem__is_download=False
     ).prefetch_related(
@@ -13,6 +13,12 @@ def links_uteis(request):
     return render(request, 'recursos/links_uteis.html', {'secoes': secoes})
 
 def downloads(request):
-    # Busca todos os itens marcados como download
-    downloads = LinkItem.objects.filter(is_download=True).order_by('-id')
-    return render(request, 'recursos/downloads.html', {'downloads': downloads})
+    # ALTERADO: Agora busca SEÇÕES que têm downloads (is_download=True)
+    # Isso permite agrupar os downloads por categoria no template
+    secoes = SecaoLink.objects.filter(
+        linkitem__is_download=True
+    ).prefetch_related(
+        Prefetch('linkitem_set', queryset=LinkItem.objects.filter(is_download=True))
+    ).distinct().order_by('ordem')
+    
+    return render(request, 'recursos/downloads.html', {'secoes': secoes})

@@ -7,7 +7,7 @@
 <style>
     .header-pagina { 
         text-align: center; 
-        margin-bottom: 55px; 
+        margin-bottom: 40px; 
     }
 
     .header-pagina h2 { 
@@ -21,11 +21,29 @@
         font-size: 0.95rem;
     }
 
+    /* Estilo da Seção (Categoria) */
+    .secao-download-box {
+        margin-bottom: 50px;
+    }
+    
+    .titulo-secao {
+        color: var(--azul-medio);
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        border-bottom: 2px solid var(--azul-claro);
+        padding-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .titulo-secao i { color: var(--destaque); }
+
+   /* Grid de Cards */
    .downloads-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
-    gap: 20px; 
-    margin-top: 40px;   /* AQUI CRIA O ESPAÇO DOS CARDS PRA BAIXO */
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+        gap: 20px; 
    }
 
     .card-download {
@@ -43,7 +61,7 @@
     .card-download:hover {
         transform: translateY(-3px);
         box-shadow: 0 8px 18px rgba(0,0,0,0.06);
-        border-color: var(--dourado);
+        border-color: var(--destaque);
     }
 
     .download-titulo { 
@@ -83,8 +101,8 @@
     }
 
     .btn-download:hover { 
-        background-color: var(--dourado); 
-        color: var(--azul-escuro);
+        background-color: var(--destaque); 
+        color: white; 
         transform: translateY(-1px);
         box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
@@ -104,25 +122,34 @@
         <p>Documentos de apoio, apostilas e materiais de estudo para download.</p>
     </div>
 
-    <div class="downloads-grid">
-        {% for item in downloads %}
-        <div class="card-download">
-            <div>
-                <h3 class="download-titulo">{{ item.titulo }}</h3>
-                {% if item.descricao %}
-                    <p class="download-descricao">{{ item.descricao }}</p>
-                {% endif %}
+    {% for secao in secoes %}
+        <div class="secao-download-box">
+            <h3 class="titulo-secao">
+                <i class="{{ secao.icone_fa }}"></i>
+                {{ secao.nome }}
+            </h3>
+
+            <div class="downloads-grid">
+                {% for item in secao.linkitem_set.all %}
+                <div class="card-download">
+                    <div>
+                        <h3 class="download-titulo">{{ item.titulo }}</h3>
+                        {% if item.descricao %}
+                            <p class="download-descricao">{{ item.descricao }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <a href="{{ item.url }}" target="_blank" class="btn-download">
+                        <i class="fa-solid fa-download"></i> Baixar arquivo
+                    </a>
+                </div>
+                {% endfor %}
             </div>
-            
-            <a href="{{ item.url }}" target="_blank" class="btn-download">
-                <i class="fa-solid fa-download"></i> Baixar arquivo
-            </a>
         </div>
-        {% empty %}
-        <p style="grid-column: 1 / -1; text-align: center; color:#888;">
+    {% empty %}
+        <p style="text-align: center; color:#888; padding: 40px;">
             Nenhum arquivo disponível para download no momento.
         </p>
-        {% endfor %}
-    </div>
+    {% endfor %}
 </div>
 {% endblock %}
