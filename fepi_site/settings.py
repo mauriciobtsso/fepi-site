@@ -72,7 +72,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    # CLOUDINARY (Deve vir ANTES de staticfiles)
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'django.contrib.humanize',
     # Minhas Apps
     'core',
@@ -82,7 +85,7 @@ INSTALLED_APPS = [
     'programacao',
     'recursos',
     'doacoes',
-    'intranet', # <--- APP DA INTRANET
+    'intranet', 
     # Libs
     'ckeditor',
 ]
@@ -102,7 +105,7 @@ ROOT_URLCONF = 'fepi_site.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'core' / 'templates'], # Garante que ache a pasta registration
+        'DIRS': [BASE_DIR / 'core' / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -143,14 +146,16 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
+# Arquivos estáticos (CSS, JS) continuam no PythonAnywhere
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles' 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# Configuração de Media (Imagens/Uploads) - Agora vai para o Cloudinary
+MEDIA_URL = '/media/'  # URL base (gerida pelo Cloudinary)
+MEDIA_ROOT = BASE_DIR / 'media' # Fallback local
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
@@ -168,6 +173,18 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'sua_senha_de_app_aq
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # --- CONFIGURAÇÃO DE LOGIN / INTRANET ---
-LOGIN_URL = 'login'               # Nome da rota de login
-LOGIN_REDIRECT_URL = 'area_federado' # Para onde vai depois de logar
-LOGOUT_REDIRECT_URL = 'home'      # Para onde vai depois de sair
+LOGIN_URL = 'login'               
+LOGIN_REDIRECT_URL = 'area_federado' 
+LOGOUT_REDIRECT_URL = 'home'      
+
+# ----------------------------------------------------
+# CONFIGURAÇÃO DO CLOUDINARY (Armazenamento de Arquivos)
+# ----------------------------------------------------
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dym1yoj68',
+    'API_KEY': '283348431723888',
+    'API_SECRET': 'PRLSa_vmaDRFTE0TJnDBsec-N24',
+}
+
+# Define que os uploads (FileField, ImageField) usarão o Cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
