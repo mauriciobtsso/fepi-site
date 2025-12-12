@@ -5,146 +5,52 @@
 
 {% block extra_css %}
 <style>
-    /* Cabeçalho da Página com mais respiro */
-    .header-pagina { 
-        text-align: center; 
-        margin-bottom: 60px;
-    }
+    /* CSS Base mantido */
     .header-pagina h1 { color: var(--azul-escuro); margin-bottom: 10px; font-size: 2rem; }
     .header-pagina p { color: #666; font-size: 1.1rem; }
-
-    /* GRID SEMANAL COMPACTO */
-    .grade-semanal {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        align-items: start;
-    }
-
-    /* O Cartão do Dia */
-    .card-dia {
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        border: 1px solid #e5e7eb;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        transition: 0.3s;
-        height: 100%;
-    }
-    .card-dia:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        border-color: var(--azul-medio);
-    }
-
-    /* Cabeçalho do Card (Nome do Dia) */
-    .dia-header {
-        background-color: var(--azul-escuro);
-        color: white;
-        padding: 10px 15px;
-        font-size: 1rem;
-        font-weight: 700;
-        text-align: center;
-        border-bottom: 3px solid var(--dourado);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        display: flex; /* Para alinhar o ícone */
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    /* Lista de Atividades */
+    .grade-semanal { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; align-items: start; }
+    .card-dia { background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.3s; height: 100%; }
+    .card-dia:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-color: var(--azul-medio); }
+    .dia-header { background-color: var(--azul-escuro); color: white; padding: 10px 15px; font-size: 1rem; font-weight: 700; text-align: center; border-bottom: 3px solid var(--dourado); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .lista-atividades { padding: 0; }
-
-    .item-atividade {
-        padding: 12px 15px;
-        border-bottom: 1px solid #f5f5f5;
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-    }
+    .item-atividade { padding: 12px 15px; border-bottom: 1px solid #f5f5f5; display: flex; flex-direction: column; gap: 3px; }
     .item-atividade:last-child { border-bottom: none; }
-
-    /* Detalhes (Fontes reduzidas) */
-    .horario-badge {
-        display: inline-block;
-        background-color: #f0f9ff;
-        color: var(--azul-medio);
-        font-size: 0.75rem;
-        font-weight: 800;
-        padding: 2px 8px;
-        border-radius: 4px;
-        width: fit-content;
-        border: 1px solid #e0f2fe;
-        display: flex;
-        align-items: center;
-        gap: 5px; /* Para alinhar o relógio */
-    }
-    .horario-badge i { font-size: 0.85rem; }
-
-    .nome-atividade {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #333;
-        line-height: 1.2;
-    }
-
-    .desc-atividade {
-        font-size: 0.8rem;
-        color: #777;
-        margin-top: 2px;
-        line-height: 1.3;
-    }
-
-    /* Responsividade */
-    @media (max-width: 600px) {
-        .grade-semanal { grid-template-columns: 1fr; }
-    }
+    .horario-badge { display: inline-block; background-color: #f0f9ff; color: var(--azul-medio); font-size: 0.75rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; width: fit-content; border: 1px solid #e0f2fe; display: flex; align-items: center; gap: 5px; }
+    .nome-atividade { font-size: 0.95rem; font-weight: 700; color: #333; line-height: 1.2; }
+    .desc-atividade { font-size: 0.8rem; color: #777; margin-top: 2px; line-height: 1.3; }
+    @media (max-width: 600px) { .grade-semanal { grid-template-columns: 1fr; } }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
     
-    <div class="header-pagina">
+    <div class="header-pagina" style="text-align: center; margin-bottom: 20px !important;">
         <h1>Quadro de Horários</h1>
         <p>Atividades regulares de estudo, prática e assistência.</p>
     </div>
 
     {% if atividades %}
-        
         {% regroup atividades by get_dia_display as dias_list %}
-
         <div class="grade-semanal">
             {% for dia in dias_list %}
             <div class="card-dia">
-                <div class="dia-header">
-                    <i class="fa-solid fa-calendar-week"></i>
-                    {{ dia.grouper }}
-                </div>
-                
+                <div class="dia-header"><i class="fa-solid fa-calendar-week"></i> {{ dia.grouper }}</div>
                 <div class="lista-atividades">
                     {% for atv in dia.list %}
                     <div class="item-atividade">
-                        <span class="horario-badge">
-                            <i class="fa-regular fa-clock"></i>
-                            {{ atv.horario }}
-                        </span>
+                        <span class="horario-badge"><i class="fa-regular fa-clock"></i> {{ atv.horario }}</span>
                         <span class="nome-atividade">{{ atv.nome }}</span>
-                        {% if atv.descricao %}
-                            <span class="desc-atividade">{{ atv.descricao }}</span>
-                        {% endif %}
+                        {% if atv.descricao %}<span class="desc-atividade">{{ atv.descricao }}</span>{% endif %}
                     </div>
                     {% endfor %}
                 </div>
             </div>
             {% endfor %}
         </div>
-
     {% else %}
         <div style="text-align: center; padding: 60px; background: white; border-radius: var(--radius);">
-            <p style="color: #888; font-size: 1.1rem;">Nenhuma atividade cadastrada no momento.</p>
+            <p style="color: #888; font-size: 1.1rem;">Nenhuma atividade cadastrada.</p>
         </div>
     {% endif %}
 

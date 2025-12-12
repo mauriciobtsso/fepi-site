@@ -151,6 +151,27 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': 'PRLSa_vmaDRFTE0TJnDBsec-N24',
 }
 
+# --- CONFIGURAÇÃO CKEDITOR ---
+# Pasta onde os uploads feitos pelo editor de texto vão ficar
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+# Opcional: Garante que as imagens aparecem logo após o upload
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+# Configuração básica da barra de ferramentas (opcional, mas útil)
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source', 'Image', 'Table']
+        ],
+        'width': 'auto',
+    },
+}
+
 # Configuração de Armazenamento para Django 5
 STORAGES = {
     # Default: Usa Cloudinary para uploads (Imagens, PDFs da Intranet)

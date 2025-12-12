@@ -7,9 +7,16 @@
 <style>
     /* Cabeçalho do Mês */
     .mes-header {
-        color: var(--azul-escuro); font-size: 1.5rem; font-weight: 700;
-        margin: 30px 0 15px; padding-bottom: 5px; border-bottom: 2px solid var(--azul-claro);
-        text-transform: capitalize; display: flex; align-items: center; gap: 10px;
+        color: var(--azul-escuro); 
+        font-size: 1.5rem; 
+        font-weight: 700;
+        padding-bottom: 10px; 
+        border-bottom: 2px solid var(--azul-claro);
+        text-transform: capitalize; 
+        display: flex; 
+        align-items: center; 
+        gap: 10px;
+        /* O espaçamento agora é controlado diretamente no HTML abaixo */
     }
     .mes-header i { color: var(--destaque); font-size: 1.2rem; } 
 
@@ -52,7 +59,8 @@
     .evento-palestrante { font-size: 0.95rem; color: var(--azul-medio); }
     
     .historico-divider {
-        margin: 60px 0 30px; text-align: center; color: #888; 
+        margin: 80px 0 40px; 
+        text-align: center; color: #888; 
         font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
         display: flex; align-items: center; gap: 20px;
     }
@@ -62,7 +70,8 @@
 
 {% block content %}
 <div class="container">
-    <div class="section-header">
+    
+    <div class="section-header" style="margin-bottom: 60px !important;">
         <div>
             <h2>Calendário de Eventos</h2>
             <p style="color: #666;">Acompanhe a nossa agenda anual.</p>
@@ -71,11 +80,12 @@
 
     {% if futuros %}
         {% for grupo in futuros %}
-            <div class="mes-header">
+            
+            <div class="mes-header" style="margin-top: 60px !important; margin-bottom: 15px !important;">
                 <i class="fa-regular fa-calendar-check"></i> {{ grupo.mes_ano }}
             </div>
+            
             {% for evento in grupo.list %}
-                
                 <div class="evento-card {% if not evento.is_palestra %}curso{% endif %}">
                     <div class="evento-data">
                         <span class="dia-num">{{ evento.sort_date|date:"d" }}</span>
@@ -108,11 +118,10 @@
                         </span>
                     </div>
                 </div>
-
             {% endfor %}
         {% endfor %}
     {% else %}
-        <p style="color:#888; margin-bottom:40px;">Nenhum evento futuro agendado.</p>
+        <p style="color:#888; margin-bottom:40px; text-align:center;">Nenhum evento futuro agendado.</p>
     {% endif %}
 
 
@@ -120,7 +129,7 @@
         <div class="historico-divider">Histórico de Eventos</div>
 
         {% for grupo in passados %}
-            <div class="mes-header" style="color:#888; border-color:#eee;">
+            <div class="mes-header" style="color:#888; border-color:#eee; margin-top: 60px !important; margin-bottom: 30px !important;">
                 <i class="fa-regular fa-calendar-xmark"></i> {{ grupo.mes_ano }}
             </div>
             {% for evento in grupo.list %}

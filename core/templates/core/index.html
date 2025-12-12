@@ -181,7 +181,7 @@
     <div class="top-grid top-section">
         <div class="carousel-container" id="mainCarousel">
             {% for item in carrossel %}
-            <a href="{% if item.data_publicacao %}{% url 'detalhe_noticia' item.id %}{% else %}{% url 'detalhe_curso' item.id %}{% endif %}" class="carousel-slide {% if forloop.first %}active{% endif %}">
+            <a href="{% if item.data_publicacao %}{% url 'detalhe_noticia' item.slug %}{% else %}{% url 'detalhe_curso' item.id %}{% endif %}" class="carousel-slide {% if forloop.first %}active{% endif %}">
                 {% if item.imagem %}
                     <img src="{{ item.imagem.url }}" class="slide-img">
                 {% else %}
@@ -230,7 +230,7 @@
         </div>
         <div class="news-slider-container">
             {% for noticia in noticias %}
-            <a href="{% url 'detalhe_noticia' noticia.id %}" class="news-card">
+            <a href="{% url 'detalhe_noticia' noticia.slug %}" class="news-card">
                 {% if noticia.imagem %}
                     <img src="{{ noticia.imagem.url }}" class="news-thumb">
                 {% else %}
