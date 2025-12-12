@@ -48,8 +48,8 @@ class Cargo(models.Model):
         return self.nome
     
     class Meta:
-        verbose_name = "Cargo"
-        verbose_name_plural = "Cargos"
+        verbose_name = "Cargo Presidência e Departamentos"
+        verbose_name_plural = "Cargos Presidência e Departamentos"
         ordering = ['nome']
 
 

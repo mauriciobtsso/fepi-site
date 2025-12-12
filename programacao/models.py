@@ -16,7 +16,7 @@ class AtividadeSemanal(models.Model):
         return f"{self.get_dia_display()} - {self.nome}"
     class Meta:
         verbose_name = "Atividade Semanal"
-        verbose_name_plural = "Atividades Semanais"
+        verbose_name_plural = "Programação da Semana"
         ordering = ['dia', 'horario']
 
 class Doutrinaria(models.Model):
@@ -29,8 +29,8 @@ class Doutrinaria(models.Model):
     def __str__(self):
         return f"{self.data_hora.strftime('%d/%m')} - {self.tema}"
     class Meta:
-        verbose_name = "Palestra Doutrinária"
-        verbose_name_plural = "Doutrinárias (Agenda)"
+        verbose_name = "Palestra Pública"
+        verbose_name_plural = "Palestras Públicas (Agenda)"
         ordering = ['data_hora']
 
 class CursoEvento(models.Model):
