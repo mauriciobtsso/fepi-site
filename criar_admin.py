@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 USERNAME = "admin"
 EMAIL = "admin@fepi.org.br"
-PASSWORD = "admin"  # <--- TROCA ISTO POR UMA SENHA SEGURA!
+PASSWORD = "Admin@123"  # <--- TROCA ISTO POR UMA SENHA SEGURA!
 
 # 3. Criar o usuário se ele não existir
 def criar_superusuario():
