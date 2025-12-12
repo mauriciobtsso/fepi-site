@@ -1,8 +1,10 @@
 from django.contrib import admin
-from django.urls import path, include # Importante: include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.auth import views as auth_views # Views prontas de login
+from django.views.static import serve # <--- Importante para servir arquivos
+
+from django.contrib.auth import views as auth_views
 
 from recursos.views import links_uteis, downloads
 from doacoes.views import doacoes_view
@@ -11,18 +13,15 @@ from livraria.views import detalhe_livro, livraria_completa
 from noticias.views import detalhe_noticia, lista_noticias
 from centros.views import lista_centros
 from programacao.views import atividades, doutrinarias, calendario, lista_cursos, detalhe_curso
-from intranet.views import area_federado # <--- Nova view
+from intranet.views import area_federado
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
     
     # --- SISTEMA DE LOGIN E INTRANET ---
-    # Rota de Login (usa template padrão registration/login.html)
     path('login/', auth_views.LoginView.as_view(), name='login'),
-    # Rota de Logout
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    # Área Protegida
     path('area-federado/', area_federado, name='area_federado'),
 
     # Institucional
@@ -48,6 +47,14 @@ urlpatterns = [
     path('doar/', doacoes_view, name='doacoes_view'),
 ]
 
+# --- CONFIGURAÇÃO PARA SERVIR ARQUIVOS DE MÍDIA NO RAILWAY ---
+# Isto garante que as fotos aparecem mesmo com DEBUG=False
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {
+        'document_root': settings.MEDIA_ROOT,
+    }),
+]
+
+# Configuração extra para estáticos locais (se necessário)
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
