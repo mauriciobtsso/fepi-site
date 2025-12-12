@@ -1,6 +1,7 @@
 from django.db import models
-from django.db.models.signals import post_save # Para garantir que existe 1 config
+from django.db.models.signals import post_save
 from django.dispatch import receiver
+from ckeditor.fields import RichTextField
 
 # 1. Tabela de Configuração da Livraria (Logo e Redes)
 class LivrariaConfig(models.Model):
@@ -21,7 +22,7 @@ class LivrariaConfig(models.Model):
         return "Configuração Ramiro Gama"
 
 
-# 2. Tabela de Categorias (Mantida)
+# 2. Tabela de Categorias
 class Categoria(models.Model):
     nome = models.CharField(max_length=100, verbose_name="Nome da Categoria")
     
@@ -34,17 +35,21 @@ class Categoria(models.Model):
         ordering = ['nome']
 
 
-# 3. Modelo do Livro (Adicionado Campo Destaque)
+# 3. Modelo do Livro
 class Livro(models.Model):
-    # ... campos existentes
     codigo = models.CharField(max_length=20, verbose_name="Código / ISBN", default="0000")
     titulo = models.CharField(max_length=100, verbose_name="Título")
     autor = models.CharField(max_length=100, verbose_name="Autor")
+    
+    # Ligação à Categoria
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Categoria")
-    descricao = models.TextField(blank=True, null=True, verbose_name="Descrição")
+    
+    # Campo alterado para permitir formatação
+    descricao = RichTextField(blank=True, null=True, verbose_name="Descrição")
+    
     preco = models.DecimalField(max_digits=6, decimal_places=2, default=0.00, verbose_name="Preço")
     
-    # NOVO CAMPO: Destaque Rotativo na Home
+    # Destaque na Home
     destaque_home = models.BooleanField(default=False, verbose_name="Destaque Rotativo na Home")
     
     disponivel = models.BooleanField(default=True, verbose_name="Disponível em Estoque")

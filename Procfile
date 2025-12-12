@@ -1,1 +1,1 @@
-web: gunicorn fepi_site.wsgi:application --log-file -
+web: python manage.py migrate && gunicorn fepi_site.wsgi --log-file -

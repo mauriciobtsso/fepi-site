@@ -1,4 +1,5 @@
 from django.db import models
+from ckeditor.fields import RichTextField
 
 class AtividadeSemanal(models.Model):
     DIAS = (
@@ -22,14 +23,16 @@ class AtividadeSemanal(models.Model):
     class Meta:
         verbose_name = "Atividade Semanal"
         verbose_name_plural = "Atividades Semanais"
-        ordering = ['dia', 'horario'] # Isso pode precisar de ajuste manual na ordem, mas serve por agora
+        ordering = ['dia', 'horario']
 
 class Doutrinaria(models.Model):
     tema = models.CharField(max_length=200)
     palestrante = models.CharField(max_length=200)
     data_hora = models.DateTimeField(verbose_name="Data e Hora")
     imagem = models.ImageField(upload_to='doutrinarias/', verbose_name="Foto de Divulgação (Instagram)")
-    descricao = models.TextField(blank=True, verbose_name="Detalhes")
+    
+    # Campo alterado para permitir formatação (Negrito, Itálico, Listas)
+    descricao = RichTextField(blank=True, verbose_name="Detalhes")
 
     def __str__(self):
         return f"{self.data_hora.strftime('%d/%m')} - {self.tema}"
@@ -44,7 +47,10 @@ class CursoEvento(models.Model):
     data_evento = models.DateTimeField(verbose_name="Data e Horário")
     local = models.CharField(max_length=200, default="Sede da FEPI", verbose_name="Local")
     imagem = models.ImageField(upload_to='cursos/', verbose_name="Cartaz de Divulgação")
-    descricao = models.TextField(verbose_name="Descrição Detalhada")
+    
+    # Campo alterado para permitir formatação
+    descricao = RichTextField(verbose_name="Descrição Detalhada")
+    
     link_inscricao = models.URLField(blank=True, null=True, verbose_name="Link para Inscrição (Forms/Whats)")
     
     def __str__(self):
