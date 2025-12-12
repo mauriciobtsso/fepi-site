@@ -35,7 +35,7 @@ urlpatterns = [
     path('doutrinarias/', doutrinarias, name='doutrinarias'),
     path('calendario/', calendario, name='calendario'),
     path('cursos/', lista_cursos, name='lista_cursos'),
-    path('curso/<int:curso_id>/', detalhe_curso, name='detalhe_curso'),
+    path('curso/<slug:slug>/', detalhe_curso, name='detalhe_curso'),
     
     # Outros
     path('fale-conosco/', fale_conosco, name='fale_conosco'),

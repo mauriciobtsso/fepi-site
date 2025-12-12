@@ -5,71 +5,209 @@
 
 {% block extra_css %}
 <style>
-    .header-pagina { text-align: center; margin-bottom: 50px; }
-    .header-pagina h2 { font-size: 2rem; color: var(--azul-escuro); margin-bottom: 10px; }
-    
-    .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-top: 30px; }
-    
-    .news-card { 
-        background: white; border-radius: 10px; overflow: hidden; 
-        border: 1px solid #e5e7eb; transition: 0.3s; display: flex; flex-direction: column;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-    }
-    .news-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-color: var(--dourado); }
-    
-    .news-img-wrapper { width: 100%; height: 200px; overflow: hidden; }
-    .news-img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-    .news-card:hover .news-img { transform: scale(1.05); }
+/* ======================================================
+   NEWS (usa o mesmo espaçamento do site via .container)
+====================================================== */
+.news-wrapper{
+  width:100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 6px 60px; /* topo fica por conta do .container */
+  box-sizing: border-box;
+}
 
-    .news-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-    .news-date { 
-        font-size: 0.8rem; color: #888; font-weight: bold; text-transform: uppercase; 
-        margin-bottom: 8px; display: flex; align-items: center; gap: 5px; /* Para o ícone */
-    }
-    .news-date i { color: var(--dourado); } /* Cor do ícone de data */
-    
-    .news-title { font-size: 1.1rem; font-weight: 700; color: var(--azul-escuro); margin-bottom: 10px; line-height: 1.3; }
-    .news-desc { font-size: 0.9rem; color: #666; margin-bottom: 15px; flex: 1; }
-    .btn-read { color: var(--azul-medio); font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+/* ======================================================
+   HEADER
+====================================================== */
+.news-header{
+  text-align: center;
+  margin-bottom: 26px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.page-title{
+  color: var(--azul-escuro);
+  font-size: 2.0rem;
+  font-weight: 900;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.page-subtitle{
+  color:#6b7280;
+  font-size: 1.05rem;
+  margin: 10px 0 0;
+}
+
+/* ======================================================
+   LISTA (estilo portal, agradável e leve)
+====================================================== */
+.news-list{
+  display:flex;
+  flex-direction: column;
+}
+
+.news-row{
+  display:flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  text-decoration: none;
+  color: inherit;
+}
+
+.news-row:hover .news-row__title{
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.news-row__thumb{
+  flex: 0 0 220px;
+  width: 220px;
+  height: 130px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eef2f7;
+}
+
+.news-row__thumb img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.news-placeholder{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#b9c2d1;
+  font-size: 2rem;
+}
+
+.news-row__content{
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.news-row__meta{
+  font-size: .78rem;
+  color:#8b95a7;
+  font-weight: 900;
+  letter-spacing: .35px;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+  display:flex;
+  align-items:center;
+  gap: 8px;
+}
+
+.news-row__meta .dot{
+  opacity:.6;
+}
+
+.news-row__title{
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--azul-escuro);
+  margin: 0 0 8px;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.news-row__summary{
+  margin: 0;
+  color:#4b5563;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ======================================================
+   MOBILE
+====================================================== */
+@media (max-width: 720px){
+  .page-title{ font-size: 1.7rem; }
+
+  .news-row{
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 0;
+  }
+
+  .news-row__thumb{
+    width: 100%;
+    height: 200px;
+    flex: 0 0 auto;
+  }
+
+  .news-row__title{
+    font-size: 1.12rem;
+  }
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <div class="header-pagina">
-        <h2>Notícias e Artigos</h2>
-        <p>Fique por dentro de tudo que acontece na FEPI.</p>
+
+  <div class="news-wrapper">
+
+    <div class="news-header">
+      <h1 class="page-title">Notícias e Atualizações</h1>
+      <p class="page-subtitle">Acompanhe as novidades e comunicados da FEPI.</p>
     </div>
 
-    <div class="news-grid">
+    {% if noticias %}
+      <div class="news-list">
         {% for noticia in noticias %}
-        <div class="news-card">
-            <a href="{% url 'detalhe_noticia' noticia.slug %}" class="img-wrapper">
-                {% if noticia.imagem %}
-                    <img src="{{ noticia.imagem.url }}" class="news-img" alt="{{ noticia.titulo }}">
-                {% else %}
-                    <div class="news-img" style="height:200px; display:flex; align-items:center; justify-content:center; color:#ccc;">FEPI</div>
-                {% endif %}
-            </a>
-            <div class="news-body">
-                <span class="news-date">
-                    <i class="fa-solid fa-calendar-alt"></i> {{ noticia.data_publicacao|date:"d M Y" }}
-                </span>
-                
-                <a href="{% url 'detalhe_noticia' noticia.slug %}" style="text-decoration:none;">
-                    <span class="news-title">{{ noticia.titulo }}</span>
-                </a>
-                
-                <p class="news-desc">{{ noticia.resumo|truncatechars:100 }}</p>
-                <a href="{% url 'detalhe_noticia' noticia.slug %}" class="btn-read">Ler mais →</a>
+          <a href="{% url 'detalhe_noticia' noticia.slug %}" class="news-row">
+
+            <div class="news-row__thumb">
+              {% if noticia.imagem %}
+                <img src="{{ noticia.imagem.url }}" alt="{{ noticia.titulo }}">
+              {% else %}
+                <div class="news-placeholder">📰</div>
+              {% endif %}
             </div>
-        </div>
-        {% empty %}
-        <div style="grid-column: 1 / -1; text-align: center; padding: 60px;">
-            <p>Nenhuma notícia encontrada.</p>
-        </div>
+
+            <div class="news-row__content">
+              <p class="news-row__meta">
+                {{ noticia.data_publicacao|date:"d/m/Y" }}
+                <span class="dot">•</span>
+                {{ noticia.data_publicacao|date:"H:i" }}
+              </p>
+
+              <h3 class="news-row__title">{{ noticia.titulo }}</h3>
+
+              <p class="news-row__summary">
+                {% if noticia.resumo %}
+                  {{ noticia.resumo }}
+                {% else %}
+                  {{ noticia.conteudo|striptags|truncatewords:26 }}
+                {% endif %}
+              </p>
+            </div>
+
+          </a>
         {% endfor %}
-    </div>
+      </div>
+    {% else %}
+      <div style="text-align:center; padding:60px; color:#888; border:1px dashed #ddd; border-radius:14px;">
+        <p style="margin:0;">Nenhuma notícia publicada.</p>
+      </div>
+    {% endif %}
+
+  </div>
 
 </div>
 {% endblock %}

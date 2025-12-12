@@ -54,13 +54,12 @@
         font-weight: bold; font-size: 0.75rem; text-transform: uppercase; display: inline-block; margin-bottom: 10px;
     }
     
-    /* CORREÇÃO DA COR DO TÍTULO AQUI */
     .slide-title { 
         font-size: 1.8rem; 
         font-weight: 800; 
         margin: 0 0 5px 0; 
         line-height: 1.2; 
-        color: white !important; /* FORÇA BRANCO */
+        color: white !important;
         text-shadow: 0 0 8px rgba(0,0,0,0.9); 
     }
     
@@ -92,7 +91,7 @@
 
     /* --- 2. NOTÍCIAS (Slider Horizontal) --- */
     .section-noticias {
-    margin-top: 30px; 
+        margin-top: 30px; 
     }
 
     .news-slider-container {
@@ -181,7 +180,8 @@
     <div class="top-grid top-section">
         <div class="carousel-container" id="mainCarousel">
             {% for item in carrossel %}
-            <a href="{% if item.data_publicacao %}{% url 'detalhe_noticia' item.slug %}{% else %}{% url 'detalhe_curso' item.id %}{% endif %}" class="carousel-slide {% if forloop.first %}active{% endif %}">
+            <a href="{% if item.data_publicacao %}{% url 'detalhe_noticia' item.slug %}{% else %}{% url 'detalhe_curso' item.slug %}{% endif %}" 
+               class="carousel-slide {% if forloop.first %}active{% endif %}">
                 {% if item.imagem %}
                     <img src="{{ item.imagem.url }}" class="slide-img">
                 {% else %}
@@ -282,7 +282,8 @@
                 <a href="{% url 'livraria' %}" class="btn-link">Catálogo →</a>
             </div>
             <div class="livros-mini-grid">
-                {% for livro in livros %} <a href="{% url 'detalhe_livro' livro.id %}" class="livro-mini">
+                {% for livro in livros %} 
+                <a href="{% url 'detalhe_livro' livro.id %}" class="livro-mini">
                     {% if livro.capa %}
                         <img src="{{ livro.capa.url }}" alt="{{ livro.titulo }}">
                     {% else %}

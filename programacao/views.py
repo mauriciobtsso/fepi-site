@@ -84,12 +84,17 @@ def calendario(request):
     })
 
 def lista_cursos(request):
-    hoje = timezone.now()
-    futuros = CursoEvento.objects.filter(data_evento__gte=hoje).order_by('data_evento')
-    passados = CursoEvento.objects.filter(data_evento__lt=hoje).order_by('-data_evento')
+    agora = timezone.now()
+    futuros = CursoEvento.objects.filter(data_evento__gte=agora).order_by('data_evento')
+    passados = CursoEvento.objects.filter(data_evento__lt=agora).order_by('-data_evento')
     
-    return render(request, 'programacao/cursos.html', {'futuros': futuros, 'passados': passados})
+    return render(request, 'programacao/cursos.html', {
+        'futuros': futuros,
+        'passados': passados
+    })
 
-def detalhe_curso(request, curso_id):
-    curso = get_object_or_404(CursoEvento, pk=curso_id)
+# CORREÇÃO AQUI: Recebe 'slug' em vez de 'curso_id'
+def detalhe_curso(request, slug):
+    # Busca pelo campo slug
+    curso = get_object_or_404(CursoEvento, slug=slug)
     return render(request, 'programacao/detalhe_curso.html', {'curso': curso})
