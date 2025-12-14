@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from ckeditor.fields import RichTextField
+from django.utils.text import slugify
 
 # 1. Tabela de Configuração da Livraria (Logo e Redes)
 class LivrariaConfig(models.Model):
@@ -39,12 +40,16 @@ class Categoria(models.Model):
 class Livro(models.Model):
     codigo = models.CharField(max_length=20, verbose_name="Código / ISBN", default="0000")
     titulo = models.CharField(max_length=100, verbose_name="Título")
+    
+    # NOVO: Slug para link amigável (ex: /livro/nosso-lar)
+    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True, verbose_name="Link Amigável")
+    
     autor = models.CharField(max_length=100, verbose_name="Autor")
     
     # Ligação à Categoria
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Categoria")
     
-    # Campo alterado para permitir formatação
+    # Campo alterado para permitir formatação (RichText)
     descricao = RichTextField(blank=True, null=True, verbose_name="Descrição")
     
     preco = models.DecimalField(max_digits=6, decimal_places=2, default=0.00, verbose_name="Preço")
@@ -55,6 +60,12 @@ class Livro(models.Model):
     disponivel = models.BooleanField(default=True, verbose_name="Disponível em Estoque")
     capa = models.ImageField(upload_to='capas/', blank=True, null=True, verbose_name="Capa do Livro")
     
+    def save(self, *args, **kwargs):
+        # Garante que o slug existe antes de salvar
+        if not self.slug:
+            self.slug = slugify(self.titulo)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"[{self.codigo}] {self.titulo}"
         

@@ -1,11 +1,25 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Livro, Categoria  # <--- Importante: Importar Categoria
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Livro, Categoria
 from core.models import InformacaoContato
-from django.db.models import Q 
+from django.db.models import Q
+from django.utils.text import slugify
 import re
 
-def detalhe_livro(request, livro_id):
-    livro = get_object_or_404(Livro, pk=livro_id)
+def detalhe_livro(request, slug):
+    # LÓGICA DE MIGRAÇÃO AUTOMÁTICA (Sem Shell)
+    # Verifica se o 'slug' recebido é na verdade um número (ID antigo)
+    if slug.isdigit():
+        livro = get_object_or_404(Livro, pk=int(slug))
+        # Se o livro ainda não tem slug, cria agora
+        if not livro.slug:
+            livro.slug = slugify(livro.titulo)
+            livro.save()
+        # Redireciona para a URL correta com o novo slug
+        return redirect('detalhe_livro', slug=livro.slug)
+    
+    # Se não é número, busca pelo slug normalmente
+    livro = get_object_or_404(Livro, slug=slug)
+    
     contato = InformacaoContato.objects.first()
     
     whatsapp_num = ""
@@ -14,6 +28,7 @@ def detalhe_livro(request, livro_id):
     if contato and contato.telefone:
         nums = re.sub(r'\D', '', contato.telefone)
         whatsapp_num = f"55{nums}"
+        # Prepara mensagem para URL
         whatsapp_msg = f"Olá, gostaria de adquirir o livro: *{livro.titulo}* (Cód: {livro.codigo})"
 
     return render(request, 'livraria/detalhe_livro.html', {
@@ -25,23 +40,17 @@ def detalhe_livro(request, livro_id):
 
 def livraria_completa(request):
     query = request.GET.get('q')
-    categoria_id = request.GET.get('cat') # Recebe o ID da categoria
+    categoria_id = request.GET.get('cat') 
     
     livros = Livro.objects.all().order_by('titulo')
 
-    # Filtro de Busca (Texto)
     if query:
         livros = livros.filter(Q(titulo__icontains=query) | Q(autor__icontains=query))
     
-    # Filtro de Categoria (Banco de Dados)
     if categoria_id:
         livros = livros.filter(categoria__id=categoria_id)
 
-    # --- A CORREÇÃO ESTÁ AQUI ---
-    # Antes estava: categorias = Livro.CATEGORIAS (Isso causava o erro)
-    # Agora buscamos no banco:
     categorias = Categoria.objects.all()
-    
     contato = InformacaoContato.objects.first()
 
     contexto = {

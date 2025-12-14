@@ -5,17 +5,16 @@
 
 {% block extra_css %}
 <style>
-    /* Área Principal (Fundo Cinza do Site) */
+    /* Área Principal */
     .detail-wrapper {
         padding: 40px 20px;
         display: flex;
-        justify-content: center; /* Centraliza o cartão na tela */
+        justify-content: center;
     }
 
-    /* O Cartão do Livro (Agora com tamanho limitado) */
+    /* O Cartão do Livro */
     .livro-card-container {
         display: grid;
-        /* Coluna da Imagem (300px fixo) | Coluna Texto (O resto) */
         grid-template-columns: 300px 1fr; 
         gap: 40px;
         background: white;
@@ -23,8 +22,6 @@
         border-radius: 12px;
         box-shadow: 0 5px 25px rgba(0,0,0,0.08);
         border: 1px solid #eee;
-        
-        /* O SEGREDO: Limita a largura para não ficar gigante */
         max-width: 950px; 
         width: 100%;
     }
@@ -32,7 +29,6 @@
     /* Capa */
     .capa-box {
         width: 100%;
-        /* Altura fixa para padronizar */
         height: 420px; 
         background-color: #f9f9f9;
         border-radius: 8px;
@@ -47,8 +43,7 @@
     .capa-full { 
         width: 100%; 
         height: 100%; 
-        object-fit: contain; /* Mostra a capa inteira sem cortar, com bordas brancas se preciso */
-        /* Se preferires preencher tudo (cortando bordas), muda para 'cover' */
+        object-fit: contain; 
     }
 
     /* Informações */
@@ -76,10 +71,15 @@
     }
 
     .sinopse-titulo { font-weight: 700; color: #333; margin-bottom: 8px; display: block; }
+    
     .sinopse-texto { 
         color: #555; line-height: 1.7; margin-bottom: 30px; 
         font-size: 0.95rem; text-align: justify;
     }
+    
+    /* Garante que o HTML rico não quebre o layout */
+    .sinopse-texto p { margin-bottom: 15px; }
+    .sinopse-texto ul, .sinopse-texto ol { margin-left: 20px; margin-bottom: 15px; }
 
     /* Box de Compra */
     .compra-area {
@@ -87,7 +87,7 @@
         border: 1px dashed var(--azul-medio);
         padding: 20px;
         border-radius: 10px;
-        margin-top: auto; /* Empurra para o fundo */
+        margin-top: auto; 
     }
 
     .preco-big {
@@ -105,17 +105,16 @@
     }
     .btn-whatsapp:hover { background-color: #128C7E; transform: translateY(-2px); }
 
-    /* Botão Voltar */
     .btn-voltar {
         display: inline-block; color: #666; text-decoration: none; 
         font-weight: 600; margin-bottom: 20px; font-size: 0.9rem;
     }
     .btn-voltar:hover { color: var(--azul-escuro); text-decoration: underline; }
 
-    /* Responsividade Mobile */
+    /* Responsividade */
     @media (max-width: 800px) {
         .livro-card-container { 
-            grid-template-columns: 1fr; /* Uma coluna */
+            grid-template-columns: 1fr; 
             padding: 25px;
             gap: 25px;
         }
@@ -144,7 +143,13 @@
             </div>
 
             <div class="info-box">
-                <span class="cat-badge">{{ livro.get_categoria_display }}</span>
+                <span class="cat-badge">
+                    {% if livro.categoria %}
+                        {{ livro.categoria.nome }}
+                    {% else %}
+                        Geral
+                    {% endif %}
+                </span>
                 
                 <h1 class="titulo-main">{{ livro.titulo }}</h1>
                 <div class="autor-main">Por: {{ livro.autor }}</div>
@@ -154,7 +159,7 @@
                 <span class="sinopse-titulo">Sobre a obra:</span>
                 <div class="sinopse-texto">
                     {% if livro.descricao %}
-                        {{ livro.descricao|linebreaks }}
+                        {{ livro.descricao|safe }}
                     {% else %}
                         <p>Descrição não disponível.</p>
                     {% endif %}

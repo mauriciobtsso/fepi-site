@@ -17,5 +17,7 @@ class CategoriaAdmin(admin.ModelAdmin):
 class LivroAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'titulo', 'autor', 'categoria', 'destaque_home', 'preco', 'disponivel')
     list_filter = ('categoria', 'destaque_home', 'disponivel')
-    list_editable = ('destaque_home', 'disponivel') # Adicionei disponivel para facilitar
+    list_editable = ('destaque_home', 'disponivel') 
     search_fields = ('titulo', 'autor', 'codigo')
+    # O slug é preenchido automaticamente enquanto digita o título
+    prepopulated_fields = {'slug': ('titulo',)}

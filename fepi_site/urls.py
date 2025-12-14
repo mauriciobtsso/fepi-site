@@ -1,12 +1,12 @@
 from django.contrib import admin
-from django.urls import path, include, re_path # <--- include é essencial aqui
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve 
 
 from django.contrib.auth import views as auth_views
 
-# Views diretas (Mantive as que não têm urls.py próprios ainda)
+# Views diretas
 from recursos.views import links_uteis, downloads
 from doacoes.views import doacoes_view
 from core.views import home, institucional, fale_conosco, privacidade
@@ -14,8 +14,6 @@ from livraria.views import detalhe_livro, livraria_completa
 from centros.views import lista_centros
 from programacao.views import atividades, doutrinarias, calendario, lista_cursos, detalhe_curso
 from intranet.views import area_federado
-
-# NOTA: Removi a importação de 'noticias.views' porque agora usamos o include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,19 +39,19 @@ urlpatterns = [
     path('fale-conosco/', fale_conosco, name='fale_conosco'),
     path('livraria/', livraria_completa, name='livraria'),
     path('centros/', lista_centros, name='lista_centros'),
-    path('livro/<int:livro_id>/', detalhe_livro, name='detalhe_livro'),
     
-    # --- MUDANÇA AQUI: Incluir as URLs da app Noticias ---
-    # Isto faz o Django ler o arquivo noticias/urls.py que criaste
-    path('noticias/', include('noticias.urls')), # O prefixo será /noticias/...
+    # ALTERADO: Agora usa slug E o prefixo é 'livraria/' como solicitado
+    # IMPORTANTE: Mantemos o nome 'detalhe_livro' para compatibilidade
+    path('livraria/<slug:slug>/', detalhe_livro, name='detalhe_livro'),
     
-    # O path antigo foi removido daqui para não dar conflito
+    # Notícias
+    path('noticias/', include('noticias.urls')),
 
     path('links-uteis/', links_uteis, name='links_uteis'),
     path('downloads/', downloads, name='downloads'),
     path('doar/', doacoes_view, name='doacoes_view'),
     
-    # Inclusão do CKEditor (Importante para o upload de imagens funcionar)
+    # CKEditor
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
