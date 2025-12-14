@@ -116,7 +116,9 @@
     <h2 style="margin-top: 60px;">Outros Departamentos e Coordenadorias</h2>
     <p>Responsáveis pelas áreas de estudo, evangelização e assistência:</p>
     
-<div class="diretoria-box">
+    {% regroup outros_departamentos by tipo as membros_departamentos %}
+
+    <div class="diretoria-box">
         {% for departamento in membros_departamentos %}
             <h3 style="margin-top: 10px; font-size: 1.2rem; color: var(--azul-medio);">
                 {{ departamento.grouper.nome }}
