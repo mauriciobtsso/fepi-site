@@ -21,7 +21,15 @@ from .forms import ContatoForm
 def get_latest_youtube_video_id(channel_id):
     try:
         url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
-        response = requests.get(url, timeout=4)
+        
+        # O SEGREDO: Adicionar um User-Agent para simular um navegador real
+        # Sem isso, o YouTube bloqueia requisições vindas de servidores (como o Railway)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        
+        response = requests.get(url, headers=headers, timeout=5)
+        
         if response.status_code == 200:
             root = ET.fromstring(response.content)
             # Namespaces do XML do YouTube
@@ -30,8 +38,12 @@ def get_latest_youtube_video_id(channel_id):
             if entry:
                 video_id = entry.find('yt:videoId', ns).text
                 return video_id
+        else:
+            print(f"Erro YouTube: Status {response.status_code}")
+            
     except Exception as e:
         print(f"Erro ao buscar YouTube: {e}")
+        
     return None
 
 
