@@ -121,7 +121,7 @@
     .insta-compact-grid {
         width: 100%;
         display: grid;
-        grid-template-columns: 1fr;   /* 1x1 */
+        grid-template-columns: 1fr;
         gap: 12px;
         align-content: start;
     }
@@ -146,7 +146,7 @@
     .insta-mini-media {
         position: relative;
         width: 100%;
-        height: 100%;               /* ocupa tudo */
+        height: 100%;
         background: #eef2f7;
         overflow: hidden;
         border-radius: 14px;
@@ -251,63 +251,62 @@
         display: block;
     }
 
-    /* --- 4. LIVRARIA (mais cards, preenchendo melhor) --- */
-.books-slider-container{
-    display: flex;
-    overflow-x: auto;
-    gap: 18px;
-    padding-bottom: 16px;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: thin;
-    scrollbar-color: var(--azul-medio) #f0f0f0;
-}
+    /* --- 4. LIVRARIA (slider 6 por tela) --- */
+    .books-slider-container{
+        display: flex;
+        overflow-x: auto;
+        gap: 18px;
+        padding-bottom: 16px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: thin;
+        scrollbar-color: var(--azul-medio) #f0f0f0;
+    }
 
-.book-card{
-    flex: 0 0 calc((100% - (5 * 18px)) / 6);
-    scroll-snap-align: start;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    transition: .25s;
-}
+    .book-card{
+        flex: 0 0 calc((100% - (5 * 18px)) / 6);
+        scroll-snap-align: start;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        transition: .25s;
+    }
 
-.book-card:hover{
-    transform: translateY(-4px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-}
+    .book-card:hover{
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    }
 
-.book-cover{
-    height: 180px;
-    width: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
+    .book-cover{
+        height: 180px;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
 
-.book-title{
-    font-size: .9rem;
-    color: var(--azul-escuro);
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 8px;
-    min-height: calc(1.2em * 2);
-}
+    .book-title{
+        font-size: .9rem;
+        color: var(--azul-escuro);
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 8px;
+        min-height: calc(1.2em * 2);
+    }
 
-.book-price{
-    margin-top: auto;
-    font-size: .82rem;
-    color: #fff;
-    background: var(--destaque);
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-weight: 800;
-    align-self: center;
-}
-
+    .book-price{
+        margin-top: auto;
+        font-size: .82rem;
+        color: #fff;
+        background: var(--destaque);
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-weight: 800;
+        align-self: center;
+    }
 
     /* --- 5. ACESSOS RÁPIDOS --- */
     .quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; margin-bottom: 40px;}
@@ -323,46 +322,42 @@
     .quick-card strong { display: block; font-size: 1.1rem; font-weight: 700; }
 
     /* MOBILE */
-/* MOBILE: empilhar e deixar Instagram/YouTube em bloco 16:9 */
-@media (max-width: 900px){
+    @media (max-width: 900px){
+        .top-grid,
+        .two-col-grid{
+            display: grid;
+            grid-template-columns: 1fr !important;
+            gap: 30px !important;
+        }
 
-  /* garante 1 coluna */
-  .top-grid,
-  .two-col-grid{
-    display: grid;
-    grid-template-columns: 1fr !important;
-    gap: 30px !important;
-  }
+        .carousel-container{ height: 300px !important; }
+        .insta-compact{ height: auto !important; }
 
-  /* tamanhos */
-  .carousel-container{ height: 300px !important; }
-  .insta-compact{ height: auto !important; }
+        .insta-compact-body{ padding: 12px !important; }
+        .insta-mini-card{ height: auto !important; }
+        .insta-mini-media{
+            height: auto !important;
+            aspect-ratio: 16 / 9 !important;
+        }
 
-  /* transforma o post do insta num “player” horizontal */
-  .insta-compact-body{ padding: 12px !important; }
-  .insta-mini-card{ height: auto !important; }
-  .insta-mini-media{
-    height: auto !important;
-    aspect-ratio: 16 / 9 !important;
-  }
+        .book-card{
+            flex: 0 0 220px; /* melhor no mobile */
+        }
 
-  /* YouTube sempre full width */
-  .youtube-embed-wrap{ aspect-ratio: 16 / 9 !important; }
-}
+        .youtube-embed-wrap{ aspect-ratio: 16 / 9 !important; }
+    }
 
-@media (max-width: 520px){
-  .carousel-container{ height: 260px !important; }
-  .insta-mini-overlay{ font-size: .85rem !important; -webkit-line-clamp: 2 !important; }
-}
-
-
+    @media (max-width: 520px){
+        .carousel-container{ height: 260px !important; }
+        .insta-mini-overlay{ font-size: .85rem !important; -webkit-line-clamp: 2 !important; }
+        .book-card{ flex: 0 0 80%; }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
 
-    {# ===================== TOPO: CARROSSEL + INSTAGRAM (1x1) ===================== #}
     <div class="top-grid top-section">
 
         <div class="carousel-container" id="mainCarousel">
@@ -437,7 +432,6 @@
 
     </div>
 
-    {# ===================== NOTÍCIAS ===================== #}
     <section class="section-padrao section-noticias">
         <div class="section-header">
             <h2>Fique por Dentro</h2>
@@ -463,7 +457,6 @@
         </div>
     </section>
 
-    {# ===================== EVENTOS + YOUTUBE (lado a lado) ===================== #}
     <section class="two-col-grid section-padrao" style="border:none; padding-bottom:0; margin-bottom:50px;">
 
         <div>
@@ -503,21 +496,21 @@
             </div>
 
             <div class="media-box-white">
-                {% if latest_video_id %}
+                {% if youtube_cfg and youtube_cfg.youtube_mode == 'off' %}
+                    <div style="display:flex; align-items:center; justify-content:center; color:#94a3b8; font-weight:800; padding:28px;">
+                        Vídeo Off
+                    </div>
+
+                {% elif latest_video_id %}
                     <div class="youtube-embed-wrap">
                         <iframe
                             src="https://www.youtube.com/embed/{{ latest_video_id }}?rel=0&controls=1"
                             allowfullscreen></iframe>
                     </div>
-                {% elif config.youtube_video_id %}
-                    <div class="youtube-embed-wrap">
-                        <iframe
-                            src="https://www.youtube.com/embed/{{ config.youtube_video_id }}?rel=0&controls=1"
-                            allowfullscreen></iframe>
-                    </div>
+
                 {% else %}
                     <div style="display:flex; align-items:center; justify-content:center; color:#94a3b8; font-weight:800; padding:28px;">
-                        Vídeo Off
+                        Configure o YouTube no Admin
                     </div>
                 {% endif %}
             </div>
@@ -525,32 +518,30 @@
 
     </section>
 
-    {# ===================== LIVRARIA (mais cards) ===================== #}
-<section class="section-padrao">
-    <div class="section-header">
-        <h2>Livraria</h2>
-        <a href="{% url 'livraria' %}" class="btn-link">Catálogo →</a>
-    </div>
+    <section class="section-padrao">
+        <div class="section-header">
+            <h2>Livraria</h2>
+            <a href="{% url 'livraria' %}" class="btn-link">Catálogo →</a>
+        </div>
 
-    <div class="books-slider-container">
-        {% for livro in livros %}
-            <a href="{% url 'detalhe_livro' livro.id %}" class="book-card">
-                {% if livro.capa %}
-                    <img src="{{ livro.capa.url }}" alt="{{ livro.titulo }}" class="book-cover">
-                {% else %}
-                    <div class="book-cover" style="background:#eee;"></div>
-                {% endif %}
+        <div class="books-slider-container">
+            {% for livro in livros %}
+                <a href="{% url 'detalhe_livro' livro.id %}" class="book-card">
+                    {% if livro.capa %}
+                        <img src="{{ livro.capa.url }}" alt="{{ livro.titulo }}" class="book-cover">
+                    {% else %}
+                        <div class="book-cover" style="background:#eee;"></div>
+                    {% endif %}
 
-                <h4 class="book-title">{{ livro.titulo|truncatechars:36 }}</h4>
-                <span class="book-price">R$ {{ livro.preco }}</span>
-            </a>
-        {% empty %}
-            <p style="color:#888;">Nenhum livro cadastrado.</p>
-        {% endfor %}
-    </div>
-</section>
+                    <h4 class="book-title">{{ livro.titulo|truncatechars:36 }}</h4>
+                    <span class="book-price">R$ {{ livro.preco }}</span>
+                </a>
+            {% empty %}
+                <p style="color:#888;">Nenhum livro cadastrado.</p>
+            {% endfor %}
+        </div>
+    </section>
 
-    {# ===================== ACESSO RÁPIDO ===================== #}
     <section>
         <div class="section-header" style="margin-top:20px;"><h2>Acesso Rápido</h2></div>
         <div class="quick-grid">
