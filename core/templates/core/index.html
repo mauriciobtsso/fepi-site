@@ -323,14 +323,37 @@
     .quick-card strong { display: block; font-size: 1.1rem; font-weight: 700; }
 
     /* MOBILE */
+/* MOBILE: empilhar e deixar Instagram/YouTube em bloco 16:9 */
 @media (max-width: 900px){
-  .book-card{ flex: 0 0 220px; }
+
+  /* garante 1 coluna */
+  .top-grid,
+  .two-col-grid{
+    display: grid;
+    grid-template-columns: 1fr !important;
+    gap: 30px !important;
+  }
+
+  /* tamanhos */
+  .carousel-container{ height: 300px !important; }
+  .insta-compact{ height: auto !important; }
+
+  /* transforma o post do insta num “player” horizontal */
+  .insta-compact-body{ padding: 12px !important; }
+  .insta-mini-card{ height: auto !important; }
+  .insta-mini-media{
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+  }
+
+  /* YouTube sempre full width */
+  .youtube-embed-wrap{ aspect-ratio: 16 / 9 !important; }
 }
 
 @media (max-width: 520px){
-  .book-card{ flex: 0 0 80%; }
+  .carousel-container{ height: 260px !important; }
+  .insta-mini-overlay{ font-size: .85rem !important; -webkit-line-clamp: 2 !important; }
 }
-
 
 
 </style>
