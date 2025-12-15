@@ -1,5 +1,3 @@
-# core/views.py
-
 from django.shortcuts import render
 from django.utils import timezone
 from itertools import chain
@@ -7,6 +5,8 @@ from django.db.models import Q
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.cache import cache
+import requests
+import xml.etree.ElementTree as ET
 
 from .models import (
     ConfiguracaoHome, PostInstagram, InformacaoContato,
@@ -17,7 +17,22 @@ from noticias.models import Noticia
 from programacao.models import Doutrinaria, CursoEvento
 from .forms import ContatoForm
 
-from core.utils.youtube import get_latest_youtube_video_id
+# Função auxiliar interna (para não depender de outros arquivos)
+def get_latest_youtube_video_id(channel_id):
+    try:
+        url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
+        response = requests.get(url, timeout=4)
+        if response.status_code == 200:
+            root = ET.fromstring(response.content)
+            # Namespaces do XML do YouTube
+            ns = {'yt': 'http://www.youtube.com/xml/schemas/2015', 'atom': 'http://www.w3.org/2005/Atom'}
+            entry = root.find('atom:entry', ns)
+            if entry:
+                video_id = entry.find('yt:videoId', ns).text
+                return video_id
+    except Exception as e:
+        print(f"Erro ao buscar YouTube: {e}")
+    return None
 
 
 def home(request):
@@ -28,7 +43,7 @@ def home(request):
     proximos_cursos = CursoEvento.objects.filter(data_evento__gte=agora).order_by('data_evento')[:3]
     lista_carrossel = list(chain(ultimas_noticias, proximos_cursos))
 
-    # 2. AGENDA (3 próximos eventos, unificando tipos)
+    # 2. AGENDA
     palestras_agenda = Doutrinaria.objects.filter(data_hora__gte=agora)
     cursos_agenda = CursoEvento.objects.filter(data_evento__gte=agora)
 
@@ -40,17 +55,15 @@ def home(request):
     eventos_agenda = []
     for item in eventos_agenda_temp[:3]:
         if hasattr(item, 'tema'):
-            # Doutrinaria
             item.tema = item.tema
             item.palestrante = item.palestrante
         else:
-            # CursoEvento
             item.tema = item.titulo
             item.palestrante = item.local
             item.data_hora = item.data_evento
         eventos_agenda.append(item)
 
-    # 3. LIVROS (12, preenchendo com fallback)
+    # 3. LIVROS
     lista_livros = list(Livro.objects.filter(destaque_home=True).order_by('?')[:12])
     if len(lista_livros) < 12:
         faltam = 12 - len(lista_livros)
@@ -66,7 +79,7 @@ def home(request):
     livraria_config = LivrariaConfig.objects.first()
     posts_insta = PostInstagram.objects.all()[:4]
 
-    # 5. YOUTUBE (modo AUTO/FIXED/OFF via ConfiguracaoYouTube + cache)
+    # 5. YOUTUBE
     youtube_cfg = ConfiguracaoYouTube.objects.first()
     latest_video_id = None
 
@@ -80,17 +93,16 @@ def home(request):
             fixed_id = (youtube_cfg.youtube_video_id or "").strip()
             latest_video_id = fixed_id or None
 
-        else:
+        else: # modo auto
             channel_id = (youtube_cfg.youtube_channel_id or "").strip()
             cache_key = f"fepi_latest_youtube_video_id:{channel_id or 'no_channel'}"
             latest_video_id = cache.get(cache_key)
 
             if not latest_video_id and channel_id:
-                try:
-                    latest_video_id = get_latest_youtube_video_id(channel_id)
-                    cache.set(cache_key, latest_video_id, 60 * 30)  # 30 min
-                except Exception:
-                    latest_video_id = None
+                latest_video_id = get_latest_youtube_video_id(channel_id)
+                # Salva no cache por 30 min se encontrou
+                if latest_video_id:
+                    cache.set(cache_key, latest_video_id, 60 * 30)
 
     contexto = {
         'carrossel': lista_carrossel,
@@ -101,9 +113,8 @@ def home(request):
         'contato': contato,
         'livraria_config': livraria_config,
         'instagram': posts_insta,
-
         'youtube_cfg': youtube_cfg,
-        'latest_video_id': latest_video_id,
+        'youtube_video_id': latest_video_id, # Usar este nome no template
     }
     return render(request, 'core/index.html', contexto)
 

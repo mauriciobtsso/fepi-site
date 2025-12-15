@@ -1,4 +1,3 @@
-# core/admin.py
 from django.contrib import admin
 from django.utils.html import format_html
 
@@ -44,7 +43,7 @@ class ConfiguracaoYouTubeAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("YouTube", {
-            "fields": ("youtube_mode", "youtube_channel_id", "youtube_video_id", "youtube_preview")
+            'fields': ("youtube_mode", "youtube_channel_id", "youtube_video_id", "youtube_preview")
         }),
     )
 
