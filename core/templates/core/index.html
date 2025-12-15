@@ -214,11 +214,20 @@
         </div>
 
         <div class="youtube-box">
-            <div class="yt-header"><span style="color:red; margin-right:5px;">▶</span> TV FEPI Destaque</div>
-            {% if config.youtube_video_id %}
-                <iframe class="video-frame" src="https://www.youtube.com/embed/{{ config.youtube_video_id }}?rel=0&controls=1" allowfullscreen></iframe>
+            {% if latest_video_id %}
+              <iframe class="video-frame"
+                      src="https://www.youtube.com/embed/{{ latest_video_id }}?rel=0&controls=1"
+                      allowfullscreen></iframe>
+
+            {% elif config.youtube_video_id %}
+              <iframe class="video-frame"
+                      src="https://www.youtube.com/embed/{{ config.youtube_video_id }}?rel=0&controls=1"
+                      allowfullscreen></iframe>
+
             {% else %}
-                <div style="display:flex; align-items:center; justify-content:center; height:100%; color:white;">Vídeo Off</div>
+              <div style="display:flex; align-items:center; justify-content:center; height:100%; color:white;">
+                Vídeo Off
+              </div>
             {% endif %}
         </div>
     </div>
