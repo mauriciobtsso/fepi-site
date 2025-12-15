@@ -134,6 +134,51 @@ class ConfiguracaoHome(models.Model):
     def __str__(self):
         return "Configuração da Página Inicial"
 
+# 4.1 Configuração do YouTube (separado da Home)
+class ConfiguracaoYouTube(models.Model):
+    YT_MODE_CHOICES = (
+        ('auto', 'Automático (último do canal)'),
+        ('fixed', 'Fixo (ID informado)'),
+        ('off', 'Desligado'),
+    )
+
+    youtube_mode = models.CharField(
+        max_length=10,
+        choices=YT_MODE_CHOICES,
+        default='auto',
+        verbose_name="Modo do YouTube"
+    )
+
+    youtube_channel_id = models.CharField(
+        max_length=80,
+        blank=True,
+        null=True,
+        verbose_name="Channel ID",
+        help_text="Ex: UCxxxx... (ID do canal)"
+    )
+
+    youtube_video_id = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name="Video ID (modo fixo)",
+        help_text="Somente o ID do vídeo (ex: ABC1234)"
+    )
+
+    # Singleton
+    def save(self, *args, **kwargs):
+        if not self.pk and ConfiguracaoYouTube.objects.exists():
+            return
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Configuração do YouTube"
+        verbose_name_plural = "Configuração do YouTube"
+
+    def __str__(self):
+        return "Configuração do YouTube"
+
+
 
 # 5. Posts do Instagram
 class PostInstagram(models.Model):
