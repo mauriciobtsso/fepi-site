@@ -17,32 +17,33 @@ from noticias.models import Noticia
 from programacao.models import Doutrinaria, CursoEvento
 from .forms import ContatoForm
 
-# Função auxiliar interna (para não depender de outros arquivos)
+# Função auxiliar interna com User-Agent para evitar bloqueio do YouTube
 def get_latest_youtube_video_id(channel_id):
+    print(f"--- TENTANDO BUSCAR YOUTUBE: {channel_id} ---") # DEBUG
     try:
         url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
-        
         # O SEGREDO: Adicionar um User-Agent para simular um navegador real
-        # Sem isso, o YouTube bloqueia requisições vindas de servidores (como o Railway)
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
         
         response = requests.get(url, headers=headers, timeout=5)
+        print(f"--- STATUS YOUTUBE: {response.status_code} ---") # DEBUG
         
         if response.status_code == 200:
             root = ET.fromstring(response.content)
-            # Namespaces do XML do YouTube
+            # Namespace do YouTube
             ns = {'yt': 'http://www.youtube.com/xml/schemas/2015', 'atom': 'http://www.w3.org/2005/Atom'}
             entry = root.find('atom:entry', ns)
             if entry:
-                video_id = entry.find('yt:videoId', ns).text
-                return video_id
+                vid = entry.find('yt:videoId', ns).text
+                print(f"--- VIDEO ENCONTRADO: {vid} ---") # DEBUG
+                return vid
         else:
-            print(f"Erro YouTube: Status {response.status_code}")
+            print(f"--- ERRO REQUISICAO: {response.status_code} ---")
             
     except Exception as e:
-        print(f"Erro ao buscar YouTube: {e}")
+        print(f"--- ERRO EXCEPTION YOUTUBE: {e} ---") # DEBUG
         
     return None
 
@@ -91,11 +92,12 @@ def home(request):
     livraria_config = LivrariaConfig.objects.first()
     posts_insta = PostInstagram.objects.all()[:4]
 
-    # 5. YOUTUBE
+    # 5. YOUTUBE (Lógica com Debug e Correção)
     youtube_cfg = ConfiguracaoYouTube.objects.first()
     latest_video_id = None
 
     if youtube_cfg:
+        print(f"--- CONFIG YOUTUBE CARREGADA. MODO: {youtube_cfg.youtube_mode} ---") # DEBUG
         mode = (youtube_cfg.youtube_mode or 'auto').strip()
 
         if mode == 'off':
@@ -104,17 +106,23 @@ def home(request):
         elif mode == 'fixed':
             fixed_id = (youtube_cfg.youtube_video_id or "").strip()
             latest_video_id = fixed_id or None
+            print(f"--- MODO FIXO ID: {latest_video_id} ---") # DEBUG
 
         else: # modo auto
             channel_id = (youtube_cfg.youtube_channel_id or "").strip()
-            cache_key = f"fepi_latest_youtube_video_id:{channel_id or 'no_channel'}"
-            latest_video_id = cache.get(cache_key)
+            # Cache básico para não bombardear o YouTube a cada F5
+            cache_key = f"fepi_yt_vid:{channel_id}"
+            cached_vid = cache.get(cache_key)
 
-            if not latest_video_id and channel_id:
+            if cached_vid:
+                 latest_video_id = cached_vid
+                 print(f"--- VIDEO VINDO DO CACHE: {cached_vid} ---")
+            elif channel_id:
                 latest_video_id = get_latest_youtube_video_id(channel_id)
-                # Salva no cache por 30 min se encontrou
                 if latest_video_id:
-                    cache.set(cache_key, latest_video_id, 60 * 30)
+                    cache.set(cache_key, latest_video_id, 60 * 15) # Cache de 15 min
+    else:
+        print("--- NENHUMA CONFIGURACAO YOUTUBE ENCONTRADA NO BANCO ---") # DEBUG
 
     contexto = {
         'carrossel': lista_carrossel,
@@ -125,8 +133,9 @@ def home(request):
         'contato': contato,
         'livraria_config': livraria_config,
         'instagram': posts_insta,
+        
         'youtube_cfg': youtube_cfg,
-        'youtube_video_id': latest_video_id, # Usar este nome no template
+        'youtube_video_id': latest_video_id, # Variável correta para o template
     }
     return render(request, 'core/index.html', contexto)
 
