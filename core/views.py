@@ -50,9 +50,9 @@ def home(request):
         eventos_agenda.append(item)
 
     # 3. LIVROS
-    lista_livros = Livro.objects.filter(destaque_home=True).order_by('?')[:4]
+    lista_livros = Livro.objects.filter(destaque_home=True).order_by('?')[:12]
     if not lista_livros.exists():
-        lista_livros = Livro.objects.all().order_by('-titulo')[:4]
+        lista_livros = Livro.objects.all().order_by('-titulo')[:12]
 
     # 4. Configurações
     config_home = ConfiguracaoHome.objects.first()
