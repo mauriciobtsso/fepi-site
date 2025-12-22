@@ -17,6 +17,7 @@ from intranet.views import area_federado
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('painel/', include('painel.urls')),
     path('', home, name='home'),
     
     # --- SISTEMA DE LOGIN E INTRANET ---

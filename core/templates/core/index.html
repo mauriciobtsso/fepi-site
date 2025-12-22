@@ -283,7 +283,7 @@
             </div>
             <div class="livros-mini-grid">
                 {% for livro in livros %} 
-                <a href="{% url 'detalhe_livro' livro.id %}" class="livro-mini">
+                <a href="{% url 'detalhe_livro' livro.slug %}" class="livro-mini">
                     {% if livro.capa %}
                         <img src="{{ livro.capa.url }}" alt="{{ livro.titulo }}">
                     {% else %}

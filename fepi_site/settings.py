@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     'intranet', 
     # Libs
     'ckeditor',
+    'painel',
 ]
 
 MIDDLEWARE = [

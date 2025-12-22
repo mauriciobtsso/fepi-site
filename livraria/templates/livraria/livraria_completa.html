@@ -154,7 +154,7 @@
 
     <div class="catalogo-grid">
         {% for livro in livros %}
-        <a href="{% url 'detalhe_livro' livro.id %}" class="card-livro">
+        <a href="{% url 'detalhe_livro' livro.slug %}" class="card-livro">
             <div class="capa-wrapper">
                 {% if livro.capa %}
                     <img src="{{ livro.capa.url }}" class="capa-livro" alt="{{ livro.titulo }}">
