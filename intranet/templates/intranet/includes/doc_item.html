@@ -1,14 +1,21 @@
-<li class="doc-item cat-{{ doc.categoria }}">
+<li class="doc-item">
     <div class="doc-main">
         <span class="doc-title">
-            {% if doc.categoria == 'ATA' %}<i class="fa-solid fa-file-signature" style="color: #e74c3c;"></i>
-            {% elif doc.categoria == 'FINANCEIRO' %}<i class="fa-solid fa-chart-pie" style="color: #27ae60;"></i>
-            {% else %}<i class="fa-solid fa-file-lines" style="color: #3498db;"></i>{% endif %}
+            {% if "Finan" in doc.categoria.nome %}
+                <i class="fa-solid fa-chart-pie" style="color: #27ae60;"></i>
+            {% elif "Ata" in doc.categoria.nome %}
+                <i class="fa-solid fa-file-signature" style="color: #e74c3c;"></i>
+            {% else %}
+                <i class="fa-solid fa-file-lines" style="color: #3498db;"></i>
+            {% endif %}
+            
             {{ doc.titulo }}
         </span>
+        
         <div class="doc-meta">
-            Publicado em {{ doc.data_publicacao|date:"d/m/Y" }} • {{ doc.get_categoria_display }}
+            Publicado em {{ doc.data_publicacao|date:"d/m/Y" }} • {{ doc.categoria.nome }}
         </div>
+        
         {% if doc.descricao %}
             <span class="doc-desc">{{ doc.descricao|truncatechars:120 }}</span>
         {% endif %}

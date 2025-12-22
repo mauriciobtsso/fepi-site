@@ -1,6 +1,7 @@
 from django import forms
 from noticias.models import Noticia
 from core.models import ConfiguracaoHome
+from intranet.models import DocumentoRestrito, CategoriaDocumento
 
 class NoticiaForm(forms.ModelForm):
     class Meta:
@@ -74,3 +75,27 @@ class PopupForm(forms.ModelForm):
                 self.fields['popup_inicio'].initial = self.instance.popup_inicio.strftime('%Y-%m-%dT%H:%M')
             if self.instance.popup_fim:
                 self.fields['popup_fim'].initial = self.instance.popup_fim.strftime('%Y-%m-%dT%H:%M')
+
+# Form para Criar/Editar Categorias
+class CategoriaDocForm(forms.ModelForm):
+    class Meta:
+        model = CategoriaDocumento
+        fields = ['nome']
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Atas de Reunião'}),
+        }
+
+# Form para Criar/Editar Documentos
+class DocumentoForm(forms.ModelForm):
+    class Meta:
+        model = DocumentoRestrito
+        fields = ['titulo', 'categoria', 'descricao', 'arquivo', 'link']
+        
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'categoria': forms.Select(attrs={'class': 'form-select'}),
+            'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'arquivo': forms.FileInput(attrs={'class': 'form-control'}),
+            'link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://...'}),
+        }
+

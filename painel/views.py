@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from django.utils import timezone
-from .forms import NoticiaForm, PopupForm
+from intranet.models import DocumentoRestrito, CategoriaDocumento
+from .forms import NoticiaForm, PopupForm, CategoriaDocForm, DocumentoForm
 from noticias.models import Noticia
 from core.models import ConfiguracaoHome
 
@@ -87,3 +88,67 @@ def gerenciar_popup(request):
         form = PopupForm(instance=config)
 
     return render(request, 'painel/gerenciar_popup.html', {'form': form})
+
+@login_required(login_url='/login/')
+def listar_documentos(request):
+    documentos = DocumentoRestrito.objects.all()
+    return render(request, 'painel/listar_documentos.html', {'documentos': documentos})
+
+@login_required(login_url='/login/')
+def criar_documento(request):
+    if request.method == 'POST':
+        form = DocumentoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_documentos')
+    else:
+        form = DocumentoForm()
+    return render(request, 'painel/form_documento.html', {'form': form, 'titulo': 'Novo Documento'})
+
+@login_required(login_url='/login/')
+def editar_documento(request, id):
+    doc = get_object_or_404(DocumentoRestrito, id=id)
+    if request.method == 'POST':
+        form = DocumentoForm(request.POST, request.FILES, instance=doc)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_documentos')
+    else:
+        form = DocumentoForm(instance=doc)
+    return render(request, 'painel/form_documento.html', {'form': form, 'titulo': 'Editar Documento'})
+
+@login_required(login_url='/login/')
+def excluir_documento(request, id):
+    doc = get_object_or_404(DocumentoRestrito, id=id)
+    if request.method == 'POST':
+        doc.delete()
+        return redirect('listar_documentos')
+    return render(request, 'painel/confirmar_exclusao.html', {'objeto': doc.titulo, 'voltar_url': 'listar_documentos'})
+
+# --- GESTÃO DE CATEGORIAS ---
+
+@login_required(login_url='/login/')
+def listar_categorias_doc(request):
+    categorias = CategoriaDocumento.objects.all()
+    # Formulário simples na mesma página para adicionar rápido
+    if request.method == 'POST':
+        form = CategoriaDocForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_categorias_doc')
+    else:
+        form = CategoriaDocForm()
+        
+    return render(request, 'painel/listar_categorias_doc.html', {'categorias': categorias, 'form': form})
+
+@login_required(login_url='/login/')
+def excluir_categoria_doc(request, id):
+    cat = get_object_or_404(CategoriaDocumento, id=id)
+    try:
+        cat.delete()
+    except:
+        # Se tiver documentos vinculados, não deixa apagar (proteção do banco)
+        pass 
+    return redirect('listar_categorias_doc')
+
+

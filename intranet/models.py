@@ -1,23 +1,33 @@
 from django.db import models
 
-class DocumentoRestrito(models.Model):
-    CATEGORIAS = [
-        ('ATA', 'Ata de Reunião'),
-        ('CIRCULAR', 'Circular / Comunicado'),
-        ('FINANCEIRO', 'Relatório Financeiro'),
-        ('ADMIN', 'Documento Administrativo'),
-        ('OUTROS', 'Outros'),
-    ]
+# 1. Nova tabela para gerenciar Categorias Dinamicamente
+class CategoriaDocumento(models.Model):
+    nome = models.CharField("Nome da Categoria", max_length=100)
+    
+    class Meta:
+        verbose_name = "Categoria de Documento"
+        verbose_name_plural = "Categorias de Documentos"
+    
+    def __str__(self):
+        return self.nome
 
+# 2. Modelo de Documentos atualizado
+class DocumentoRestrito(models.Model):
     titulo = models.CharField("Título do Documento", max_length=200)
     descricao = models.TextField("Descrição/Observação", blank=True, null=True)
     
-    # Arquivo agora é opcional (blank=True, null=True)
     arquivo = models.FileField(upload_to='intranet_docs/', blank=True, null=True)
-    # Novo campo de Link
     link = models.URLField("Link Externo (Google Drive, etc)", blank=True, null=True)
     
-    categoria = models.CharField(max_length=20, choices=CATEGORIAS, default='OUTROS')
+    # Aqui está a mágica: Ligamos à tabela de cima (ForeignKey)
+    # on_delete=models.PROTECT impede apagar uma categoria se ela tiver documentos
+    categoria = models.ForeignKey(
+        CategoriaDocumento, 
+        on_delete=models.PROTECT, 
+        verbose_name="Categoria",
+        related_name="documentos"
+    )
+    
     data_publicacao = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -26,4 +36,4 @@ class DocumentoRestrito(models.Model):
         ordering = ['-data_publicacao']
 
     def __str__(self):
-        return f"[{self.get_categoria_display()}] {self.titulo}"
+        return f"[{self.categoria.nome}] {self.titulo}"
