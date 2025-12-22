@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from django.utils import timezone
-from .forms import NoticiaForm
+from .forms import NoticiaForm, PopupForm
 from noticias.models import Noticia
+from core.models import ConfiguracaoHome
 
 @login_required(login_url='/login/')
 def dashboard(request):
@@ -66,3 +67,23 @@ def deletar_noticia(request, noticia_id):
     noticia = get_object_or_404(Noticia, id=noticia_id)
     noticia.delete()
     return redirect('listar_noticias')
+
+@login_required(login_url='/login/')
+def gerenciar_popup(request):
+    # Pega a configuração existente (Geralmente é a primeira e única linha da tabela)
+    config = ConfiguracaoHome.objects.first()
+    
+    # Se por algum milagre não existir configuração ainda, cria uma vazia
+    if not config:
+        config = ConfiguracaoHome.objects.create()
+
+    if request.method == 'POST':
+        # Editamos a configuração existente (instance=config)
+        form = PopupForm(request.POST, request.FILES, instance=config)
+        if form.is_valid():
+            form.save()
+            return redirect('painel_home')
+    else:
+        form = PopupForm(instance=config)
+
+    return render(request, 'painel/gerenciar_popup.html', {'form': form})

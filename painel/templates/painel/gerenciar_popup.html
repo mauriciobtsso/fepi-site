@@ -1,0 +1,66 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<div class="card border-0 shadow-sm" style="max-width: 700px; margin: 0 auto;">
+    <div class="card-header bg-white py-3">
+        <h4 class="mb-0"><i class="fas fa-bullhorn me-2"></i> Configurar Pop-up do Site</h4>
+    </div>
+    <div class="card-body p-4">
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label fw-bold">{{ form.popup_titulo.label }}</label>
+                    {{ form.popup_titulo }}
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-bold">{{ form.popup_imagem.label }}</label>
+                    {{ form.popup_imagem }}
+                    {% if form.instance.popup_imagem %}
+                        <div class="mt-2 p-2 border rounded bg-light">
+                            <small class="d-block mb-1 text-muted">Imagem Atual:</small>
+                            <img src="{{ form.instance.popup_imagem.url }}" class="img-fluid rounded" style="max-height: 150px;">
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label fw-bold">{{ form.popup_link.label }}</label>
+                    {{ form.popup_link }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">{{ form.popup_botao_texto.label }}</label>
+                    {{ form.popup_botao_texto }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">{{ form.popup_inicio.label }}</label>
+                    {{ form.popup_inicio }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">{{ form.popup_fim.label }}</label>
+                    {{ form.popup_fim }}
+                </div>
+
+                <div class="col-12 mt-4">
+                    <div class="p-3 bg-light rounded d-flex align-items-center border">
+                        {{ form.popup_ativo }}
+                        <label class="form-check-label ms-3 fw-bold text-dark">
+                            ATIVAR NO SITE AGORA
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-12 d-grid mt-3">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save me-2"></i> Salvar Configuração
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
