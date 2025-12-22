@@ -1,8 +1,8 @@
 from django.db import models
-from django.utils import timezone # Importação para data/hora
-from ckeditor.fields import RichTextField # Importação para o Editor de Texto
+from django.utils import timezone 
+from ckeditor.fields import RichTextField
 
-# 1. Informações de Contato (Rodapé e Fale Conosco)
+# 1. Informações de Contato
 class InformacaoContato(models.Model):
     endereco = models.CharField(max_length=300, default="R. Olavo Bilac, 1394 - Centro (Sul)")
     cidade = models.CharField(max_length=100, default="Teresina - PI")
@@ -11,7 +11,6 @@ class InformacaoContato(models.Model):
     email = models.EmailField(blank=True)
     horario_livraria = models.CharField(max_length=200, default="Segunda à Sábado")
     
-    # Singleton: garante que só existe 1 registo
     def save(self, *args, **kwargs):
         if not self.pk and InformacaoContato.objects.exists():
             return
@@ -24,10 +23,9 @@ class InformacaoContato(models.Model):
     def __str__(self):
         return "Dados de Contato da FEPI"
 
-# --- NOVOS MODELOS DE ESTRUTURA ---
+# --- ESTRUTURA ORGANIZACIONAL ---
 
 class TipoDiretoria(models.Model):
-    """ Define o grupo hierárquico: Diretoria Executiva, Conselho Fiscal, DIJ, ESDE, etc. """
     nome = models.CharField(max_length=100, unique=True, verbose_name="Tipo de Diretoria/Departamento")
     descricao = models.CharField(max_length=255, blank=True, verbose_name="Descrição Breve")
     ordem = models.IntegerField(default=1, verbose_name="Ordem de Exibição")
@@ -41,7 +39,6 @@ class TipoDiretoria(models.Model):
         ordering = ['ordem']
 
 class Cargo(models.Model):
-    """ Define o cargo específico: Presidente, Secretário, Coordenador, Conselheiro. """
     nome = models.CharField(max_length=100, unique=True, verbose_name="Nome do Cargo")
 
     def __str__(self):
@@ -53,18 +50,15 @@ class Cargo(models.Model):
         ordering = ['nome']
 
 
-# 2. Página Institucional (Texto e História)
+# 2. Página Institucional
 class PaginaInstitucional(models.Model):
-    """ Conteúdo Fixo da página Institucional + Ano da Gestão """
     titulo = models.CharField(max_length=200, default="Nossa História")
-    conteudo = RichTextField(verbose_name="Texto da História") # CKEditor
+    conteudo = RichTextField(verbose_name="Texto da História")
     frase_destaque = models.CharField(max_length=300, verbose_name="Frase de Destaque (Missão)", blank=True)
     
-    # Gestão Anual
     ano_inicio = models.IntegerField(default=2024, verbose_name="Ano Início da Gestão")
     ano_fim = models.IntegerField(default=2027, verbose_name="Ano Fim da Gestão")
     
-    # Singleton
     def save(self, *args, **kwargs):
         if not self.pk and PaginaInstitucional.objects.exists(): return
         super(PaginaInstitucional, self).save(*args, **kwargs)
@@ -78,17 +72,12 @@ class PaginaInstitucional(models.Model):
 
 
 class MembroDiretoria(models.Model):
-    """ Membro específico (Responsáveis por Departamento) """
     nome = models.CharField(max_length=200, verbose_name="Nome do Responsável")
-    
-    # Foreign Keys para as tabelas dinâmicas
     cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT, verbose_name="Cargo")
     tipo = models.ForeignKey(TipoDiretoria, on_delete=models.PROTECT, verbose_name="Tipo/Departamento")
     
-    # Informações de Contato
     telefone = models.CharField(max_length=20, blank=True, verbose_name="Telefone")
     email = models.EmailField(blank=True, verbose_name="Email")
-
     ordem = models.IntegerField(default=0, help_text="Para ordenar dentro do Tipo/Departamento")
 
     class Meta:
@@ -100,15 +89,13 @@ class MembroDiretoria(models.Model):
         return f"{self.cargo.nome} ({self.nome})"
 
 
-# 4. Configuração da Home (Banner, YouTube e Pop-up)
+# 4. Configuração da Home (Banner e Pop-up)
+# OBS: O campo YouTube foi removido daqui e passado para ConfiguracaoYouTube
 class ConfiguracaoHome(models.Model):
     # --- BANNER PRINCIPAL ---
     titulo_banner = models.CharField(max_length=200, default="Federação Espírita do Piauí")
     subtitulo_banner = models.CharField(max_length=300, default="Unindo corações, esclarecendo mentes e consolando almas.")
     imagem_banner = models.ImageField(upload_to='banners/', blank=True, null=True, help_text="Imagem de fundo do topo (Opcional)")
-    
-    # --- YOUTUBE ---
-    youtube_video_id = models.CharField(max_length=50, help_text="Apenas o código do vídeo (ex: se o link é youtube.com/watch?v=ABC1234, cole ABC1234)", default="SEU_ID_AQUI")
     
     # --- POP-UP MODAL (MARKETING) ---
     popup_ativo = models.BooleanField(default=False, verbose_name="Ativar Pop-up?")
@@ -117,11 +104,9 @@ class ConfiguracaoHome(models.Model):
     popup_link = models.URLField(blank=True, verbose_name="Link de Destino (Notícia/Curso)")
     popup_botao_texto = models.CharField(max_length=50, default="Saiba Mais", verbose_name="Texto do Botão")
     
-    # Datas de Vigência do Pop-up
     popup_inicio = models.DateTimeField(default=timezone.now, verbose_name="Início da Exibição")
     popup_fim = models.DateTimeField(default=timezone.now, verbose_name="Fim da Exibição")
 
-    # Singleton
     def save(self, *args, **kwargs):
         if not self.pk and ConfiguracaoHome.objects.exists():
             return
@@ -133,6 +118,49 @@ class ConfiguracaoHome(models.Model):
     
     def __str__(self):
         return "Configuração da Página Inicial"
+
+# 4.1 Configuração do YouTube (NOVO)
+class ConfiguracaoYouTube(models.Model):
+    YT_MODE_CHOICES = (
+        ('auto', 'Automático (último do canal)'),
+        ('fixed', 'Fixo (ID informado)'),
+        ('off', 'Desligado'),
+    )
+
+    youtube_mode = models.CharField(
+        max_length=10,
+        choices=YT_MODE_CHOICES,
+        default='auto',
+        verbose_name="Modo do YouTube"
+    )
+
+    youtube_channel_id = models.CharField(
+        max_length=80,
+        blank=True,
+        null=True,
+        verbose_name="Channel ID",
+        help_text="Ex: UCxxxx... (ID do canal)"
+    )
+
+    youtube_video_id = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name="Video ID (modo fixo)",
+        help_text="Somente o ID do vídeo (ex: ABC1234)"
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.pk and ConfiguracaoYouTube.objects.exists():
+            return
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Configuração do YouTube"
+        verbose_name_plural = "Configuração do YouTube"
+
+    def __str__(self):
+        return "Configuração do YouTube"
 
 
 # 5. Posts do Instagram

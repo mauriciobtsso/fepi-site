@@ -104,7 +104,7 @@
                         </span>
                         
                         <span class="evento-tema">
-                            <a href="{% if evento.is_palestra %}{% url 'doutrinarias' %}{% else %}{% url 'detalhe_curso' evento.pk %}{% endif %}" style="color:inherit;">
+                            <a href="{% if evento.is_palestra %}{% url 'doutrinarias' %}{% else %}{% url 'detalhe_curso' evento.slug %}{% endif %}" style="color:inherit;">
                                 {% if evento.is_palestra %}{{ evento.tema }}{% else %}{{ evento.titulo }}{% endif %}
                             </a>
                         </span>
