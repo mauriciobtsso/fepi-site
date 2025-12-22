@@ -1,0 +1,45 @@
+{% extends 'painel/base_painel.html' %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h3><i class="fas fa-microphone me-2"></i> Palestras Públicas</h3>
+    <a href="{% url 'nova_palestra' %}" class="btn btn-success"><i class="fas fa-plus"></i> Nova Palestra</a>
+</div>
+
+<div class="mb-3">
+    <a href="{% url 'programacao_hub' %}" class="text-decoration-none text-muted">
+        <i class="fas fa-arrow-left"></i> Voltar para Programação
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="bg-light">
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>Tema</th>
+                    <th>Palestrante</th>
+                    <th class="text-end pe-4">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in palestras %}
+                <tr>
+                    <td class="ps-3 fw-bold">{{ item.data_hora|date:"d/m/Y H:i" }}</td>
+                    <td>{{ item.tema }}</td>
+                    <td><span class="badge bg-light text-dark border">{{ item.palestrante }}</span></td>
+                    <td class="text-end pe-4">
+                        <a href="{% url 'editar_palestra' item.id %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                        <a href="{% url 'excluir_palestra' item.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja apagar esta palestra?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">Nenhuma palestra agendada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

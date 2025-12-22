@@ -11,7 +11,7 @@ urlpatterns = [
     path('noticias/deletar/<int:noticia_id>/', views.deletar_noticia, name='deletar_noticia'),
     path('popup/', views.gerenciar_popup, name='gerenciar_popup'),
 
-# Documentos
+    # Documentos
     path('documentos/', views.listar_documentos, name='listar_documentos'),
     path('documentos/novo/', views.criar_documento, name='criar_documento'),
     path('documentos/editar/<int:id>/', views.editar_documento, name='editar_documento'),
@@ -20,5 +20,26 @@ urlpatterns = [
     # Categorias
     path('documentos/categorias/', views.listar_categorias_doc, name='listar_categorias_doc'),
     path('documentos/categorias/excluir/<int:id>/', views.excluir_categoria_doc, name='excluir_categoria_doc'),
+   
+    # --- PROGRAMAÇÃO ---
+    path('programacao/', views.programacao_hub, name='programacao_hub'),
+    
+    # Atividades Semanais
+    path('programacao/atividades/', views.listar_atividades, name='listar_atividades'),
+    path('programacao/atividades/nova/', views.gerenciar_atividade, name='nova_atividade'),
+    path('programacao/atividades/editar/<int:id>/', views.gerenciar_atividade, name='editar_atividade'),
+    path('programacao/atividades/excluir/<int:id>/', views.excluir_atividade, name='excluir_atividade'),
+
+    # Palestras
+    path('programacao/palestras/', views.listar_palestras, name='listar_palestras'),
+    path('programacao/palestras/nova/', views.gerenciar_palestra, name='nova_palestra'),
+    path('programacao/palestras/editar/<int:id>/', views.gerenciar_palestra, name='editar_palestra'),
+    path('programacao/palestras/excluir/<int:id>/', views.excluir_palestra, name='excluir_palestra'),
+
+    # Cursos/Eventos
+    path('programacao/eventos/', views.listar_eventos, name='listar_eventos'),
+    path('programacao/eventos/nova/', views.gerenciar_evento, name='novo_evento'),
+    path('programacao/eventos/editar/<int:id>/', views.gerenciar_evento, name='editar_evento'),
+    path('programacao/eventos/excluir/<int:id>/', views.excluir_evento, name='excluir_evento'),
 
 ]

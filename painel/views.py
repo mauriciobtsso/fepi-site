@@ -6,6 +6,8 @@ from intranet.models import DocumentoRestrito, CategoriaDocumento
 from .forms import NoticiaForm, PopupForm, CategoriaDocForm, DocumentoForm
 from noticias.models import Noticia
 from core.models import ConfiguracaoHome
+from programacao.models import AtividadeSemanal, Doutrinaria, CursoEvento
+from .forms import AtividadeSemanalForm, DoutrinariaForm, CursoEventoForm
 
 @login_required(login_url='/login/')
 def dashboard(request):
@@ -150,5 +152,100 @@ def excluir_categoria_doc(request, id):
         # Se tiver documentos vinculados, não deixa apagar (proteção do banco)
         pass 
     return redirect('listar_categorias_doc')
+
+# --- CENTRAL DA PROGRAMAÇÃO (HUB) ---
+def programacao_hub(request):
+    # Adicionamos a pasta /programacao/ no caminho
+    return render(request, 'painel/programacao/programacao_hub.html')
+
+# --- 1. GESTÃO DE ATIVIDADES SEMANAIS ---
+@login_required(login_url='/login/')
+def listar_atividades(request):
+    atividades = AtividadeSemanal.objects.all().order_by('dia', 'horario')
+    return render(request, 'painel/programacao/listar_atividades.html', {'atividades': atividades})
+
+@login_required(login_url='/login/')
+def gerenciar_atividade(request, id=None):
+    # Se tem ID, edita. Se não tem, cria nova.
+    instancia = None
+    if id:
+        instancia = get_object_or_404(AtividadeSemanal, id=id)
+    
+    if request.method == 'POST':
+        form = AtividadeSemanalForm(request.POST, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_atividades')
+    else:
+        form = AtividadeSemanalForm(instance=instancia)
+    
+    titulo = "Editar Atividade" if id else "Nova Atividade Semanal"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_atividade(request, id):
+    item = get_object_or_404(AtividadeSemanal, id=id)
+    item.delete()
+    return redirect('listar_atividades')
+
+# --- 2. GESTÃO DE PALESTRAS (DOUTRINÁRIAS) ---
+@login_required(login_url='/login/')
+def listar_palestras(request):
+    palestras = Doutrinaria.objects.all().order_by('-data_hora')
+    return render(request, 'painel/programacao/listar_palestras.html', {'palestras': palestras})
+
+@login_required(login_url='/login/')
+def gerenciar_palestra(request, id=None):
+    instancia = None
+    if id:
+        instancia = get_object_or_404(Doutrinaria, id=id)
+    
+    if request.method == 'POST':
+        form = DoutrinariaForm(request.POST, request.FILES, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_palestras')
+    else:
+        form = DoutrinariaForm(instance=instancia)
+    
+    titulo = "Editar Palestra" if id else "Nova Palestra Pública"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_palestra(request, id):
+    item = get_object_or_404(Doutrinaria, id=id)
+    item.delete()
+    return redirect('listar_palestras')
+
+# --- 3. GESTÃO DE CURSOS E EVENTOS ---
+@login_required(login_url='/login/')
+def listar_eventos(request):
+    eventos = CursoEvento.objects.all().order_by('-data_evento')
+    return render(request, 'painel/programacao/listar_eventos.html', {'eventos': eventos})
+
+@login_required(login_url='/login/')
+def gerenciar_evento(request, id=None):
+    instancia = None
+    if id:
+        instancia = get_object_or_404(CursoEvento, id=id)
+    
+    if request.method == 'POST':
+        form = CursoEventoForm(request.POST, request.FILES, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_eventos')
+    else:
+        form = CursoEventoForm(instance=instancia)
+    
+    titulo = "Editar Evento Especial" if id else "Novo Curso ou Evento"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_evento(request, id):
+    item = get_object_or_404(CursoEvento, id=id)
+    item.delete()
+    return redirect('listar_eventos')
+
+
 
 
