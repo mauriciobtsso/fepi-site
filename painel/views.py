@@ -5,9 +5,9 @@ from django.utils import timezone
 from intranet.models import DocumentoRestrito, CategoriaDocumento
 from .forms import NoticiaForm, PopupForm, CategoriaDocForm, DocumentoForm
 from noticias.models import Noticia
-from core.models import ConfiguracaoHome
+from core.models import ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram
 from programacao.models import AtividadeSemanal, Doutrinaria, CursoEvento
-from .forms import AtividadeSemanalForm, DoutrinariaForm, CursoEventoForm
+from .forms import AtividadeSemanalForm, DoutrinariaForm, CursoEventoForm, YoutubeConfigForm, PostInstagramForm
 from livraria.models import Livro, Categoria as CategoriaLivro, LivrariaConfig
 from .forms import LivroForm, CategoriaLivroForm, LivrariaConfigForm
 
@@ -319,6 +319,56 @@ def config_livraria(request):
         form = LivrariaConfigForm(instance=config)
         
     return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Configuração da Livraria'})
+
+# --- HUB DE GESTÃO DO SITE ---
+@login_required(login_url='/login/')
+def site_hub(request):
+    return render(request, 'painel/site/site_hub.html')
+
+# --- 1. CONFIGURAÇÃO DO YOUTUBE ---
+@login_required(login_url='/login/')
+def config_youtube(request):
+    # Pega a primeira configuração ou cria (Singleton)
+    config, created = ConfiguracaoYouTube.objects.get_or_create(pk=1)
+    
+    if request.method == 'POST':
+        form = YoutubeConfigForm(request.POST, instance=config)
+        if form.is_valid():
+            form.save()
+            return redirect('site_hub')
+    else:
+        form = YoutubeConfigForm(instance=config)
+        
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Destaque do YouTube'})
+
+# --- 2. VITRINE DO INSTAGRAM ---
+@login_required(login_url='/login/')
+def listar_instagram(request):
+    posts = PostInstagram.objects.all().order_by('-data_post')
+    return render(request, 'painel/site/listar_instagram.html', {'posts': posts})
+
+@login_required(login_url='/login/')
+def gerenciar_post_insta(request, id=None):
+    post = get_object_or_404(PostInstagram, id=id) if id else None
+    
+    if request.method == 'POST':
+        form = PostInstagramForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_instagram')
+    else:
+        form = PostInstagramForm(instance=post)
+        
+    titulo = "Editar Post da Vitrine" if id else "Novo Post da Vitrine"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_post_insta(request, id):
+    post = get_object_or_404(PostInstagram, id=id)
+    post.delete()
+    return redirect('listar_instagram')
+
+
 
 
 

@@ -1,7 +1,7 @@
 from django import forms
 from ckeditor.widgets import CKEditorWidget
 from noticias.models import Noticia
-from core.models import ConfiguracaoHome
+from core.models import ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram
 from intranet.models import DocumentoRestrito, CategoriaDocumento
 from programacao.models import AtividadeSemanal, Doutrinaria, CursoEvento
 from livraria.models import Livro, Categoria, LivrariaConfig
@@ -205,6 +205,28 @@ class LivrariaConfigForm(forms.ModelForm):
                 'rows': 4, 
                 'placeholder': 'Cole aqui o iframe do SnapWidget se tiver'
             }),
+        }
+
+# --- CONFIGURAÇÃO DO SITE (YOUTUBE E INSTAGRAM) ---
+
+class YoutubeConfigForm(forms.ModelForm):
+    class Meta:
+        model = ConfiguracaoYouTube
+        fields = ['youtube_mode', 'youtube_channel_id', 'youtube_video_id']
+        widgets = {
+            'youtube_mode': forms.Select(attrs={'class': 'form-select'}),
+            'youtube_channel_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: UC...'}),
+            'youtube_video_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: dQw4w9WgXcQ'}),
+        }
+
+class PostInstagramForm(forms.ModelForm):
+    class Meta:
+        model = PostInstagram
+        fields = ['imagem', 'link', 'legenda']
+        widgets = {
+            'imagem': forms.FileInput(attrs={'class': 'form-control'}),
+            'link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://instagram.com/p/...'}),
+            'legenda': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descrição curta para acessibilidade'}),
         }
 
 

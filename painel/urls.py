@@ -58,5 +58,17 @@ urlpatterns = [
     # Configuração
     path('livraria/config/', views.config_livraria, name='config_livraria'),
 
+    # --- SITE E REDES ---
+    path('site/', views.site_hub, name='site_hub'),
+    
+    # YouTube
+    path('site/youtube/', views.config_youtube, name='config_youtube'),
+    
+    # Instagram (Vitrine)
+    path('site/instagram/', views.listar_instagram, name='listar_instagram'),
+    path('site/instagram/novo/', views.gerenciar_post_insta, name='novo_post_insta'),
+    path('site/instagram/editar/<int:id>/', views.gerenciar_post_insta, name='editar_post_insta'),
+    path('site/instagram/excluir/<int:id>/', views.excluir_post_insta, name='excluir_post_insta'),
+
 
 ]

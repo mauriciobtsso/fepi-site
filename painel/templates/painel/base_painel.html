@@ -102,6 +102,12 @@
                     <i class="fas fa-calendar-alt me-2" style="width: 20px;"></i> Programação
                 </a>
 
+                <p class="text-white-50 small text-uppercase fw-bold mt-4 mb-2 ps-2">Site & Redes</p>
+                
+                <a href="{% url 'site_hub' %}">
+                    <i class="fas fa-globe me-2" style="width: 20px;"></i> Vitrine & YouTube
+                </a>
+
                 <p class="text-white-50 small text-uppercase fw-bold mt-4 mb-2 ps-2">Comercial</p>
                 
                 <a href="{% url 'livraria_hub' %}">
@@ -139,7 +145,7 @@
             
             links.forEach(function(link) {
                 var href = link.getAttribute('href');
-                // Se a URL do link estiver contida na URL atual (ex: /painel/noticias/ está em /painel/noticias/nova/)
+                // Se a URL do link estiver contida na URL atual
                 if (href && href !== '#' && currentUrl.includes(href)) {
                     link.classList.add('active');
                 }

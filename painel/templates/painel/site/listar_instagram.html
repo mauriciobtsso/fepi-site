@@ -1,0 +1,48 @@
+{% extends 'painel/base_painel.html' %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h3><i class="fab fa-instagram me-2"></i> Vitrine do Instagram</h3>
+    <a href="{% url 'novo_post_insta' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Nova Foto</a>
+</div>
+
+<div class="mb-3">
+    <a href="{% url 'site_hub' %}" class="text-decoration-none text-muted">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+{% if posts %}
+<div class="row g-4">
+    {% for post in posts %}
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div style="aspect-ratio: 1/1; overflow: hidden; border-radius: 5px 5px 0 0;">
+                <img src="{{ post.imagem.url }}" alt="Post" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            
+            <div class="card-body p-2 text-center">
+                <small class="text-muted d-block text-truncate mb-2">{{ post.legenda|default:"Sem legenda" }}</small>
+                
+                <div class="btn-group w-100">
+                    <a href="{{ post.link }}" target="_blank" class="btn btn-sm btn-outline-secondary" title="Ver Link">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <a href="{% url 'editar_post_insta' post.id %}" class="btn btn-sm btn-outline-primary" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'excluir_post_insta' post.id %}" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="return confirm('Remover esta foto da vitrine?')">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 text-muted bg-white rounded shadow-sm">
+    <i class="fas fa-images fa-3x mb-3 opacity-50"></i>
+    <p>Nenhuma foto cadastrada na vitrine ainda.</p>
+</div>
+{% endif %}
+{% endblock %}
