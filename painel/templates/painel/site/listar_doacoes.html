@@ -1,0 +1,37 @@
+{% extends 'painel/base_painel.html' %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h3><i class="fas fa-hand-holding-heart me-2"></i> Formas de Doação</h3>
+    <a href="{% url 'nova_doacao' %}" class="btn btn-success"><i class="fas fa-plus"></i> Nova Forma</a>
+</div>
+
+<div class="row g-4">
+    {% for d in doacoes %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+                <h5 class="card-title fw-bold text-primary">{{ d.titulo }}</h5>
+                <span class="badge bg-light text-dark border mb-3">{{ d.get_tipo_display }}</span>
+                
+                {% if d.qr_code %}
+                    <div class="mb-3">
+                        <img src="{{ d.qr_code.url }}" style="height: 100px; width: auto;" class="border p-1 rounded">
+                    </div>
+                {% endif %}
+                
+                <p class="small text-muted mb-1">{{ d.descricao|truncatechars:100 }}</p>
+                {% if d.chave_pix %}
+                    <div class="bg-light p-2 rounded small font-monospace text-break">{{ d.chave_pix }}</div>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-white border-0 text-center pb-3">
+                <a href="{% url 'editar_doacao' d.id %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i> Editar</a>
+                <a href="{% url 'excluir_doacao' d.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')"><i class="fas fa-trash"></i></a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5 text-muted">Nenhuma forma de doação cadastrada.</div>
+    {% endfor %}
+</div>
+{% endblock %}

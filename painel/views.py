@@ -3,13 +3,16 @@ from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from django.utils import timezone
 from intranet.models import DocumentoRestrito, CategoriaDocumento
-from .forms import NoticiaForm, PopupForm, CategoriaDocForm, DocumentoForm
+from .forms import NoticiaForm, PopupForm, CategoriaDocForm, DocumentoForm, CargoForm, TipoDiretoriaForm, MembroDiretoriaForm, PaginaInstitucionalForm
 from noticias.models import Noticia
-from core.models import ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram
+from core.models import ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram, Cargo, TipoDiretoria, MembroDiretoria, PaginaInstitucional
 from programacao.models import AtividadeSemanal, Doutrinaria, CursoEvento
 from .forms import AtividadeSemanalForm, DoutrinariaForm, CursoEventoForm, YoutubeConfigForm, PostInstagramForm
 from livraria.models import Livro, Categoria as CategoriaLivro, LivrariaConfig
-from .forms import LivroForm, CategoriaLivroForm, LivrariaConfigForm
+from .forms import LivroForm, CategoriaLivroForm, LivrariaConfigForm, CentroForm, FormaDoacaoForm, SecaoLinkForm, LinkItemForm
+from centros.models import Centro
+from doacoes.models import FormaDoacao
+from recursos.models import SecaoLink, LinkItem
 
 @login_required(login_url='/login/')
 def dashboard(request):
@@ -368,7 +371,186 @@ def excluir_post_insta(request, id):
     post.delete()
     return redirect('listar_instagram')
 
+# --- HUB DE GESTÃO DE EQUIPE ---
+@login_required(login_url='/login/')
+def equipe_hub(request):
+    membros = MembroDiretoria.objects.all().order_by('tipo__ordem', 'ordem')
+    departamentos = TipoDiretoria.objects.all().order_by('ordem')
+    cargos = Cargo.objects.all().order_by('nome')
+    return render(request, 'painel/secretaria/equipe_hub.html', {
+        'membros': membros,
+        'departamentos': departamentos,
+        'cargos': cargos
+    })
 
+# --- GENÉRICOS PARA EQUIPE (Adicionar/Editar/Excluir) ---
+
+# 1. Membros
+@login_required(login_url='/login/')
+def gerenciar_membro(request, id=None):
+    instancia = get_object_or_404(MembroDiretoria, id=id) if id else None
+    if request.method == 'POST':
+        form = MembroDiretoriaForm(request.POST, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('equipe_hub')
+    else:
+        form = MembroDiretoriaForm(instance=instancia)
+    titulo = "Editar Membro" if id else "Novo Membro da Diretoria"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_membro(request, id):
+    get_object_or_404(MembroDiretoria, id=id).delete()
+    return redirect('equipe_hub')
+
+# 2. Departamentos (Tipos)
+@login_required(login_url='/login/')
+def gerenciar_departamento(request, id=None):
+    instancia = get_object_or_404(TipoDiretoria, id=id) if id else None
+    if request.method == 'POST':
+        form = TipoDiretoriaForm(request.POST, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('equipe_hub')
+    else:
+        form = TipoDiretoriaForm(instance=instancia)
+    titulo = "Editar Departamento" if id else "Novo Departamento"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_departamento(request, id):
+    get_object_or_404(TipoDiretoria, id=id).delete()
+    return redirect('equipe_hub')
+
+# 3. Cargos
+@login_required(login_url='/login/')
+def gerenciar_cargo(request, id=None):
+    instancia = get_object_or_404(Cargo, id=id) if id else None
+    if request.method == 'POST':
+        form = CargoForm(request.POST, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('equipe_hub')
+    else:
+        form = CargoForm(instance=instancia)
+    titulo = "Editar Cargo" if id else "Novo Cargo"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_cargo(request, id):
+    # Proteção: só apaga se não tiver membro vinculado
+    cargo = get_object_or_404(Cargo, id=id)
+    if not cargo.membrodiretoria_set.exists():
+        cargo.delete()
+    return redirect('equipe_hub')
+
+# --- PÁGINA INSTITUCIONAL (TEXTO) ---
+@login_required(login_url='/login/')
+def editar_institucional(request):
+    pagina, created = PaginaInstitucional.objects.get_or_create(pk=1)
+    if request.method == 'POST':
+        form = PaginaInstitucionalForm(request.POST, instance=pagina)
+        if form.is_valid():
+            form.save()
+            return redirect('site_hub') # Volta para o hub do site
+    else:
+        form = PaginaInstitucionalForm(instance=pagina)
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Editar Página Institucional'})
+
+# --- 1. GESTÃO DE CENTROS ESPÍRITAS ---
+@login_required(login_url='/login/')
+def listar_centros(request):
+    centros = Centro.objects.all().order_by('cidade', 'nome')
+    return render(request, 'painel/secretaria/listar_centros.html', {'centros': centros})
+
+@login_required(login_url='/login/')
+def gerenciar_centro(request, id=None):
+    instancia = get_object_or_404(Centro, id=id) if id else None
+    if request.method == 'POST':
+        form = CentroForm(request.POST, request.FILES, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_centros')
+    else:
+        form = CentroForm(instance=instancia)
+    titulo = "Editar Centro Espírita" if id else "Novo Centro Espírita"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_centro(request, id):
+    get_object_or_404(Centro, id=id).delete()
+    return redirect('listar_centros')
+
+# --- 2. GESTÃO DE DOAÇÕES ---
+@login_required(login_url='/login/')
+def listar_doacoes(request):
+    doacoes = FormaDoacao.objects.all().order_by('ordem')
+    return render(request, 'painel/site/listar_doacoes.html', {'doacoes': doacoes})
+
+@login_required(login_url='/login/')
+def gerenciar_doacao(request, id=None):
+    instancia = get_object_or_404(FormaDoacao, id=id) if id else None
+    if request.method == 'POST':
+        form = FormaDoacaoForm(request.POST, request.FILES, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_doacoes')
+    else:
+        form = FormaDoacaoForm(instance=instancia)
+    titulo = "Editar Forma de Doação" if id else "Nova Forma de Doação"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_doacao(request, id):
+    get_object_or_404(FormaDoacao, id=id).delete()
+    return redirect('listar_doacoes')
+
+# --- 3. GESTÃO DE RECURSOS (DOWNLOADS) ---
+@login_required(login_url='/login/')
+def recursos_hub(request):
+    secoes = SecaoLink.objects.all().order_by('ordem')
+    itens = LinkItem.objects.all().select_related('secao').order_by('secao__ordem', 'titulo')
+    return render(request, 'painel/site/recursos_hub.html', {'secoes': secoes, 'itens': itens})
+
+# Link Item (Arquivo/Link)
+@login_required(login_url='/login/')
+def gerenciar_recurso(request, id=None):
+    instancia = get_object_or_404(LinkItem, id=id) if id else None
+    if request.method == 'POST':
+        form = LinkItemForm(request.POST, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('recursos_hub')
+    else:
+        form = LinkItemForm(instance=instancia)
+    titulo = "Editar Recurso/Link" if id else "Novo Recurso/Link"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_recurso(request, id):
+    get_object_or_404(LinkItem, id=id).delete()
+    return redirect('recursos_hub')
+
+# Seção de Links (Categoria)
+@login_required(login_url='/login/')
+def gerenciar_secao_recurso(request, id=None):
+    instancia = get_object_or_404(SecaoLink, id=id) if id else None
+    if request.method == 'POST':
+        form = SecaoLinkForm(request.POST, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('recursos_hub')
+    else:
+        form = SecaoLinkForm(instance=instancia)
+    titulo = "Editar Seção de Recursos" if id else "Nova Seção"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_secao_recurso(request, id):
+    secao = get_object_or_404(SecaoLink, id=id)
+    secao.delete() # Cuidado: Apaga os links filhos em cascata
+    return redirect('recursos_hub')
 
 
 

@@ -70,5 +70,49 @@ urlpatterns = [
     path('site/instagram/editar/<int:id>/', views.gerenciar_post_insta, name='editar_post_insta'),
     path('site/instagram/excluir/<int:id>/', views.excluir_post_insta, name='excluir_post_insta'),
 
+    # --- SECRETARIA: EQUIPE E ESTRUTURA ---
+    path('secretaria/equipe/', views.equipe_hub, name='equipe_hub'),
+    
+    # Membros
+    path('secretaria/membro/novo/', views.gerenciar_membro, name='novo_membro'),
+    path('secretaria/membro/editar/<int:id>/', views.gerenciar_membro, name='editar_membro'),
+    path('secretaria/membro/excluir/<int:id>/', views.excluir_membro, name='excluir_membro'),
+    
+    # Departamentos
+    path('secretaria/departamento/novo/', views.gerenciar_departamento, name='novo_departamento'),
+    path('secretaria/departamento/editar/<int:id>/', views.gerenciar_departamento, name='editar_departamento'),
+    path('secretaria/departamento/excluir/<int:id>/', views.excluir_departamento, name='excluir_departamento'),
+
+    # Cargos
+    path('secretaria/cargo/novo/', views.gerenciar_cargo, name='novo_cargo'),
+    path('secretaria/cargo/editar/<int:id>/', views.gerenciar_cargo, name='editar_cargo'),
+    path('secretaria/cargo/excluir/<int:id>/', views.excluir_cargo, name='excluir_cargo'),
+
+    # --- SITE: INSTITUCIONAL ---
+    path('site/institucional/', views.editar_institucional, name='editar_institucional'),
+
+    # --- CENTROS ESPÍRITAS ---
+    path('secretaria/centros/', views.listar_centros, name='listar_centros'),
+    path('secretaria/centros/novo/', views.gerenciar_centro, name='novo_centro'),
+    path('secretaria/centros/editar/<int:id>/', views.gerenciar_centro, name='editar_centro'),
+    path('secretaria/centros/excluir/<int:id>/', views.excluir_centro, name='excluir_centro'),
+
+    # --- DOAÇÕES ---
+    path('site/doacoes/', views.listar_doacoes, name='listar_doacoes'),
+    path('site/doacoes/novo/', views.gerenciar_doacao, name='nova_doacao'),
+    path('site/doacoes/editar/<int:id>/', views.gerenciar_doacao, name='editar_doacao'),
+    path('site/doacoes/excluir/<int:id>/', views.excluir_doacao, name='excluir_doacao'),
+
+    # --- RECURSOS / DOWNLOADS ---
+    path('site/recursos/', views.recursos_hub, name='recursos_hub'),
+    # Itens
+    path('site/recursos/novo/', views.gerenciar_recurso, name='novo_recurso'),
+    path('site/recursos/editar/<int:id>/', views.gerenciar_recurso, name='editar_recurso'),
+    path('site/recursos/excluir/<int:id>/', views.excluir_recurso, name='excluir_recurso'),
+    # Seções
+    path('site/recursos/secao/nova/', views.gerenciar_secao_recurso, name='nova_secao_recurso'),
+    path('site/recursos/secao/editar/<int:id>/', views.gerenciar_secao_recurso, name='editar_secao_recurso'),
+    path('site/recursos/secao/excluir/<int:id>/', views.excluir_secao_recurso, name='excluir_secao_recurso'),
+
 
 ]

@@ -1,0 +1,30 @@
+{% extends 'painel/base_painel.html' %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h3><i class="fas fa-map-marker-alt me-2"></i> Centros Espíritas</h3>
+    <a href="{% url 'novo_centro' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Novo Centro</a>
+</div>
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light"><tr><th>Nome / Tipo</th><th>Cidade</th><th>Contato</th><th class="text-end pe-4">Ações</th></tr></thead>
+            <tbody>
+                {% for c in centros %}
+                <tr>
+                    <td class="ps-4">
+                        <span class="fw-bold">{{ c.nome }}</span><br>
+                        <span class="badge bg-secondary">{{ c.get_tipo_display }}</span>
+                    </td>
+                    <td>{{ c.cidade }} - {{ c.estado }}</td>
+                    <td><small>{{ c.endereco }}<br>{{ c.telefone|default:"-" }}</small></td>
+                    <td class="text-end pe-4">
+                        <a href="{% url 'editar_centro' c.id %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                        <a href="{% url 'excluir_centro' c.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

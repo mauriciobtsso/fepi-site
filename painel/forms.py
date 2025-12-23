@@ -2,9 +2,13 @@ from django import forms
 from ckeditor.widgets import CKEditorWidget
 from noticias.models import Noticia
 from core.models import ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram
+from core.models import Cargo, TipoDiretoria, MembroDiretoria, PaginaInstitucional
 from intranet.models import DocumentoRestrito, CategoriaDocumento
 from programacao.models import AtividadeSemanal, Doutrinaria, CursoEvento
 from livraria.models import Livro, Categoria, LivrariaConfig
+from centros.models import Centro
+from doacoes.models import FormaDoacao
+from recursos.models import SecaoLink, LinkItem
 
 class NoticiaForm(forms.ModelForm):
     class Meta:
@@ -229,6 +233,113 @@ class PostInstagramForm(forms.ModelForm):
             'legenda': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descrição curta para acessibilidade'}),
         }
 
+# --- GESTÃO INSTITUCIONAL (SECRETARIA) ---
+
+class CargoForm(forms.ModelForm):
+    class Meta:
+        model = Cargo
+        fields = ['nome']
+        widgets = {'nome': forms.TextInput(attrs={'class': 'form-control'})}
+
+class TipoDiretoriaForm(forms.ModelForm):
+    class Meta:
+        model = TipoDiretoria
+        fields = ['nome', 'descricao', 'ordem']
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control'}),
+            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+            'ordem': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+class MembroDiretoriaForm(forms.ModelForm):
+    class Meta:
+        model = MembroDiretoria
+        fields = ['nome', 'cargo', 'tipo', 'telefone', 'email', 'ordem']
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control'}),
+            'cargo': forms.Select(attrs={'class': 'form-select'}),
+            'tipo': forms.Select(attrs={'class': 'form-select'}), # Departamento
+            'telefone': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'ordem': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ordem de exibição'}),
+        }
+
+# Formulário para a Página "Nossa História"
+class PaginaInstitucionalForm(forms.ModelForm):
+    class Meta:
+        model = PaginaInstitucional
+        fields = ['titulo', 'frase_destaque', 'ano_inicio', 'ano_fim', 'conteudo']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'frase_destaque': forms.TextInput(attrs={'class': 'form-control'}),
+            'ano_inicio': forms.NumberInput(attrs={'class': 'form-control', 'style':'width: 100px; display:inline-block;'}),
+            'ano_fim': forms.NumberInput(attrs={'class': 'form-control', 'style':'width: 100px; display:inline-block;'}),
+            'conteudo': CKEditorWidget(),
+        }
+# --- CENTROS ESPÍRITAS ---
+class CentroForm(forms.ModelForm):
+    class Meta:
+        model = Centro
+        fields = ['nome', 'tipo', 'foto', 'cnpj', 'data_fundacao', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'estado', 'telefone', 'site']
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control'}),
+            'tipo': forms.Select(attrs={'class': 'form-select'}),
+            'foto': forms.FileInput(attrs={'class': 'form-control'}),
+            'cnpj': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '00.000.000/0001-00'}),
+            'data_fundacao': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            
+            # Endereço
+            'cep': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'CEP'}),
+            'endereco': forms.TextInput(attrs={'class': 'form-control'}),
+            'numero': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nº'}),
+            'complemento': forms.TextInput(attrs={'class': 'form-control'}),
+            'bairro': forms.TextInput(attrs={'class': 'form-control'}),
+            'cidade': forms.TextInput(attrs={'class': 'form-control'}),
+            'estado': forms.Select(attrs={'class': 'form-select'}),
+            
+            'telefone': forms.TextInput(attrs={'class': 'form-control'}),
+            'site': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://...'}),
+        }
+
+# --- DOAÇÕES ---
+class FormaDoacaoForm(forms.ModelForm):
+    class Meta:
+        model = FormaDoacao
+        fields = ['titulo', 'tipo', 'chave_pix', 'qr_code', 'banco', 'agencia', 'conta', 'descricao', 'ordem']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'tipo': forms.Select(attrs={'class': 'form-select'}),
+            'chave_pix': forms.TextInput(attrs={'class': 'form-control'}),
+            'qr_code': forms.FileInput(attrs={'class': 'form-control'}),
+            'banco': forms.TextInput(attrs={'class': 'form-control'}),
+            'agencia': forms.TextInput(attrs={'class': 'form-control'}),
+            'conta': forms.TextInput(attrs={'class': 'form-control'}),
+            'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'ordem': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+# --- RECURSOS (DOWNLOADS/LINKS) ---
+class SecaoLinkForm(forms.ModelForm):
+    class Meta:
+        model = SecaoLink
+        fields = ['nome', 'icone_fa', 'ordem']
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control'}),
+            'icone_fa': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: fa-solid fa-file-pdf'}),
+            'ordem': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+class LinkItemForm(forms.ModelForm):
+    class Meta:
+        model = LinkItem
+        fields = ['secao', 'titulo', 'url', 'is_download', 'descricao']
+        widgets = {
+            'secao': forms.Select(attrs={'class': 'form-select'}),
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Link ou URL do arquivo'}),
+            'is_download': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'width: 20px; height: 20px;'}),
+            'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+        }
 
 
 
