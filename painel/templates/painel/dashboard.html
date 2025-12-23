@@ -2,81 +2,132 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Olá, {{ request.user.first_name|default:request.user.username|title }}! 👋</h2>
+    <div>
+        <h2 class="fw-bold text-dark">Olá, {{ request.user.first_name|default:request.user.username|title }}! 👋</h2>
+        <p class="text-muted mb-0">Bem-vindo ao painel de gestão da FEPI.</p>
+    </div>
     
-    <span class="text-muted">
-        Hoje é {% now "d" %} de {% now "F" %} de {% now "Y" %}
-    </span>
-</div>
-
-<div class="row g-4">
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body text-center p-4">
-                <div class="display-4 text-primary mb-3"><i class="fas fa-newspaper"></i></div>
-                <h5>Nova Notícia</h5>
-                <p class="text-muted small">Publicar novidades ou artigos no blog.</p>
-                <a href="{% url 'criar_noticia' %}" class="btn btn-primary w-100">Escrever</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body text-center p-4">
-                <div class="display-4 text-success mb-3"><i class="fas fa-calendar-plus"></i></div>
-                <h5>Novo Evento</h5>
-                <p class="text-muted small">Adicionar atividade na agenda.</p>
-                <a href="#" class="btn btn-success w-100">Agendar</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body text-center p-4">
-                <div class="display-4 text-warning mb-3"><i class="fas fa-file-upload"></i></div>
-                <h5>Subir Documento</h5>
-                <p class="text-muted small">Atas, Balancetes ou Circulares.</p>
-                <a href="#" class="btn btn-warning text-dark w-100">Upload</a>
-            </div>
-        </div>
+    <div class="text-end text-muted small">
+        <i class="far fa-calendar-alt me-1"></i> Hoje é {% now "d" %} de {% now "F" %} de {% now "Y" %}
     </div>
 </div>
 
-<div class="card mt-5 border-0 shadow-sm">
-    <div class="card-header bg-white py-3">
-        <h5 class="mb-0">📰 Últimas Notícias Publicadas</h5>
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm border-start border-4 border-primary h-100 py-2">
+            <div class="card-body">
+                <div class="text-uppercase small fw-bold text-primary mb-1">Notícias</div>
+                <div class="h5 mb-0 fw-bold text-secondary">Blog Ativo</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm border-start border-4 border-success h-100 py-2">
+            <div class="card-body">
+                <div class="text-uppercase small fw-bold text-success mb-1">Agenda</div>
+                <div class="h5 mb-0 fw-bold text-secondary">Eventos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm border-start border-4 border-warning h-100 py-2">
+            <div class="card-body">
+                <div class="text-uppercase small fw-bold text-warning mb-1">Intranet</div>
+                <div class="h5 mb-0 fw-bold text-secondary">Documentos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm border-start border-4 border-danger h-100 py-2">
+            <div class="card-body">
+                <div class="text-uppercase small fw-bold text-danger mb-1">Urgente</div>
+                <div class="h5 mb-0 fw-bold text-secondary">Avisos/Pop-up</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h5 class="mb-3 text-secondary">O que você deseja fazer?</h5>
+<div class="row g-4 mb-5">
+    
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 hover-card">
+            <div class="card-body text-center p-4">
+                <div class="mb-3 text-primary"><i class="fas fa-newspaper fa-3x"></i></div>
+                <h6 class="fw-bold">Nova Notícia</h6>
+                <p class="text-muted small mb-3">Publicar novidades no blog.</p>
+                <a href="{% url 'criar_noticia' %}" class="btn btn-outline-primary w-100 btn-sm">Escrever</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 hover-card">
+            <div class="card-body text-center p-4">
+                <div class="mb-3 text-success"><i class="fas fa-calendar-plus fa-3x"></i></div>
+                <h6 class="fw-bold">Novo Evento</h6>
+                <p class="text-muted small mb-3">Adicionar Curso ou Evento.</p>
+                <a href="{% url 'novo_evento' %}" class="btn btn-outline-success w-100 btn-sm">Criar Evento</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 hover-card">
+            <div class="card-body text-center p-4">
+                <div class="mb-3 text-warning"><i class="fas fa-file-upload fa-3x"></i></div>
+                <h6 class="fw-bold">Subir Documento</h6>
+                <p class="text-muted small mb-3">Para Intranet (Docs).</p>
+                <a href="{% url 'criar_documento' %}" class="btn btn-outline-warning text-dark w-100 btn-sm">Upload</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 hover-card">
+            <div class="card-body text-center p-4">
+                <div class="mb-3 text-danger"><i class="fas fa-exclamation-triangle fa-3x"></i></div>
+                <h6 class="fw-bold">Alerta Urgente</h6>
+                <p class="text-muted small mb-3">Configurar Pop-up do site.</p>
+                <a href="{% url 'gerenciar_popup' %}" class="btn btn-outline-danger w-100 btn-sm">Configurar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 border-bottom">
+        <h6 class="mb-0 fw-bold"><i class="fas fa-history me-2"></i> Últimas Notícias Publicadas</h6>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="bg-light">
                     <tr>
-                        <th>Título</th>
+                        <th class="ps-4">Título</th>
                         <th>Data</th>
                         <th>Autor</th>
-                        <th>Ações</th>
+                        <th class="text-end pe-4">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for noticia in ultimas_noticias %}
                     <tr>
-                        <td>
-                            <div class="fw-bold">{{ noticia.titulo|truncatechars:40 }}</div>
+                        <td class="ps-4">
+                            <div class="fw-bold text-dark">{{ noticia.titulo|truncatechars:40 }}</div>
                         </td>
-                        <td>{{ noticia.data_publicacao|date:"d/m/Y" }}</td>
-                        <td>{{ noticia.autor }}</td>
-                        <td>
-                            <a href="{% url 'editar_noticia' noticia.id %}" class="btn btn-sm btn-outline-secondary">
-                                Editar
+                        <td class="text-muted small">{{ noticia.data_publicacao|date:"d/m/Y" }}</td>
+                        <td><span class="badge bg-light text-dark border">{{ noticia.autor }}</span></td>
+                        <td class="text-end pe-4">
+                            <a href="{% url 'editar_noticia' noticia.id %}" class="btn btn-sm btn-light border" title="Editar">
+                                <i class="fas fa-edit"></i>
                             </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-3">
-                            Nenhuma atividade recente.
+                        <td colspan="4" class="text-center text-muted py-4">
+                            Nenhuma notícia recente encontrada.
                         </td>
                     </tr>
                     {% endfor %}
@@ -85,4 +136,9 @@
         </div>
     </div>
 </div>
+
+<style>
+    .hover-card { transition: transform 0.2s, box-shadow 0.2s; }
+    .hover-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+</style>
 {% endblock %}
