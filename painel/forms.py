@@ -186,12 +186,26 @@ class CategoriaLivroForm(forms.ModelForm):
 class LivrariaConfigForm(forms.ModelForm):
     class Meta:
         model = LivrariaConfig
-        fields = ['logo', 'instagram_widget_code']
+        fields = ['logo', 'whatsapp', 'instagram_url', 'instagram_widget_code']
         widgets = {
             'logo': forms.FileInput(attrs={'class': 'form-control'}),
-            'instagram_widget_code': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Cole o código do SnapWidget aqui'}),
+            
+            'whatsapp': forms.TextInput(attrs={
+                'class': 'form-control', 
+                'placeholder': 'Ex: 5535912345678'
+            }),
+            
+            'instagram_url': forms.URLInput(attrs={
+                'class': 'form-control', 
+                'placeholder': 'https://instagram.com/...'
+            }),
+            
+            'instagram_widget_code': forms.Textarea(attrs={
+                'class': 'form-control', 
+                'rows': 4, 
+                'placeholder': 'Cole aqui o iframe do SnapWidget se tiver'
+            }),
         }
-
 
 
 

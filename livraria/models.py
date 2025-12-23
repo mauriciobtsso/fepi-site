@@ -7,9 +7,26 @@ from django.utils.text import slugify
 # 1. Tabela de Configuração da Livraria (Logo e Redes)
 class LivrariaConfig(models.Model):
     logo = models.ImageField(upload_to='livraria_config/', blank=True, null=True, verbose_name="Logo da Livraria (Branding)")
+    
+    # NOVOS CAMPOS
+    whatsapp = models.CharField(
+        max_length=20, 
+        blank=True, 
+        null=True, 
+        verbose_name="WhatsApp de Vendas",
+        help_text="Digite apenas números, com DDD. Ex: 5535999887766"
+    )
+    
+    instagram_url = models.URLField(
+        blank=True, 
+        null=True, 
+        verbose_name="Link do Perfil do Instagram",
+        help_text="Ex: https://www.instagram.com/livrariaramirogama"
+    )
+    
     instagram_widget_code = models.TextField(blank=True, verbose_name="Código do Widget do Instagram (SnapWidget)")
     
-    # Singleton: Garante que só existe 1 registo
+    # Singleton: Garante que só existe 1 registro
     def save(self, *args, **kwargs):
         if not self.pk and LivrariaConfig.objects.exists():
             return
@@ -21,7 +38,6 @@ class LivrariaConfig(models.Model):
 
     def __str__(self):
         return "Configuração Ramiro Gama"
-
 
 # 2. Tabela de Categorias
 class Categoria(models.Model):

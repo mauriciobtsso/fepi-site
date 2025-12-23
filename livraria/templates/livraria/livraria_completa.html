@@ -101,13 +101,20 @@
 {% block content %}
 <div class="container">
 
-    <table style="width:100%; margin: 35px 0 30px 0; border-collapse:collapse;">
+<table style="width:100%; margin: 35px 0 30px 0; border-collapse:collapse;">
         <tr style="vertical-align: top;">
             <td style="width: 150px; padding-right: 25px;">
-                <img src="{% static 'img/logo_livraria.png' %}"
-                     alt="Logo Livraria Ramiro Gama"
-                     style="height: 120px; width:auto;">
+                {% if config.logo %}
+                    <img src="{{ config.logo.url }}" 
+                         alt="Logo Livraria" 
+                         style="height: 120px; width:auto; object-fit: contain;">
+                {% else %}
+                    <img src="{% static 'img/logo_livraria.png' %}"
+                         alt="Logo Livraria Ramiro Gama"
+                         style="height: 120px; width:auto;">
+                {% endif %}
             </td>
+            
             <td>
                 <h1 style="color: var(--azul-escuro); font-size: 2rem; margin:0;">
                     Livraria Ramiro Gama
@@ -115,17 +122,23 @@
                 <p style="color:#666; margin:4px 0 0 0;">
                     Catálogo de obras espíritas disponíveis para pronta entrega.
                 </p>
+                
                 <div style="margin-top:10px;">
-                    <a href="https://www.instagram.com/livrariaramirogama" target="_blank"
-                       style="color: var(--azul-medio); font-weight:500; font-size:0.9rem; text-decoration:none;">
-                        <i class="fa-brands fa-instagram" style="color:var(--dourado);"></i>
-                        Siga-nos no Instagram →
-                    </a>
+                    {% if config.instagram_url %}
+                        <a href="{{ config.instagram_url }}" target="_blank"
+                           style="color: var(--azul-medio); font-weight:500; font-size:0.9rem; text-decoration:none;">
+                            <i class="fa-brands fa-instagram" style="color:var(--dourado);"></i>
+                            Siga-nos no Instagram →
+                        </a>
+                    {% else %}
+                        <span style="color:#999; font-size:0.9rem;">
+                            <i class="fa-brands fa-instagram"></i> @livrariaramirogama
+                        </span>
+                    {% endif %}
                 </div>
             </td>
         </tr>
     </table>
-
     <div class="filtros-container" style="margin-bottom: 15px !important;">
         <div class="search-wrapper">
             <form method="get" action="{% url 'livraria' %}" class="search-form">
