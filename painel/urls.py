@@ -42,4 +42,21 @@ urlpatterns = [
     path('programacao/eventos/editar/<int:id>/', views.gerenciar_evento, name='editar_evento'),
     path('programacao/eventos/excluir/<int:id>/', views.excluir_evento, name='excluir_evento'),
 
+    # --- LIVRARIA ---
+    path('livraria/', views.livraria_hub, name='livraria_hub'),
+    
+    # Livros
+    path('livraria/livros/', views.listar_livros, name='listar_livros'),
+    path('livraria/livros/novo/', views.gerenciar_livro, name='novo_livro'),
+    path('livraria/livros/editar/<int:id>/', views.gerenciar_livro, name='editar_livro'),
+    path('livraria/livros/excluir/<int:id>/', views.excluir_livro, name='excluir_livro'),
+    
+    # Categorias
+    path('livraria/categorias/', views.listar_categorias_liv, name='listar_categorias_liv'),
+    path('livraria/categorias/excluir/<int:id>/', views.excluir_categoria_liv, name='excluir_categoria_liv'),
+
+    # Configuração
+    path('livraria/config/', views.config_livraria, name='config_livraria'),
+
+
 ]

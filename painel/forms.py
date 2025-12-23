@@ -4,6 +4,7 @@ from noticias.models import Noticia
 from core.models import ConfiguracaoHome
 from intranet.models import DocumentoRestrito, CategoriaDocumento
 from programacao.models import AtividadeSemanal, Doutrinaria, CursoEvento
+from livraria.models import Livro, Categoria, LivrariaConfig
 
 class NoticiaForm(forms.ModelForm):
     class Meta:
@@ -152,5 +153,46 @@ class CursoEventoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.pk and self.instance.data_evento:
             self.fields['data_evento'].initial = self.instance.data_evento.strftime('%Y-%m-%dT%H:%M')
+
+# 1. Formulário de Livros
+class LivroForm(forms.ModelForm):
+    class Meta:
+        model = Livro
+        fields = ['codigo', 'titulo', 'autor', 'categoria', 'preco', 'capa', 'destaque_home', 'disponivel', 'descricao']
+        widgets = {
+            'codigo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'ISBN ou Ref interna'}),
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'autor': forms.TextInput(attrs={'class': 'form-control'}),
+            'categoria': forms.Select(attrs={'class': 'form-select'}),
+            'preco': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'capa': forms.FileInput(attrs={'class': 'form-control'}),
+            # Checkboxes com estilo Bootstrap
+            'destaque_home': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'width: 20px; height: 20px;'}),
+            'disponivel': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'width: 20px; height: 20px;'}),
+            # Editor Rico
+            'descricao': CKEditorWidget(),
+        }
+
+# 2. Formulário de Categorias da Livraria
+class CategoriaLivroForm(forms.ModelForm):
+    class Meta:
+        model = Categoria
+        fields = ['nome']
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Romance, Estudo, Infantil'}),
+        }
+
+# 3. Configurações da Livraria (Logo/Instagram)
+class LivrariaConfigForm(forms.ModelForm):
+    class Meta:
+        model = LivrariaConfig
+        fields = ['logo', 'instagram_widget_code']
+        widgets = {
+            'logo': forms.FileInput(attrs={'class': 'form-control'}),
+            'instagram_widget_code': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Cole o código do SnapWidget aqui'}),
+        }
+
+
+
 
 

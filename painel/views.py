@@ -8,6 +8,8 @@ from noticias.models import Noticia
 from core.models import ConfiguracaoHome
 from programacao.models import AtividadeSemanal, Doutrinaria, CursoEvento
 from .forms import AtividadeSemanalForm, DoutrinariaForm, CursoEventoForm
+from livraria.models import Livro, Categoria as CategoriaLivro, LivrariaConfig
+from .forms import LivroForm, CategoriaLivroForm, LivrariaConfigForm
 
 @login_required(login_url='/login/')
 def dashboard(request):
@@ -246,6 +248,77 @@ def excluir_evento(request, id):
     item.delete()
     return redirect('listar_eventos')
 
+# --- HUB DA LIVRARIA ---
+@login_required(login_url='/login/')
+def livraria_hub(request):
+    return render(request, 'painel/livraria/livraria_hub.html')
+
+# --- 1. GESTÃO DE LIVROS ---
+@login_required(login_url='/login/')
+def listar_livros(request):
+    livros = Livro.objects.select_related('categoria').all().order_by('titulo')
+    return render(request, 'painel/livraria/listar_livros.html', {'livros': livros})
+
+@login_required(login_url='/login/')
+def gerenciar_livro(request, id=None):
+    instancia = get_object_or_404(Livro, id=id) if id else None
+    
+    if request.method == 'POST':
+        form = LivroForm(request.POST, request.FILES, instance=instancia)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_livros')
+    else:
+        form = LivroForm(instance=instancia)
+    
+    # Reutilizando o template bonito que fizemos antes!
+    titulo = "Editar Livro" if id else "Novo Livro"
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+
+@login_required(login_url='/login/')
+def excluir_livro(request, id):
+    livro = get_object_or_404(Livro, id=id)
+    livro.delete()
+    return redirect('listar_livros')
+
+# --- 2. GESTÃO DE CATEGORIAS (LIVRARIA) ---
+@login_required(login_url='/login/')
+def listar_categorias_liv(request):
+    categorias = CategoriaLivro.objects.all()
+    # Formulário Rápido na mesma página
+    if request.method == 'POST':
+        form = CategoriaLivroForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_categorias_liv')
+    else:
+        form = CategoriaLivroForm()
+        
+    return render(request, 'painel/livraria/listar_categorias.html', {'categorias': categorias, 'form': form})
+
+@login_required(login_url='/login/')
+def excluir_categoria_liv(request, id):
+    cat = get_object_or_404(CategoriaLivro, id=id)
+    # Evita apagar se tiver livros
+    if not cat.livro_set.exists():
+        cat.delete()
+    return redirect('listar_categorias_liv')
+
+# --- 3. CONFIGURAÇÃO (LOGO/INSTA) ---
+@login_required(login_url='/login/')
+def config_livraria(request):
+    # Pega o primeiro registro ou cria se não existir (Singleton)
+    config, created = LivrariaConfig.objects.get_or_create(pk=1)
+    
+    if request.method == 'POST':
+        form = LivrariaConfigForm(request.POST, request.FILES, instance=config)
+        if form.is_valid():
+            form.save()
+            return redirect('livraria_hub')
+    else:
+        form = LivrariaConfigForm(instance=config)
+        
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Configuração da Livraria'})
 
 
 

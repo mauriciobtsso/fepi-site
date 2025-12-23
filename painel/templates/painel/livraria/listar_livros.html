@@ -1,0 +1,63 @@
+{% extends 'painel/base_painel.html' %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h3><i class="fas fa-book me-2"></i> Livros Cadastrados</h3>
+    <a href="{% url 'novo_livro' %}" class="btn btn-success"><i class="fas fa-plus"></i> Novo Livro</a>
+</div>
+
+<div class="mb-3">
+    <a href="{% url 'livraria_hub' %}" class="text-decoration-none text-muted">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="bg-light">
+                <tr>
+                    <th class="ps-3">Capa</th>
+                    <th>Título / Autor</th>
+                    <th>Preço</th>
+                    <th>Status</th>
+                    <th class="text-end pe-4">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for livro in livros %}
+                <tr>
+                    <td class="ps-3">
+                        {% if livro.capa %}
+                            <img src="{{ livro.capa.url }}" style="height: 50px; width: 35px; object-fit: cover; border-radius: 3px;">
+                        {% else %}
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 50px; width: 35px; border-radius: 3px;">
+                                <i class="fas fa-book"></i>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="fw-bold d-block">{{ livro.titulo }}</span>
+                        <small class="text-muted">{{ livro.autor }}</small>
+                    </td>
+                    <td class="fw-bold text-success">R$ {{ livro.preco }}</td>
+                    <td>
+                        {% if livro.destaque_home %}
+                            <span class="badge bg-warning text-dark" title="Aparece na Home"><i class="fas fa-star"></i></span>
+                        {% endif %}
+                        {% if not livro.disponivel %}
+                            <span class="badge bg-danger">Esgotado</span>
+                        {% else %}
+                            <span class="badge bg-success">Disponível</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end pe-4">
+                        <a href="{% url 'editar_livro' livro.id %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                        <a href="{% url 'excluir_livro' livro.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Apagar livro?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
