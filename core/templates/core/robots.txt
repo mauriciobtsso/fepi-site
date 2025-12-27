@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /painel/
+Disallow: /admin/
+Disallow: /intranet/
+Allow: /
+
+Sitemap: https://fepiaui.up.railway.app/sitemap.xml

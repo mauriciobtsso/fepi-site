@@ -65,6 +65,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
     # CLOUDINARY (Deve vir ANTES de staticfiles)
     'cloudinary_storage',
     'django.contrib.staticfiles',
@@ -202,3 +204,5 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 LOGIN_URL = 'login'               
 LOGIN_REDIRECT_URL = 'area_federado' 
 LOGOUT_REDIRECT_URL = 'home'
+
+SITE_ID = 1
