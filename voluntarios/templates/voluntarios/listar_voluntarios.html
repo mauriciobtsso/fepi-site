@@ -1,0 +1,116 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+    <h2 class="h3 mb-2 mb-md-0 text-gray-800">Gestão de Voluntários</h2>
+    
+    <div class="d-flex align-items-center">
+        <form method="GET" class="d-flex me-3">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Buscar nome, CPF ou telefone..." value="{{ query }}">
+                <button class="btn btn-outline-primary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+                {% if query %}
+                    <a href="{% url 'listar_voluntarios' %}" class="btn btn-outline-secondary" title="Limpar Busca">
+                        <i class="fas fa-times"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+
+        <a href="{% url 'editar_modelo_termo' %}" class="btn btn-warning shadow-sm me-2">
+            <i class="fas fa-file-signature fa-sm"></i> Configurar Termo
+        </a>
+        <a href="{% url 'cadastrar_voluntario' %}" class="btn btn-primary shadow-sm">
+            <i class="fas fa-plus fa-sm"></i> Novo
+        </a>
+
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Telefone</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in voluntarios %}
+                    <tr>
+                        <td class="fw-bold text-dark">{{ v.nome }}</td>
+                        <td>{{ v.cpf|default:"---" }}</td>
+                        <td>{{ v.telefones|default:"---" }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'documentos_voluntario' v.pk %}" class="btn btn-sm btn-success shadow-sm" title="Histórico de Anexos">
+                                <i class="fas fa-folder-open"></i> Anexos
+                            </a>
+                            <a href="{% url 'imprimir_termo' v.pk %}" class="btn btn-sm btn-info shadow-sm" title="Imprimir Termo de Adesão">
+                                <i class="fas fa-print"></i>
+                            </a>
+                            <a href="{% url 'editar_voluntario' v.pk %}" class="btn btn-sm btn-warning shadow-sm" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'excluir_voluntario' v.pk %}" class="btn btn-sm btn-danger shadow-sm" title="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">
+                            {% if query %}
+                                Nenhum voluntário encontrado para a busca "<strong>{{ query }}</strong>".
+                            {% else %}
+                                Nenhum voluntário cadastrado no sistema.
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if voluntarios.has_other_pages %}
+        <nav aria-label="Navegação de páginas" class="mt-4">
+            <ul class="pagination justify-content-center mb-0">
+                {% if voluntarios.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}">&laquo; Início</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ voluntarios.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Anterior</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">&laquo; Início</span></li>
+                    <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+                {% endif %}
+
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">Página {{ voluntarios.number }} de {{ voluntarios.paginator.num_pages }}</span>
+                </li>
+
+                {% if voluntarios.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ voluntarios.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Próxima</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ voluntarios.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}">Fim &raquo;</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Próxima</span></li>
+                    <li class="page-item disabled"><span class="page-link">Fim &raquo;</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'painel/base_painel.html' %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h3><i class="fas fa-download me-2"></i> Downloads e Recursos</h3>
+        <p class="text-muted">Gerencie arquivos públicos e links úteis do site.</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'nova_secao_recurso' %}" class="btn btn-outline-secondary btn-sm me-2">Nova Categoria</a>
+        <a href="{% url 'novo_recurso' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Novo Link/Arquivo</a>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light"><tr><th>Recurso / Link</th><th>Categoria</th><th>Tipo</th><th class="text-end pe-4">Ações</th></tr></thead>
+            <tbody>
+                {% for item in itens %}
+                <tr>
+                    <td class="ps-4">
+                        <span class="fw-bold d-block">{{ item.titulo }}</span>
+                        <a href="{{ item.url }}" target="_blank" class="small text-decoration-none text-muted"><i class="fas fa-external-link-alt"></i> {{ item.url|truncatechars:40 }}</a>
+                    </td>
+                    <td><i class="{{ item.secao.icone_fa }} text-secondary me-1"></i> {{ item.secao.nome }}</td>
+                    <td>
+                        {% if item.is_download %}
+                            <span class="badge bg-success">Download</span>
+                        {% else %}
+                            <span class="badge bg-info text-dark">Link Externo</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end pe-4">
+                        <a href="{% url 'editar_recurso' item.id %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                        <a href="{% url 'excluir_recurso' item.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center py-4 text-muted">Nenhum recurso cadastrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-5">
+    <h6 class="text-muted border-bottom pb-2 mb-3">Gerenciar Categorias (Seções)</h6>
+    <div class="d-flex flex-wrap gap-2">
+        {% for s in secoes %}
+            <div class="btn-group btn-group-sm">
+                <a href="{% url 'editar_secao_recurso' s.id %}" class="btn btn-light border"><i class="{{ s.icone_fa }}"></i> {{ s.nome }}</a>
+                <a href="{% url 'excluir_secao_recurso' s.id %}" class="btn btn-light border text-danger" onclick="return confirm('Apagar categoria {{ s.nome }}?')">&times;</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

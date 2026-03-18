@@ -1,0 +1,2548 @@
+[
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$oat2DF5ChoBq18uUXV5Cs0$lqJUodQ9e61wBb9oCeRBqB32E7kBtnAhhQqhnOqDhfg=",
+        "last_login": "2026-01-15T17:41:59.186Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "admin@fepi.org.br",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2025-12-12T03:18:51.409Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "sites.site",
+    "fields": {
+        "domain": "fepiaui.up.railway.app",
+        "name": "Federação Espirita Piauiense"
+    }
+},
+{
+    "model": "core.informacaocontato",
+    "pk": 1,
+    "fields": {
+        "endereco": "R. Olavo Bilac, 1394 - Centro (Sul) - Tereina/PI",
+        "cidade": "Teresina - PI",
+        "cep": "64001-280",
+        "telefone": "(86) 3221-3021",
+        "email": "fepiaui@gmail.com",
+        "horario_livraria": "Segunda à Sábado"
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 1,
+    "fields": {
+        "nome": "Diretoria Executiva",
+        "descricao": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 2,
+    "fields": {
+        "nome": "Conselho Fiscal",
+        "descricao": "",
+        "ordem": 2
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 3,
+    "fields": {
+        "nome": "Departamento",
+        "descricao": "",
+        "ordem": 10
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 4,
+    "fields": {
+        "nome": "Departamento de Comunicação Social Espirita",
+        "descricao": "Departamento de Comunicação Social Espirita",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 5,
+    "fields": {
+        "nome": "Departamento da Infância e Juventude",
+        "descricao": "Departamento da Infância e Juventude",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 6,
+    "fields": {
+        "nome": "Departamento de Atendimento Espiritual",
+        "descricao": "Departamento de Atendimento Espiritual",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 7,
+    "fields": {
+        "nome": "Departamento da Família",
+        "descricao": "Departamento da Família",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 8,
+    "fields": {
+        "nome": "Departamento da Arte",
+        "descricao": "Departamento da Arte",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 9,
+    "fields": {
+        "nome": "Departamento da Mediunidade",
+        "descricao": "Departamento da Mediunidade",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 10,
+    "fields": {
+        "nome": "Departamento de Estudo do Espiritismo",
+        "descricao": "Departamento de Estudo do Espiritismo",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.tipodiretoria",
+    "pk": 11,
+    "fields": {
+        "nome": "Departamento de Promoção Social Espírita",
+        "descricao": "Departamento de Promoção Social Espírita",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.cargo",
+    "pk": 1,
+    "fields": {
+        "nome": "Presidente"
+    }
+},
+{
+    "model": "core.cargo",
+    "pk": 2,
+    "fields": {
+        "nome": "Vice-Presidente"
+    }
+},
+{
+    "model": "core.cargo",
+    "pk": 3,
+    "fields": {
+        "nome": "Conselheiro"
+    }
+},
+{
+    "model": "core.cargo",
+    "pk": 4,
+    "fields": {
+        "nome": "Diretor(a)"
+    }
+},
+{
+    "model": "core.cargo",
+    "pk": 5,
+    "fields": {
+        "nome": "Responsável"
+    }
+},
+{
+    "model": "core.paginainstitucional",
+    "pk": 1,
+    "fields": {
+        "titulo": "Nossa História",
+        "conteudo": "<p>Hist&oacute;ria da Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense</p>\r\n\r\n<p>A Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense surge como consequ&ecirc;ncia natural do processo de unifica&ccedil;&atilde;o do movimento esp&iacute;rita brasileiro, estabelecido atrav&eacute;s do Pacto &Aacute;ureo, acordo celebrado em 05 de outubro de 1949, na cidade do Rio de Janeiro, entre a Federa&ccedil;&atilde;o Esp&iacute;rita Brasileira e outras entidades esp&iacute;ritas.</p>\r\n\r\n<p>Por solicita&ccedil;&atilde;o de&nbsp;<strong>Wantuil de Freitas</strong>, ent&atilde;o presidente da FEB,&nbsp;<strong>Leopoldo Machado</strong>&nbsp;e outros colaboradores empreendem uma viagem &agrave;s regi&otilde;es Norte e Nordeste do Brasil, iniciada em outubro de 1950. Essa excurs&atilde;o, que ficou conhecida como&nbsp;<strong>Caravana da Fraternidade</strong>, embora n&atilde;o tivesse car&aacute;ter oficial, tinha claros prop&oacute;sitos de integrar as federativas estaduais em torno do Conselho Federativo Nacional.</p>\r\n\r\n<p>Os registros hist&oacute;ricos indicam que o Piau&iacute; possu&iacute;a, naquele per&iacute;odo, apenas cinco institui&ccedil;&otilde;es esp&iacute;ritas. Em Parna&iacute;ba, funcionavam o&nbsp;<strong>Centro Esp&iacute;rita Perseveran&ccedil;a no Bem</strong>&nbsp;e o&nbsp;<strong>Centro Esp&iacute;rita Vida e Progresso</strong>. Na capital Teresina, existiam o&nbsp;<strong>Centro Esp&iacute;rita Bezerra de Menezes</strong>, o&nbsp;<strong>Centro Esp&iacute;rita Irm&atilde;o Adriano</strong>&nbsp;e o&nbsp;<strong>Centro Esp&iacute;rita Piauiense</strong>, este &uacute;ltimo transformado em 1931 a partir do&nbsp;<strong>Centro Esp&iacute;rita Amor e Caridade</strong>, surgido em 1927. No entanto, ainda n&atilde;o havia um ente de car&aacute;ter federativo que congregasse todas aquelas casas esp&iacute;ritas.</p>\r\n\r\n<p>Antes de iniciada a excurs&atilde;o, por&eacute;m,&nbsp;<strong>Arthur Lins de Vasconcellos (PR)</strong>, profundo idealista e batalhador pela unifica&ccedil;&atilde;o do movimento esp&iacute;rita brasileiro e que integrou a caravana desde a sua partida at&eacute; a cidade de Recife (PE), j&aacute; vinha se correspondendo com o presidente do Centro Esp&iacute;rita Piauiense,&nbsp;<strong>Jo&atilde;o Rodrigues Vieira</strong>, mais conhecido como&nbsp;<strong>Joca Vieira</strong>, que manifestava amplo apoio aos trabalhos de unifica&ccedil;&atilde;o e &agrave; FEB.</p>\r\n\r\n<p>No Piau&iacute;, os caravaneiros chegam primeiro &agrave; cidade de Parna&iacute;ba, onde realizam visitas, fazem palestras e se re&uacute;nem com os trabalhadores esp&iacute;ritas. Em Teresina, no dia&nbsp;<strong>27 de novembro de 1950</strong>, ap&oacute;s uma palestra proferida por Leopoldo Machado no Centro Esp&iacute;rita Piauiense, realizam uma mesa-redonda, na qual os centros esp&iacute;ritas decidem fundar a&nbsp;<strong>Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense</strong>, na &eacute;poca abreviada como &ldquo;F.E.P.&rdquo;, transformada a partir do pr&oacute;prio Centro Esp&iacute;rita Piauiense. A iniciativa fora apoiada pelo movimento esp&iacute;rita de Parna&iacute;ba, o qual j&aacute; havia manifestado sua vontade na passagem dos caravaneiros por l&aacute;.</p>\r\n\r\n<p>No dia seguinte, antes da realiza&ccedil;&atilde;o de nova palestra por Leopoldo Machado no Centro Esp&iacute;rita Piauiense, &eacute; lida a ata de funda&ccedil;&atilde;o e empossada a primeira Diretoria da Federa&ccedil;&atilde;o, cuja presid&ecirc;ncia foi exercida por&nbsp;<strong>Joca Vieira</strong>&nbsp;at&eacute; o ano de&nbsp;<strong>1969</strong>.</p>\r\n\r\n<p>Integravam a caravana que chegou ao nosso Estado:&nbsp;<strong>Leopoldo Machado (RJ)</strong>,&nbsp;<strong>Francisco Spinelli (RS)</strong>,&nbsp;<strong>Luiz Burgos Filho (PE)</strong>&nbsp;e&nbsp;<strong>Carlos Jord&atilde;o da Silva (SP)</strong>. Dentre os trabalhadores piauienses, ficaram registrados os nomes de&nbsp;<strong>Alarico da Cunha</strong>, presidente do Centro Esp&iacute;rita Perseveran&ccedil;a no Bem,&nbsp;<strong>Francisco de Abreu</strong>, presidente do Centro Esp&iacute;rita Vida e Progresso, e os nomes de&nbsp;<strong>Benedito Freire</strong>,&nbsp;<strong>Raimundo Bel&eacute;m</strong>&nbsp;e&nbsp;<strong>Jos&eacute; Mour&atilde;o</strong>, todos da cidade de Parna&iacute;ba.</p>\r\n\r\n<p>Da capital, ficaram registrados os nomes de&nbsp;<strong>Joca Vieira</strong>, do&nbsp;<strong>Desembargador Odorico Rosa</strong>, do&nbsp;<strong>Juiz de Direito Pedro de Morais Brito Conde</strong>&nbsp;e do&nbsp;<strong>Dr. Heli da Rocha Nunes</strong>, e outros mais que assinaram a ata de funda&ccedil;&atilde;o, como&nbsp;<strong>Raul Dantas Cunha</strong>,&nbsp;<strong>C&acirc;ndido Pereira da Cunha</strong>,&nbsp;<strong>Jo&atilde;o Soares de Carvalho</strong>,&nbsp;<strong>Lindolfo Botelho Amarante</strong>,&nbsp;<strong>Jo&atilde;o da Rocha Marinho</strong>,&nbsp;<strong>Jos&eacute; Almendra Freitas Filho</strong>,&nbsp;<strong>Antonio Pereira</strong>,&nbsp;<strong>Carlos Medeiros de Macedo</strong>&nbsp;e&nbsp;<strong>Jo&atilde;o Batista Pilar</strong>.</p>",
+        "frase_destaque": "",
+        "ano_inicio": 2025,
+        "ano_fim": 2028
+    }
+},
+{
+    "model": "core.membrodiretoria",
+    "pk": 1,
+    "fields": {
+        "nome": "Igor Linhares",
+        "cargo": 1,
+        "tipo": 1,
+        "telefone": "",
+        "email": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.membrodiretoria",
+    "pk": 2,
+    "fields": {
+        "nome": "Cristina Miranda",
+        "cargo": 2,
+        "tipo": 1,
+        "telefone": "",
+        "email": "",
+        "ordem": 2
+    }
+},
+{
+    "model": "core.membrodiretoria",
+    "pk": 3,
+    "fields": {
+        "nome": "Luze Silva",
+        "cargo": 4,
+        "tipo": 4,
+        "telefone": "",
+        "email": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.membrodiretoria",
+    "pk": 4,
+    "fields": {
+        "nome": "Socorro Morais",
+        "cargo": 4,
+        "tipo": 5,
+        "telefone": "",
+        "email": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.membrodiretoria",
+    "pk": 5,
+    "fields": {
+        "nome": "Stelio Magalhães",
+        "cargo": 4,
+        "tipo": 6,
+        "telefone": "",
+        "email": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.membrodiretoria",
+    "pk": 6,
+    "fields": {
+        "nome": "Helena Maria",
+        "cargo": 4,
+        "tipo": 7,
+        "telefone": "",
+        "email": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.membrodiretoria",
+    "pk": 7,
+    "fields": {
+        "nome": "Rosário Ribeiro",
+        "cargo": 4,
+        "tipo": 8,
+        "telefone": "",
+        "email": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.membrodiretoria",
+    "pk": 8,
+    "fields": {
+        "nome": "Carmelita Bueno",
+        "cargo": 4,
+        "tipo": 9,
+        "telefone": "",
+        "email": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.membrodiretoria",
+    "pk": 9,
+    "fields": {
+        "nome": "Carlos Alberto",
+        "cargo": 4,
+        "tipo": 10,
+        "telefone": "",
+        "email": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.membrodiretoria",
+    "pk": 10,
+    "fields": {
+        "nome": "Lucelma Melo",
+        "cargo": 4,
+        "tipo": 11,
+        "telefone": "",
+        "email": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "core.configuracaohome",
+    "pk": 1,
+    "fields": {
+        "titulo_banner": "Federação Espírita do Piauí",
+        "subtitulo_banner": "Seja Bem-vindo(a)",
+        "imagem_banner": "media/banners/imgi_20_590414842_18547142191045768_4033273155789127647_n_adgd3p",
+        "popup_ativo": true,
+        "popup_titulo": "Nota Oficial FEPI sobre arrombamento",
+        "popup_imagem": "media/popup/imageye___-_imgi_16_611280503_18553175674045768_2313647850352718694_n_e0fdc5",
+        "popup_link": "https://fepiaui.up.railway.app/noticias/nota-oficial-fepi-sofre-arrombamento-e-furto-de-equipamentos-instituicao-pede-apoio-para-reparos/",
+        "popup_botao_texto": "Saiba mais",
+        "popup_inicio": "2026-01-04T03:52:45Z",
+        "popup_fim": "2026-02-01T02:59:00Z"
+    }
+},
+{
+    "model": "core.configuracaoyoutube",
+    "pk": 1,
+    "fields": {
+        "youtube_mode": "auto",
+        "youtube_channel_id": "UCm6mhuw6KC4AIy0OuxZqgiA",
+        "youtube_video_id": null
+    }
+},
+{
+    "model": "core.configuracaoyoutube",
+    "pk": 2,
+    "fields": {
+        "youtube_mode": "auto",
+        "youtube_channel_id": "UCm6mhuw6KC4AIy0OuxZqgiA",
+        "youtube_video_id": null
+    }
+},
+{
+    "model": "core.postinstagram",
+    "pk": 1,
+    "fields": {
+        "imagem": "media/instagram/imgi_12_588565362_18548907823045768_258284067893093202_n_us5kub",
+        "link": "https://www.instagram.com/p/DSGFsrZAZj6/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ==",
+        "legenda": "Palestra Pública: Jesus e a mensagem da boa nova",
+        "data_post": "2025-12-15"
+    }
+},
+{
+    "model": "core.postinstagram",
+    "pk": 2,
+    "fields": {
+        "imagem": "media/instagram/imageye___-_imgi_15_601916196_18550146115045768_3410198549790428341_n_wxxwg1",
+        "link": "https://www.instagram.com/p/DSXyNDzDv-k/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+        "legenda": "Cine Debate com a exibição do filme “Interestelar”",
+        "data_post": "2025-12-22"
+    }
+},
+{
+    "model": "core.postinstagram",
+    "pk": 3,
+    "fields": {
+        "imagem": "media/instagram/imgi_13_607874636_18552589111045768_5934458108416193327_n_cxxotm",
+        "link": "https://www.instagram.com/p/DTAsilwjlk7/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+        "legenda": "Palestas de Janeiro de 2026",
+        "data_post": "2026-01-15"
+    }
+},
+{
+    "model": "livraria.livrariaconfig",
+    "pk": 1,
+    "fields": {
+        "logo": "",
+        "whatsapp": "558632213021",
+        "instagram_url": "https://www.instagram.com/livrariaramirogama",
+        "instagram_widget_code": ""
+    }
+},
+{
+    "model": "livraria.categoria",
+    "pk": 1,
+    "fields": {
+        "nome": "Obras Básicas"
+    }
+},
+{
+    "model": "livraria.categoria",
+    "pk": 2,
+    "fields": {
+        "nome": "Auto Conhecimento"
+    }
+},
+{
+    "model": "livraria.categoria",
+    "pk": 3,
+    "fields": {
+        "nome": "Mediunidade"
+    }
+},
+{
+    "model": "livraria.categoria",
+    "pk": 4,
+    "fields": {
+        "nome": "Romance Espírita"
+    }
+},
+{
+    "model": "livraria.livro",
+    "pk": 1,
+    "fields": {
+        "codigo": "978-8584850174",
+        "titulo": "A Gênese",
+        "slug": "a-genese",
+        "autor": "Allan Kardec",
+        "categoria": 1,
+        "descricao": "<p>Obra que comp&otilde;e a Codifica&ccedil;&atilde;o Esp&iacute;rita, A G&ecirc;nese, os milagres e as predi&ccedil;&otilde;es segundo o Espiritismo tem como base a imutabilidade das Leis divinas em dezoito cap&iacute;tulos, divididos em tr&ecirc;s partes distintas. A primeira parte analisa a origem da Terra e as g&ecirc;neses org&acirc;nica, espiritual e mosaica, de forma l&oacute;gica e racional, deixando de lado as interpreta&ccedil;&otilde;es misteriosas e as fantasias pueris sobre a cria&ccedil;&atilde;o do mundo. A segunda parte aborda a quest&atilde;o dos &quot;milagres&quot; de Jesus, explicando a natureza dos fluidos e os fatos extraordin&aacute;rios contidos no Evangelho. A terceira parte enfoca as predi&ccedil;&otilde;es do Evangelho, os sinais dos tempos e a gera&ccedil;&atilde;o nova, concitando os homens &agrave; pr&aacute;tica da justi&ccedil;a, da paz e da fraternidade, abrindo assim uma Nova Era para a regenera&ccedil;&atilde;o da humanidade.</p>",
+        "preco": "39.90",
+        "destaque_home": true,
+        "disponivel": true,
+        "capa": "media/capas/a_genese_gtkl1b"
+    }
+},
+{
+    "model": "livraria.livro",
+    "pk": 2,
+    "fields": {
+        "codigo": "0000",
+        "titulo": "Ave, Cristo!",
+        "slug": "ave-cristo",
+        "autor": "Francisco Cândido Xavier",
+        "categoria": 4,
+        "descricao": "<p>Ave, Cristo! Os que v&atilde;o viver para sempre te glorificam e sa&uacute;dam! A parceria entre o m&eacute;dium Francisco C&acirc;ndido Xavier e o Esp&iacute;rito Emmanuel traz &agrave; luz a hist&oacute;ria de Quinto Varro e Taciano, almas ligadas por v&aacute;rias reencarna&ccedil;&otilde;es que se reencontram no terceiro s&eacute;culo do Cristianismo, na regi&atilde;o controlada pelo Imp&eacute;rio Romano. Como exemplo de simplicidade, confian&ccedil;a e amor, os pioneiros da Boa Nova entregaram-se ao servi&ccedil;o do Cristo tendo como sustento apenas sua poderosa e inquebrant&aacute;vel f&eacute;. Uma comovente narrativa que mostra quanto pode realizar o verdadeiro amor em suas manifesta&ccedil;&otilde;es de solidariedade a bem das criaturas humanas.</p>",
+        "preco": "58.00",
+        "destaque_home": true,
+        "disponivel": true,
+        "capa": "media/capas/avecristo_hbkasu"
+    }
+},
+{
+    "model": "livraria.livro",
+    "pk": 3,
+    "fields": {
+        "codigo": "978-8573287950",
+        "titulo": "Boa Nova",
+        "slug": "boa-nova",
+        "autor": "Francisco Cândido Xavier e Humberto de Campos",
+        "categoria": 4,
+        "descricao": "<p>Medalha de prata na categoria Espiritualidade no Illumination Book Awards! Boa Nova &eacute; uma obra-prima da literatura esp&iacute;rita psicografada por Francisco C&acirc;ndido Xavier, com o Esp&iacute;rito Humberto de Campos. Publicada pela FEB Editora, a obra apresenta 30 epis&oacute;dios emocionantes que revelam momentos &iacute;ntimos e transformadores da vida de Jesus e seus disc&iacute;pulos. Cada cap&iacute;tulo traz &agrave; tona sentimentos profundos, dilemas humanos e a luz do Evangelho, proporcionando ao leitor uma experi&ecirc;ncia de aprendizado e reflex&atilde;o. Ao longo das p&aacute;ginas, somos convidados a testemunhar a humanidade dos ap&oacute;stolos, suas d&uacute;vidas, falhas e crescimento espiritual, tornando-os mais pr&oacute;ximos e inspiradores. A obra destaca a import&acirc;ncia dos ensinamentos de Jesus, oferecendo li&ccedil;&otilde;es de sabedoria atemporais que tocam o cora&ccedil;&atilde;o e a alma. Com uma narrativa envolvente e profunda, Boa Nova &eacute; uma leitura indispens&aacute;vel para aqueles que buscam compreender os ensinamentos de Jesus sob uma perspectiva humanizada e espiritual.</p>",
+        "preco": "50.00",
+        "destaque_home": true,
+        "disponivel": true,
+        "capa": "media/capas/boanova_xdnurb"
+    }
+},
+{
+    "model": "livraria.livro",
+    "pk": 4,
+    "fields": {
+        "codigo": "978-8573287967",
+        "titulo": "Brasil, Coração do Mundo, Pátria do Evangelho",
+        "slug": "brasil-coracao-do-mundo-patria-do-evangelho",
+        "autor": "Francisco Cândido Xavier e Humberto de Campos",
+        "categoria": 2,
+        "descricao": "<p>Brasil, Cora&ccedil;&atilde;o do Mundo, P&aacute;tria do Evangelho &ndash; Uma Vis&atilde;o Espiritual da Miss&atilde;o do Brasil Mais de 1 milh&atilde;o de exemplares vendidos no Brasil e no exterior, este cl&aacute;ssico da literatura esp&iacute;rita, ditado pelo Esp&iacute;rito Humberto de Campos (sob o pseud&ocirc;nimo Irm&atilde;o X) ao m&eacute;dium Francisco C&acirc;ndido Xavier, oferece uma perspectiva in&eacute;dita e profunda sobre o papel espiritual do Brasil no cen&aacute;rio mundial. Publicado originalmente em 1938, com pref&aacute;cio do Esp&iacute;rito Emmanuel, o livro revela, com riqueza de detalhes, como o Cristo acompanha de perto o processo evolutivo do pa&iacute;s, desde seus prim&oacute;rdios at&eacute; os grandes marcos hist&oacute;ricos. Por meio de informa&ccedil;&otilde;es colhidas no plano espiritual, a obra reinterpreta epis&oacute;dios como: - A escravid&atilde;o e suas consequ&ecirc;ncias c&aacute;rmicas; - Os movimentos nativistas e a Independ&ecirc;ncia do Brasil; - A Guerra do Paraguai e seus bastidores espirituais; - A chegada do Espiritismo ao Brasil e a forma&ccedil;&atilde;o do Movimento Esp&iacute;rita Brasileiro. Com linguagem acess&iacute;vel e narrativa envolvente, esta obra demonstra por que o Brasil foi escolhido para ser o &ldquo;cora&ccedil;&atilde;o espiritual da Terra&rdquo; &ndash; t&iacute;tulo que transcende a geografia e ecoa como miss&atilde;o universal: irradiar paz, fraternidade e os ensinamentos do Evangelho de Jesus para toda a humanidade. A obra j&aacute; foi referenciada em palestras, document&aacute;rios e estudos acad&ecirc;micos sobre espiritualidade e hist&oacute;ria do Brasil. Personalidades como Divaldo Franco, Haroldo Dutra Dias e outros nomes do movimento esp&iacute;rita j&aacute; destacaram sua import&acirc;ncia para a compreens&atilde;o da miss&atilde;o espiritual do pa&iacute;s. Ideal para estudiosos da espiritualidade, hist&oacute;ria espiritual do Brasil, e leitores em busca de um conte&uacute;do edificante, este livro &eacute; leitura obrigat&oacute;ria para quem deseja compreender o papel do Brasil no contexto da regenera&ccedil;&atilde;o planet&aacute;ria.</p>",
+        "preco": "49.90",
+        "destaque_home": true,
+        "disponivel": true,
+        "capa": "media/capas/ea0b48b7-6c93-4640-adeb-d3c7e5fac080_opkg2v"
+    }
+},
+{
+    "model": "livraria.livro",
+    "pk": 5,
+    "fields": {
+        "codigo": "978-8573287745",
+        "titulo": "Estudo Aprofundado da Doutrina Espírita - Livro V: Filosofia e Ciência Espíritas",
+        "slug": "estudo-aprofundado-da-doutrina-espirita-livro-v-filosofia-e-ciencia-espiritas",
+        "autor": "Marta Antunes de Oliveira de Moura",
+        "categoria": 3,
+        "descricao": "<p>Um dos principais objetivos do Estudo aprofundado da Doutrina Esp&iacute;rita (EADE) &eacute; enfatizar o tr&iacute;plice aspecto do Espiritismo &ndash; Ci&ecirc;ncia, Filosofia e Religi&atilde;o &ndash;, incrementando, assim, os estudos gerais dos cursos de forma&ccedil;&atilde;o b&aacute;sica. O programa de Filosofia e ci&ecirc;ncia esp&iacute;ritas encerra os conte&uacute;dos doutrin&aacute;rios desta cole&ccedil;&atilde;o apresentando ao p&uacute;blico 33 roteiros para estudar e compreender aspectos filos&oacute;ficos e cient&iacute;ficos do Espiritismo a partir do conhecimento comum da Humanidade. Todos os estudos sugeridos demonstram o valor espec&iacute;fico de cada aprendizado essencial ao esp&iacute;rito, e confirmam a relev&acirc;ncia e a atualiza&ccedil;&atilde;o do pensamento esp&iacute;rita, sem jamais perder de vista a no&ccedil;&atilde;o da urgente necessidade de aperfei&ccedil;oamento moral do ser humano.</p>",
+        "preco": "56.00",
+        "destaque_home": true,
+        "disponivel": true,
+        "capa": "media/capas/11bb5559-8d70-44a2-97b2-dc91b1acd197_yglxjb"
+    }
+},
+{
+    "model": "livraria.livro",
+    "pk": 6,
+    "fields": {
+        "codigo": "978-8573414493",
+        "titulo": "Meditações diárias - Emmanuel",
+        "slug": "meditacoes-diarias-emmanuel",
+        "autor": "Francisco Cândido Xavier",
+        "categoria": 2,
+        "descricao": "<p>Emmanuel foi o dedicado Guia Espiritual de Chico Xavier e Supervisor de sua obra medi&uacute;nica, que deu origem a mais de 400 livros, desdobrando a Codifica&ccedil;&atilde;o realizada por Allan Kardec. Do seu passado espiritual, sabemos que nos &uacute;ltimos vinte s&eacute;culos, ele reencarnou v&aacute;rias vezes. Assim, o conhecido romance &ldquo;H&aacute; 2.000 anos...&rdquo; apresenta-nos a sua exist&ecirc;ncia na figura do senador P&uacute;blio Lentulus, autor da c&eacute;lebre carta endere&ccedil;ada ao Imperador romano, onde fez o retrato f&iacute;sico e moral de Jesus. E este livro encerra uma colet&acirc;nea de suas melhores mensagens, sempre em parceria com o grande m&eacute;dium Chico Xavier, proporcionando, ao prezado leitor, momentos de reflex&atilde;o para uma vida mais feliz dentro dos preceitos do Cristianismo Redivivo.</p>",
+        "preco": "43.00",
+        "destaque_home": true,
+        "disponivel": true,
+        "capa": "media/capas/018a268d-8e33-4d61-83ee-92a94b01ca18_tv3dxw"
+    }
+},
+{
+    "model": "livraria.livro",
+    "pk": 7,
+    "fields": {
+        "codigo": "978-8531520266",
+        "titulo": "Mediunidade sem Lágrimas: Lições de Espiritismo Prático, Mediunidade e Oratória na Doutrina Espírita",
+        "slug": "mediunidade-sem-lagrimas-licoes-de-espiritismo-pratico-mediunidade-e-oratoria-na-doutrina-espirita",
+        "autor": "Eliseu Rigonatti",
+        "categoria": 3,
+        "descricao": "<p>Publicado originalmente em tr&ecirc;s volumes &ndash; A Mediunidade sem L&aacute;grimas, O Espiritismo Aplicado e O Orador Esp&iacute;rita &ndash;, este cl&aacute;ssico da literatura esp&iacute;rita doutrin&aacute;ria apresenta uma vis&atilde;o panor&acirc;mica e bem fundamentada de alguns dos conceitos mais importantes do espiritismo, munindo o leitor de informa&ccedil;&otilde;es e instrumentos pr&aacute;ticos que facilitam seu desenvolvimento e a utiliza&ccedil;&atilde;o de seus dons, aplicando a Doutrina na vida di&aacute;ria para o desenvolvimento espiritual. E, ao final, Rigonatti ensina como falar em p&uacute;blico de maneira clara e eloquente, mostrando que o tom de voz, o gestual, a prepara&ccedil;&atilde;o do texto e a leitura de livros edificantes s&atilde;o indispens&aacute;veis para o aprimoramento do orador esp&iacute;rita e para todos os interessados em divulgar os ensinamentos de Jesus.</p>",
+        "preco": "53.99",
+        "destaque_home": true,
+        "disponivel": true,
+        "capa": "media/capas/mediunidadesemlagrimas_p2drnk"
+    }
+},
+{
+    "model": "livraria.livro",
+    "pk": 8,
+    "fields": {
+        "codigo": "978-8594662903",
+        "titulo": "O Evangelho Segundo o Espiritismo",
+        "slug": "o-evangelho-segundo-o-espiritismo",
+        "autor": "Allan Kardec",
+        "categoria": 1,
+        "descricao": "<p>O Evangelho segundo o Espiritismo ― Allan Kardec O livro esp&iacute;rita mais lido no Brasil, com milh&otilde;es de exemplares vendidos. Publicada pela primeira vez em 1864, na Fran&ccedil;a, esta obra-prima de Allan Kardec permanece, at&eacute; hoje, como refer&ecirc;ncia essencial para quem busca entender e praticar os ensinamentos morais de Jesus sob a &oacute;tica do Espiritismo. Escrito em linguagem simples, clara e acess&iacute;vel a todas as idades, O Evangelho segundo o Espiritismo oferece um guia seguro para a transforma&ccedil;&atilde;o &iacute;ntima e a conquista da paz interior, abordando temas como perd&atilde;o, amor, f&eacute;, caridade e esperan&ccedil;a. Seus 28 cap&iacute;tulos consoladores trazem a ess&ecirc;ncia pura do ensino de Cristo, livre de figuras e alegorias, focando no que &eacute; essencial para a felicidade espiritual. Por que este livro &eacute; indispens&aacute;vel? - Milh&otilde;es de c&oacute;pias vendidas ao redor do mundo. - Reconhecido como s&iacute;mbolo de uni&atilde;o entre cren&ccedil;as, servindo de abrigo para leitores de todas as religi&otilde;es. - Elogiado por grandes nomes do Espiritismo como Chico Xavier e Divaldo Franco. - Obra central da Codifica&ccedil;&atilde;o Esp&iacute;rita, ao lado de O Livro dos Esp&iacute;ritos e O Livro dos M&eacute;diuns. - Considerado um verdadeiro roteiro de vida para quem deseja evoluir espiritualmente e encontrar a verdadeira felicidade. Descubra por que esta obra, que j&aacute; transformou milh&otilde;es de vidas, pode ser o ponto de virada para a sua jornada espiritual. Leve para sua casa o estandarte da paz, do amor e da esperan&ccedil;a, e permita que a sabedoria eterna de Jesus inspire cada passo do seu caminho.</p>",
+        "preco": "39.90",
+        "destaque_home": true,
+        "disponivel": true,
+        "capa": "media/capas/oevangelhosegundoespiritismo_jelgxk"
+    }
+},
+{
+    "model": "livraria.livro",
+    "pk": 9,
+    "fields": {
+        "codigo": "978-8573288896",
+        "titulo": "O Livro dos Espíritos",
+        "slug": "o-livro-dos-espiritos",
+        "autor": "Allan Kardec",
+        "categoria": 1,
+        "descricao": "<p>A obra que deu origem ao Espiritismo e transformou milh&otilde;es de vidas ao redor do mundo! - J&aacute; vendeu milh&otilde;es de exemplares em diversos idiomas, sendo reconhecido como um divisor de &aacute;guas na literatura espiritualista e filos&oacute;fica mundial. - Ao longo do tempo, a influ&ecirc;ncia da obra ultrapassou as fronteiras do meio Esp&iacute;rita, sendo estudada por fil&oacute;sofos, te&oacute;logos e cientistas interessados na rela&ccedil;&atilde;o entre corpo e esp&iacute;rito. - Suas ideias inspiraram personagens, tramas e reflex&otilde;es em novelas brasileiras de grande sucesso como A Viagem e Alma G&ecirc;mea, al&eacute;m de document&aacute;rios e palestras em universidades. - Leitura essencial para estudiosos da espiritualidade, religiosos, pesquisadores e todos aqueles que buscam compreender o verdadeiro sentido da exist&ecirc;ncia. Originalmente publicado em 1857, &quot;O livro dos esp&iacute;ritos&quot; marca o nascimento da Doutrina Esp&iacute;rita e inicia o conjunto de cinco publica&ccedil;&otilde;es que formariam a Codifica&ccedil;&atilde;o Esp&iacute;rita organizada por Allan Kardec. Considerado o Consolador Prometido por Jesus Cristo, o Espiritismo apresenta um novo caminho e a cren&ccedil;a de que a vida continua ap&oacute;s a morte. Texto fundamental para conhecer e estudar a Doutrina Esp&iacute;rita, O livro dos esp&iacute;ritos traz 1.019 perguntas, sobre diversos temas, feitas por Kardec com as respectivas respostas dos companheiros Espirituais, permitindo que possamos conhecer e entender in&uacute;meras a&ccedil;&otilde;es que nos acompanham diariamente. Esta edi&ccedil;&atilde;o da obra conta com cuidadosa tradu&ccedil;&atilde;o de Evandro Noleto Bezerra, a partir de originais franceses ― da 2&ordf; &agrave; 12&ordf; edi&ccedil;&atilde;o do livro.</p>",
+        "preco": "39.90",
+        "destaque_home": true,
+        "disponivel": true,
+        "capa": "media/capas/olivrodosespiritos_pi9ktz"
+    }
+},
+{
+    "model": "livraria.livro",
+    "pk": 10,
+    "fields": {
+        "codigo": "978-8569452317",
+        "titulo": "O Livro dos Médiuns",
+        "slug": "o-livro-dos-mediuns",
+        "autor": "Allan Kardec",
+        "categoria": 1,
+        "descricao": "<p>M&eacute;dium &eacute; toda pessoa que sente, num grau qualquer, a influ&ecirc;ncia dos Esp&iacute;ritos. [...] Pode-se, pois, dizer que todos s&atilde;o mais ou menos m&eacute;diuns.&rdquo; Publicado pela primeira vez em 1861, O livro dos m&eacute;diuns &eacute; a segunda obra da Codifica&ccedil;&atilde;o Esp&iacute;rita compilada por Allan Kardec. Indicado para todos os interessados em fen&ocirc;menos medi&uacute;nicos, o livro &eacute; considerado o mais completo guia explicativo das atividades de comunica&ccedil;&atilde;o com o mundo espiritual, apresentando g&ecirc;neros e formas de manifesta&ccedil;&otilde;es, al&eacute;m de excelente vocabul&aacute;rio de termos relacionados ao Espiritismo. Traduzida nesta edi&ccedil;&atilde;o por Evandro Noleto Bezerra, a obra apresenta o desenvolvimento da mediunidade, as dificuldades e os obst&aacute;culos que podem acompanhar o trabalho e a pr&aacute;tica do Espiritismo. Uma vez que somos, quando encarnados, canais entre os planos material e espiritual, &eacute; essencial que conhe&ccedil;amos profundamente todos os aspectos desse relacionamento, para atingir, com sucesso, os objetivos desejados.</p>",
+        "preco": "39.90",
+        "destaque_home": true,
+        "disponivel": true,
+        "capa": "media/capas/olivrodosmediuns_kucelv"
+    }
+},
+{
+    "model": "noticias.noticia",
+    "pk": 5,
+    "fields": {
+        "titulo": "Jubileu de Diamante: FEPI completa 75 anos de unificação e serviço ao movimento espírita",
+        "slug": "fepi-completa-75-anos",
+        "autor": "FEPI",
+        "data_publicacao": "2025-11-27T11:00:00Z",
+        "resumo": "",
+        "conteudo": "<p><strong>Fundada em 1950, institui&ccedil;&atilde;o celebra trajet&oacute;ria marcada pelo acolhimento, estudo e pr&aacute;tica do Evangelho.</strong></p>\r\n\r\n<p>No &uacute;ltimo dia <strong>27 de novembro de 2025</strong>, a Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense (FEPI) celebrou um marco de profunda import&acirc;ncia para o espiritismo no estado: seus <strong>75 anos de hist&oacute;ria</strong>.</p>\r\n\r\n<p>A data remete a 27 de novembro de 1950, momento em que um grupo de idealistas, movidos pelo sonho da unifica&ccedil;&atilde;o e pelo amor &agrave; Doutrina, plantou a semente que floresceria como a Casa M&aacute;ter do Espiritismo no Piau&iacute;. Desde ent&atilde;o, a FEPI tem cumprido sua miss&atilde;o de ser um ponto de converg&ecirc;ncia, f&eacute; e servi&ccedil;o ao pr&oacute;ximo.</p>\r\n\r\n<p><strong>Um Farol de Acolhimento e Estudo</strong></p>\r\n\r\n<p>Ao longo dessas sete d&eacute;cadas e meia, a Federa&ccedil;&atilde;o consolidou-se como um verdadeiro &quot;farol de luz&quot;. Mais do que uma institui&ccedil;&atilde;o administrativa, tornou-se uma casa de portas abertas onde cora&ccedil;&otilde;es aflitos encontram consolo e mentes em busca da verdade encontram no estudo as oportunidades de renova&ccedil;&atilde;o.</p>\r\n\r\n<p>A trajet&oacute;ria da FEPI &eacute; marcada pela defesa incans&aacute;vel da caridade, da fraternidade e dos valores inegoci&aacute;veis do Evangelho de Jesus, servindo de base para a expans&atilde;o do movimento esp&iacute;rita em todo o territ&oacute;rio piauiense.</p>\r\n\r\n<p><strong>Gratid&atilde;o aos Trabalhadores</strong></p>\r\n\r\n<p>Esta celebra&ccedil;&atilde;o &eacute;, acima de tudo, uma homenagem ao esfor&ccedil;o coletivo. O legado da FEPI permanece vivo gra&ccedil;as &agrave; dedica&ccedil;&atilde;o de in&uacute;meros trabalhadores volunt&aacute;rios &mdash; do passado e do presente &mdash; que doaram e continuam doando seu tempo e amor &agrave; causa. S&atilde;o eles que guiam os novos caminhos e renovam as esperan&ccedil;as de um futuro ainda mais promissor.</p>\r\n\r\n<p>A Diretoria da FEPI registra sua gratid&atilde;o e reafirma o compromisso de seguir trabalhando por um movimento esp&iacute;rita cada vez mais unido, acess&iacute;vel e fraterno.</p>\r\n\r\n<p><strong>Parab&eacute;ns, FEPI! Que venham os pr&oacute;ximos anos de luz e servi&ccedil;o.</strong></p>",
+        "imagem": "media/noticias/imgi_13_584300220_18546627547045768_4546393501610268827_n_jvmyho"
+    }
+},
+{
+    "model": "noticias.noticia",
+    "pk": 6,
+    "fields": {
+        "titulo": "FEPI orienta Casas Espíritas sobre a Lei 14.811/2024 e reforça medidas de proteção à infância",
+        "slug": "fepi-orienta-casas-espiritas-sobre-a-lei-148112024-e-reforca-medidas-de-protecao-a-infancia",
+        "autor": "FEPI",
+        "data_publicacao": "2025-12-02T19:06:55Z",
+        "resumo": "Em consonância com parecer da FEB, diretrizes tornam obrigatória a apresentação periódica de certidões de antecedentes criminais para todos que atuam com o público infantojuvenil.",
+        "conteudo": "<p><strong>Em conson&acirc;ncia com parecer da FEB, diretrizes tornam obrigat&oacute;ria a apresenta&ccedil;&atilde;o peri&oacute;dica de certid&otilde;es de antecedentes criminais para todos que atuam com o p&uacute;blico infantojuvenil.</strong></p>\r\n\r\n<p>A Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense (FEPI), reafirmando seu compromisso hist&oacute;rico com a &eacute;tica, a responsabilidade social e a prote&ccedil;&atilde;o integral da inf&acirc;ncia, emitiu um comunicado oficial orientando todas as casas esp&iacute;ritas, dirigentes e evangelizadores sobre as novas exig&ecirc;ncias trazidas pela <strong>Lei Federal n&ordm; 14.811/2024</strong>.</p>\r\n\r\n<p>A nova legisla&ccedil;&atilde;o institui medidas rigorosas de preven&ccedil;&atilde;o e combate &agrave; viol&ecirc;ncia contra crian&ccedil;as e adolescentes em ambientes educacionais e similares. Conforme parecer emitido pela Assessoria Jur&iacute;dica da Federa&ccedil;&atilde;o Esp&iacute;rita Brasileira (FEB) e apresentado ao Conselho Federativo Nacional (CFN), as institui&ccedil;&otilde;es esp&iacute;ritas que realizam atividades com menores &mdash; como evangeliza&ccedil;&atilde;o, mocidade e assist&ecirc;ncia social &mdash; enquadram-se como estabelecimentos educacionais confessionais, estando, portanto, sujeitas &agrave;s determina&ccedil;&otilde;es legais.</p>\r\n\r\n<p><strong>Novas Responsabilidades e Procedimentos</strong></p>\r\n\r\n<p>Para assegurar um ambiente seguro e cumprir a norma, que possui car&aacute;ter obrigat&oacute;rio e irrenunci&aacute;vel, a FEPI destaca que todas as casas que desenvolvem atividades pedag&oacute;gicas, recreativas ou espirituais com crian&ccedil;as e jovens dever&atilde;o adotar os seguintes procedimentos:</p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p><strong>Exig&ecirc;ncia de Certid&otilde;es:</strong> Solicitar a certid&atilde;o de antecedentes criminais de todos os colaboradores &mdash; sejam eles volunt&aacute;rios ou remunerados &mdash; que atuem direta ou indiretamente com o p&uacute;blico infantojuvenil.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p><strong>Renova&ccedil;&atilde;o Semestral:</strong> Atualizar as referidas certid&otilde;es a cada <strong>6 (seis) meses</strong>, conforme determina o art. 59-A do Estatuto da Crian&ccedil;a e do Adolescente (ECA), alterado pela nova lei.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p><strong>Organiza&ccedil;&atilde;o de Registros:</strong> Manter fichas cadastrais e um registro organizado, dispon&iacute;vel para eventual fiscaliza&ccedil;&atilde;o por parte de &oacute;rg&atilde;os municipais, estaduais ou federais.</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p><strong>Compromisso &Eacute;tico e Espiritual</strong></p>\r\n\r\n<p>Mais do que uma obriga&ccedil;&atilde;o jur&iacute;dica, a FEPI refor&ccedil;a que o cumprimento da lei &eacute; um ato de responsabilidade espiritual e &eacute;tica. A medida visa fortalecer a prote&ccedil;&atilde;o integral e assegurar que o Centro Esp&iacute;rita seja um local livre de riscos, em total sintonia com a orienta&ccedil;&atilde;o evang&eacute;lica de cuidado e zelo pelos mais vulner&aacute;veis.</p>\r\n\r\n<p>A Federa&ccedil;&atilde;o recomenda que todas as diretorias e coordena&ccedil;&otilde;es iniciem imediatamente os procedimentos internos para a adequa&ccedil;&atilde;o &agrave;s novas regras.</p>\r\n\r\n<p><strong>📂 Material de Apoio:</strong> Para auxiliar as institui&ccedil;&otilde;es na implementa&ccedil;&atilde;o destas medidas, disponibilizamos o parecer jur&iacute;dico completo e materiais de orienta&ccedil;&atilde;o na nossa <a href=\"https://fepiaui.up.railway.app/downloads/\"><strong>Se&ccedil;&atilde;o de Downloads</strong></a>.</p>",
+        "imagem": "media/noticias/parecer-fepi_n7tptm"
+    }
+},
+{
+    "model": "noticias.noticia",
+    "pk": 7,
+    "fields": {
+        "titulo": "Emoção e Música: Gael Pessoa, de 5 anos, encanta na FEPI",
+        "slug": "emocao-e-musica-gael-pessoa-de-5-anos-encanta-na-fepi",
+        "autor": "FEPI",
+        "data_publicacao": "2025-11-30T22:00:00Z",
+        "resumo": "Um encerramento marcado pela luz e pela união familiar.",
+        "conteudo": "<p><strong>Um encerramento marcado pela luz e pela uni&atilde;o familiar.</strong></p>\r\n\r\n<p>No &uacute;ltimo domingo, <strong>30 de novembro de 2025</strong>, o encerramento das atividades anuais do Campo Experimental da FEPI foi marcado por uma surpresa especial que tocou o cora&ccedil;&atilde;o de todos os presentes. O protagonista do momento foi o pequeno evangelizando <strong>Gael Pessoa</strong>, de apenas 5 anos.</p>\r\n\r\n<p>Demonstrando talento e sensibilidade, Gael presenteou o p&uacute;blico com uma interpreta&ccedil;&atilde;o da m&uacute;sica <strong>&ldquo;Planetinha&rdquo;</strong>, can&ccedil;&atilde;o originalmente interpretada pelo grupo <em>Flor de Luz</em> com participa&ccedil;&atilde;o de Caca Rezende.</p>\r\n\r\n<p><strong>Uma apresenta&ccedil;&atilde;o em fam&iacute;lia</strong></p>\r\n\r\n<p>A performance n&atilde;o foi apenas um solo, mas um belo exemplo de uni&atilde;o familiar e sintonia. Para realizar a apresenta&ccedil;&atilde;o surpresa, Gael contou com o aux&iacute;lio primoroso de seus pais:</p>\r\n\r\n<p><strong>M&aacute;rio Andretti</strong>, m&uacute;sico do Grupo Sintonia, que ofereceu o suporte instrumental;</p>\r\n\r\n<p><strong>Luciana Pessoa</strong>, que completou o trio familiar neste momento de celebra&ccedil;&atilde;o.</p>\r\n\r\n<p><strong>Gratid&atilde;o e Evangeliza&ccedil;&atilde;o</strong></p>\r\n\r\n<p>A apresenta&ccedil;&atilde;o foi descrita pelos organizadores como um momento de &quot;muita emo&ccedil;&atilde;o e muita luz&quot;, encerrando o ciclo de 2025 com uma mensagem de esperan&ccedil;a e pureza.</p>\r\n\r\n<p>A equipe da FEPI registra sua profunda gratid&atilde;o &agrave; fam&iacute;lia &mdash; M&aacute;rio e Luciana &mdash; por proporcionarem este momento inesquec&iacute;vel. Estendemos tamb&eacute;m o agradecimento ao grupo <strong>Flor de Luz</strong>, que gentilmente autorizou a divulga&ccedil;&atilde;o da obra, servindo como um instrumento aben&ccedil;oado de evangeliza&ccedil;&atilde;o infantil atrav&eacute;s de suas can&ccedil;&otilde;es amorosas.</p>",
+        "imagem": "media/noticias/musica-planetinha_gl5k9c"
+    }
+},
+{
+    "model": "noticias.noticia",
+    "pk": 8,
+    "fields": {
+        "titulo": "FEPI abre inscrições para voluntariado no Departamento de Comunicação Social Espírita (DCSE)",
+        "slug": "fepi-abre-inscricoes-para-voluntariado-no-departamento-de-comunicacao-social-espirita-dcse",
+        "autor": "FEPI",
+        "data_publicacao": "2025-10-07T20:00:00Z",
+        "resumo": "Vagas são para as áreas de Design, Apoio Técnico e Dirigente; confira os requisitos e saiba como contribuir com a divulgação da Doutrina.",
+        "conteudo": "<p>Voc&ecirc; deseja dedicar parte do seu tempo ao trabalho no bem, mas ainda n&atilde;o sabe como? A Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense (FEPI) est&aacute; com oportunidades abertas para novos volunt&aacute;rios que queiram somar for&ccedil;as ao Departamento de Comunica&ccedil;&atilde;o Social Esp&iacute;rita (DCSE).</p>\r\n\r\n<p>As vagas contemplam tanto o trabalho presencial quanto o formato online, permitindo que trabalhadores de diferentes perfis e localidades possam colaborar. O objetivo &eacute; fortalecer a divulga&ccedil;&atilde;o da mensagem esp&iacute;rita com qualidade e organiza&ccedil;&atilde;o.</p>\r\n\r\n<p><strong>&Aacute;reas de Atua&ccedil;&atilde;o e Vagas</strong></p>\r\n\r\n<p>O DCSE busca colaboradores para tr&ecirc;s frentes espec&iacute;ficas. Confira abaixo o perfil desejado para cada uma:</p>\r\n\r\n<p><strong>1. Designer (Modalidade Online)</strong> Ideal para quem tem habilidades criativas e dom&iacute;nio de ferramentas gr&aacute;ficas.</p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p><strong>Requisitos:</strong> Conhecimento b&aacute;sico em softwares de edi&ccedil;&atilde;o (Canva, Photoshop ou Illustrator); organiza&ccedil;&atilde;o, proatividade e disponibilidade para cumprir as demandas.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p><strong>Diferencial:</strong> Por ser um trabalho remoto, n&atilde;o &eacute; necess&aacute;rio residir em Teresina.</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p><strong>2. Apoio T&eacute;cnico (Modalidade Presencial)</strong> Vaga destinada a quem tem afinidade com tecnologia e opera&ccedil;&atilde;o de equipamentos.</p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p><strong>Requisitos:</strong> Disponibilidade para estar na FEPI aos domingos, a partir das 17h; conhecimento b&aacute;sico no uso de tecnologias; aten&ccedil;&atilde;o e vontade de aprender.</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p><strong>3. Dirigente (Modalidade Presencial)</strong> Para quem possui facilidade de comunica&ccedil;&atilde;o e preparo doutrin&aacute;rio.</p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p><strong>Requisitos:</strong> Disponibilidade aos domingos na FEPI (a partir das 17h); boa orat&oacute;ria (ou aptid&atilde;o para desenvolv&ecirc;-la); estudo cont&iacute;nuo da Doutrina Esp&iacute;rita e compromisso com a escala (pelo menos uma vez ao m&ecirc;s).</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p><strong>Crit&eacute;rios Gerais para o Voluntariado</strong></p>\r\n\r\n<p>Para garantir a sintonia com os princ&iacute;pios da Casa e a responsabilidade da tarefa, a FEPI estabelece crit&eacute;rios gerais para todos os candidatos. &Eacute; indispens&aacute;vel que o volunt&aacute;rio:</p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p>Esteja vinculado a um Centro Esp&iacute;rita ou ao Campo Experimental da FEPI.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p>Participe ativamente de estudos da Doutrina Esp&iacute;rita (ESDE, EADE ou forma&ccedil;&otilde;es funcionais), seja como aluno ou facilitador.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p>Participe de forma&ccedil;&otilde;es de lideran&ccedil;a esp&iacute;rita.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p>Apresente, anualmente, a declara&ccedil;&atilde;o de frequ&ecirc;ncia nos estudos, assinada pelo respons&aacute;vel da casa esp&iacute;rita de origem.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p>Assine o termo de voluntariado anualmente.</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p><strong>Como se Inscrever</strong></p>\r\n\r\n<p>Se voc&ecirc; se identifica com alguma das &aacute;reas e preenche os requisitos, venha fazer parte desta equipe. Para se candidatar, preencha o formul&aacute;rio eletr&ocirc;nico dispon&iacute;vel no link abaixo. O departamento entrar&aacute; em contato para os pr&oacute;ximos passos.</p>",
+        "imagem": "media/noticias/voluntarios-fepi_vva9n1"
+    }
+},
+{
+    "model": "noticias.noticia",
+    "pk": 9,
+    "fields": {
+        "titulo": "Painel Lítero Musical encanta público na FEPI após palestra de Eduardo Belfort",
+        "slug": "painel-litero-musical-encanta-publico-na-fepi-apos-palestra-de-eduardo-belfort",
+        "autor": "FEPI",
+        "data_publicacao": "2025-12-14T23:19:00Z",
+        "resumo": "Evento realizado neste sábado (14) uniu a mensagem do Evangelho à beleza das apresentações artísticas do Grupo Faces e do Coral Prece em Harmonia.",
+        "conteudo": "<p>Na noite deste &uacute;ltimo s&aacute;bado, <strong>14 de dezembro de 2025</strong>, a sede da Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense (FEPI) viveu momentos de profunda inspira&ccedil;&atilde;o e harmonia. A programa&ccedil;&atilde;o especial teve in&iacute;cio com a exposi&ccedil;&atilde;o do tema <strong>&quot;Jesus e a mensagem da boa nova&quot;</strong>, conduzida pelo palestrante <strong>Eduardo Belfort</strong>, do Centro Esp&iacute;rita Paulo de Tarso, que trouxe reflex&otilde;es edificantes sobre o Evangelho.</p>\r\n\r\n<p>Logo ap&oacute;s a palestra, o p&uacute;blico foi presenteado com um <strong>Painel L&iacute;tero Musical</strong>, organizado com carinho pelo Departamento de Arte da FEPI.</p>\r\n\r\n<p><strong>A Arte como Mensagem Crist&atilde;</strong></p>\r\n\r\n<p>O encerramento da noite foi marcado pela sensibilidade. Com apresenta&ccedil;&otilde;es do <strong>Grupo de Teatro Faces</strong> e do <strong>Coral Prece em Harmonia</strong>, o evento proporcionou uma atmosfera de beleza e eleva&ccedil;&atilde;o, reafirmando como a arte &eacute; uma ferramenta poderosa para transmitir a mensagem crist&atilde; e tocar os sentimentos.</p>\r\n\r\n<p>Foi uma noite memor&aacute;vel, onde a uni&atilde;o entre a doutrina e a arte deixou marcas de alegria e paz nos cora&ccedil;&otilde;es de todos os presentes.</p>",
+        "imagem": "media/noticias/imgi_39_588988448_18549768601045768_776383500759397605_n_dp1woz"
+    }
+},
+{
+    "model": "noticias.noticia",
+    "pk": 10,
+    "fields": {
+        "titulo": "Abertas as inscrições para o XXII EMEPI: um convite à transformação do jovem e do mundo",
+        "slug": "abertas-as-inscricoes-para-o-xxii-emepi-um-convite-a-transformacao-do-jovem-e-do-mundo",
+        "autor": "FEPI",
+        "data_publicacao": "2025-12-15T17:01:00Z",
+        "resumo": "Evento ocorrerá no Carnaval de 2026, reunindo a juventude espírita do Piauí em regime de internato. Vagas são limitadas.",
+        "conteudo": "<p>A Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense (FEPI) anuncia a abertura das inscri&ccedil;&otilde;es para o aguardado <strong>XXII Encontro de Mocidades Esp&iacute;ritas do Piau&iacute; (EMEPI)</strong>. Com o tema inspirador <strong>&ldquo;Transforma-te, jovem: tua mudan&ccedil;a move o mundo&rdquo;</strong>, o evento promete ser um marco de renova&ccedil;&atilde;o e aprendizado para a juventude.</p>\r\n\r\n<p>O encontro ser&aacute; realizado durante o per&iacute;odo de carnaval, de <strong>14 a 17 de fevereiro de 2026</strong>, na cidade de Teresina, tendo como sede o CETI Jos&eacute; Pac&iacute;fico de Moura Neto.</p>\r\n\r\n<p><strong>Viv&ecirc;ncia e Fraternidade</strong> O EMEPI funciona em regime de internato, proporcionando uma imers&atilde;o completa onde os jovens convivem, estudam e fortalecem la&ccedil;os de amizade. A programa&ccedil;&atilde;o inclui alimenta&ccedil;&atilde;o completa (caf&eacute; da manh&atilde;, almo&ccedil;o, jantar e ceia) e atividades voltadas para o despertar da consci&ecirc;ncia esp&iacute;rita e social.</p>\r\n\r\n<p><strong>Prazos e Vagas</strong> As inscri&ccedil;&otilde;es iniciam-se neste dia <strong>15 de dezembro de 2025</strong> e seguem at&eacute; fevereiro ou at&eacute; o preenchimento das <strong>100 vagas dispon&iacute;veis</strong>. A FEPI alerta para a import&acirc;ncia de garantir a participa&ccedil;&atilde;o antecipadamente, aproveitando os valores do primeiro lote.</p>\r\n\r\n<p>Para mais detalhes sobre valores, crit&eacute;rios de participa&ccedil;&atilde;o e formul&aacute;rio de inscri&ccedil;&atilde;o, acesse a nossa p&aacute;gina de&nbsp;<a href=\"https://fepiaui.up.railway.app/cursos/\"><strong>Cursos e Eventos</strong></a>.</p>",
+        "imagem": "media/noticias/Gemini_Generated_Image_qel9w6qel9w6qel9_vzbukx"
+    }
+},
+{
+    "model": "noticias.noticia",
+    "pk": 11,
+    "fields": {
+        "titulo": "Nota Oficial: FEPI sofre arrombamento e furto de equipamentos; instituição pede apoio para reparos",
+        "slug": "nota-oficial-fepi-sofre-arrombamento-e-furto-de-equipamentos-instituicao-pede-apoio-para-reparos",
+        "autor": "FEPI",
+        "data_publicacao": "2026-01-03T14:12:15Z",
+        "resumo": "Sede da Federação foi alvo de ação criminosa na virada do ano. Diretoria lança campanha para restabelecer segurança e climatização.",
+        "conteudo": "<p>A Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense (FEPI) vem a p&uacute;blico informar aos seus associados, frequentadores e trabalhadores que sua sede foi alvo de a&ccedil;&otilde;es criminosas durante o per&iacute;odo noturno dos dias <strong>30 e 31 de dezembro de 2025</strong>.</p>\r\n\r\n<p>Os invasores acessaram as depend&ecirc;ncias da institui&ccedil;&atilde;o atrav&eacute;s do arrombamento do port&atilde;o que d&aacute; acesso &agrave; livraria, causando danos permanentes &agrave; estrutura. A a&ccedil;&atilde;o resultou em preju&iacute;zos materiais significativos que impactam diretamente o funcionamento e a seguran&ccedil;a da Casa.</p>\r\n\r\n<p><strong>Danos e Preju&iacute;zos Registrados</strong></p>\r\n\r\n<p>Entre os itens furtados e danificados, a equipe diretiva destaca:</p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p><strong>Climatiza&ccedil;&atilde;o:</strong> Furto de uma condensadora de ar-condicionado do audit&oacute;rio (dano permanente) e furto de cabos e tubula&ccedil;&otilde;es de outros dois aparelhos, inviabilizando temporariamente o uso da climatiza&ccedil;&atilde;o no local.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p><strong>Seguran&ccedil;a e Conectividade:</strong> Furto de toda a fia&ccedil;&atilde;o de fibra &oacute;ptica e de diversas c&acirc;meras de seguran&ccedil;a, restando apenas duas em funcionamento.</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p>As medidas legais cab&iacute;veis j&aacute; est&atilde;o sendo tomadas, incluindo o levantamento t&eacute;cnico dos danos e o registro das ocorr&ecirc;ncias.</p>\r\n\r\n<p><strong>A FEPI precisa da sua ajuda</strong></p>\r\n\r\n<p>Para reerguer a estrutura, consertar os danos e repor os equipamentos essenciais, a Federa&ccedil;&atilde;o conta com a solidariedade da comunidade esp&iacute;rita e dos amigos da casa.</p>\r\n\r\n<p>As doa&ccedil;&otilde;es podem ser feitas atrav&eacute;s do PIX: 🔑 <strong>Chave (E-mail):</strong> financeirofepi@gmail.com</p>\r\n\r\n<p><strong>Uni&atilde;o e Renova&ccedil;&atilde;o</strong></p>\r\n\r\n<p>Em nota, a Diretoria refor&ccedil;a a confian&ccedil;a nos valores crist&atilde;os e na for&ccedil;a do trabalho coletivo: <em>&quot;Uniremos esfor&ccedil;os para nos reerguer, com serenidade e solidariedade, transformando a dificuldade em oportunidade de fortalecimento&quot;</em>.</p>\r\n\r\n<p>A FEPI agradece as vibra&ccedil;&otilde;es fraternas e o apoio de todos neste momento.</p>",
+        "imagem": "media/noticias/Nota_Oficial_FEPI_yletfd"
+    }
+},
+{
+    "model": "noticias.noticia",
+    "pk": 12,
+    "fields": {
+        "titulo": "Teresina sediará o XIII Encontro das AME's Norte e Nordeste em agosto de 2026",
+        "slug": "teresina-sediara-o-xiii-encontro-das-ames-norte-e-nordeste-em-agosto-de-2026",
+        "autor": "FEPI",
+        "data_publicacao": "2026-01-15T03:00:00Z",
+        "resumo": "Com o tema \"A ciência espírita a serviço da saúde\", evento no Sesc Cajuína reunirá grandes nomes da medicina e espiritualidade, como Dr. Álvaro Avezum e Dr. Alberto Almeida.",
+        "conteudo": "<p>A capital piauiense ser&aacute; o palco de um grande debate sobre a conex&atilde;o entre ci&ecirc;ncia e alma. Nos dias <strong>14, 15 e 16 de agosto de 2026</strong>, o Sesc Caju&iacute;na receber&aacute; o <strong>XIII Encontro das Associa&ccedil;&otilde;es M&eacute;dico-Esp&iacute;ritas (AMEs) do Norte e Nordeste</strong>.</p>\r\n\r\n<p>Sob o tema central <strong>&ldquo;A ci&ecirc;ncia esp&iacute;rita a servi&ccedil;o da sa&uacute;de&rdquo;</strong>, o evento prop&otilde;e uma imers&atilde;o em conhecimentos que unem as evid&ecirc;ncias cient&iacute;ficas aos postulados esp&iacute;ritas, buscando uma vis&atilde;o integral do ser humano.</p>\r\n\r\n<p><strong>Destaques da Programa&ccedil;&atilde;o</strong></p>\r\n\r\n<p>A confer&ecirc;ncia de abertura, na noite de sexta-feira (14), trar&aacute; o renomado cardiologista <strong>Dr. &Aacute;lvaro Avezum (SP)</strong>, abordando &quot;A influ&ecirc;ncia da Espiritualidade na sa&uacute;de cardiovascular&quot;.</p>\r\n\r\n<p>A programa&ccedil;&atilde;o segue intensa no final de semana. No s&aacute;bado, o presidente da AME-Brasil, <strong>Dr. Fabio Nasri</strong>, discutir&aacute; o envelhecimento saud&aacute;vel. O p&uacute;blico tamb&eacute;m poder&aacute; acompanhar pain&eacute;is sobre a espiritualidade na educa&ccedil;&atilde;o, a sa&uacute;de dos animais e a mediunidade como caminho evolutivo.</p>\r\n\r\n<p>O encerramento, no domingo pela manh&atilde;, ficar&aacute; a cargo do <strong>Dr. Alberto Almeida (AME PA)</strong>, que falar&aacute; sobre a gratid&atilde;o como prop&oacute;sito de vida para a sa&uacute;de integral, fechando o ciclo de palestras com chave de ouro.</p>\r\n\r\n<p><strong>Servi&ccedil;o:</strong> O evento &eacute; uma realiza&ccedil;&atilde;o das AMEs regionais e convida todos os profissionais de sa&uacute;de, estudantes e interessados na tem&aacute;tica a participarem. As inscri&ccedil;&otilde;es podem ser feitas digitalmente atrav&eacute;s do QR Code divulgado nos canais oficiais.</p>",
+        "imagem": "media/noticias/encontro_ame_nordeste_rkylys"
+    }
+},
+{
+    "model": "noticias.noticia",
+    "pk": 13,
+    "fields": {
+        "titulo": "FEPI abre inscrições para estudo virtual sobre a missão espiritual de educar filhos",
+        "slug": "fepi-abre-inscricoes-para-estudo-virtual-sobre-a-missao-espiritual-de-educar-filhos",
+        "autor": "FEPI",
+        "data_publicacao": "2026-01-12T03:00:00Z",
+        "resumo": "Baseado na obra de Hermínio C. Miranda, curso online busca fortalecer os vínculos familiares e orientar pais e educadores à luz da Doutrina Espírita.",
+        "conteudo": "<p>O Departamento da Fam&iacute;lia da Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense (FEPI) convida a comunidade para uma jornada de aprendizado e reflex&atilde;o. Est&atilde;o abertas, at&eacute; o dia <strong>29 de janeiro</strong>, as inscri&ccedil;&otilde;es para o <strong>Estudo da Obra &ldquo;Nossos Filhos s&atilde;o Esp&iacute;ritos&rdquo;</strong>, cl&aacute;ssico da literatura esp&iacute;rita de autoria de Herm&iacute;nio Correia de Miranda.</p>\r\n\r\n<p><strong>Educar para a Evolu&ccedil;&atilde;o</strong></p>\r\n\r\n<p>A proposta do estudo &eacute; oferecer ferramentas para que pais, m&atilde;es e respons&aacute;veis compreendam a profundidade de sua miss&atilde;o. Mais do que a educa&ccedil;&atilde;o formal, o grupo refletir&aacute; sobre o filho como um esp&iacute;rito imortal em processo de evolu&ccedil;&atilde;o, buscando fortalecer os v&iacute;nculos familiares com amor, responsabilidade e espiritualidade, sempre amparados pelo Evangelho de Jesus.</p>\r\n\r\n<p><strong>Como Participar</strong></p>\r\n\r\n<p>O estudo ser&aacute; realizado na modalidade <strong>virtual</strong> (via Google Meet), facilitando a participa&ccedil;&atilde;o de interessados de diversas localidades. Os encontros ocorrer&atilde;o semanalmente, no hor&aacute;rio das <strong>20h &agrave;s 21h</strong>, com in&iacute;cio previsto para <strong>02 de fevereiro de 2026</strong>.</p>\r\n\r\n<p>O p&uacute;blico-alvo abrange n&atilde;o apenas familiares, mas tamb&eacute;m educadores, trabalhadores esp&iacute;ritas e estudantes do ESDE que desejam aprofundar seus conhecimentos na &aacute;rea da fam&iacute;lia.</p>\r\n\r\n<p><strong>Servi&ccedil;o:</strong></p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p><strong>Inscri&ccedil;&otilde;es:</strong> De 14 a 29 de janeiro de 2026.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p><strong>In&iacute;cio das aulas:</strong> 02 de fevereiro.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p><strong>Onde se inscrever:</strong> <a href=\"https://docs.google.com/forms/d/e/1FAIpQLScC4McGXPyxudCWr5Fw1jhUI4Tl2qQxodq2sdJ32GIokEKd6A/viewform?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGn6x_1ylpKQ4tyKfvyoqSA2pkT861Z0qeK75r9NFpHXxEVUBpTJEwzOavbvc0_aem_WrIXTErCgYjXAHdwU4C0rA\">Clicando aqui</a> ou na Bio do Instagram.</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p><em>Vagas limitadas. Garanta sua participa&ccedil;&atilde;o!</em></p>",
+        "imagem": "media/noticias/WhatsApp_Image_2026-01-15_at_15.25.14_q4sxx4"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 1,
+    "fields": {
+        "nome": "Associação Piauiense Espírita Langerton Neves - Apel",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "08.348.624/0001-06",
+        "data_fundacao": "2005-09-06",
+        "cep": "64002280",
+        "endereco": "Rua Vinte Quatro de Janeiro",
+        "numero": "1219",
+        "complemento": "",
+        "bairro": "Mafuá",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 2,
+    "fields": {
+        "nome": "Casa Espírita Francisco De Assis - Cefa",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": null,
+        "endereco": "Rua Cel. Brandão",
+        "numero": "3417",
+        "complemento": "",
+        "bairro": "Parque Universitário",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 3,
+    "fields": {
+        "nome": "Centro Espírita A Caminho Da Luz",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "07.101.629/0001-77",
+        "data_fundacao": "1982-09-01",
+        "cep": "64003280",
+        "endereco": "Rua Coronel Façanha",
+        "numero": "750",
+        "complemento": "",
+        "bairro": "Primavera",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 4,
+    "fields": {
+        "nome": "Centro Espírita Bezerra De Menezes",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "02.807.203/0001-10",
+        "data_fundacao": "1948-08-06",
+        "cep": "64002180",
+        "endereco": "Rua Rui Barbosa",
+        "numero": "2751",
+        "complemento": "",
+        "bairro": "Matadouro",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 5,
+    "fields": {
+        "nome": "Fraternidade Espírita Caminhando Com Jesus",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "07.831.369/0001-95",
+        "data_fundacao": "2003-07-27",
+        "cep": "64002470",
+        "endereco": "Rua Coelho de Resende",
+        "numero": "2596",
+        "complemento": "",
+        "bairro": "Aeroporto",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 6,
+    "fields": {
+        "nome": "Centro Espírita Casa Do Caminho",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "23.500.176/0001-08",
+        "data_fundacao": "1988-04-17",
+        "cep": "64030100",
+        "endereco": "Quadra Bela Vista",
+        "numero": "02",
+        "complemento": "Conj. Bela Vista I  Q - 17  C - 02",
+        "bairro": "Bela Vista",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 7,
+    "fields": {
+        "nome": "Centro Espírita Concórdia",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": "64001150",
+        "endereco": "Rua Treze de Maio",
+        "numero": "1343",
+        "complemento": "",
+        "bairro": "Centro/Sul",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 8,
+    "fields": {
+        "nome": "Centro Espírita De Caridade",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "08.384.534/0001-70",
+        "data_fundacao": "1993-06-06",
+        "cep": "64017110",
+        "endereco": "Rua São Vicente",
+        "numero": "1957",
+        "complemento": "",
+        "bairro": "Nossa Senhora das Graças",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 9,
+    "fields": {
+        "nome": "Centro Espírita Felinto Martins",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "02.575.792/0001/58",
+        "data_fundacao": "1997-05-01",
+        "cep": "64016800",
+        "endereco": "Rua Magalhães Filho",
+        "numero": "1132",
+        "complemento": "",
+        "bairro": "Viçosa",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 10,
+    "fields": {
+        "nome": "Centro Espírita Irmão Adriano",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "05.512.520/0001-05",
+        "data_fundacao": "1949-06-10",
+        "cep": "64017460",
+        "endereco": "Rua Murilo Braga",
+        "numero": "1896",
+        "complemento": "",
+        "bairro": "Monte Castelo",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": "863229-2217",
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 11,
+    "fields": {
+        "nome": "Centro Espírita Joca Vieira",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "05.822.317/0001-27",
+        "data_fundacao": "1978-05-01",
+        "cep": "64025100",
+        "endereco": "Quadra Parque Piauí",
+        "numero": "9",
+        "complemento": "Conj. Parque Piauí  Q - 09a",
+        "bairro": "Parque Piauí",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 12,
+    "fields": {
+        "nome": "Centro Espírita Lar Da Caridade",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "41.263.542/0001-34",
+        "data_fundacao": "1989-04-11",
+        "cep": "64055370",
+        "endereco": "Rua Bonifácio Abreu",
+        "numero": "4522",
+        "complemento": "",
+        "bairro": "Morada do Sol",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://Celardacaridade.Blogspot.Com"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 13,
+    "fields": {
+        "nome": "Centro Espírita Lar De Jesus",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "12.328.829/0001-05",
+        "data_fundacao": "1987-10-17",
+        "cep": null,
+        "endereco": "Rua 3",
+        "numero": "5211",
+        "complemento": "Loteamento Vila Paris",
+        "bairro": "Samapi",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://Www.Celardejesus.Zip.Net"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 14,
+    "fields": {
+        "nome": "Centro Espírita Lar Rosa Maria",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "00.212.413/0001-30",
+        "data_fundacao": "1992-10-30",
+        "cep": "64001270",
+        "endereco": "Rua Quintino Bocaiúva",
+        "numero": "833",
+        "complemento": "",
+        "bairro": "Centro/Sul",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 15,
+    "fields": {
+        "nome": "Centro Espírita Mansão Da Paz",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "02.992.586/0001-43",
+        "data_fundacao": "1996-01-20",
+        "cep": "64000130",
+        "endereco": "Rua Barroso",
+        "numero": "915",
+        "complemento": "",
+        "bairro": "Centro/Norte",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 16,
+    "fields": {
+        "nome": "Centro Espírita Nosso Lar",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "11.002.599/0001-19",
+        "data_fundacao": "1986-04-17",
+        "cep": "64001300",
+        "endereco": "Avenida José dos Santos e Silva",
+        "numero": "2088",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": "863222-0081",
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 17,
+    "fields": {
+        "nome": "Centro Espírita Paulo De Tarso",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "23.500.770/0001-07",
+        "data_fundacao": "1967-11-26",
+        "cep": "64002300",
+        "endereco": "Rua Manoel Domingos",
+        "numero": "2436",
+        "complemento": "",
+        "bairro": "Marquês",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://Cept.Pi@Bol.Com.Br"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 18,
+    "fields": {
+        "nome": "Centro Espírita Ponto De Luz",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "10.615.422/0001-25",
+        "data_fundacao": "2008-03-01",
+        "cep": "64009600",
+        "endereco": "Avenida Prefeito Freitas Neto",
+        "numero": "10",
+        "complemento": "Lot. Mocambinho, Quadra D Lotes 9 E 10",
+        "bairro": "Alto Alegre",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 19,
+    "fields": {
+        "nome": "Centro Espírita Wantuil De Freitas",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": "64059500",
+        "endereco": "Rua Basílio Soares Ribeiro",
+        "numero": "4433",
+        "complemento": "",
+        "bairro": "Porto do Centro",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 20,
+    "fields": {
+        "nome": "Comunidade Espírita Joana Angélica",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "34.982.314/0001-59",
+        "data_fundacao": "1989-09-10",
+        "cep": "64022060",
+        "endereco": "Parque Antártica",
+        "numero": "6",
+        "complemento": "Q - B  Lotes 6 A 8",
+        "bairro": "Areias",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 21,
+    "fields": {
+        "nome": "Fraternidade Espírita André Luiz",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "07.456.577/0001-51",
+        "data_fundacao": "1982-07-02",
+        "cep": "64077450",
+        "endereco": "Conj. Dirceu I  Q - 146  C - 01  A",
+        "numero": "01",
+        "complemento": "",
+        "bairro": "Dirceu Arcoverde I",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": "8632365596",
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 22,
+    "fields": {
+        "nome": "Fraternidade Espírita Cristo De Deus",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1996-05-12",
+        "cep": "64009700",
+        "endereco": "Rua Londrina",
+        "numero": "34",
+        "complemento": "Conj. Mocambinho 3  Q - 22   C - 34   Setor - E",
+        "bairro": "Vila São Francisco",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 23,
+    "fields": {
+        "nome": "Grupo Espírita Irmãos Fraternos",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "02.632.244/0001-12",
+        "data_fundacao": "1996-10-24",
+        "cep": null,
+        "endereco": "Av. Centenário",
+        "numero": "2574",
+        "complemento": "",
+        "bairro": "Aeroporto",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 24,
+    "fields": {
+        "nome": "Lar Espírita Semeador Do Evangelho",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "00.098.398/0001-60",
+        "data_fundacao": "1993-05-25",
+        "cep": "64000240",
+        "endereco": "Rua Desembargador Freitas",
+        "numero": "1948",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 25,
+    "fields": {
+        "nome": "Lar Espírita Casa Do Samaritano",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": null,
+        "endereco": "Rua Dálias",
+        "numero": "1128",
+        "complemento": "",
+        "bairro": "Morada Do Sol",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 26,
+    "fields": {
+        "nome": "Sociedade Espírita Cantinho De Luz Fabiano De Cristo",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "01.636.512/0001-01",
+        "data_fundacao": "1994-10-08",
+        "cep": "64016850",
+        "endereco": "Avenida Barão de Castelo Branco",
+        "numero": "1440",
+        "complemento": "",
+        "bairro": "Cristo Rei",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 27,
+    "fields": {
+        "nome": "Sociedade Espírita Casa De Oração E Caridade Luz De Nazaré",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "10.380.000/0001-18",
+        "data_fundacao": "2006-08-25",
+        "cep": "64061010",
+        "endereco": "Conjunto Vila Maria I    Q-H    Nº 32",
+        "numero": "",
+        "complemento": "",
+        "bairro": "Porto Do Centro",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://C.E.Luzdenazare@Hotmail.Com"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 28,
+    "fields": {
+        "nome": "Sociedade Espírita João Nunes Maia",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "01.461.832/0001-78",
+        "data_fundacao": "1995-12-10",
+        "cep": null,
+        "endereco": "Lot. Parque Vila São Francisco",
+        "numero": "145B",
+        "complemento": "Lotes 6-11  Km 07",
+        "bairro": "Vila São Francisco",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 29,
+    "fields": {
+        "nome": "Sociedade Espírita Luz Do Porvir",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1999-08-08",
+        "cep": null,
+        "endereco": "Rua Cartola",
+        "numero": "0",
+        "complemento": "",
+        "bairro": "Vila Irmã Dulce",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 30,
+    "fields": {
+        "nome": "Sociedade De Estudos Espíritas De Teresina - Seete",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "02.364.292/0001-77",
+        "data_fundacao": "1997-10-03",
+        "cep": "64052750",
+        "endereco": "Rua Graham Bell",
+        "numero": "2187",
+        "complemento": "",
+        "bairro": "Horto",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 31,
+    "fields": {
+        "nome": "Fundação Dr. Adolpho Bezerra De Menezes",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": null,
+        "endereco": "Rua 24 De Janeiro",
+        "numero": "740",
+        "complemento": "",
+        "bairro": "Centro/Sul",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": "863083-0156",
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 32,
+    "fields": {
+        "nome": "Grupo Espírita Professor Camaño - Centrinho",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": "64078700",
+        "endereco": "Rua Polidoro Burlamaqui",
+        "numero": "2679",
+        "complemento": "",
+        "bairro": "Parque Ideal",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 33,
+    "fields": {
+        "nome": "Associação Médico-Espírita Do Piauí",
+        "tipo": "ESPECIALIZADA",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1994-12-08",
+        "cep": "64048300",
+        "endereco": "Rua Professor Joca Vieira,",
+        "numero": "1269",
+        "complemento": "",
+        "bairro": "Jockey",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 34,
+    "fields": {
+        "nome": "Cruzada Dos Militares Espíritas Do Piauí",
+        "tipo": "ESPECIALIZADA",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1995-08-29",
+        "cep": "64014510",
+        "endereco": "Rua Iza Lages De Carvalho",
+        "numero": "1524",
+        "complemento": "",
+        "bairro": "Cristo Rei",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 35,
+    "fields": {
+        "nome": "Instituto De Cultura Espírita Do Piauí",
+        "tipo": "ESPECIALIZADA",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "2009-06-27",
+        "cep": null,
+        "endereco": "Rua Olavo Bilac",
+        "numero": "1394",
+        "complemento": "",
+        "bairro": "Centro/Sul",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://www.icepi.blogspot.com"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 36,
+    "fields": {
+        "nome": "Associação De Divulgadores Do Espiritismo Do Piauí",
+        "tipo": "ESPECIALIZADA",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "2007-09-10",
+        "cep": null,
+        "endereco": "Rua Rui Barbosa",
+        "numero": "68",
+        "complemento": "Ed. Otávio Miranda, Sala 613 / 6º Andar",
+        "bairro": "Centro",
+        "cidade": "Teresina",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 37,
+    "fields": {
+        "nome": "Centro Espírita Caminho E Vida",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1991-08-23",
+        "cep": "64300000",
+        "endereco": "Rua Cel. Aníbal Martins",
+        "numero": "142",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Valença do Piauí",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 38,
+    "fields": {
+        "nome": "Grupo De Fraternidade Espírita A Caminho Da Luz",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "2002-07-18",
+        "cep": "64700000",
+        "endereco": "Rua  Professor Costa Andrade",
+        "numero": "221",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Simplício Mendes",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 39,
+    "fields": {
+        "nome": "Centro Espírita Caminho Da Luz",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": "01.396.252/0001-44",
+        "data_fundacao": "1996-08-23",
+        "cep": "64260000",
+        "endereco": "Rua Antonio Alves",
+        "numero": "509",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Piripiri",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 40,
+    "fields": {
+        "nome": "Centro Espírita Dr. Bezerra De Menezes",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1998-08-29",
+        "cep": "64660000",
+        "endereco": "Rua Fco. Das Chagas Fortaleza",
+        "numero": "0",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Pio IX",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 41,
+    "fields": {
+        "nome": "Centro Espírita Bezerra De Menezes",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": "64600000",
+        "endereco": "Rua Do Cruzeiro",
+        "numero": "157",
+        "complemento": "",
+        "bairro": "Bomba",
+        "cidade": "Picos",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 42,
+    "fields": {
+        "nome": "Centro De Estudo E Assistência Espiritual",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1987-04-14",
+        "cep": "64600002",
+        "endereco": "Rua Manoel De S.  Neto",
+        "numero": "934",
+        "complemento": "",
+        "bairro": "Parque De Exposição",
+        "cidade": "Picos",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 43,
+    "fields": {
+        "nome": "Centro Espírita  Chico Xavier",
+        "tipo": "CAPITAL",
+        "foto": "",
+        "cnpj": "02.920.335/0001-53",
+        "data_fundacao": null,
+        "cep": "64600002",
+        "endereco": "Travessa Xv De Novembro",
+        "numero": "81",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Picos",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 44,
+    "fields": {
+        "nome": "Centro Espírita Francisco De Assis",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": "64600004",
+        "endereco": "Travessa Joaquim Monteiro",
+        "numero": "343",
+        "complemento": "",
+        "bairro": "Junco",
+        "cidade": "Picos",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 45,
+    "fields": {
+        "nome": "Centro Espírita Irmã Clara",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1981-04-18",
+        "cep": "64290000",
+        "endereco": "Rua Antonino Freire",
+        "numero": "376",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Altos",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 46,
+    "fields": {
+        "nome": "Centro Espírita Mensageiro Da Paz",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": "64260000",
+        "endereco": "Rua 7 De Setembro",
+        "numero": "178",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Piripiri",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 47,
+    "fields": {
+        "nome": "Casa Do Pão Francisco Cândido Xavier",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": null,
+        "endereco": "Comunidade Santa Luzia",
+        "numero": "",
+        "complemento": "",
+        "bairro": "Comunidade Santa Luzia",
+        "cidade": "Alto Longá",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 48,
+    "fields": {
+        "nome": "Casa Do Pão Francisco Cândido Xavier",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": null,
+        "endereco": "Comunidade Santa Luzia",
+        "numero": "",
+        "complemento": "",
+        "bairro": "Comunidade Santa Luzia",
+        "cidade": "Alto Longá",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 49,
+    "fields": {
+        "nome": "Sociedade Espírita Lar Amor De Maria",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": "64400000",
+        "endereco": "Av. Desembargador Amaral",
+        "numero": "217",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Amarante",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 50,
+    "fields": {
+        "nome": "Centro Espírita Nosso Lar",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1999-10-26",
+        "cep": null,
+        "endereco": "Rua Vitor Lopes",
+        "numero": "0",
+        "complemento": "",
+        "bairro": "Pequizeiro",
+        "cidade": "Barras",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 51,
+    "fields": {
+        "nome": "Centro Espírita Caridade E Fé",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": "10.328.441/0001-70",
+        "data_fundacao": "1957-03-12",
+        "cep": "64280000",
+        "endereco": "Rua Siqueira Campos",
+        "numero": "749",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Campo Maior",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://Caridadefedecampomaior@Yahoo.Com"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 52,
+    "fields": {
+        "nome": "Centro Espírita A Caminho Da Luz",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": "07.101.629/0001-77",
+        "data_fundacao": "1992-06-12",
+        "cep": "64202060",
+        "endereco": "Rua Do Rosário",
+        "numero": "250",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Parnaíba",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 53,
+    "fields": {
+        "nome": "Centro Espírita Alarico Da Cunha",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": "64215170",
+        "endereco": "Rua Franklin Veras",
+        "numero": "799",
+        "complemento": "",
+        "bairro": "São Francisco da Guarita",
+        "cidade": "Parnaíba",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 54,
+    "fields": {
+        "nome": "Centro Espírita Caridade E Fé",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "2000-03-15",
+        "cep": "64215200",
+        "endereco": "Rua Samuel Santos",
+        "numero": "284",
+        "complemento": "",
+        "bairro": "Campos",
+        "cidade": "Parnaíba",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://Caridadefe.Blogspot.Com/"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 55,
+    "fields": {
+        "nome": "Centro Espírita Chico Xavier",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": "23.514.193/0001-02",
+        "data_fundacao": "1980-04-02",
+        "cep": "64200970",
+        "endereco": "Rua Borges Machado",
+        "numero": "915",
+        "complemento": "",
+        "bairro": "Pindorama",
+        "cidade": "Parnaíba",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://Www.Chicoxavierphb.Com/"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 56,
+    "fields": {
+        "nome": "Grupo De Estudos Espíritas Bezerra De Menezes",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": null,
+        "endereco": "Rua Prof. Einstein",
+        "numero": "795",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Parnaíba",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 57,
+    "fields": {
+        "nome": "Centro Espírita Vida E Progresso",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1943-01-01",
+        "cep": "64216100",
+        "endereco": "Rua Vera Cruz",
+        "numero": "647",
+        "complemento": "",
+        "bairro": "Santa Luzia",
+        "cidade": "Parnaíba",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 58,
+    "fields": {
+        "nome": "Centro Espírita Semente Cristã",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": "05.144.817/0001-57",
+        "data_fundacao": "2002-06-22",
+        "cep": null,
+        "endereco": "Rua Bolívia",
+        "numero": "10",
+        "complemento": "Q-25 C-10",
+        "bairro": "Jardim Nova América",
+        "cidade": "Parnaíba",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://Cescrista.Blogspot.Com/"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 59,
+    "fields": {
+        "nome": "Centro Espírita Perseverança No Bem",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": null,
+        "endereco": "Rua Monsenhor Joaquim Lopes",
+        "numero": "549",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Parnaíba",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://Www.Ceperseverancanobem.Blogspot.Com"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 60,
+    "fields": {
+        "nome": "Centro Espírita Humberto De Campos",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": "06.549.703/0001-50",
+        "data_fundacao": "1956-09-15",
+        "cep": "64215170",
+        "endereco": "Rua Franklin Veras",
+        "numero": "799",
+        "complemento": "",
+        "bairro": "São Francisco da Guarita",
+        "cidade": "Parnaíba",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 61,
+    "fields": {
+        "nome": "Centro Espírita Irmão Da Caridade",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": "01.905.418/0001-00",
+        "data_fundacao": "1982-01-24",
+        "cep": "64420000",
+        "endereco": "Rua Piauí",
+        "numero": "0",
+        "complemento": "",
+        "bairro": "Bacuri",
+        "cidade": "Palmeirais",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 62,
+    "fields": {
+        "nome": "Centro Espírita Allan Kardec",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": "23.503.501/0001-96",
+        "data_fundacao": "1985-10-19",
+        "cep": "64160000",
+        "endereco": "Rua Sete De Setembro",
+        "numero": "396",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Luzilândia",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 63,
+    "fields": {
+        "nome": "Centro Espírita Chico Xavier",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "2003-12-27",
+        "cep": "64885000",
+        "endereco": "Av. Raimundo Soares Da Rocha",
+        "numero": "0",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Colônia do Gurguéia",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 64,
+    "fields": {
+        "nome": "Centro Espírita Boa Vontade",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1977-05-01",
+        "cep": "64390000",
+        "endereco": "Rua Benedito Luis De Moraes",
+        "numero": "828",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Demerval Lobão",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 65,
+    "fields": {
+        "nome": "Sociedade Espírita Amor De Ismênia",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": null,
+        "cep": "64350000",
+        "endereco": "Rua Cel. Antonio Teixeira",
+        "numero": "259",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "Elesbão Veloso",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 66,
+    "fields": {
+        "nome": "Centro Espírita Casa De Ismael",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1991-05-04",
+        "cep": "64110000",
+        "endereco": "Rua Antonio Florêncio",
+        "numero": "669",
+        "complemento": "",
+        "bairro": "Centro",
+        "cidade": "José de Freitas",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 67,
+    "fields": {
+        "nome": "Centro Espírita Chico Xavier",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": "07.410.887/0001-35",
+        "data_fundacao": "2005-03-29",
+        "cep": "64180000",
+        "endereco": "Rua Henrique José Rodrigues",
+        "numero": "501",
+        "complemento": "",
+        "bairro": "Nova Esperança",
+        "cidade": "Esperantina",
+        "estado": "PI",
+        "telefone": null,
+        "site": "http://Chicoxavier.Esperantina@Hotmail.Com"
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 68,
+    "fields": {
+        "nome": "Grupo Fraternidade Espírita Allan Kardec",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": null,
+        "data_fundacao": "1997-04-27",
+        "cep": "64800000",
+        "endereco": "Rua Dafla Attem",
+        "numero": "390",
+        "complemento": "",
+        "bairro": "Bairro Irapuã II",
+        "cidade": "Floriano",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "centros.centro",
+    "pk": 69,
+    "fields": {
+        "nome": "Grupo Fraternidade  Espírita Ângelo Francisco",
+        "tipo": "INTERIOR",
+        "foto": "",
+        "cnpj": "06.735.443/0001-07",
+        "data_fundacao": "1967-12-03",
+        "cep": "64800010",
+        "endereco": "Rua Antonio Neto",
+        "numero": "1224",
+        "complemento": "",
+        "bairro": "Catumbi",
+        "cidade": "Floriano",
+        "estado": "PI",
+        "telefone": null,
+        "site": null
+    }
+},
+{
+    "model": "programacao.atividadesemanal",
+    "pk": 1,
+    "fields": {
+        "dia": "SEG",
+        "horario": "15h às 17h00",
+        "nome": "Atendimento Fraterno",
+        "descricao": "Explanação do Evangelho Segundo o Espiritismo, Passe e Diálogo Fraterno"
+    }
+},
+{
+    "model": "programacao.atividadesemanal",
+    "pk": 2,
+    "fields": {
+        "dia": "QUI",
+        "horario": "15h às 17h00",
+        "nome": "Plantão Fraterno",
+        "descricao": "Explanação do Evangelho Segundo o Espiritismo e Aplicação de Passe"
+    }
+},
+{
+    "model": "programacao.atividadesemanal",
+    "pk": 3,
+    "fields": {
+        "dia": "SEX",
+        "horario": "15h às 17h00",
+        "nome": "Plantão Fraterno",
+        "descricao": "Explanação do Evangelho Segundo o Espiritismo e Aplicação de Passe"
+    }
+},
+{
+    "model": "programacao.atividadesemanal",
+    "pk": 4,
+    "fields": {
+        "dia": "DOM",
+        "horario": "18h às 19h00",
+        "nome": "Palestra Pública",
+        "descricao": "Palestra Pública e Aplicação de Passe"
+    }
+},
+{
+    "model": "programacao.doutrinaria",
+    "pk": 1,
+    "fields": {
+        "tema": "Jesus e a mensagem da Boa Nova",
+        "palestrante": "Eduardo Belfort (C. E. Paulo de Tarso)",
+        "data_hora": "2025-12-14T21:00:00Z",
+        "imagem": "media/doutrinarias/imgi_14_588565362_18548907823045768_258284067893093202_n_yj6wm4",
+        "descricao": "<p>Neste domingo, 14 de dezembro, temos uma programa&ccedil;&atilde;o especial: a palestra &ldquo;Jesus e a mensagem da boa nova&rdquo; e, em seguida, o Painel L&iacute;tero Musical, com apresenta&ccedil;&otilde;es do Coral Prece em Harmonia e do Grupo de Teatro Faces. Esperamos por voc&ecirc;, &agrave;s 18h, para este momento de reflex&atilde;o, aprendizado e aprecia&ccedil;&atilde;o da arte! Nossas palestras tamb&eacute;m s&atilde;o transmitidas ao vivo no canal do YouTube da FEPI e no Instagram.</p>"
+    }
+},
+{
+    "model": "programacao.doutrinaria",
+    "pk": 2,
+    "fields": {
+        "tema": "Recital de Natal",
+        "palestrante": "Coral Prece em Harmonia e o Grupo de Teatro FACES",
+        "data_hora": "2025-12-14T21:40:00Z",
+        "imagem": "media/doutrinarias/imgi_15_590576131_18548579878045768_3716772588427643897_n_jejdrl",
+        "descricao": "Nosso Recital de Natal deste ano está chegando com muita arte espírita, que transforma nossas vidas e traz ensinamentos para a nossa evolução!\r\n\r\nNo próximo domingo, dia 14/12, após nossa palestra semanal teremos um momento encantador de apresentação artística com o Coral Prece em Harmonia e o Grupo de teatro FACES.\r\n\r\nUm momento de rico aprendizado e conexões de sentimentos.\r\n\r\n🗓 Aguardamos ansiosamente por você"
+    }
+},
+{
+    "model": "programacao.doutrinaria",
+    "pk": 3,
+    "fields": {
+        "tema": "Cine Debate: Filme \"Interestelar\"",
+        "palestrante": "FEPI",
+        "data_hora": "2025-12-21T21:00:00Z",
+        "imagem": "media/doutrinarias/Captura_de_tela_2025-12-03_234808_pocsfw",
+        "descricao": ""
+    }
+},
+{
+    "model": "programacao.doutrinaria",
+    "pk": 4,
+    "fields": {
+        "tema": "ONLINE: Jovem, seja a mudança que o mundo espera",
+        "palestrante": "Cauany Victoria (GFEAK - Floriano)",
+        "data_hora": "2025-12-28T21:00:00Z",
+        "imagem": "media/doutrinarias/Captura_de_tela_2025-12-03_234808_hmcnsl",
+        "descricao": ""
+    }
+},
+{
+    "model": "programacao.cursoevento",
+    "pk": 2,
+    "fields": {
+        "titulo": "FEPI promove Microrregional da ACSE em parceria com Maranhão e Ceará",
+        "slug": "fepi-promove-microrregional-da-acse-em-parceria-com-maranhao-e-ceara",
+        "data_evento": "2025-12-21T11:30:00Z",
+        "local": "Online e Gratuito",
+        "imagem": "media/cursos/1a689e72-4351-4659-86e6-df6ed169619d_tssiaz",
+        "descricao": "<p>A Federa&ccedil;&atilde;o Esp&iacute;rita Piauiense (FEPI), fortalecendo os la&ccedil;os de uni&atilde;o regional, junta-se &agrave;s coirm&atilde;s do Maranh&atilde;o e Cear&aacute; para realizar a <strong>Microrregional ACSE (&Aacute;rea da Comunica&ccedil;&atilde;o Social Esp&iacute;rita)</strong>. O encontro convida trabalhadores e interessados a debaterem um tema urgente e atual: <strong>&quot;O Uso das Tecnologias como Ferramenta para uma Comunica&ccedil;&atilde;o Social Esp&iacute;rita Inclusiva&quot;</strong>.</p>\r\n\r\n<p>A comunica&ccedil;&atilde;o esp&iacute;rita tem o desafio nobre de alcan&ccedil;ar cora&ccedil;&otilde;es, e a tecnologia surge hoje como uma chave mestra para a acessibilidade. O objetivo do evento &eacute; explorar como as plataformas digitais podem ser utilizadas para derrubar barreiras, garantindo que a mensagem consoladora do Espiritismo chegue a pessoas com diferentes necessidades e realidades.</p>\r\n\r\n<p><strong>Convidada Especial</strong></p>\r\n\r\n<p>Para enriquecer este di&aacute;logo, o evento contar&aacute; com a participa&ccedil;&atilde;o de <strong>Sandra Santiago</strong>, representante da &aacute;rea de Acessibilidade e Inclus&atilde;o da Federa&ccedil;&atilde;o Esp&iacute;rita Brasileira (FEB).</p>\r\n\r\n<p><strong>Servi&ccedil;o</strong></p>\r\n\r\n<p>Anote na agenda e participe deste movimento por uma comunica&ccedil;&atilde;o mais fraterna e acess&iacute;vel:</p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p>🗓 <strong>Data:</strong> 21 de Dezembro de 2025 (S&aacute;bado)</p>\r\n\t</li>\r\n\t<li>\r\n\t<p>⏰ <strong>Hor&aacute;rio:</strong> Das 08h30 &agrave;s 12h00</p>\r\n\t</li>\r\n\t<li>\r\n\t<p>💻 <strong>Formato:</strong> 100% Online e Gratuito</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p><strong>Inscri&ccedil;&otilde;es</strong></p>\r\n\r\n<p>Garanta sua vaga preenchendo o formul&aacute;rio atrav&eacute;s do bot&atilde;o abaixo:</p>",
+        "link_inscricao": "https://docs.google.com/forms/d/e/1FAIpQLScpYdGljGlseMUcGruhleyd1Mgdv13Hdyx57jldNqrGmQTE9g/viewform?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGn3IgW93MtL3zuDb92YEB450gUWdvYPe-4dN6yMoW"
+    }
+},
+{
+    "model": "programacao.cursoevento",
+    "pk": 3,
+    "fields": {
+        "titulo": "XXII EMEPI – Encontro de Mocidades Espíritas do Piauí Tema: “Transforma-te, jovem: tua mudança move o mundo”",
+        "slug": "xxii-emepi-encontro-de-mocidades-espiritas-do-piaui-tema-transforma-te-jovem-tua-mudanca-move-o-mundo",
+        "data_evento": "2026-02-14T11:00:00Z",
+        "local": "CETI José Pacífico de Moura Neto, Teresina - PI",
+        "imagem": "media/cursos/Gemini_Generated_Image_qel9w6qel9w6qel9_soxmra",
+        "descricao": "<p>O XXII EMEPI &eacute; o encontro estadual voltado para a integra&ccedil;&atilde;o e estudo da juventude esp&iacute;rita. O evento ocorrer&aacute; em regime de <strong>INTERNATO</strong>, onde os jovens permanecer&atilde;o no local das 16h do dia 14/02 at&eacute; &agrave;s 13h do dia 17/02/2026.</p>\r\n\r\n<p><strong>Local:</strong> CETI Jos&eacute; Pac&iacute;fico de Moura Neto, Teresina - PI.</p>\r\n\r\n<p><strong>Data:</strong> 14 a 17 de Fevereiro de 2026.</p>\r\n\r\n<p><strong>Vagas:</strong> Limitadas a 100 participantes.</p>\r\n\r\n<p><strong>&nbsp;Inscri&ccedil;&otilde;es e Investimento</strong></p>\r\n\r\n<p><strong>1&ordm; LOTE (15/12/2025 a 15/01/2026):</strong></p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p>Capital (Teresina): <strong>R$ 150,00</strong></p>\r\n\t</li>\r\n\t<li>\r\n\t<p>Interior: <strong>R$ 75,00</strong></p>\r\n\t</li>\r\n</ul>\r\n\r\n<p><strong>2&ordm; LOTE (16/01/2026 a 01/02/2026):</strong></p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p>Capital (Teresina): <strong>R$ 180,00</strong></p>\r\n\t</li>\r\n\t<li>\r\n\t<p>Interior: <strong>R$ 90,00</strong></p>\r\n\t</li>\r\n</ul>\r\n\r\n<p><em>Observa&ccedil;&atilde;o: O encerramento das inscri&ccedil;&otilde;es ocorrer&aacute; na data limite do 2&ordm; lote ou assim que atingida a totalidade das vagas.</em></p>\r\n\r\n<p><strong>O que est&aacute; incluso:</strong> A inscri&ccedil;&atilde;o cobre a hospedagem no local e as refei&ccedil;&otilde;es principais: caf&eacute; da manh&atilde;, almo&ccedil;o, jantar e ceia durante todo o evento. <em>Nota: Lanches extras ser&atilde;o vendidos &agrave; parte.</em></p>\r\n\r\n<p><strong>&nbsp;Requisitos para Participa&ccedil;&atilde;o</strong></p>\r\n\r\n<p>Para garantir a harmonia e o aproveitamento do encontro, s&atilde;o crit&eacute;rios obrigat&oacute;rios:</p>\r\n\r\n<ol start=\"1\">\r\n\t<li>\r\n\t<p><strong>Idade:</strong> Ter idade igual ou superior a 12 anos.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p><strong>V&iacute;nculo:</strong> Ser integrante do Movimento Esp&iacute;rita (participando de Mocidade/Juventude) h&aacute; no m&iacute;nimo <strong>6 meses</strong>.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p><strong>Respons&aacute;vel:</strong> Cada Casa Esp&iacute;rita dever&aacute; inscrever obrigatoriamente um trabalhador/respons&aacute;vel para acompanhar seus jovens durante o encontro.</p>\r\n\t</li>\r\n</ol>",
+        "link_inscricao": "https://docs.google.com/forms/d/e/1FAIpQLSeLA0ZMj46r-bFnj0pKjRSJMnf5uF6lQlFfmJIShFkLDTI2QQ/viewform?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnI5KzCh9fri26H612WJw9SnZgG6qGKmI_wLf6jr-"
+    }
+},
+{
+    "model": "programacao.cursoevento",
+    "pk": 4,
+    "fields": {
+        "titulo": "XIII Encontro das AME's Norte e Nordeste",
+        "slug": "xiii-encontro-das-ames-norte-e-nordeste",
+        "data_evento": "2026-08-14T22:00:00Z",
+        "local": "SESC Cajuina - Av. Cajuina, 725, Noivos, Teresina-PI",
+        "imagem": "media/cursos/44cb2c6f-a55e-4961-a38b-464c54c663fd_nl706c",
+        "descricao": "<p style=\"text-align:justify\">O encontro reunir&aacute; profissionais de sa&uacute;de e interessados para discutir a interse&ccedil;&atilde;o entre ci&ecirc;ncia, espiritualidade e sa&uacute;de. O evento contar&aacute; com confer&ecirc;ncias magnas, pain&eacute;is tem&aacute;ticos e a presen&ccedil;a de renomados expositores de diversas Associa&ccedil;&otilde;es M&eacute;dico-Esp&iacute;ritas (AMEs) do Brasil.</p>\r\n\r\n<p style=\"text-align:justify\">📍 <strong>Local:</strong> Sesc Caju&iacute;na (Av. Caju&iacute;na, 725 - Noivos, Teresina - PI) 📅 <strong>Data:</strong> 14, 15 e 16 de Agosto de 2026</p>\r\n\r\n<p style=\"text-align:justify\"><strong>📝 Programa&ccedil;&atilde;o Completa</strong></p>\r\n\r\n<p style=\"text-align:justify\"><strong>Sexta-feira (14/08/2026)</strong></p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>19h00:</strong> Cerim&ocirc;nia de Abertura.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>20h00:</strong> Confer&ecirc;ncia Magna: <em>A influ&ecirc;ncia da Espiritualidade na sa&uacute;de cardiovascular</em> &ndash; Dr. &Aacute;lvaro Avezum (SP).</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p style=\"text-align:justify\"><strong>S&aacute;bado (15/08/2026)</strong></p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>08h00:</strong> Prece e momento de arte.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>08h30:</strong> <em>Estamos envelhecendo com sa&uacute;de? Proje&ccedil;&otilde;es para um futuro pr&oacute;ximo</em> &ndash; Dr. Fabio Nasri (Presidente AME BR).</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>09h15:</strong> Pain&eacute;is: A Espiritualidade na Educa&ccedil;&atilde;o / Assembleia das AMEs.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>10h30:</strong> <em>A ci&ecirc;ncia e os animais: pesquisas em quest&atilde;o</em> (NUVETs AL, EPE e PI).</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>11h30:</strong> <em>A sementeira de luz de Dr. Bezerra de Menezes</em>.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>14h40:</strong> <em>O planejamento da Vida</em>.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>15h40:</strong> <em>Mediunidade &ndash; caminho evolutivo</em>.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>17h00:</strong> <em>O amor como condi&ccedil;&atilde;o para a sa&uacute;de</em> &ndash; Dr. Alberto Almeida (AME PA).</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p style=\"text-align:justify\"><strong>Domingo (16/08/2026)</strong></p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>08h20:</strong> Contribui&ccedil;&atilde;o da obra de Andr&eacute; Luiz para aquisi&ccedil;&atilde;o da sa&uacute;de.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>09h20:</strong> <em>Equil&iacute;brio do corpo e da alma em tempos de transi&ccedil;&atilde;o planet&aacute;ria</em>.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>10h45:</strong> Construindo uma s&oacute;lida alian&ccedil;a entre as AMEs.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p style=\"text-align:justify\"><strong>11h00:</strong> Confer&ecirc;ncia de Encerramento: <em>A gratid&atilde;o como prop&oacute;sito de vida para a sa&uacute;de integral</em> &ndash; Dr. Alberto Almeida (AME PA).</p>\r\n\t</li>\r\n</ul>",
+        "link_inscricao": "https://www.sympla.com.br/evento/encontrame-no-ne/3231651?referrer=www.google.com&referrer=www.google.com&share_id=copiarlink"
+    }
+},
+{
+    "model": "programacao.cursoevento",
+    "pk": 5,
+    "fields": {
+        "titulo": "Estudo Virtual da Obra “Nossos Filhos são Espíritos”",
+        "slug": "estudo-virtual-da-obra-nossos-filhos-sao-espiritos",
+        "data_evento": "2026-02-02T23:00:00Z",
+        "local": "Virtual (Google Meet)",
+        "imagem": "media/cursos/WhatsApp_Image_2026-01-15_at_15.25.14_ec2gil",
+        "descricao": "<p>Grupo de estudo online dedicado &agrave; obra de Herm&iacute;nio Correia de Miranda. O objetivo &eacute; aprofundar a compreens&atilde;o sobre a miss&atilde;o educativa dos pais e respons&aacute;veis, entendendo os filhos como esp&iacute;ritos em processo evolutivo, sob a luz do Evangelho de Jesus e da Doutrina Esp&iacute;rita.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>💻 <strong>Modalidade:</strong> 100% Virtual (Google Meet)</p>\r\n\r\n<p>📅 <strong>Per&iacute;odo do Estudo:</strong> De 02/02/2026 a 07/09/2026</p>\r\n\r\n<p>⏰ <strong>Hor&aacute;rio:</strong> Das 20h &agrave;s 21h</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p><strong>📝 Inscri&ccedil;&otilde;es e Prazos</strong></p>\r\n\r\n<ul>\r\n\t<li>\r\n\t<p><strong>Per&iacute;odo de Inscri&ccedil;&atilde;o:</strong> 14/01/2026 a 29/01/2026</p>\r\n\t</li>\r\n\t<li>\r\n\t<p><strong>Vagas:</strong> Limitadas.</p>\r\n\t</li>\r\n\t<li>\r\n\t<p><strong>Acesso:</strong> O link da sala virtual ser&aacute; enviado apenas aos inscritos confirmados.</p>\r\n\t</li>\r\n</ul>\r\n\r\n<p><strong>👥 P&uacute;blico-Alvo</strong></p>\r\n\r\n<p>Pais, m&atilde;es, respons&aacute;veis, educadores, trabalhadores esp&iacute;ritas, dirigentes, estudantes do ESDE e demais interessados na tem&aacute;tica familiar &agrave; luz do Espiritismo.</p>",
+        "link_inscricao": "https://docs.google.com/forms/d/e/1FAIpQLScC4McGXPyxudCWr5Fw1jhUI4Tl2qQxodq2sdJ32GIokEKd6A/viewform?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGn6x_1ylpKQ4tyKfvyoqSA2pkT861Z0qeK75r9NFp"
+    }
+},
+{
+    "model": "recursos.secaolink",
+    "pk": 1,
+    "fields": {
+        "nome": "Obras Básicas",
+        "icone_fa": "fa-solid fa-link",
+        "ordem": 1
+    }
+},
+{
+    "model": "recursos.secaolink",
+    "pk": 2,
+    "fields": {
+        "nome": "Instituições Espíritas de Outros Estados",
+        "icone_fa": "fa-solid fa-link",
+        "ordem": 1
+    }
+},
+{
+    "model": "recursos.secaolink",
+    "pk": 3,
+    "fields": {
+        "nome": "Documentos Financeiros - FEPI",
+        "icone_fa": "fa-solid fa-link",
+        "ordem": 1
+    }
+},
+{
+    "model": "recursos.secaolink",
+    "pk": 4,
+    "fields": {
+        "nome": "Diversos",
+        "icone_fa": "fa-solid fa-link",
+        "ordem": 1
+    }
+},
+{
+    "model": "recursos.secaolink",
+    "pk": 5,
+    "fields": {
+        "nome": "Arte",
+        "icone_fa": "fa-solid fa-link",
+        "ordem": 1
+    }
+},
+{
+    "model": "recursos.secaolink",
+    "pk": 6,
+    "fields": {
+        "nome": "Blogs",
+        "icone_fa": "fa-solid fa-link",
+        "ordem": 1
+    }
+},
+{
+    "model": "recursos.secaolink",
+    "pk": 7,
+    "fields": {
+        "nome": "instituições Federativas",
+        "icone_fa": "fa-solid fa-link",
+        "ordem": 1
+    }
+},
+{
+    "model": "recursos.secaolink",
+    "pk": 8,
+    "fields": {
+        "nome": "Instituições Espíritas do Piauí",
+        "icone_fa": "fa-solid fa-link",
+        "ordem": 1
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 1,
+    "fields": {
+        "secao": 1,
+        "titulo": "A Genese - Trad. Guillon",
+        "url": "https://www.febnet.org.br/wp-content/uploads/2012/07/WEB-A-Genese-Guillon.pdf",
+        "descricao": "A Gênese: Ciência, Milagres e a Nova Era\r\n\r\nConheça a quinta e última obra da Codificação Espírita! \"A Gênese\" mergulha em temas de interesse universal de forma lógica e racional. O livro explica a origem do planeta sem misticismos, desvenda a natureza dos fluidos e dos milagres do Evangelho, e discute as predições e o advento da Nova Geração que promoverá a paz e a fraternidade na Terra. Uma leitura essencial para compreender a coerência das Leis Divinas.",
+        "is_download": true
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 2,
+    "fields": {
+        "secao": 2,
+        "titulo": "CELD - Centro Espírita Léon Denis",
+        "url": "https://celd.xyz/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 3,
+    "fields": {
+        "secao": 3,
+        "titulo": "Livros Diário nº 26 FEPI",
+        "url": "https://drive.google.com/file/d/1fS6dRvtgEO-fIBg_SN6fwg3fDQ0IpTjH/view?usp=drive_link",
+        "descricao": "",
+        "is_download": true
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 4,
+    "fields": {
+        "secao": 4,
+        "titulo": "Parecer Jurídico – Medidas de Proteção (Lei 14.811/2024)",
+        "url": "https://drive.google.com/file/d/15V6b3MyMZVXbG0qwQ9dWVUDou9PH3XSN/view?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnxc-usfNV3HSANnhcpf0advbLWf3w2YM3MF0LAlqj-8EwAHJ_fLdPNFNWYf8_aem_mfxT",
+        "descricao": "Para auxiliar as instituições na implementação das Medidas de Proteção às Crianças e Adolescentes, disponibilizamos abaixo o parecer jurídico completo e materiais de orientação.",
+        "is_download": true
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 5,
+    "fields": {
+        "secao": 4,
+        "titulo": "Vade Mecum Espírita",
+        "url": "https://fepiaui.org.br/nuke/modules.php?name=Web_Links&l_op=visit&lid=16",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 6,
+    "fields": {
+        "secao": 1,
+        "titulo": "O Céu e o Inferno - Trad. Guillon",
+        "url": "https://www.febnet.org.br/wp-content/uploads/2012/07/WEB-O-Ceu-e-o-inferno-Guillon.pdf",
+        "descricao": "O Céu e o Inferno: A Justiça de Deus Revelada\r\n\r\nQuarta obra da Codificação Espírita, \"O Céu e o Inferno\" desvenda a Justiça Divina sob a ótica da Doutrina. O livro explica como a imortalidade do Espírito e a reencarnação resolvem os mistérios da vida, como o sofrimento e a morte na infância. A obra compara as visões tradicionais de Céu, Inferno e penas eternas com a visão espírita, e apresenta depoimentos emocionantes de Espíritos em diferentes situações (sofredores, felizes, suicidas) que comprovam as leis da vida futura. Indispensável para quem busca clareza sobre o destino da alma.",
+        "is_download": true
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 7,
+    "fields": {
+        "secao": 1,
+        "titulo": "O Evangelho Segundo o Espiritismo - Trad. Guillon",
+        "url": "https://www.febnet.org.br/wp-content/uploads/2012/07/WEB-O-Evangelho-segundo-o-Espiritismo-Guillon.pdf",
+        "descricao": "O Evangelho Segundo o Espiritismo: A Essência Moral do Cristo\r\n\r\nDescubra o terceiro livro fundamental da Doutrina Espírita. \"O Evangelho Segundo o Espiritismo\" é a bússola moral baseada nos ensinamentos de Jesus, organizada e comentada por Allan Kardec. Através de comunicações de Espíritos de Luz, a obra traz uma compreensão profunda e consoladora da moral evangélica. Essencial para cristãos que buscam maior clareza e para qualquer pessoa que procure uma orientação educativa e motivadora, independente de sua crença.",
+        "is_download": true
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 8,
+    "fields": {
+        "secao": 1,
+        "titulo": "O Livro dos Espíritos - Trad. Guillon",
+        "url": "https://www.febnet.org.br/wp-content/uploads/2012/07/WEB-Livro-dos-Esp%C3%ADritos-Guillon-1.pdf",
+        "descricao": "O Livro dos Espíritos: A Obra Fundadora do Espiritismo\r\n\r\nDescubra a base da Doutrina Espírita com o primeiro livro da Codificação (1857). Reunindo os ensinamentos lógicos e racionais dos Espíritos Superiores, esta obra aborda, através de 1.019 perguntas e respostas, temas de interesse universal como Deus, a imortalidade da alma, as leis morais e o porvir da Humanidade. Essencial para todos que buscam entender os aspectos científico, filosófico e religioso da vida.",
+        "is_download": true
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 9,
+    "fields": {
+        "secao": 1,
+        "titulo": "O Livro dos Mediuns - Trad. Guillon",
+        "url": "https://www.febnet.org.br/wp-content/uploads/2012/07/WEB-Livro-dos-Mediuns-Guillon-1.pdf",
+        "descricao": "O Livro dos Médiuns: Guia Completo para a Prática Mediúnica\r\n\r\nEssencial para todos que se interessam pela comunicação com o plano espiritual, \"O Livro dos Médiuns\" é o manual mais seguro da Doutrina Espírita. Descubra a teoria completa das manifestações, aprenda sobre o desenvolvimento da mediunidade e entenda as dificuldades da prática. Uma fonte inestimável de conhecimento para espíritas e curiosos sobre o crescente fenômeno mediúnico no mundo. Inclui um valioso vocabulário espírita.",
+        "is_download": true
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 10,
+    "fields": {
+        "secao": 6,
+        "titulo": "Centro Espírita Lar da Caridade",
+        "url": "http://celardacaridade.blogspot.com/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 11,
+    "fields": {
+        "secao": 6,
+        "titulo": "Centro Espírita Semente Cristã",
+        "url": "http://cescrista.blogspot.com/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 12,
+    "fields": {
+        "secao": 6,
+        "titulo": "Departamento de Infância e Juventude da FEPI",
+        "url": "http://dijefepiaui.blogspot.com/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 13,
+    "fields": {
+        "secao": 6,
+        "titulo": "Escola de Pais - GEPE Piedade",
+        "url": "http://epgepe.blogspot.com/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 14,
+    "fields": {
+        "secao": 6,
+        "titulo": "Instituto de Cultura Espírita do Piauí - ICEPI",
+        "url": "http://icepi.blogspot.com/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 15,
+    "fields": {
+        "secao": 6,
+        "titulo": "Tempo Espírita",
+        "url": "http://tempoespirita.blogspot.com/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 16,
+    "fields": {
+        "secao": 2,
+        "titulo": "GEPE - Grupo Espírita Paulo e Estêvão",
+        "url": "http://www.gepe.org.br/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 17,
+    "fields": {
+        "secao": 2,
+        "titulo": "ICE-CE - Instituto de Cultura Espírita do Ceará",
+        "url": "http://www.ice-ceara.org.br/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 18,
+    "fields": {
+        "secao": 8,
+        "titulo": "Centro Espírita Lar de Jesus",
+        "url": "http://celardejesus.zip.net/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 19,
+    "fields": {
+        "secao": 7,
+        "titulo": "Federação Espírita Brasileira",
+        "url": "http://www.febnet.org.br/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 20,
+    "fields": {
+        "secao": 7,
+        "titulo": "Federação Espírita do Estado do Ceará",
+        "url": "http://www.feec.org.br/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 21,
+    "fields": {
+        "secao": 7,
+        "titulo": "Federação Espírita do Paraná",
+        "url": "http://www.feparana.com.br/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "recursos.linkitem",
+    "pk": 22,
+    "fields": {
+        "secao": 7,
+        "titulo": "Federação Espírita do Rio Grande do Sul",
+        "url": "http://www.fergs.org.br/",
+        "descricao": "",
+        "is_download": false
+    }
+},
+{
+    "model": "doacoes.formadoacao",
+    "pk": 1,
+    "fields": {
+        "titulo": "PIX",
+        "tipo": "PIX",
+        "descricao": "Federação Espírita Piauiense | CNPJ -9.590.068/0001-42",
+        "chave_pix": "financeirofepi@gmail.com",
+        "qr_code": "",
+        "banco": "",
+        "agencia": "",
+        "conta": "",
+        "ordem": 1
+    }
+},
+{
+    "model": "intranet.categoriadocumento",
+    "pk": 1,
+    "fields": {
+        "nome": "Atas de Reunião"
+    }
+},
+{
+    "model": "intranet.categoriadocumento",
+    "pk": 2,
+    "fields": {
+        "nome": "Balancete"
+    }
+},
+{
+    "model": "intranet.categoriadocumento",
+    "pk": 3,
+    "fields": {
+        "nome": "Diversos"
+    }
+}
+]

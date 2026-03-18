@@ -1,0 +1,200 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ livro.titulo }} | Livraria FEPI{% endblock %}
+
+{% block description %}Adquira o livro "{{ livro.titulo }}" de {{ livro.autor }} na Livraria Ramiro Gama (FEPI). {{ livro.descricao|striptags|truncatechars:100 }}{% endblock %}
+
+{% block og_title %}{{ livro.titulo }} - {{ livro.autor }}{% endblock %}
+{% block og_description %}Confira este livro na Livraria da Federação Espírita do Piauí.{% endblock %}
+
+{% block og_image %}
+    {% if livro.capa %}
+        {{ request.scheme }}://{{ request.get_host }}{{ livro.capa.url }}
+    {% else %}
+        {{ request.scheme }}://{{ request.get_host }}{% static 'img/logo_livraria.png' %}
+    {% endif %}
+{% endblock %}
+{% block extra_css %}
+<style>
+    /* Área Principal */
+    .detail-wrapper {
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    /* O Cartão do Livro */
+    .livro-card-container {
+        display: grid;
+        grid-template-columns: 300px 1fr; 
+        gap: 40px;
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        border: 1px solid #eee;
+        max-width: 950px; 
+        width: 100%;
+    }
+
+    /* Capa */
+    .capa-box {
+        width: 100%;
+        height: 420px; 
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #eee;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .capa-full { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: contain; 
+    }
+
+    /* Informações */
+    .info-box { display: flex; flex-direction: column; }
+    
+    .cat-badge { 
+        background: var(--azul-claro); color: var(--azul-medio);
+        font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+        padding: 4px 10px; border-radius: 4px; width: fit-content;
+        margin-bottom: 10px; letter-spacing: 0.5px;
+    }
+    
+    .titulo-main { 
+        font-size: 2rem; color: var(--azul-escuro); margin: 0 0 5px 0; 
+        line-height: 1.2; font-weight: 800;
+    }
+    
+    .autor-main { 
+        font-size: 1.1rem; color: #666; font-weight: 500; margin-bottom: 20px; 
+        padding-bottom: 20px; border-bottom: 1px solid #eee;
+    }
+
+    .codigo-ref {
+        font-size: 0.8rem; color: #999; margin-bottom: 15px; font-family: monospace;
+    }
+
+    .sinopse-titulo { font-weight: 700; color: #333; margin-bottom: 8px; display: block; }
+    
+    .sinopse-texto { 
+        color: #555; line-height: 1.7; margin-bottom: 30px; 
+        font-size: 0.95rem; text-align: justify;
+    }
+    
+    /* Garante que o HTML rico não quebre o layout */
+    .sinopse-texto p { margin-bottom: 15px; }
+    .sinopse-texto ul, .sinopse-texto ol { margin-left: 20px; margin-bottom: 15px; }
+
+    /* Box de Compra */
+    .compra-area {
+        background-color: #f8fcfc;
+        border: 1px dashed var(--azul-medio);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: auto; 
+    }
+
+    .preco-big {
+        font-size: 2.2rem; color: var(--azul-escuro); font-weight: 800; 
+        display: block; margin-bottom: 15px; text-align: center;
+    }
+
+    .btn-whatsapp {
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        background-color: #25D366; color: white; 
+        font-weight: 700; font-size: 1rem;
+        padding: 12px; border-radius: 30px;
+        text-decoration: none; transition: 0.2s;
+        box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
+    }
+    .btn-whatsapp:hover { background-color: #128C7E; transform: translateY(-2px); }
+
+    .btn-voltar {
+        display: inline-block; color: #666; text-decoration: none; 
+        font-weight: 600; margin-bottom: 20px; font-size: 0.9rem;
+    }
+    .btn-voltar:hover { color: var(--azul-escuro); text-decoration: underline; }
+
+    /* Responsividade */
+    @media (max-width: 800px) {
+        .livro-card-container { 
+            grid-template-columns: 1fr; 
+            padding: 25px;
+            gap: 25px;
+        }
+        .capa-box { height: auto; max-width: 250px; margin: 0 auto; aspect-ratio: 2/3; }
+        .titulo-main { font-size: 1.6rem; text-align: center; }
+        .autor-main { text-align: center; }
+        .cat-badge { margin: 0 auto 10px; display: block; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    
+    <a href="{% url 'livraria' %}" class="btn-voltar">← Voltar para o Catálogo</a>
+
+    <div class="detail-wrapper">
+        <div class="livro-card-container">
+            
+            <div class="capa-box">
+                {% if livro.capa %}
+                    <img src="{{ livro.capa.url }}" alt="{{ livro.titulo }}" class="capa-full">
+                {% else %}
+                    <div style="color:#ccc; font-size:3rem;">📚</div>
+                {% endif %}
+            </div>
+
+            <div class="info-box">
+                <span class="cat-badge">
+                    {% if livro.categoria %}
+                        {{ livro.categoria.nome }}
+                    {% else %}
+                        Geral
+                    {% endif %}
+                </span>
+                
+                <h1 class="titulo-main">{{ livro.titulo }}</h1>
+                <div class="autor-main">Por: {{ livro.autor }}</div>
+
+                <div class="codigo-ref">Cód: {{ livro.codigo }}</div>
+
+                <span class="sinopse-titulo">Sobre a obra:</span>
+                <div class="sinopse-texto">
+                    {% if livro.descricao %}
+                        {{ livro.descricao|safe }}
+                    {% else %}
+                        <p>Descrição não disponível.</p>
+                    {% endif %}
+                </div>
+
+                <div class="compra-area">
+                    <span class="preco-big">R$ {{ livro.preco }}</span>
+                    
+                    {% if whatsapp_num %}
+                        <a href="https://wa.me/{{ whatsapp_num }}?text={{ whatsapp_msg|urlencode }}" target="_blank" class="btn-whatsapp">
+                            <i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i>
+                            Comprar via WhatsApp
+                        </a>
+                        <p style="text-align:center; font-size:0.75rem; color:#888; margin:10px 0 0;">
+                            Atendimento da Livraria Ramiro Gama
+                        </p>
+                    {% else %}
+                        <button class="btn-whatsapp" style="background-color:#ccc; cursor:not-allowed;">Indisponível</button>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

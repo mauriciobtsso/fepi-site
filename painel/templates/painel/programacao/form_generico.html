@@ -1,0 +1,87 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<div class="container" style="max-width: 900px;">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h3 class="fw-bold text-dark mb-0">
+            {% if 'Palestra' in titulo %}
+                <span class="text-success bg-light p-2 rounded-circle me-2"><i class="fas fa-microphone"></i></span>
+            {% elif 'Atividade' in titulo %}
+                <span class="text-primary bg-light p-2 rounded-circle me-2"><i class="fas fa-sync"></i></span>
+            {% else %}
+                <span class="text-warning bg-light p-2 rounded-circle me-2"><i class="fas fa-star"></i></span>
+            {% endif %}
+            {{ titulo }}
+        </h3>
+        
+        <a href="{% url 'programacao_hub' %}" class="btn btn-outline-secondary btn-sm px-3">
+            <i class="fas fa-arrow-left me-2"></i> Voltar
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-lg rounded-3">
+        <div class="card-body p-4 p-md-5">
+            
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {{ form.media }}
+
+                <div class="row g-3">
+                    {% for field in form %}
+                        {% if field.name == 'data_hora' or field.name == 'data_evento' or field.name == 'dia' or field.name == 'horario' %}
+                            <div class="col-md-6">
+                        {% else %}
+                            <div class="col-12">
+                        {% endif %}
+                        
+                            <label class="form-label fw-bold text-secondary small text-uppercase">
+                                {{ field.label }}
+                                {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <div class="form-text small"><i class="fas fa-info-circle me-1"></i>{{ field.help_text }}</div>
+                            {% endif %}
+                            
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1 fw-bold">
+                                    <i class="fas fa-exclamation-circle me-1"></i> {{ field.errors.0 }}
+                                </div>
+                            {% endif %}
+
+                            {% if field.name == 'imagem' and field.value %}
+                                <div class="mt-2 p-2 bg-light border rounded d-inline-block">
+                                    <small class="d-block text-muted mb-1">Imagem Atual:</small>
+                                    <img src="/media/{{ field.value }}" style="height: 80px; width: auto; object-fit: cover; border-radius: 4px;">
+                                </div>
+                            {% endif %}
+                        
+                        </div> {% endfor %}
+                </div>
+
+                <hr class="my-4 text-muted opacity-25">
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{% url 'programacao_hub' %}" class="btn btn-light px-4">Cancelar</a>
+                    <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm">
+                        <i class="fas fa-save me-2"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .django-ckeditor-widget {
+        width: 100%;
+    }
+    .card {
+        background: #fff;
+    }
+</style>
+{% endblock %}

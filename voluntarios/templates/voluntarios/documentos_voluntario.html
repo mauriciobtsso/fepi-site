@@ -1,0 +1,97 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<style>
+    /* Força o input de arquivo a respeitar a largura do pai e corta o texto com reticências */
+    .input-file-fix input[type="file"] {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        /* Estilização extra para ficar parecido com os campos do Bootstrap */
+        padding: 0.375rem 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        background-color: #fff;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Anexos: {{ voluntario.nome }}</h1>
+        <a href="{% url 'listar_voluntarios' %}" class="btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Novo Documento</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="fw-bold">Tipo</label>
+                            {{ form.tipo }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold">Data Emissão</label>
+                            {{ form.data_referencia }}
+                        </div>
+                        <div class="mb-3 input-file-fix">
+                            <label class="fw-bold">Arquivo PDF/JPG</label>
+                            {{ form.arquivo }}
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 mt-3">
+                            <i class="fas fa-upload"></i> Salvar Anexo
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Histórico de Arquivos</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Data Emissão</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for doc in documentos %}
+                                <tr>
+                                    <td class="align-middle">{{ doc.get_tipo_display }}</td>
+                                    <td class="align-middle">{{ doc.data_referencia|date:"d/m/Y" }}</td>
+                                    <td class="text-center align-middle">
+                                        <a href="{{ doc.arquivo.url }}" target="_blank" class="btn btn-sm btn-info shadow-sm">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </a>
+                                        <a href="{% url 'excluir_documento_voluntario' doc.pk %}" class="btn btn-sm btn-danger shadow-sm" onclick="return confirm('Tem certeza que deseja excluir este anexo?');">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="3" class="text-center text-muted py-4">Nenhum documento anexado ainda.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

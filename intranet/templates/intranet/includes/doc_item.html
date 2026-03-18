@@ -1,0 +1,37 @@
+<li class="doc-item">
+    <div class="doc-main">
+        <span class="doc-title">
+            {% if "Finan" in doc.categoria.nome %}
+                <i class="fa-solid fa-chart-pie" style="color: #27ae60;"></i>
+            {% elif "Ata" in doc.categoria.nome %}
+                <i class="fa-solid fa-file-signature" style="color: #e74c3c;"></i>
+            {% else %}
+                <i class="fa-solid fa-file-lines" style="color: #3498db;"></i>
+            {% endif %}
+            
+            {{ doc.titulo }}
+        </span>
+        
+        <div class="doc-meta">
+            Publicado em {{ doc.data_publicacao|date:"d/m/Y" }} • {{ doc.categoria.nome }}
+        </div>
+        
+        {% if doc.descricao %}
+            <span class="doc-desc">{{ doc.descricao|truncatechars:120 }}</span>
+        {% endif %}
+    </div>
+
+    <div class="doc-actions">
+        {% if doc.arquivo %}
+            <a href="{{ doc.arquivo.url }}" target="_blank" class="btn-action-mini btn-dl">
+                <i class="fa-solid fa-download"></i> Download
+            </a>
+        {% endif %}
+
+        {% if doc.link %}
+            <a href="{{ doc.link }}" target="_blank" class="btn-action-mini btn-lnk">
+                <i class="fa-solid fa-up-right-from-square"></i> Abrir Link
+            </a>
+        {% endif %}
+    </div>
+</li>

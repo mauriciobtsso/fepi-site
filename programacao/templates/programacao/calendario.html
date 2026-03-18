@@ -1,0 +1,158 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}FEPI | Calendário Anual{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Cabeçalho do Mês */
+    .mes-header {
+        color: var(--azul-escuro); 
+        font-size: 1.5rem; 
+        font-weight: 700;
+        padding-bottom: 10px; 
+        border-bottom: 2px solid var(--azul-claro);
+        text-transform: capitalize; 
+        display: flex; 
+        align-items: center; 
+        gap: 10px;
+        /* O espaçamento agora é controlado diretamente no HTML abaixo */
+    }
+    .mes-header i { color: var(--destaque); font-size: 1.2rem; } 
+
+    /* Linha do Evento */
+    .evento-card {
+        display: grid; grid-template-columns: 80px 1fr;
+        gap: 20px; background: white; border-radius: var(--radius);
+        padding: 0; margin-bottom: 15px; border: 1px solid #eee;
+        transition: 0.2s; overflow: hidden;
+    }
+    .evento-card:hover { transform: translateX(5px); border-color: var(--destaque); } 
+    
+    .evento-card.curso { border-left: 5px solid var(--azul-medio); }
+    .evento-card.curso:hover { border-color: var(--destaque); }
+
+    .evento-passado { opacity: 0.6; filter: grayscale(100%); }
+    .evento-passado:hover { opacity: 1; filter: none; }
+
+    .evento-data {
+        background-color: var(--azul-claro); color: var(--azul-escuro);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .evento-passado .evento-data { background-color: #eee; color: #666; }
+
+    .dia-num { font-size: 1.8rem; font-weight: 800; line-height: 1; }
+    .dia-sem { font-size: 0.75rem; text-transform: uppercase; margin-top: 2px; }
+
+    .evento-info { padding: 15px 20px 15px 0; display: flex; flex-direction: column; justify-content: center; }
+    
+    .evento-hora { 
+        font-size: 0.85rem; font-weight: 700; color: #888; 
+        text-transform: uppercase; margin-bottom: 4px;
+        display: flex; align-items: center; gap: 5px; 
+    }
+    .evento-info i { font-size: 0.95rem; }
+
+    .evento-tema { font-size: 1.1rem; font-weight: 700; color: var(--texto); margin-bottom: 4px; }
+    .evento-tipo { font-size: 0.8rem; color: var(--azul-escuro); font-weight: 700; background: var(--azul-claro); padding: 2px 5px; border-radius: 4px; width: fit-content; margin-bottom: 5px;}
+    .evento-tipo.curso-badge { background-color: var(--destaque); color: white; }
+    .evento-palestrante { font-size: 0.95rem; color: var(--azul-medio); }
+    
+    .historico-divider {
+        margin: 80px 0 40px; 
+        text-align: center; color: #888; 
+        font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
+        display: flex; align-items: center; gap: 20px;
+    }
+    .historico-divider::before, .historico-divider::after { content: ""; flex: 1; height: 1px; background: #ddd; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    
+    <div class="section-header" style="margin-bottom: 60px !important;">
+        <div>
+            <h2>Calendário de Eventos</h2>
+            <p style="color: #666;">Acompanhe a nossa agenda anual.</p>
+        </div>
+    </div>
+
+    {% if futuros %}
+        {% for grupo in futuros %}
+            
+            <div class="mes-header" style="margin-top: 60px !important; margin-bottom: 15px !important;">
+                <i class="fa-regular fa-calendar-check"></i> {{ grupo.mes_ano }}
+            </div>
+            
+            {% for evento in grupo.list %}
+                <div class="evento-card {% if not evento.is_palestra %}curso{% endif %}">
+                    <div class="evento-data">
+                        <span class="dia-num">{{ evento.sort_date|date:"d" }}</span>
+                        <span class="dia-sem">{{ evento.sort_date|date:"D" }}</span>
+                    </div>
+                    <div class="evento-info">
+                        
+                        {% if evento.is_palestra %}
+                            <span class="evento-tipo">Palestra Doutrinária</span>
+                        {% else %}
+                            <span class="evento-tipo curso-badge">Curso/Evento</span>
+                        {% endif %}
+
+                        <span class="evento-hora">
+                            <i class="fa-regular fa-clock"></i> {{ evento.sort_date|date:"H:i" }}h
+                        </span>
+                        
+                        <span class="evento-tema">
+                            <a href="{% if evento.is_palestra %}{% url 'doutrinarias' %}{% else %}{% url 'detalhe_curso' evento.slug %}{% endif %}" style="color:inherit;">
+                                {% if evento.is_palestra %}{{ evento.tema }}{% else %}{{ evento.titulo }}{% endif %}
+                            </a>
+                        </span>
+                        
+                        <span class="evento-palestrante">
+                            {% if evento.is_palestra %}
+                                Expositor: {{ evento.palestrante }}
+                            {% else %}
+                                Local: {{ evento.local }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% else %}
+        <p style="color:#888; margin-bottom:40px; text-align:center;">Nenhum evento futuro agendado.</p>
+    {% endif %}
+
+
+    {% if passados %}
+        <div class="historico-divider">Histórico de Eventos</div>
+
+        {% for grupo in passados %}
+            <div class="mes-header" style="color:#888; border-color:#eee; margin-top: 60px !important; margin-bottom: 30px !important;">
+                <i class="fa-regular fa-calendar-xmark"></i> {{ grupo.mes_ano }}
+            </div>
+            {% for evento in grupo.list %}
+                <div class="evento-card evento-passado {% if not evento.is_palestra %}curso{% endif %}">
+                    <div class="evento-data">
+                        <span class="dia-num">{{ evento.sort_date|date:"d" }}</span>
+                        <span class="dia-sem">{{ evento.sort_date|date:"D" }}</span>
+                    </div>
+                    <div class="evento-info">
+                        <span class="evento-hora">
+                            <i class="fa-solid fa-check"></i> Realizado em {{ evento.sort_date|date:"d/m/Y" }}
+                        </span>
+                        <span class="evento-tema">
+                            {% if evento.is_palestra %}{{ evento.tema }}{% else %}{{ evento.titulo }}{% endif %}
+                        </span>
+                        <span class="evento-palestrante">
+                            {% if evento.is_palestra %}Palestra{% else %}Curso/Evento{% endif %}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+</div>
+{% endblock %}

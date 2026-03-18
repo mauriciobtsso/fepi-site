@@ -1,0 +1,55 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Editor do Modelo de Termo</h1>
+        <a href="{% url 'listar_voluntarios' %}" class="btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Corpo do Documento (Cabeçalho e Rodapé são automáticos)</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.media }} {{ form.conteudo }}
+                        <button type="submit" class="btn btn-success mt-4 px-5">
+                            <i class="fas fa-save"></i> Salvar Modelo
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow mb-4 border-left-info">
+                <div class="card-header py-3 bg-info text-white">
+                    <h6 class="m-0 font-weight-bold"><i class="fas fa-code"></i> Variáveis Mágicas</h6>
+                </div>
+                <div class="card-body small">
+                    <p>Copie e cole os códigos abaixo no texto. Eles serão substituídos pelos dados reais do voluntário na hora de imprimir.</p>
+                    <ul class="list-unstyled">
+                        <li><code>{% verbatim %}{{ voluntario.nome }}{% endverbatim %}</code></li>
+                        <li><code>{% verbatim %}{{ cpf_display }}{% endverbatim %}</code></li>
+                        <li><code>{% verbatim %}{{ rg_display }}{% endverbatim %}</code></li>
+                        <li><code>{% verbatim %}{{ endereco_display }}{% endverbatim %}</code></li>
+                        <li><code>{% verbatim %}{{ cep_display }}{% endverbatim %}</code></li>
+                        <li><code>{% verbatim %}{{ telefones_display }}{% endverbatim %}</code></li>
+                        <li><code>{% verbatim %}{{ email_display }}{% endverbatim %}</code></li>
+                        <li><code>{% verbatim %}{{ atividade_profissional_display }}{% endverbatim %}</code></li>
+                        <li><code>{% verbatim %}{{ tipo_servico_display }}{% endverbatim %}</code></li>
+                        <li><code>{% verbatim %}{{ dias_horarios_display }}{% endverbatim %}</code></li>
+                        <li><code>{% verbatim %}{{ prazo_display }}{% endverbatim %}</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

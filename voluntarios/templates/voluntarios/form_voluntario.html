@@ -1,0 +1,165 @@
+{% extends 'painel/base_painel.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ titulo }}</h1>
+        <a href="{% url 'listar_voluntarios' %}" class="btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Voltar para Lista
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Informações do Voluntário</h6>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="font-weight-bold">Nome Completo *</label>
+                        {{ form.nome }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label>Data de Nascimento</label>
+                        {{ form.data_nascimento }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label>CPF</label>
+                        {{ form.cpf }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label>RG / Órgão Exp.</label>
+                        {{ form.rg }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Nome do Pai</label>
+                        {{ form.nome_pai }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Nome da Mãe</label>
+                        {{ form.nome_mae }}
+                    </div>
+                </div>
+
+                <hr>
+                <p class="text-primary font-weight-bold">Endereço e Contato</p>
+
+                <div class="row">
+                    <div class="col-md-2 mb-3">
+                        <label class="font-weight-bold text-success">CEP (Busca Auto)</label>
+                        {{ form.cep }}
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        <label>Logradouro (Rua/Av)</label>
+                        {{ form.endereco }}
+                    </div>
+                    <div class="col-md-1 mb-3">
+                        <label>Nº</label>
+                        {{ form.numero }}
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label>Bairro</label>
+                        {{ form.bairro }}
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label>Cidade/UF</label>
+                        {{ form.cidade_estado }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label>Complemento</label>
+                        {{ form.complemento }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>E-mail</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Telefone(s)</label>
+                        {{ form.telefones }}
+                    </div>
+                </div>
+
+                <hr>
+                <p class="text-primary font-weight-bold">Vigência e Atuação</p>
+
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label>Início do Termo</label>
+                        {{ form.data_inicio }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label>Término do Termo</label>
+                        {{ form.data_termino }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label>Atividade Profissional</label>
+                        {{ form.atividade_profissional }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label>Dia(s) / Horário(s)</label>
+                        {{ form.dias_horarios }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label>Tipo de Serviço</label>
+                        {{ form.tipo_servico }}
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="mt-4 text-right">
+                    <button type="submit" class="btn btn-success px-5 shadow">
+                        <i class="fas fa-save"></i> Salvar Registro
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#id_cpf').mask('000.000.000-00');
+        $('#id_cep').mask('00000-000');
+        
+        var maskBehavior = function (val) {
+          return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+        };
+        var options = {
+          onKeyPress: function(val, e, field, options) {
+              field.mask(maskBehavior.apply({}, arguments), options);
+            }
+        };
+        $('#id_telefones').mask(maskBehavior, options);
+
+        $('#id_cep').blur(function() {
+            var cep = $(this).val().replace(/\D/g, '');
+            if (cep != "") {
+                $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+                    if (!("erro" in dados)) {
+                        $("#id_endereco").val(dados.logradouro);
+                        $("#id_bairro").val(dados.bairro);
+                        $("#id_cidade_estado").val(dados.localidade + "/" + dados.uf);
+                        $("#id_numero").focus();
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

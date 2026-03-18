@@ -1,0 +1,207 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}FEPI | Centros Espíritas{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Estilos da Busca (Mantivemos igual pois funciona bem) */
+    .search-container { background-color: var(--azul-claro); padding: 25px; border-radius: var(--radius); margin-bottom: 30px; text-align: center; }
+    .search-form { display: flex; max-width: 600px; margin: 0 auto 20px; gap: 10px; }
+    .search-input { flex: 1; padding: 10px 20px; border-radius: 30px; border: 1px solid #ccc; outline: none; font-size: 0.95rem; }
+    .search-btn { background-color: var(--azul-escuro); color: white; border: none; padding: 0 20px; border-radius: 30px; cursor: pointer; font-size: 0.9rem;}
+
+    /* LISTA COMPACTA */
+    .lista-compacta { display: flex; flex-direction: column; gap: 8px; }
+
+    .item-centro {
+        display: grid;
+        grid-template-columns: 50px 1fr auto; /* Ajuste para centralizar botões */
+        align-items: center;
+        background: white;
+        padding: 10px 15px;
+        border-radius: 6px;
+        border: 1px solid #eee;
+        gap: 15px;
+        transition: 0.2s;
+    }
+    .item-centro:hover { border-color: var(--dourado); transform: translateX(3px); }
+
+    .centro-img {
+        width: 45px; height: 45px; object-fit: contain;
+        border-radius: 50%; border: 1px solid #eee; background: #f9f9f9;
+    }
+    
+    .centro-main { display: flex; flex-direction: column; line-height: 1.2; }
+    .nome { font-weight: 700; color: var(--azul-escuro); font-size: 1rem; }
+    .endereco { font-size: 0.8rem; color: #555; margin-top: 2px; }
+    .detalhes-extra { font-size: 0.75rem; color: #888; margin-top: 2px; display: flex; gap: 10px; }
+
+    /* ÍCONES NAS LINHAS DE INFO */
+    .info-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; font-size: 0.9rem; color: #555; }
+    .info-row i { color: var(--azul-medio); font-size: 0.9rem; } /* Cor dos ícones */
+    .endereco i { color: var(--dourado); }
+
+    /* Área de Botões */
+    .acoes { display: flex; gap: 8px; align-items: center; }
+
+    .btn-mini {
+        font-size: 0.75rem; font-weight: 600; padding: 4px 10px;
+        border-radius: 20px; text-decoration: none; display: flex; align-items: center; gap: 4px;
+        transition: 0.2s;
+    }
+    .btn-rota { background-color: var(--azul-claro); color: var(--azul-escuro); }
+    .btn-rota:hover { background-color: var(--dourado); color: black; }
+    .btn-site { background-color: #fce4ec; color: #c2185b; }
+    .btn-site:hover { background-color: #c2185b; color: white; }
+
+    /* Títulos */
+    .grupo-titulo {
+        color: var(--azul-escuro); font-size: 1.3rem; font-weight: 700;
+        margin: 30px 0 15px 0; border-bottom: 1px solid #eee; padding-bottom: 5px;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .item-centro { grid-template-columns: 1fr; gap: 10px; padding: 15px; }
+        .centro-img { margin: 0 auto; }
+        .centro-main { text-align: center; }
+        .acoes { justify-content: center; }
+        .info-row { justify-content: center; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    
+    <div class="section-header">
+        <div>
+            <h2>Encontre um Centro Espírita</h2>
+            <p style="color: #666;">Casas federadas na capital e no interior.</p>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <form method="GET" action="." class="search-form">
+            <input type="text" name="q" class="search-input" 
+                   placeholder="Pesquise por nome, bairro ou cidade..." 
+                   value="{{ busca_ativa|default:'' }}">
+            <button type="submit" class="search-btn">🔍</button>
+        </form>
+        {% if busca_ativa %}
+            <div style="margin-top: 15px;">
+                Mostrando resultados para: <strong>"{{ busca_ativa }}"</strong><br>
+                <a href="{% url 'lista_centros' %}" class="btn-limpar">✖ Limpar pesquisa</a>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if capital %}
+    <h3 class="grupo-titulo">Em Teresina ({{ capital|length }})</h3>
+    <div class="lista-compacta">
+        {% for centro in capital %}
+        <div class="item-centro">
+            {% if centro.foto %}
+                <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
+            {% else %}
+                <div class="centro-img" style="display:flex; align-items:center; justify-content:center; color:#ccc; font-size:0.7rem;">FE</div>
+            {% endif %}
+
+            <div class="centro-main">
+                <span class="nome">{{ centro.nome }}</span>
+                
+                <div class="info-row">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>{{ centro.bairro }} • {{ centro.endereco }}{% if centro.numero %}, {{ centro.numero }}{% endif %}</span>
+                </div>
+                
+                <div class="info-row">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>{% if centro.telefone %}{{ centro.telefone }}{% else %}Não informado{% endif %}</span>
+                </div>
+
+                {% if centro.data_fundacao %}
+                <div class="info-row">
+                    <i class="fa-solid fa-cake-candles"></i>
+                    <span>Fundado em {{ centro.data_fundacao|date:"Y" }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="acoes">
+                {% if centro.site %}
+                <a href="{{ centro.site }}" target="_blank" class="btn-mini btn-site" title="Instagram/Site">
+                    <i class="fa-solid fa-globe"></i>
+                </a>
+                {% endif %}
+                <a href="https://www.google.com/maps/search/?api=1&query={{ centro.endereco }} {{ centro.numero }} {{ centro.cidade }}" target="_blank" class="btn-mini btn-rota" title="Ver no Mapa">
+                    <i class="fa-solid fa-route"></i> Mapa
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if interior %}
+    <h3 class="grupo-titulo">No Interior ({{ interior|length }})</h3>
+    <div class="lista-compacta">
+        {% for centro in interior %}
+        <div class="item-centro">
+            {% if centro.foto %}
+                <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
+            {% else %}
+                <div class="centro-img" style="display:flex; align-items:center; justify-content:center; color:#ccc; font-size:0.7rem;">FE</div>
+            {% endif %}
+
+            <div class="centro-main">
+                <span class="nome">{{ centro.nome }}</span>
+                <div class="info-row">
+                    <i class="fa-solid fa-city"></i>
+                    <strong>{{ centro.cidade }}</strong>
+                </div>
+                <div class="info-row">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>{{ centro.endereco }}</span>
+                </div>
+            </div>
+
+            <div class="acoes">
+                {% if centro.site %}
+                <a href="{{ centro.site }}" target="_blank" class="btn-mini btn-site" title="Instagram/Site"><i class="fa-solid fa-globe"></i></a>
+                {% endif %}
+                <a href="https://www.google.com/maps/search/?api=1&query={{ centro.endereco }} {{ centro.cidade }} Piaui" target="_blank" class="btn-mini btn-rota">
+                    <i class="fa-solid fa-route"></i> Mapa
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if especializadas %}
+    <h3 class="grupo-titulo">Entidades Especializadas ({{ especializadas|length }})</h3>
+    <div class="lista-compacta">
+        {% for centro in especializadas %}
+        <div class="item-centro">
+            <div class="centro-img" style="display:flex; align-items:center; justify-content:center; color:#ccc; font-size:0.7rem;">FE</div>
+            <div class="centro-main">
+                <span class="nome">{{ centro.nome }}</span>
+                <div class="info-row">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>{{ centro.endereco }}</span>
+                </div>
+            </div>
+            <div class="acoes">
+                <a href="https://www.google.com/maps/search/?api=1&query={{ centro.endereco }} Teresina" target="_blank" class="btn-mini btn-rota">
+                    <i class="fa-solid fa-route"></i> Mapa
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

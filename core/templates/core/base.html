@@ -1,0 +1,520 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="google-site-verification" content="7IKXJMbHYrmqiVLckbf72F6iLC_3hy-qT1jKyXqVB0E" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>{% block title %}Federação Espírita do Piauí{% endblock %}</title>
+    
+    <meta name="description" content="{% block description %}Portal oficial da Federação Espírita Piauiense. Unindo corações, esclarecendo mentes e consolando almas.{% endblock %}">
+    <meta name="author" content="FEPI - Federação Espírita do Piauí">
+    <meta name="robots" content="index, follow">
+
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block og_title %}Federação Espírita do Piauí{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Acompanhe notícias, eventos e a doutrina espírita no Piauí.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}{% endblock %}">
+    <meta property="og:image:alt" content="Logomarca da FEPI">
+    <meta property="og:site_name" content="FEPI">
+    <meta property="og:locale" content="pt_BR">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Federação Espírita do Piauí - FEPI",
+      "url": "{{ request.scheme }}://{{ request.get_host }}",
+      "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}",
+      "sameAs": [
+        "https://www.instagram.com/fepiaui/",
+        "https://www.youtube.com/@fepiaui"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Rua Olavo Bilac, 1394, Centro",
+        "addressLocality": "Teresina",
+        "addressRegion": "PI",
+        "postalCode": "64001-280",
+        "addressCountry": "BR"
+      }
+    }
+    </script>
+
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap">
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" media="print" onload="this.media='all'">
+    
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap">
+    </noscript>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+
+    <style>
+        /* --- POP-UP MODAL MARKETING --- */
+        .modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .modal-box {
+            background: white;
+            width: 100%; max-width: 500px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .modal-overlay.active .modal-box { transform: translateY(0); }
+
+        .modal-close {
+            position: absolute; top: 10px; right: 15px;
+            font-size: 2rem; cursor: pointer; color: white;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5); z-index: 10;
+            line-height: 1;
+        }
+        .modal-close:hover { color: var(--destaque); }
+
+        .modal-img { 
+            width: 100%; height: auto; display: block; 
+            max-height: 400px; object-fit: cover; 
+        }
+
+        .modal-content { padding: 25px; }
+        
+        .modal-titulo { 
+            font-size: 1.4rem; color: var(--azul-escuro); 
+            font-weight: 800; margin-bottom: 10px; line-height: 1.2;
+        }
+        
+        .btn-popup {
+            background-color: var(--destaque);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 10px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: 0.2s;
+        }
+        .btn-popup:hover { 
+            background-color: var(--azul-escuro); 
+            color: white; transform: translateY(-2px); 
+        }
+
+        /* --- DESIGN SYSTEM --- */
+        :root {
+            --azul-escuro: #003366; 
+            --azul-medio: #004080; 
+            --azul-claro: #66CCCC; 
+            --destaque: #F39C12; /* Laranja Base */
+            --destaque-escuro: #a33900; /* Laranja Escuro (Acessibilidade 100%) */
+            --cinza-claro: #f5f5f5;
+            --texto: #222;
+            --radius: 8px; 
+            --shadow: 0 4px 10px rgba(0,0,0,0.05); 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--texto); background: #fff; line-height: 1.5;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.2s; }
+        img { max-width: 100%; display: block; }
+
+        /* --- CABEÇALHO --- */
+        header {
+            position: sticky; top: 0; z-index: 50;
+            background: var(--azul-escuro); 
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); color: #fff;
+        }
+
+        .topbar {
+            max-width: 1200px; margin: 0 auto; padding: 0.5rem 1.25rem;
+            display: flex; justify-content: flex-end; gap: 1.5rem;
+            font-size: 0.8rem; opacity: 0.95; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .topbar i { margin-right: 5px; color: var(--destaque); } 
+        .topbar a:hover { color: var(--destaque); } 
+
+        .navbar {
+            max-width: 1200px; margin: 0 auto; padding: 0.75rem 1.25rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .brand { display: flex; align-items: center; gap: 0.75rem; color: #fff; }
+        .brand-logo { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
+        .brand-logo img { width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1); }
+        
+        .brand-text small { font-size: 0.75rem; text-transform: uppercase; opacity: 0.85; letter-spacing: 0.05em; display: block;}
+        .brand-text strong { font-size: 1.05rem; letter-spacing: 0.03em; }
+
+        /* --- MENU PRINCIPAL --- */
+        nav ul { list-style: none; display: flex; gap: 1rem; font-size: 0.9rem; margin: 0; padding: 0; }
+        nav li { position: relative; padding: 10px 0; cursor: pointer; }
+        nav a { color: #e7edf4; transition: 0.2s; }
+        nav a:hover { color: var(--destaque); } 
+
+        /* Seta Dropdown */
+        .has-submenu > a::after {
+            content: "▾"; margin-left: 5px;
+            font-size: 0.7rem; vertical-align: top;
+        }
+
+        /* Submenu */
+        .submenu {
+            display: none;
+            position: absolute;
+            top: 100%; 
+            left: -10px;
+            min-width: 240px;
+            background: var(--azul-escuro);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius); 
+            padding: 10px 0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            z-index: 60;
+        }
+
+        .submenu li {
+            padding: 0; 
+            padding-bottom: 0;
+            white-space: nowrap;
+        }
+        .submenu a {
+            padding: 8px 15px; 
+            display: block;
+            color: #f1f5f9;
+            font-weight: 400;
+        }
+        .submenu a:hover { background: var(--azul-medio); color: white; }
+
+        .has-submenu:hover > .submenu,
+        .has-submenu.toggled > .submenu {
+            display: block;
+        }
+
+        /* Botão Doar */
+        .btn-doar { 
+            background: var(--azul-claro); color: #fff !important; 
+            padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;
+            transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .btn-doar:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Mobile Responsive */
+        .nav-toggle { display: none; }
+        @media (max-width: 900px) {
+            nav ul { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: var(--azul-escuro); padding: 20px; text-align: center; }
+            nav ul.active { display: flex; }
+            .nav-toggle { display: block; }
+            .topbar { display: none; }
+            .has-submenu.toggled > .submenu { display: flex !important; flex-direction: column; position: static; box-shadow: none; border: none; padding: 0; }
+        }
+
+        main { flex: 1; }
+
+        /* --- RODAPÉ --- */
+        footer {
+            background: #0b1721; color: #cbd5f5;
+            padding: 3rem 1.25rem 1.5rem; margin-top: auto;
+        }
+        .footer-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem; font-size: 0.9rem;
+        }
+        .footer-title { color: #fff; font-weight: 600; margin-bottom: 1rem; border-left: 3px solid var(--destaque); padding-left: 10px; } 
+        .footer-list { list-style: none; }
+        .footer-list li { margin-bottom: 0.5rem; }
+        .footer-list a { color: #9ca3af; }
+        .footer-list a:hover { color: var(--destaque); } 
+        
+        .footer-list li i { color: var(--destaque); } 
+
+        .footer-bottom {
+            max-width: 1200px; margin: 2rem auto 0; padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center; 
+            font-size: 0.75rem; 
+            opacity: 0.8;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Lora', serif;
+            color: var(--azul-escuro);
+            margin-bottom: 0.5em;
+        }
+
+        .pagina-conteudo {
+            max-width: 900px; margin: 40px auto; background-color: white;
+            padding: 50px; border-radius: var(--radius); box-shadow: var(--shadow); 
+        }
+        @media (max-width: 768px) { .pagina-conteudo { margin: 20px; padding: 25px; } }
+        
+        /* Botões de Ação Global */
+        .btn-inscrever,
+        .btn-download,
+        .btn-dourado-bg,
+        input[type="submit"], 
+        .tag-link.active,
+        .preco-badge {
+            background-color: var(--destaque) !important;
+            color: white !important; 
+            border: 1px solid var(--destaque);
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 10px 20px; 
+            border-radius: var(--radius);
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-inscrever:hover,
+        .btn-download:hover,
+        input[type="submit"]:hover {
+            background-color: var(--azul-escuro) !important; 
+            color: white !important; 
+            border-color: var(--azul-escuro) !important;
+        }
+
+        .btn-mini.btn-rota:hover {
+            background-color: var(--destaque);
+            color: white !important;
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="topbar">
+        <span><i class="fa-solid fa-location-dot"></i> {{ contato.endereco|default:"Rua Olavo Bilac, 1394 - Teresina/PI" }}</span>
+        <a href="https://www.instagram.com/fepiaui/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
+        <a href="https://www.youtube.com/@fepiaui" target="_blank"><i class="fa-brands fa-youtube"></i> YouTube</a>
+    </div>
+
+    <div class="navbar">
+        <a href="/" class="brand">
+            <div class="brand-logo">
+                <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI" width="50" height="50" loading="eager">
+            </div>
+            <div class="brand-text">
+                <small>Federação Espírita</small>
+                <strong>Piauiense • FEPI</strong>
+            </div>
+        </a>
+
+        <button class="nav-toggle" aria-expanded="false" onclick="toggleMenu()">☰ Menu</button>
+
+        <nav aria-label="Menu Principal">
+            <ul id="menu-principal">
+                <li class="has-submenu">
+                    <a href="{% url 'institucional' %}" onclick="handleMenuClick(event, this)">A FEPI</a>
+                    <ul class="submenu">
+                        <li><a href="{% url 'institucional' %}">História e Diretoria</a></li>
+                        <li><a href="{% url 'fale_conosco' %}">Fale Conosco</a></li>
+                    </ul>
+                </li>
+                
+                <li class="has-submenu">
+                    <a href="{% url 'calendario' %}" onclick="handleMenuClick(event, this)">Programação</a>
+                    <ul class="submenu">
+                        <li><a href="{% url 'calendario' %}">Agenda de Eventos</a></li>
+                        <li><a href="{% url 'doutrinarias' %}">Palestras Públicas</a></li>
+                        <li><a href="{% url 'lista_cursos' %}">Cursos e Inscrições</a></li>
+                        <li><a href="{% url 'atividades' %}">Horários Semanais</a></li>
+                    </ul>
+                </li>
+                            
+                <li><a href="{% url 'lista_centros' %}">Centros Federados</a></li>
+                <li><a href="{% url 'lista_noticias' %}">Notícias</a></li>
+                <li><a href="{% url 'livraria' %}">Livraria</a></li>
+                <li><a href="{% url 'links_uteis' %}">Links Úteis</a></li>
+                <li><a href="{% url 'downloads' %}">Downloads</a></li>
+                <li><a href="{% url 'doacoes_view' %}" class="btn-doar">Quero Doar</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+{% if popup_ativo %}
+<div id="siteModal" class="modal-overlay">
+    <div class="modal-box">
+        <span class="modal-close" onclick="fecharModal()">&times;</span>
+        
+        <a href="{{ popup_ativo.popup_link|default:'#' }}">
+            {% if popup_ativo.popup_imagem %}
+                <img src="{{ popup_ativo.popup_imagem.url }}" alt="{{ popup_ativo.popup_titulo }}" class="modal-img">
+            {% endif %}
+        </a>
+
+        <div class="modal-content">
+            {% if popup_ativo.popup_titulo %}
+                <h3 class="modal-titulo">{{ popup_ativo.popup_titulo }}</h3>
+            {% endif %}
+            
+            {% if popup_ativo.popup_link %}
+                <a href="{{ popup_ativo.popup_link }}" class="btn-popup" onclick="fecharModal()">
+                    {{ popup_ativo.popup_botao_texto }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    {% with contato=contato %}
+    <div class="footer-inner">
+        <div>
+            <div class="brand" style="margin-bottom: 1rem;">
+                <div class="brand-logo" style="width:30px; height:30px;">
+                    <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI" width="30" height="30" loading="lazy">
+                </div>
+                <div class="brand-text"><strong>FEPI</strong></div>
+            </div>
+            <p>Unindo corações, esclarecendo mentes e consolando almas através da Doutrina Espírita.</p>
+        </div>
+        <div>
+            <div class="footer-title">Contato</div>
+            <ul class="footer-list">
+                <li><i class="fa-solid fa-location-dot"></i> {{ contato.endereco|default:"Endereço" }}</li>
+                <li><i class="fa-brands fa-whatsapp"></i> {{ contato.telefone|default:"(86) 3221-3021" }}</li>
+            </ul>
+        </div>
+        <div>
+            <div class="footer-title">Acesso Rápido</div>
+            <ul class="footer-list">
+                <li><a href="{% url 'lista_centros' %}">Encontre um Centro</a></li>
+                <li><a href="{% url 'fale_conosco' %}">Como Chegar</a></li>
+                <li><a href="{% url 'atividades' %}">Horários Semanais</a></li>
+                <li><a href="{% url 'doacoes_view' %}">Quero Doar</a></li>
+                <li><a href="{% url 'privacidade' %}">Política de Privacidade</a></li>
+                <li><a href="{% url 'area_federado' %}">Área do Federado</a></li>
+                <li><a href="/painel" target="_blank">Área Administrativa</a></li> 
+            </ul>
+        </div>
+    </div>
+    {% endwith %}
+    <div class="footer-bottom">
+        © 2025 Federação Espírita Piauiense. Todos os direitos reservados.
+    </div>
+</footer>
+
+<script>
+    function toggleMenu() {
+        document.getElementById('menu-principal').classList.toggle('active');
+        const btn = document.querySelector('.nav-toggle');
+        const isActive = document.getElementById('menu-principal').classList.contains('active');
+        btn.setAttribute('aria-expanded', isActive);
+    }
+    
+    function handleMenuClick(event, aElement) {
+        const liElement = aElement.closest('li');
+        if (liElement.classList.contains('has-submenu')) {
+            if (window.innerWidth > 900) return;
+            event.preventDefault(); 
+            document.querySelectorAll('.has-submenu.toggled').forEach(openMenu => {
+                if (openMenu !== liElement) openMenu.classList.remove('toggled');
+            });
+            liElement.classList.toggle('toggled');
+        }
+    }
+
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.has-submenu')) {
+            document.querySelectorAll('.has-submenu.toggled').forEach(menu => {
+                menu.classList.remove('toggled');
+            });
+        }
+    });
+
+    document.querySelectorAll('.has-submenu > a').forEach(a => {
+        a.setAttribute('onclick', 'handleMenuClick(event, this)');
+    });
+
+// --- LÓGICA DO POP-UP ---
+    {% if popup_ativo %}
+    document.addEventListener('DOMContentLoaded', function() {
+        const popupId = "popup_fepi_{{ popup_ativo.id }}"; 
+        const jaViu = sessionStorage.getItem(popupId);
+
+        if (!jaViu) {
+            setTimeout(() => {
+                document.getElementById('siteModal').classList.add('active');
+            }, 1000); 
+        }
+    });
+
+    function fecharModal() {
+        document.getElementById('siteModal').classList.remove('active');
+        const popupId = "popup_fepi_{{ popup_ativo.id }}";
+        sessionStorage.setItem(popupId, 'true');
+    }
+
+    document.getElementById('siteModal').addEventListener('click', function(e) {
+        if (e.target === this) fecharModal();
+    });
+    {% endif %}
+
+</script>
+
+<div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+    </div>
+</div>
+<script defer src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.VLibras) new window.VLibras.Widget('https://vlibras.gov.br/app');
+    });
+</script>
+
+</body>
+</html>

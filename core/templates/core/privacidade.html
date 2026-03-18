@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Política de Privacidade | FEPI{% endblock %}
+
+{% block content %}
+<div class="pagina-conteudo">
+    <h1>Política de Privacidade e Termos de Uso</h1>
+    <p><em>Última atualização: {% now "d/m/Y" %}</em></p>
+
+    <br>
+
+    <h3>1. Introdução</h3>
+    <p>A <strong>Federação Espírita Piauiense (FEPI)</strong> compromete-se com a transparência e a proteção dos dados pessoais dos seus usuários. Esta política descreve como coletamos e utilizamos as informações no nosso portal.</p>
+
+    <h3>2. Coleta de Dados</h3>
+    <p>Coletamos informações mínimas necessárias para a interação com o site:</p>
+    <ul>
+        <li><strong>Formulário de Contato:</strong> Nome, e-mail e telefone fornecidos voluntariamente para resposta a dúvidas.</li>
+        <li><strong>Logs de Acesso:</strong> O servidor pode registrar o IP de acesso para fins de segurança e estatística, sem identificar o usuário diretamente.</li>
+    </ul>
+
+    <h3>3. Uso das Informações</h3>
+    <p>Os dados coletados são utilizados exclusivamente para:</p>
+    <ul>
+        <li>Responder às mensagens enviadas pelo "Fale Conosco".</li>
+        <li>Melhorar a experiência de navegação no portal.</li>
+        <li>Fins administrativos internos da Federação.</li>
+    </ul>
+    <p><strong>Não compartilhamos seus dados com terceiros</strong> para fins comerciais ou de marketing.</p>
+
+    <h3>4. Cookies</h3>
+    <p>Este site utiliza cookies técnicos essenciais para o funcionamento do sistema (como manter a sessão ativa) e cookies de análise (Google Analytics) para entender como o site é utilizado, sempre de forma anônima.</p>
+
+    <h3>5. Direitos do Titular (LGPD)</h3>
+    <p>Em conformidade com a Lei Geral de Proteção de Dados (LGPD), você tem o direito de solicitar a visualização, correção ou exclusão dos seus dados pessoais armazenados por nós. Para isso, entre em contato através dos canais oficiais.</p>
+
+    <h3>6. Contato</h3>
+    <p>Para dúvidas sobre esta política, entre em contato:</p>
+    <ul>
+        <li><strong>E-mail:</strong> fepiaui@fepiaui.org.br</li>
+        <li><strong>Endereço:</strong> {{ contato.endereco|default:"Rua Olavo Bilac, 1394 - Teresina/PI" }}</li>
+    </ul>
+</div>
+{% endblock %}

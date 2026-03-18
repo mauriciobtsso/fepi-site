@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Termo de Adesão - {{ voluntario.nome }}</title>
+    <style>
+        /* 1. CONFIGURAÇÕES GERAIS E OTIMIZAÇÃO DE ESPAÇO */
+        body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.25; /* Reduzido para economizar espaço vertical */
+            color: #000; 
+            margin: 0; 
+            padding: 0; 
+            font-size: 10.5pt; /* Tamanho ideal para caber tudo em 1 página */
+        }
+
+        /* 2. MÁGICA DA IMPRESSORA: Margens do Papel (1cm topo/fundo, 2cm laterais) */
+        @page { 
+            size: A4;
+            margin: 10mm 20mm; 
+        }
+
+        /* 3. ESTRUTURA PARA REPETIR CABEÇALHO E RODAPÉ */
+        table.report-container { width: 100%; border-collapse: collapse; }
+        thead.report-header { display: table-header-group; } /* Repete no topo de cada página */
+        tfoot.report-footer { display: table-footer-group; } /* Repete no fundo de cada página */
+        tbody.report-content { display: table-row-group; }
+
+        /* 4. CABEÇALHO (Logo à esquerda, Texto centralizado) */
+        .header { 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 60px; /* Bem mais enxuto */
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .header img { 
+            position: absolute; 
+            left: 0; 
+            top: 50%;
+            transform: translateY(-50%);
+            height: 55px; 
+        }
+        .header .title {
+            font-size: 12pt;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* 5. RODAPÉ */
+        .footer { 
+            font-size: 7.5pt; 
+            text-align: center; 
+            margin-top: 15px; 
+            border-top: 1px solid #000; 
+            padding-top: 5px; 
+            line-height: 1.2;
+        }
+
+        /* 6. FORÇAR COMPACTAÇÃO NO CONTEÚDO DO CKEDITOR */
+        .content p { margin: 6px 0; text-align: justify; }
+        .content table { margin-bottom: 10px !important; }
+        .content td { padding: 3px !important; }
+        .page-break { page-break-before: always; }
+
+        /* 7. CONTROLES DA TELA (Ocultos na Impressão) */
+        .no-print { text-align: center; padding: 15px; background: #f8f9fa; margin-bottom: 20px; }
+        .btn-print { background: #28a745; color: #fff; padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .page-preview { max-width: 210mm; margin: 0 auto; padding: 20px; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+
+        @media print { 
+            .no-print { display: none; } 
+            body { background: none; } 
+            .page-preview { box-shadow: none; padding: 0; margin: 0; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print">
+        <button onclick="window.print()" class="btn-print"><i class="fas fa-print"></i> IMPRIMIR TERMO</button>
+        <br><br>
+        <a href="{% url 'listar_voluntarios' %}" style="color: #666; text-decoration: none;">&larr; Voltar para a lista</a>
+    </div>
+
+    <div class="page-preview">
+        <table class="report-container">
+            
+            <thead class="report-header">
+                <tr>
+                    <td>
+                        <div class="header">
+                            <img src="{% static 'img/logo.png' %}" alt="Logo FEPI">
+                            <div class="title">FEDERAÇÃO ESPÍRITA PIAUIENSE - FEPI</div>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            
+            <tbody class="report-content">
+                <tr>
+                    <td>
+                        <div class="content">
+                            {{ conteudo_renderizado|safe }}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+
+            <tfoot class="report-footer">
+                <tr>
+                    <td>
+                        <div class="footer">
+                            Fundada em 27 de novembro de 1950 - Utilidade Pública Municipal Lei nº 389 de 14/10/1954 e Utilidade Pública Estadual Lei nº 1185 de 01/08/1955<br>
+                            Rua Olavo Bilac, 1394-Centro-Cep. 64001.280-Teresina-PI CNPJ-09.590.068/0001-42 Fone. 3221.2500 Fax: 3221.3021<br>
+                            Site: WWW.fepiaui.org.br Email: Fepi@Fepiaui.org.br
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+
+        </table>
+    </div>
+
+</body>
+</html>

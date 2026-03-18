@@ -1,0 +1,213 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}FEPI | Notícias{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ======================================================
+   NEWS (usa o mesmo espaçamento do site via .container)
+====================================================== */
+.news-wrapper{
+  width:100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 6px 60px; /* topo fica por conta do .container */
+  box-sizing: border-box;
+}
+
+/* ======================================================
+   HEADER
+====================================================== */
+.news-header{
+  text-align: center;
+  margin-bottom: 26px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.page-title{
+  color: var(--azul-escuro);
+  font-size: 2.0rem;
+  font-weight: 900;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.page-subtitle{
+  color:#6b7280;
+  font-size: 1.05rem;
+  margin: 10px 0 0;
+}
+
+/* ======================================================
+   LISTA (estilo portal, agradável e leve)
+====================================================== */
+.news-list{
+  display:flex;
+  flex-direction: column;
+}
+
+.news-row{
+  display:flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  text-decoration: none;
+  color: inherit;
+}
+
+.news-row:hover .news-row__title{
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.news-row__thumb{
+  flex: 0 0 220px;
+  width: 220px;
+  height: 130px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eef2f7;
+}
+
+.news-row__thumb img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.news-placeholder{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#b9c2d1;
+  font-size: 2rem;
+}
+
+.news-row__content{
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.news-row__meta{
+  font-size: .78rem;
+  color:#8b95a7;
+  font-weight: 900;
+  letter-spacing: .35px;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+  display:flex;
+  align-items:center;
+  gap: 8px;
+}
+
+.news-row__meta .dot{
+  opacity:.6;
+}
+
+.news-row__title{
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--azul-escuro);
+  margin: 0 0 8px;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.news-row__summary{
+  margin: 0;
+  color:#4b5563;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ======================================================
+   MOBILE
+====================================================== */
+@media (max-width: 720px){
+  .page-title{ font-size: 1.7rem; }
+
+  .news-row{
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 0;
+  }
+
+  .news-row__thumb{
+    width: 100%;
+    height: 200px;
+    flex: 0 0 auto;
+  }
+
+  .news-row__title{
+    font-size: 1.12rem;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="news-wrapper">
+
+    <div class="news-header">
+      <h1 class="page-title">Notícias e Atualizações</h1>
+      <p class="page-subtitle">Acompanhe as novidades e comunicados da FEPI.</p>
+    </div>
+
+    {% if noticias %}
+      <div class="news-list">
+        {% for noticia in noticias %}
+          <a href="{% url 'detalhe_noticia' noticia.slug %}" class="news-row">
+
+            <div class="news-row__thumb">
+              {% if noticia.imagem %}
+                <img src="{{ noticia.imagem.url }}" alt="{{ noticia.titulo }}">
+              {% else %}
+                <div class="news-placeholder">📰</div>
+              {% endif %}
+            </div>
+
+            <div class="news-row__content">
+              <p class="news-row__meta">
+                {{ noticia.data_publicacao|date:"d/m/Y" }}
+                <span class="dot">•</span>
+                {{ noticia.data_publicacao|date:"H:i" }}
+              </p>
+
+              <h3 class="news-row__title">{{ noticia.titulo }}</h3>
+
+              <p class="news-row__summary">
+                {% if noticia.resumo %}
+                  {{ noticia.resumo }}
+                {% else %}
+                  {{ noticia.conteudo|striptags|truncatewords:26 }}
+                {% endif %}
+              </p>
+            </div>
+
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align:center; padding:60px; color:#888; border:1px dashed #ddd; border-radius:14px;">
+        <p style="margin:0;">Nenhuma notícia publicada.</p>
+      </div>
+    {% endif %}
+
+  </div>
+
+</div>
+{% endblock %}
