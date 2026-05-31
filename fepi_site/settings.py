@@ -19,6 +19,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-#up2mw6n4z7=cl@*$c$y@!!la*(*-!idc+0y_dabnogc$2zjj(')
 
 # --------------------------------------------------------
+# 🚀 SEGURANÇA GLOBAL - CSRF E HOSTS
+# --------------------------------------------------------
+# Colocamos fora do if/else para garantir que o Django SEMPRE 
+# reconheça os domínios, mesmo se a variável de ambiente falhar.
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com', 
+    'https://fepiaui.org.br', 
+    'https://www.fepiaui.org.br',
+    'https://fepiaui.cewantuildefreitas.com.br',
+    'https://fepi.cewantuildefreitas.com.br'
+]
+
+# --------------------------------------------------------
 # 🚀 Configuração Dinâmica de Ambientes (Render)
 # --------------------------------------------------------
 
@@ -29,12 +43,11 @@ if IS_RENDER_PROD:
     # MODO PRODUÇÃO (RENDER)
     DEBUG = False
     
-    # 🌟 ATUALIZADO: Lista de convidados VIP do teu porteiro
     ALLOWED_HOSTS = [
         'fepiaui.org.br', 
         'www.fepiaui.org.br',
-        'fepiaui.cewantuildefreitas.com.br', # O teu subdomínio de testes
-        'fepi.cewantuildefreitas.com.br'     # Opcional
+        'fepiaui.cewantuildefreitas.com.br', 
+        'fepi.cewantuildefreitas.com.br'     
     ]
 
     # O Render fornece o domínio da aplicação dinamicamente
@@ -58,20 +71,12 @@ if IS_RENDER_PROD:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    
-    # 🌟 ATUALIZADO: Adiciona os domínios confiáveis do Render, domínio principal e testes
-    CSRF_TRUSTED_ORIGINS = [
-        'https://*.onrender.com', 
-        'https://fepiaui.org.br', 
-        'https://www.fepiaui.org.br',
-        'https://fepiaui.cewantuildefreitas.com.br', # Autoriza formulários/login no subdomínio
-        'https://fepi.cewantuildefreitas.com.br'     # Opcional
-    ]
 
 else:
     # MODO DESENVOLVIMENTO (Local)
     DEBUG = True 
-    ALLOWED_HOSTS = ['*'] 
+    # Garantimos os domínios aqui também caso o Render rode como local
+    ALLOWED_HOSTS = ['*', 'fepi.cewantuildefreitas.com.br', 'fepiaui.cewantuildefreitas.com.br'] 
     
     # Se passarmos o link do banco no terminal, liga-se à nuvem (Render)
     # Se não passarmos nada, usa o banco SQLite local vazio para testes isolados
