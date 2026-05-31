@@ -18,22 +18,34 @@
             color: white;
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
         }
-        .sidebar a {
+        
+        /* ATUALIZADO: O botão de logout agora herda os mesmos estilos dos links */
+        .sidebar a, .sidebar button.btn-logout {
             color: rgba(255, 255, 255, 0.8); /* Branco levemente transparente */
             text-decoration: none;
             padding: 12px 15px;
             display: block;
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            border: none;
             border-radius: 8px;
             margin-bottom: 8px;
             font-weight: 500;
             transition: all 0.3s ease;
         }
-        .sidebar a:hover, .sidebar a.active {
+        
+        .sidebar a:hover, .sidebar a.active, .sidebar button.btn-logout:hover {
             background: rgba(255, 255, 255, 0.2); /* Efeito vidro */
-            color: #fff;
+            color: #fff !important;
             transform: translateX(5px);
             font-weight: bold;
         }
+        
+        .sidebar button.btn-logout.text-danger {
+            color: #ff6b6b !important; /* Vermelho mais suave para contrastar no azul escuro */
+        }
+        
         .sidebar .brand {
             font-size: 1.5rem;
             font-weight: bold;
@@ -142,9 +154,14 @@
                 <a href="{% url 'home' %}" target="_blank">
                     <i class="fas fa-external-link-alt me-2" style="width: 20px;"></i> Ver Site
                 </a>
-                <a href="{% url 'logout' %}" class="text-danger">
-                    <i class="fas fa-sign-out-alt me-2" style="width: 20px;"></i> Sair
-                </a>
+                
+                <form action="{% url 'logout' %}" method="post" style="margin: 0; padding: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout text-danger">
+                        <i class="fas fa-sign-out-alt me-2" style="width: 20px;"></i> Sair
+                    </button>
+                </form>
+
             </div>
 
             <div class="col-md-9 col-lg-10 p-4 bg-light">
