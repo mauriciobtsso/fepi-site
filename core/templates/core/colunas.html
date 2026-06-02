@@ -5,11 +5,27 @@
 <section style="background-color: #f4f6f9; padding: 60px 0; min-height: 70vh;">
     <div class="container">
         
-        <div style="text-align: center; margin-bottom: 50px;">
+        <div style="text-align: center; margin-bottom: 40px;">
             <p style="color: #003366; text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 8px; font-size: 0.9rem;">Editorial</p>
             <h1 style="color: #1a1a1a; font-weight: 800; font-size: 2.8rem; margin-bottom: 15px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">Vozes da FEPI</h1>
             <p style="color: #555; font-size: 1.15rem; max-width: 600px; margin: 0 auto;">Reflexões, artigos e o pensamento espírita piauiense em destaque.</p>
             <hr style="width: 60px; border: 2px solid #0056b3; margin: 25px auto; border-radius: 2px;">
+        </div>
+
+        <div style="max-width: 600px; margin: 0 auto 50px auto;">
+            <form method="GET" action="{% url 'colunas' %}" style="display: flex; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; border: 1px solid #eaeaea;">
+                <input type="text" name="q" value="{{ query }}" placeholder="Buscar por título, autor ou assunto..." style="flex-grow: 1; border: none; padding: 15px 20px; font-size: 1rem; outline: none;">
+                <button type="submit" style="background-color: #003366; border: none; color: white; padding: 0 30px; cursor: pointer; font-weight: bold; transition: background-color 0.2s;">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+            
+            {% if query %}
+                <div style="text-align: center; margin-top: 15px;">
+                    <span style="color: #666;">Exibindo resultados para: <strong style="color: #111;">"{{ query }}"</strong></span>
+                    <a href="{% url 'colunas' %}" style="color: #d9534f; text-decoration: none; margin-left: 10px; font-weight: bold; font-size: 0.9rem;">Limpar busca &times;</a>
+                </div>
+            {% endif %}
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px;">
@@ -28,7 +44,6 @@
                 </a>
 
                 <div style="padding: 25px; display: flex; flex-direction: column; flex-grow: 1;">
-                    
                     <div style="margin-bottom: 12px;">
                         <span style="color: #777; font-size: 0.85rem; font-weight: 600;">
                             <i class="far fa-calendar-alt me-1"></i> {{ coluna.data_publicacao|date:"d" }} de {{ coluna.data_publicacao|date:"b, Y" }}
@@ -56,17 +71,44 @@
                         </a>
                     </div>
                 </div>
-
             </div>
             {% empty %}
             <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
-                <i class="fas fa-book-open fa-3x" style="color: #d0d0d0; margin-bottom: 20px;"></i>
-                <h4 style="color: #555;">Nenhum artigo publicado no momento.</h4>
-                <p style="color: #888;">Estamos preparando novos conteúdos. Volte em breve!</p>
+                {% if query %}
+                    <i class="fas fa-search fa-3x" style="color: #d0d0d0; margin-bottom: 20px;"></i>
+                    <h4 style="color: #555;">Nenhum artigo encontrado para "{{ query }}".</h4>
+                    <p style="color: #888;">Tente usar outras palavras-chave.</p>
+                {% else %}
+                    <i class="fas fa-book-open fa-3x" style="color: #d0d0d0; margin-bottom: 20px;"></i>
+                    <h4 style="color: #555;">Nenhum artigo publicado no momento.</h4>
+                    <p style="color: #888;">Estamos preparando novos conteúdos. Volte em breve!</p>
+                {% endif %}
             </div>
             {% endfor %}
             
         </div>
+
+        {% if colunas.has_other_pages %}
+        <div style="display: flex; justify-content: center; margin-top: 60px; gap: 8px;">
+            
+            {% if colunas.has_previous %}
+                <a href="?page={{ colunas.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" style="padding: 10px 18px; background-color: #ffffff; color: #003366; text-decoration: none; border-radius: 6px; font-weight: bold; border: 1px solid #eaeaea; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">&laquo; Anterior</a>
+            {% endif %}
+
+            {% for num in colunas.paginator.page_range %}
+                {% if colunas.number == num %}
+                    <span style="padding: 10px 18px; background-color: #003366; color: #ffffff; border-radius: 6px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">{{ num }}</span>
+                {% elif num > colunas.number|add:'-3' and num < colunas.number|add:'3' %}
+                    <a href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}" style="padding: 10px 18px; background-color: #ffffff; color: #555; text-decoration: none; border-radius: 6px; font-weight: bold; border: 1px solid #eaeaea; transition: background-color 0.2s;">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if colunas.has_next %}
+                <a href="?page={{ colunas.next_page_number }}{% if query %}&q={{ query }}{% endif %}" style="padding: 10px 18px; background-color: #ffffff; color: #003366; text-decoration: none; border-radius: 6px; font-weight: bold; border: 1px solid #eaeaea; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">Próxima &raquo;</a>
+            {% endif %}
+            
+        </div>
+        {% endif %}
 
     </div>
 </section>

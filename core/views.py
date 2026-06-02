@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from itertools import chain
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.conf import settings
@@ -219,12 +220,33 @@ def detalhe_coluna(request, slug):
     })
 
 def listar_colunas_publicas(request):
-    """Página que lista todos os artigos publicados (Vozes da FEPI)"""
-    colunas = Coluna.objects.filter(status='PUBLICADO').order_by('-data_publicacao')
-    contato = InformacaoContato.objects.first() # Puxa o rodapé
+    """Página que lista todos os artigos publicados (Vozes da FEPI) com Busca e Paginação"""
+    
+    # 1. Captura o que o usuário digitou na busca (se houver)
+    query = request.GET.get('q', '')
+    
+    # 2. Puxa todos os artigos publicados
+    colunas_list = Coluna.objects.filter(status='PUBLICADO').order_by('-data_publicacao')
+    
+    # 3. Filtra se houver uma pesquisa
+    if query:
+        colunas_list = colunas_list.filter(
+            Q(titulo__icontains=query) |
+            Q(resumo__icontains=query) |
+            Q(nome_autor__icontains=query) |
+            Q(autor_usuario__perfil__nome_razao_social__icontains=query)
+        ).distinct()
+
+    # 4. Configura a Paginação (ex: 6 artigos por página)
+    paginator = Paginator(colunas_list, 6) # Muda aqui se quiser 9 ou 12 por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    contato = InformacaoContato.objects.first()
     
     return render(request, 'core/colunas.html', {
-        'colunas': colunas,
+        'colunas': page_obj,  # Passa o objeto paginado ao invés da lista inteira
+        'query': query,       # Passa o termo buscado para manter na barra
         'contato': contato
     })
 
