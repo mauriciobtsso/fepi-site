@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from itertools import chain
 from django.db.models import Q
@@ -9,6 +9,7 @@ from django.views.decorators.cache import cache_page, never_cache
 from django.views.decorators.vary import vary_on_headers
 import requests
 import xml.etree.ElementTree as ET
+from core.models import Coluna
 
 from .models import (
     ConfiguracaoHome, PostInstagram, InformacaoContato,
@@ -100,6 +101,8 @@ def home(request):
     youtube_cfg = ConfiguracaoYouTube.objects.first()
     latest_video_id = None
 
+    colunas_home = Coluna.objects.filter(status='PUBLICADO').order_by('-data_publicacao')[:3]
+
     if youtube_cfg:
         print(f"--- CONFIG YOUTUBE CARREGADA. MODO: {youtube_cfg.youtube_mode} ---") # DEBUG
         mode = (youtube_cfg.youtube_mode or 'auto').strip()
@@ -140,6 +143,7 @@ def home(request):
         
         'youtube_cfg': youtube_cfg,
         'youtube_video_id': latest_video_id, # Variável correta para o template
+        'colunas': colunas_home,
     }
     return render(request, 'core/index.html', contexto)
 
@@ -205,3 +209,33 @@ def fale_conosco(request):
 def privacidade(request):
     contato = InformacaoContato.objects.first()
     return render(request, 'core/privacidade.html', {'contato': contato})
+
+def detalhe_coluna(request, slug):
+    coluna = get_object_or_404(Coluna, slug=slug)
+    contato = InformacaoContato.objects.first()
+    return render(request, 'core/detalhe_coluna.html', {
+        'coluna': coluna,
+        'contato': contato
+    })
+
+def listar_colunas_publicas(request):
+    """Página que lista todos os artigos publicados (Vozes da FEPI)"""
+    colunas = Coluna.objects.filter(status='PUBLICADO').order_by('-data_publicacao')
+    contato = InformacaoContato.objects.first() # Puxa o rodapé
+    
+    return render(request, 'core/colunas.html', {
+        'colunas': colunas,
+        'contato': contato
+    })
+
+def detalhe_coluna(request, slug):
+    """Página que mostra o texto completo de um artigo específico"""
+    # Só permite acessar se estiver PUBLICADO
+    coluna = get_object_or_404(Coluna, slug=slug, status='PUBLICADO')
+    contato = InformacaoContato.objects.first()
+    
+    return render(request, 'core/detalhe_coluna.html', {
+        'coluna': coluna,
+        'contato': contato
+    })
+

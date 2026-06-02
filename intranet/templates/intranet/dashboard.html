@@ -1,73 +1,43 @@
-{% extends 'core/base.html' %}
-{% load static %}
+{% extends 'intranet/base_intranet.html' %}
 
-{% block title %}Intranet FEPI{% endblock %}
+{% block title %}Documentos - Portal FEPI{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* --- CSS DO PAINEL DO FEDERADO --- */
-    .user-bar {
-        background: linear-gradient(135deg, var(--azul-escuro) 0%, var(--azul-medio) 100%);
-        color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px;
-        display: flex; justify-content: space-between; align-items: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .btn-logout { 
-        background: rgba(255,255,255,0.2); color: white; padding: 8px 20px; 
-        border-radius: 30px; text-decoration: none; font-size: 0.9rem; border: none; 
-        cursor: pointer; transition: 0.2s; font-weight: 600;
-    }
-    .btn-logout:hover { background: rgba(255,255,255,0.3); }
+    /* Apenas CSS da listagem e filtros */
+    .filter-section { background: #ffffff; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #f0f0f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+    .search-wrapper { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .search-input { flex: 1; min-width: 250px; padding: 12px 20px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 1rem; }
+    .search-input:focus { border-color: #1e3c72; outline: none; box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1); }
+    .btn-search { background: #1e3c72; color: #ffffff; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+    .btn-search:hover { background: #2a5298; }
+    .btn-clear { background: #f1f2f6; color: #e74c3c; border: none; padding: 12px 20px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; transition: 0.3s; }
+    .btn-clear:hover { background: #dfe4ea; }
 
-    .filter-section { 
-        background: #f8f9fa; padding: 20px; border-radius: 8px; 
-        margin-bottom: 30px; border: 1px solid #e9ecef; 
-    }
-    .search-form { display: flex; gap: 10px; margin-bottom: 15px; }
-    .search-input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; }
-    .btn-search { background: var(--destaque); color: white; border: none; padding: 0 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    
-    .category-pills { display: flex; gap: 8px; flex-wrap: wrap; }
-    .pill { 
-        text-decoration: none; padding: 6px 16px; border-radius: 20px; 
-        font-size: 0.85rem; background: #fff; color: #555; 
-        border: 1px solid #ddd; transition: 0.2s;
-    }
-    .pill:hover { border-color: var(--azul-medio); color: var(--azul-medio); }
-    .pill.active { background: var(--azul-escuro); color: white; border-color: var(--azul-escuro); }
+    .category-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+    .pill { text-decoration: none; padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; background: #f8f9fa; color: #555; border: 1px solid #ddd; font-weight: 600; transition: 0.2s; }
+    .pill:hover { border-color: #1e3c72; color: #1e3c72; }
+    .pill.active { background: #1e3c72; color: white; border-color: #1e3c72; }
 
     .doc-list { list-style: none; padding: 0; margin: 0; }
-    
-    .doc-item {
-        display: flex; align-items: center; justify-content: space-between;
-        background: white; border: 1px solid #eee; padding: 15px 20px;
-        margin-bottom: 10px; border-radius: 6px; transition: 0.2s;
-        border-left: 4px solid var(--azul-medio);
-    }
-    .doc-item:hover { transform: translateX(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-color: #ddd; }
+    .doc-item { display: flex; align-items: center; justify-content: space-between; background: white; border: 1px solid #eee; padding: 18px 25px; margin-bottom: 12px; border-radius: 10px; transition: 0.2s; border-left: 5px solid #1e3c72; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .doc-item:hover { transform: translateX(5px); box-shadow: 0 6px 15px rgba(0,0,0,0.06); border-color: #d1d8e0; }
 
     .doc-main { flex: 1; padding-right: 20px; }
-    .doc-title { font-size: 1.05rem; font-weight: 700; color: #333; display: block; margin-bottom: 4px; }
-    .doc-meta { font-size: 0.8rem; color: #888; }
-    .doc-desc { font-size: 0.9rem; color: #666; margin-top: 5px; display: block; }
-
-    .doc-actions { display: flex; gap: 10px; flex-shrink: 0; }
-    .btn-action-mini {
-        padding: 6px 12px; border-radius: 4px; text-decoration: none;
-        font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px;
-    }
-    .btn-dl { background: #eef2f7; color: var(--azul-escuro); border: 1px solid #dae1e7; }
-    .btn-lnk { background: #fff8e1; color: #d35400; border: 1px solid #ffeebb; }
+    .doc-title { font-size: 1.15rem; font-weight: bold; color: #2c3e50; margin-bottom: 4px; display: block; }
+    .doc-meta { font-size: 0.85rem; color: #7f8c8d; }
     
-    .section-header {
-        display: flex; align-items: center; gap: 10px; margin-top: 30px; margin-bottom: 15px;
-        padding-bottom: 10px; border-bottom: 2px solid #eee;
-    }
-    .section-title { font-size: 1.4rem; color: var(--azul-escuro); font-weight: 700; margin: 0; }
+    .doc-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-action-mini { padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+    .btn-dl { background: #eef2f7; color: #1e3c72; border: 1px solid #dae1e7; }
+    .btn-dl:hover { background: #dce4f0; }
 
-    .empty-state { text-align: center; padding: 50px; background: #f9f9f9; border-radius: 8px; margin-top: 20px; }
+    .section-header { display: flex; align-items: center; gap: 12px; margin-top: 40px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #ecf0f1; }
+    .section-title { font-size: 1.5rem; color: #1e3c72; font-weight: 700; margin: 0; }
+    
+    .empty-state { text-align: center; padding: 60px 20px; background: #ffffff; border-radius: 12px; margin-top: 20px; border: 1px dashed #dcdde1; }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
         .doc-item { flex-direction: column; align-items: flex-start; gap: 15px; }
         .doc-actions { width: 100%; justify-content: flex-start; }
     }
@@ -75,85 +45,74 @@
 {% endblock %}
 
 {% block content %}
-<div class="pagina-conteudo" style="max-width: 1100px;">
-    
-    <div class="user-bar">
-        <div>
-            <div style="font-size: 0.8rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">Área Restrita</div>
-            <div style="font-size: 1.4rem; font-weight: 700;">Olá, {{ user.first_name|default:user.username }}</div>
-        </div>
-        <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn-logout"><i class="fa-solid fa-power-off"></i> Sair</button>
-        </form>
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold" style="color: #1e3c72;"><i class="fas fa-archive me-2"></i> Acervo de Documentos</h2>
+        <p class="text-muted">Acesse atas, estatutos, balancetes e documentos oficiais da Federação.</p>
     </div>
+</div>
 
-    <div class="filter-section">
-        <form method="get" class="search-form">
-            <input type="text" name="q" value="{{ busca_atual }}" placeholder="Pesquisar documento (ex: Ata, Balancete)..." class="search-input">
+<div class="filter-section">
+    <form method="get">
+        <div class="search-wrapper">
+            <input type="text" name="q" value="{{ busca_atual }}" placeholder="Pesquisar documento..." class="search-input">
             {% if categoria_atual %}
                 <input type="hidden" name="categoria" value="{{ categoria_atual }}">
             {% endif %}
-            <button type="submit" class="btn-search">Pesquisar</button>
+            <button type="submit" class="btn-search"><i class="fas fa-search me-2"></i> Pesquisar</button>
+            
             {% if busca_atual or categoria_atual %}
-                <a href="{% url 'area_federado' %}" style="padding: 12px; color: #666; display: flex; align-items: center;" title="Limpar Filtros">
+                <a href="{% url 'area_federado' %}" class="btn-clear" title="Limpar Filtros">
                     <i class="fa-solid fa-times"></i>
                 </a>
             {% endif %}
-        </form>
-
-        <div class="category-pills">
-            <a href="?{% if busca_atual %}q={{ busca_atual }}{% endif %}" class="pill {% if not categoria_atual %}active{% endif %}">
-                Todos
-            </a>
-            {% for cat in categorias %}
-                <a href="?categoria={{ cat.id }}{% if busca_atual %}&q={{ busca_atual }}{% endif %}" 
-                   class="pill {% if categoria_atual == cat.id %}active{% endif %}">
-                   {{ cat.nome }}
-                </a>
-            {% endfor %}
         </div>
+    </form>
+
+    <div class="category-pills">
+        <a href="?{% if busca_atual %}q={{ busca_atual }}{% endif %}" class="pill {% if not categoria_atual %}active{% endif %}">Todos</a>
+        {% for cat in categorias %}
+            <a href="?categoria={{ cat.id }}{% if busca_atual %}&q={{ busca_atual }}{% endif %}" 
+               class="pill {% if categoria_atual == cat.id %}active{% endif %}">{{ cat.nome }}</a>
+        {% endfor %}
     </div>
+</div>
 
-    {% if modo_exibicao == 'agrupado' %}
-        
-        {% if grupos %}
-            {% for grupo in grupos %}
-                <div class="section-header">
-                    <div class="section-title">{{ grupo.titulo_categoria }}</div>
-                    <span style="background: #eee; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; color: #666;">
-                        {{ grupo.lista|length }}
-                    </span>
-                </div>
-                <ul class="doc-list">
-                    {% for doc in grupo.lista %}
-                        {% include "intranet/includes/doc_item.html" with doc=doc %}
-                    {% endfor %}
-                </ul>
-            {% endfor %}
-        {% else %}
-            <div class="empty-state">
-                <i class="fa-regular fa-folder-open" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                <p>Nenhum documento disponível na Intranet no momento.</p>
+{% if modo_exibicao == 'agrupado' %}
+    {% if grupos %}
+        {% for grupo in grupos %}
+            <div class="section-header">
+                <h3 class="section-title">{{ grupo.titulo_categoria }}</h3>
+                <span style="background: #eef2f7; color: #1e3c72; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;">
+                    {{ grupo.lista|length }} arquivo(s)
+                </span>
             </div>
-        {% endif %}
-
-    {% else %}
-        
-        {% if documentos %}
-            <h4 class="mb-3 text-secondary">Resultados encontrados:</h4>
             <ul class="doc-list">
-                {% for doc in documentos %}
+                {% for doc in grupo.lista %}
                     {% include "intranet/includes/doc_item.html" with doc=doc %}
                 {% endfor %}
             </ul>
-        {% else %}
-            <div class="empty-state">
-                <i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                <p>Nenhum documento encontrado para sua pesquisa.</p>
-                <a href="{% url 'area_federado' %}" class="btn-search" style="text-decoration: none; display: inline-block; margin-top: 10px;">Limpar Filtros</a>
-            </div>
-        {% endif %}
-
-    {% endif %} </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fa-regular fa-folder-open" style="font-size: 4rem; color: #e0e0e0; margin-bottom: 15px;"></i>
+            <p style="font-size: 1.1rem; color: #777;">Nenhum documento disponível na Intranet no momento.</p>
+        </div>
+    {% endif %}
+{% else %}
+    {% if documentos %}
+        <h4 style="margin: 30px 0 20px 0; color: #555; font-size: 1.2rem;">Resultados encontrados:</h4>
+        <ul class="doc-list">
+            {% for doc in documentos %}
+                {% include "intranet/includes/doc_item.html" with doc=doc %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty-state">
+            <i class="fa-solid fa-magnifying-glass" style="font-size: 4rem; color: #e0e0e0; margin-bottom: 15px;"></i>
+            <p style="font-size: 1.1rem; color: #777;">Nenhum documento encontrado para sua pesquisa.</p>
+            <a href="{% url 'area_federado' %}" class="btn btn-outline-primary mt-3">Limpar Filtros</a>
+        </div>
+    {% endif %}
+{% endif %} 
 {% endblock %}

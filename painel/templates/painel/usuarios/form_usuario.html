@@ -1,0 +1,143 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h3"><i class="fas fa-user-edit text-primary me-2"></i> {{ titulo }}</h2>
+    <a href="{% url 'gerenciar_usuarios' %}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <h5 class="mb-3 text-primary"><i class="fas fa-key me-2"></i>Dados de Acesso</h5>
+            <div class="row mb-4">
+                {% if not perfil %}
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Nome de Usuário (Login) <span class="text-danger">*</span></label>
+                        <input type="text" name="username" class="form-control" placeholder="Ex: joao.silva" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">E-mail <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" placeholder="Ex: joao@email.com" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Senha Inicial <span class="text-danger">*</span></label>
+                        <input type="password" name="senha" class="form-control" required>
+                    </div>
+                {% else %}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nome de Usuário (Login)</label>
+                        <input type="text" class="form-control" value="{{ perfil.user.username }}" disabled>
+                        <small class="text-muted">O login não pode ser alterado por motivos de segurança.</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">E-mail</label>
+                        <input type="email" name="email" class="form-control" value="{{ perfil.user.email }}">
+                    </div>
+                {% endif %}
+            </div>
+
+            <hr>
+
+            <h5 class="mb-3 text-primary"><i class="fas fa-id-card me-2"></i>Dados do Perfil</h5>
+            <div class="row mb-4">
+                <div class="col-md-8 mb-3">
+                    <label class="form-label">Nome Completo / Razão Social <span class="text-danger">*</span></label>
+                    <input type="text" name="nome_razao_social" class="form-control" value="{{ perfil.nome_razao_social|default:'' }}" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tipo de Cadastro <span class="text-danger">*</span></label>
+                    <select name="tipo" class="form-select" required>
+                        <option value="PF" {% if perfil.tipo == 'PF' %}selected{% endif %}>Pessoa Física</option>
+                        <option value="CE" {% if perfil.tipo == 'CE' %}selected{% endif %}>Centro Espírita</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">CPF / CNPJ</label>
+                    <input type="text" name="cpf_cnpj" class="form-control" value="{{ perfil.cpf_cnpj|default:'' }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Nascimento / Fundação</label>
+                    <input type="date" name="data_nascimento_fundacao" class="form-control" value="{{ perfil.data_nascimento_fundacao|date:'Y-m-d' }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Telefone / WhatsApp</label>
+                    <input type="text" name="telefone" class="form-control" value="{{ perfil.telefone|default:'' }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Status da Conta</label>
+                    <select name="status" class="form-select fw-bold">
+                        <option value="PENDENTE" {% if perfil.status == 'PENDENTE' %}selected{% endif %}>Pendente</option>
+                        <option value="APROVADO" {% if perfil.status == 'APROVADO' or not perfil %}selected{% endif %}>Aprovado</option>
+                        <option value="RECUSADO" {% if perfil.status == 'RECUSADO' %}selected{% endif %}>Recusado</option>
+                    </select>
+                </div>
+            </div>
+            
+            <hr>
+
+            <h5 class="mb-3 text-primary"><i class="fas fa-map-marker-alt me-2"></i>Endereço</h5>
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">CEP</label>
+                    <input type="text" name="cep" class="form-control" value="{{ perfil.cep|default:'' }}">
+                </div>
+                <div class="col-md-7 mb-3">
+                    <label class="form-label">Logradouro (Rua/Av)</label>
+                    <input type="text" name="logradouro" class="form-control" value="{{ perfil.logradouro|default:'' }}">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Número</label>
+                    <input type="text" name="numero" class="form-control" value="{{ perfil.numero|default:'' }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Complemento</label>
+                    <input type="text" name="complemento" class="form-control" value="{{ perfil.complemento|default:'' }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Bairro</label>
+                    <input type="text" name="bairro" class="form-control" value="{{ perfil.bairro|default:'' }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Cidade</label>
+                    <input type="text" name="cidade" class="form-control" value="{{ perfil.cidade|default:'' }}">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">UF</label>
+                    <input type="text" name="estado" class="form-control" value="{{ perfil.estado|default:'' }}" maxlength="2">
+                </div>
+            </div>
+
+            <div class="form-check form-switch mb-4 bg-light p-3 rounded border">
+                <input class="form-check-input ms-0 me-2" type="checkbox" name="is_colunista" id="is_colunista" {% if perfil.is_colunista %}checked{% endif %}>
+                <label class="form-check-label fw-bold text-dark" for="is_colunista">Dar permissão de Colunista (Pode publicar notícias e textos no site)</label>
+            </div>
+
+            {% if perfil %}
+            <hr>
+            <div class="alert alert-secondary mt-4">
+                <h6 class="text-danger mb-2"><i class="fas fa-exclamation-triangle me-1"></i> Redefinir Senha do Usuário</h6>
+                <p class="small mb-2">Preencha este campo <strong>apenas</strong> se desejar alterar a senha deste usuário. Caso contrário, deixe em branco.</p>
+                <input type="password" name="nova_senha" class="form-control w-50" placeholder="Digite a nova senha">
+            </div>
+            {% endif %}
+
+            <div class="text-end mt-4">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save me-2"></i> Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,333 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<style>
+    /* Estilos Exclusivos para o Formulário de Cadastro (Independente de Frameworks) */
+    .fepi-cadastro-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: Arial, sans-serif;
+    }
+    .fepi-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .fepi-header h2 {
+        color: #1e3c72;
+        font-weight: bold;
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+    .fepi-header p {
+        color: #666;
+        font-size: 16px;
+    }
+    .fepi-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        padding: 40px;
+    }
+    .fepi-section-title {
+        color: #1e3c72;
+        font-size: 18px;
+        font-weight: bold;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 10px;
+        margin: 30px 0 20px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .fepi-section-title:first-child {
+        margin-top: 0;
+    }
+    .fepi-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .fepi-row-full {
+        grid-template-columns: 1fr;
+    }
+    .fepi-row-cep {
+        grid-template-columns: 1fr 2fr 1fr;
+    }
+    .fepi-form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    .fepi-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+        font-size: 14px;
+    }
+    .fepi-asterisk {
+        color: #e74c3c;
+    }
+    .fepi-input, .fepi-select {
+        padding: 12px 15px;
+        border: 1px solid #dcdcdc;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        width: 100%;
+    }
+    .fepi-input:focus, .fepi-select:focus {
+        border-color: #1e3c72;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+    }
+    .fepi-btn {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        padding: 16px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 20px;
+    }
+    .fepi-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(30, 60, 114, 0.3);
+    }
+    .fepi-alert {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #f5c6cb;
+    }
+    .fepi-loading-text {
+        display: none;
+        color: #27ae60;
+        font-size: 12px;
+        margin-top: 6px;
+        font-weight: 600;
+    }
+    
+    /* Responsivo para celulares */
+    @media (max-width: 768px) {
+        .fepi-row, .fepi-row-cep {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        .fepi-card {
+            padding: 25px 20px;
+        }
+    }
+</style>
+
+<div class="fepi-cadastro-container">
+    <div class="fepi-header">
+        <h2>Associe-se à FEPI</h2>
+        <p>Preencha o formulário abaixo. Seu cadastro passará por aprovação da diretoria.</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="fepi-alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="fepi-card">
+        <form method="post" id="formCadastro">
+            {% csrf_token %}
+            
+            <div class="fepi-section-title"><i class="fas fa-user-tag"></i> Tipo de Cadastro</div>
+            <div class="fepi-row fepi-row-full">
+                <div class="fepi-form-group">
+                    <select name="tipo" id="tipoCadastro" class="fepi-select" required>
+                        <option value="PF" selected>Sou Pessoa Física (Trabalhador/Associado)</option>
+                        <option value="CE">Sou Representante de Instituição (Centro Espírita)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="fepi-section-title"><i class="fas fa-lock"></i> Dados de Acesso</div>
+            <div class="fepi-row">
+                <div class="fepi-form-group">
+                    <label class="fepi-label">E-mail (Seu Login) <span class="fepi-asterisk">*</span></label>
+                    <input type="email" name="email" class="fepi-input" placeholder="seu@email.com" required>
+                </div>
+                <div class="fepi-form-group">
+                    <label class="fepi-label">Crie uma Senha <span class="fepi-asterisk">*</span></label>
+                    <input type="password" name="senha" class="fepi-input" placeholder="Mínimo 6 caracteres" required minlength="6">
+                </div>
+            </div>
+
+            <div class="fepi-section-title"><i class="fas fa-id-card"></i> Identificação</div>
+            
+            <div class="fepi-row fepi-row-full">
+                <div class="fepi-form-group">
+                    <label class="fepi-label" id="labelNome">Nome Completo <span class="fepi-asterisk">*</span></label>
+                    <input type="text" name="nome_razao_social" id="nome" class="fepi-input" required>
+                </div>
+            </div>
+
+            <div class="fepi-row">
+                <div class="fepi-form-group">
+                    <label class="fepi-label" id="labelDoc">CPF <span class="fepi-asterisk">*</span></label>
+                    <input type="text" name="cpf_cnpj" id="cpf_cnpj" class="fepi-input" required>
+                    <div id="cnpjAviso" class="fepi-loading-text"><i class="fas fa-spinner fa-spin"></i> Buscando dados do CNPJ...</div>
+                </div>
+                <div class="fepi-form-group">
+                    <label class="fepi-label" id="labelData">Data de Nascimento</label>
+                    <input type="date" name="data_nascimento_fundacao" class="fepi-input">
+                </div>
+            </div>
+            
+            <div class="fepi-row">
+                <div class="fepi-form-group">
+                    <label class="fepi-label">Telefone / WhatsApp <span class="fepi-asterisk">*</span></label>
+                    <input type="text" name="telefone" id="telefone" class="fepi-input" placeholder="(DD) 90000-0000" required>
+                </div>
+            </div>
+
+            <div class="fepi-section-title"><i class="fas fa-map-marker-alt"></i> Endereço</div>
+            
+            <div class="fepi-row fepi-row-cep">
+                <div class="fepi-form-group">
+                    <label class="fepi-label">CEP</label>
+                    <input type="text" name="cep" id="cep" class="fepi-input" placeholder="00000-000">
+                    <div id="cepAviso" class="fepi-loading-text"><i class="fas fa-spinner fa-spin"></i> Buscando CEP...</div>
+                </div>
+                <div class="fepi-form-group">
+                    <label class="fepi-label">Logradouro (Rua/Av)</label>
+                    <input type="text" name="logradouro" id="logradouro" class="fepi-input">
+                </div>
+                <div class="fepi-form-group">
+                    <label class="fepi-label">Número</label>
+                    <input type="text" name="numero" id="numero" class="fepi-input">
+                </div>
+            </div>
+
+            <div class="fepi-row fepi-row-cep">
+                <div class="fepi-form-group">
+                    <label class="fepi-label">Complemento</label>
+                    <input type="text" name="complemento" id="complemento" class="fepi-input" placeholder="Apto, Sala...">
+                </div>
+                <div class="fepi-form-group">
+                    <label class="fepi-label">Bairro</label>
+                    <input type="text" name="bairro" id="bairro" class="fepi-input">
+                </div>
+                <div class="fepi-form-group">
+                    <label class="fepi-label">Cidade</label>
+                    <input type="text" name="cidade" id="cidade" class="fepi-input">
+                </div>
+            </div>
+
+            <div class="fepi-row">
+                <div class="fepi-form-group">
+                    <label class="fepi-label">Estado (UF)</label>
+                    <input type="text" name="estado" id="estado" class="fepi-input" placeholder="PI" maxlength="2">
+                </div>
+            </div>
+
+            <button type="submit" class="fepi-btn">
+                <i class="fas fa-paper-plane"></i> Enviar Solicitação de Cadastro
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="https://unpkg.com/imask"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // Configuração das Máscaras
+    const telInput = document.getElementById('telefone');
+    IMask(telInput, { mask: '(00) 00000-0000' });
+    
+    const cepInput = document.getElementById('cep');
+    const cepMask = IMask(cepInput, { mask: '00000-000' });
+
+    const docInput = document.getElementById('cpf_cnpj');
+    let docMask = IMask(docInput, { mask: '000.000.000-00' }); 
+
+    // Alternância entre PF e CE
+    const tipoSelect = document.getElementById('tipoCadastro');
+    const labelNome = document.getElementById('labelNome');
+    const labelDoc = document.getElementById('labelDoc');
+    const labelData = document.getElementById('labelData');
+
+    tipoSelect.addEventListener('change', function() {
+        docInput.value = ''; 
+        docMask.destroy(); 
+
+        if (this.value === 'CE') {
+            labelNome.innerHTML = 'Razão Social <span class="fepi-asterisk">*</span>';
+            labelDoc.innerHTML = 'CNPJ <span class="fepi-asterisk">*</span>';
+            labelData.innerHTML = 'Data de Fundação';
+            docMask = IMask(docInput, { mask: '00.000.000/0001-00' });
+        } else {
+            labelNome.innerHTML = 'Nome Completo <span class="fepi-asterisk">*</span>';
+            labelDoc.innerHTML = 'CPF <span class="fepi-asterisk">*</span>';
+            labelData.innerHTML = 'Data de Nascimento';
+            docMask = IMask(docInput, { mask: '000.000.000-00' });
+        }
+    });
+
+    // Busca ViaCEP
+    cepInput.addEventListener('blur', function() {
+        let cepVal = this.value.replace(/\D/g, '');
+        if (cepVal.length === 8) {
+            document.getElementById('cepAviso').style.display = 'block';
+            
+            fetch(`https://viacep.com.br/ws/${cepVal}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.erro) {
+                        document.getElementById('logradouro').value = data.logradouro;
+                        document.getElementById('bairro').value = data.bairro;
+                        document.getElementById('cidade').value = data.localidade;
+                        document.getElementById('estado').value = data.uf;
+                        document.getElementById('numero').focus(); 
+                    }
+                })
+                .finally(() => {
+                    document.getElementById('cepAviso').style.display = 'none';
+                });
+        }
+    });
+
+    // Busca Brasil API (CNPJ)
+    docInput.addEventListener('blur', function() {
+        if (tipoSelect.value === 'CE') {
+            let cnpjVal = this.value.replace(/\D/g, '');
+            if (cnpjVal.length === 14) {
+                document.getElementById('cnpjAviso').style.display = 'block';
+                
+                fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpjVal}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.razao_social) {
+                            document.getElementById('nome').value = data.razao_social;
+                            if(data.ddd_telefone_1) document.getElementById('telefone').value = data.ddd_telefone_1;
+                            
+                            if(data.cep) {
+                                cepMask.unmaskedValue = data.cep.toString();
+                                cepInput.dispatchEvent(new Event('blur')); 
+                            }
+                        }
+                    })
+                    .finally(() => {
+                        document.getElementById('cnpjAviso').style.display = 'none';
+                    });
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -185,7 +185,7 @@
         .brand-text strong { font-size: 1.05rem; letter-spacing: 0.03em; }
 
         /* --- MENU PRINCIPAL --- */
-        nav ul { list-style: none; display: flex; gap: 1rem; font-size: 0.9rem; margin: 0; padding: 0; }
+        nav ul { list-style: none; display: flex; gap: 1rem; font-size: 0.9rem; margin: 0; padding: 0; align-items: center; }
         nav li { position: relative; padding: 10px 0; cursor: pointer; }
         nav a { color: #e7edf4; transition: 0.2s; }
         nav a:hover { color: var(--destaque); } 
@@ -229,20 +229,28 @@
             display: block;
         }
 
-        /* Botão Doar */
+        /* Botão Doar e Seja Membro */
         .btn-doar { 
             background: var(--azul-claro); color: #fff !important; 
-            padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;
+            padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;
             transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: inline-block;
         }
         .btn-doar:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .btn-membro {
+            border: 1px solid var(--azul-claro); color: var(--azul-claro) !important;
+            padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;
+            transition: 0.2s; display: inline-block;
+        }
+        .btn-membro:hover { background: var(--azul-claro); color: #fff !important; }
 
         /* Mobile Responsive */
         .nav-toggle { display: none; }
         @media (max-width: 900px) {
             nav ul { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: var(--azul-escuro); padding: 20px; text-align: center; }
             nav ul.active { display: flex; }
-            .nav-toggle { display: block; }
+            .nav-toggle { display: block; background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
             .topbar { display: none; }
             .has-submenu.toggled > .submenu { display: flex !important; flex-direction: column; position: static; box-shadow: none; border: none; padding: 0; }
         }
@@ -366,11 +374,12 @@
                     </ul>
                 </li>
                             
-                <li><a href="{% url 'lista_centros' %}">Centros Federados</a></li>
+                <li><a href="{% url 'lista_centros' %}">Centros</a></li>
                 <li><a href="{% url 'lista_noticias' %}">Notícias</a></li>
+                <li><a href="{% url 'colunas' %}">Colunas</a></li>
                 <li><a href="{% url 'livraria' %}">Livraria</a></li>
-                <li><a href="{% url 'links_uteis' %}">Links Úteis</a></li>
-                <li><a href="{% url 'downloads' %}">Downloads</a></li>
+                
+                <li><a href="{% url 'seja_membro' %}" class="btn-membro">Seja Membro</a></li>
                 <li><a href="{% url 'doacoes_view' %}" class="btn-doar">Quero Doar</a></li>
             </ul>
         </nav>
@@ -429,12 +438,12 @@
         <div>
             <div class="footer-title">Acesso Rápido</div>
             <ul class="footer-list">
+                <li><a href="{% url 'seja_membro' %}">Associe-se (Seja Membro)</a></li>
+                <li><a href="{% url 'colunas' %}">Colunas / Artigos</a></li>
                 <li><a href="{% url 'lista_centros' %}">Encontre um Centro</a></li>
-                <li><a href="{% url 'fale_conosco' %}">Como Chegar</a></li>
                 <li><a href="{% url 'atividades' %}">Horários Semanais</a></li>
                 <li><a href="{% url 'doacoes_view' %}">Quero Doar</a></li>
-                <li><a href="{% url 'privacidade' %}">Política de Privacidade</a></li>
-                <li><a href="{% url 'area_federado' %}">Área do Federado</a></li>
+                <li><a href="{% url 'area_federado' %}">Área do Associado</a></li>
                 <li><a href="/painel" target="_blank">Área Administrativa</a></li> 
             </ul>
         </div>

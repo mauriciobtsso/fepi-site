@@ -3,7 +3,7 @@ from django.utils.html import format_html
 
 from .models import (
     InformacaoContato, PaginaInstitucional, MembroDiretoria, ConfiguracaoHome,
-    PostInstagram, TipoDiretoria, Cargo, ConfiguracaoYouTube
+    PostInstagram, TipoDiretoria, Cargo, ConfiguracaoYouTube, Autor, Coluna
 )
 
 admin.site.register(TipoDiretoria)
@@ -97,3 +97,21 @@ class MembroDiretoriaAdmin(admin.ModelAdmin):
         (None, {'fields': ('nome', 'cargo', 'tipo', 'ordem')}),
         ('Contato e Informações', {'fields': ('telefone', 'email')}),
     )
+
+@admin.register(Autor)
+class AutorAdmin(admin.ModelAdmin):
+    list_display = ('nome_completo', 'centro_espirita')
+    search_fields = ('nome_completo',)
+
+@admin.register(Coluna)
+class ColunaAdmin(admin.ModelAdmin):
+    # Usamos campos que existem no modelo atualizado:
+    list_display = ('titulo', 'nome_exibicao', 'status', 'data_publicacao')
+    list_filter = ('status', 'data_publicacao')
+    search_fields = ('titulo', 'nome_autor')
+    prepopulated_fields = {'slug': ('titulo',)}
+
+    # Esta função ajuda a exibir o nome correto no admin (Associado ou Autor Manual)
+    def nome_exibicao(self, obj):
+        return obj.nome_exibicao
+    nome_exibicao.short_description = 'Autor'

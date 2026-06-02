@@ -6,6 +6,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.views.static import serve 
 from django.contrib.auth import views as auth_views
 from django.http import JsonResponse
+from core import views
 import os
 
 # --- IMPORT NECESSÁRIO PARA O ROBOTS.TXT (FALTAVA ESSE) ---
@@ -64,10 +65,15 @@ urlpatterns = [
     
     # Notícias
     path('noticias/', include('noticias.urls')),
+    path('coluna/<slug:slug>/', views.detalhe_coluna, name='detalhe_coluna'),
 
     path('links-uteis/', links_uteis, name='links_uteis'),
     path('downloads/', downloads, name='downloads'),
     path('doar/', doacoes_view, name='doacoes_view'),
+    path('usuarios/', include('usuarios.urls')),
+
+    path('vozes-da-fepi/', views.listar_colunas_publicas, name='colunas'),
+    path('vozes-da-fepi/artigo/<slug:slug>/', views.detalhe_coluna, name='detalhe_coluna'),
     
     # CKEditor
     path('ckeditor/', include('ckeditor_uploader.urls')),

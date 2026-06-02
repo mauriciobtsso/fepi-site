@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
+from django.utils.text import slugify
+
 
 # --- 0. NOTÍCIAS (RESTAURADO) ---
 class Noticia(models.Model):
@@ -268,6 +271,59 @@ class EventoAgenda(models.Model):
         verbose_name = "Evento / Curso"
         verbose_name_plural = "Agenda de Eventos e Cursos"
         ordering = ['data_inicio']
+
+    def __str__(self):
+        return self.titulo
+
+# --- MODELO DE AUTOR ---
+class Autor(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Associado (Usuário)")
+    nome_completo = models.CharField(max_length=200, verbose_name="Nome Completo")
+    centro_espirita = models.CharField(max_length=200, verbose_name="Centro Espírita ou Entidade")
+    foto = models.ImageField(upload_to='autores/', null=True, blank=True)
+
+    def __str__(self):
+        return self.nome_completo
+
+    class Meta:
+        verbose_name = "Autor/Colaborador"
+        verbose_name_plural = "Autores/Colaboradores"
+
+# --- 6. COLUNAS / ARTIGOS (VOZES DA FEPI) ---
+class Coluna(models.Model):
+    STATUS_CHOICES = (
+        ('RASCUNHO', 'Rascunho'),
+        ('PENDENTE', 'Aguardando Revisão'),
+        ('PUBLICADO', 'Publicado'),
+    )
+    
+    titulo = models.CharField(max_length=200, verbose_name="Título")
+    resumo = models.TextField(verbose_name="Resumo", help_text="Uma breve introdução para atrair o leitor na página inicial.") # Campo restaurado
+    slug = models.SlugField(unique=True, blank=True)
+    conteudo = RichTextField(verbose_name="Conteúdo")
+    
+    # Autor Híbrido:
+    autor_usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Associado (Opcional)")
+    nome_autor = models.CharField(max_length=200, blank=True, verbose_name="Nome do Autor (Se não for associado)")
+    instituicao_autor = models.CharField(max_length=200, blank=True, verbose_name="Instituição")
+    
+    imagem_capa = models.ImageField(upload_to='colunas/', blank=True, null=True, verbose_name="Imagem de Capa")
+    data_publicacao = models.DateTimeField(default=timezone.now, verbose_name="Data de Publicação")
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='PENDENTE')
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.titulo)
+        super().save(*args, **kwargs)
+
+    @property
+    def nome_exibicao(self):
+        return self.autor_usuario.perfil.nome_razao_social if self.autor_usuario else self.nome_autor
+
+    class Meta:
+        verbose_name = "Coluna/Artigo"
+        verbose_name_plural = "Colunas e Artigos"
+        ordering = ['-data_publicacao']
 
     def __str__(self):
         return self.titulo

@@ -25,7 +25,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-#up2mw6n4z7=cl@*$c$y@
 # reconheça os domínios, mesmo se a variável de ambiente falhar.
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.onrender.com', 
+    'https://*.onrender.com',
+    'https://*.up.railway.app', 
     'https://fepiaui.org.br', 
     'https://www.fepiaui.org.br',
     'https://fepiaui.cewantuildefreitas.com.br',
@@ -123,6 +124,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'voluntarios',
     'painel',
+    'usuarios',
 ]
 
 MIDDLEWARE = [

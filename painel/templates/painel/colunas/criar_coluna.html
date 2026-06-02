@@ -1,0 +1,121 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3><i class="fas fa-pen-nib text-primary me-2"></i> {{ titulo }}</h3>
+    <a href="{% url 'listar_colunas' %}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+
+            <div class="row g-3">
+                <div class="col-md-9">
+                    <label class="form-label fw-bold">{{ form.titulo.label }} <span class="text-danger">*</span></label>
+                    {{ form.titulo }}
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">{{ form.status.label }}</label>
+                    {{ form.status }}
+                </div>
+
+                <div class="col-12">
+                    <div class="card bg-light border-0 p-3">
+                        <h5 class="text-primary mb-3"><i class="fas fa-user-edit"></i> Dados da Autoria</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">{{ form.autor_usuario.label }}</label>
+                                {{ form.autor_usuario }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">{{ form.nome_autor.label }}</label>
+                                {{ form.nome_autor }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">{{ form.instituicao_autor.label }}</label>
+                                {{ form.instituicao_autor }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">{{ form.data_publicacao.label }}</label>
+                    {{ form.data_publicacao }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">{{ form.imagem_capa.label }}</label>
+                    {{ form.imagem_capa }}
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-bold">Resumo <span class="text-danger">*</span></label>
+                    {{ form.resumo }}
+                    <div class="d-flex justify-content-between mt-1">
+                        <small class="text-muted">Uma breve introdução para atrair o leitor na página inicial.</small>
+                        <small class="text-muted fw-bold" id="char-counter">0 / 300 caracteres</small>
+                    </div>
+                    {% if form.resumo.errors %}
+                        <div class="text-danger mt-1">{{ form.resumo.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-12 mt-4">
+                    <label class="form-label fw-bold">{{ form.conteudo.label }}</label>
+                    <div class="django-ckeditor-widget" style="width: 100%;">
+                        {{ form.conteudo }}
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary px-5 btn-lg">
+                    <i class="fas fa-save me-2"></i> Salvar Artigo
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .django-ckeditor-widget, .cke_chrome { width: 100% !important; border-color: #dee2e6 !important; box-shadow: none !important; }
+    /* Ajuste para garantir que o textarea respeite o rows=2 definido no forms.py */
+    #id_resumo { height: auto !important; } 
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const resumo = document.getElementById("id_resumo");
+        const counter = document.getElementById("char-counter");
+        
+        // Função para atualizar o contador
+        function updateCounter() {
+            if (resumo) {
+                const length = resumo.value.length;
+                counter.textContent = `${length} / 300 caracteres`;
+                
+                if (length > 300) {
+                    counter.classList.add("text-danger");
+                } else {
+                    counter.classList.remove("text-danger");
+                }
+            }
+        }
+
+        // Chama na inicialização (útil quando está editando e já tem texto)
+        updateCounter();
+        
+        // Chama sempre que o usuário digitar
+        if (resumo) {
+            resumo.addEventListener("input", updateCounter);
+        }
+    });
+</script>
+{% endblock %}

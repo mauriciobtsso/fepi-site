@@ -11,6 +11,12 @@ urlpatterns = [
     path('noticias/deletar/<int:noticia_id>/', views.deletar_noticia, name='deletar_noticia'),
     path('popup/', views.gerenciar_popup, name='gerenciar_popup'),
 
+    # Colunas
+    path('colunas/', views.listar_colunas, name='listar_colunas'),
+    path('colunas/nova/', views.criar_coluna, name='criar_coluna'),
+    path('colunas/editar/<int:id>/', views.editar_coluna, name='editar_coluna'),
+    path('colunas/excluir/<int:id>/', views.excluir_coluna, name='excluir_coluna'),
+
     # Documentos
     path('documentos/', views.listar_documentos, name='listar_documentos'),
     path('documentos/novo/', views.criar_documento, name='criar_documento'),
@@ -20,7 +26,7 @@ urlpatterns = [
     # Categorias
     path('documentos/categorias/', views.listar_categorias_doc, name='listar_categorias_doc'),
     path('documentos/categorias/excluir/<int:id>/', views.excluir_categoria_doc, name='excluir_categoria_doc'),
-   
+    
     # --- PROGRAMAÇÃO ---
     path('programacao/', views.programacao_hub, name='programacao_hub'),
     
@@ -114,5 +120,9 @@ urlpatterns = [
     path('site/recursos/secao/editar/<int:id>/', views.gerenciar_secao_recurso, name='editar_secao_recurso'),
     path('site/recursos/secao/excluir/<int:id>/', views.excluir_secao_recurso, name='excluir_secao_recurso'),
 
-
+    # --- ADMINISTRAÇÃO ---
+    path('usuarios/', views.gerenciar_usuarios, name='gerenciar_usuarios'),
+    path('usuarios/novo/', views.criar_usuario, name='criar_usuario'),
+    path('usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
+    path('usuarios/excluir/<int:id>/', views.excluir_usuario, name='excluir_usuario'),
 ]
