@@ -376,6 +376,15 @@
                             
                 <li><a href="{% url 'lista_centros' %}">Centros</a></li>
                 <li><a href="{% url 'lista_noticias' %}">Notícias</a></li>
+
+                <li class="has-submenu">
+                    <a href="#" onclick="handleMenuClick(event, this)">Recursos</a>
+                    <ul class="submenu">
+                        <li><a href="{% url 'downloads' %}">Downloads</a></li>
+                        <li><a href="{% url 'links_uteis' %}">Links Úteis</a></li>
+                    </ul>
+                </li>
+
                 <li><a href="{% url 'colunas' %}">Colunas</a></li>
                 <li><a href="{% url 'livraria' %}">Livraria</a></li>
                 

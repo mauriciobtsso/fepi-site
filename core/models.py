@@ -297,9 +297,9 @@ class Coluna(models.Model):
         ('PUBLICADO', 'Publicado'),
     )
     
-    titulo = models.CharField(max_length=200, verbose_name="Título")
+    titulo = models.CharField(max_length=255, verbose_name="Título")
     resumo = models.TextField(verbose_name="Resumo", help_text="Uma breve introdução para atrair o leitor na página inicial.") # Campo restaurado
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True)
     conteudo = RichTextField(verbose_name="Conteúdo")
     
     # Autor Híbrido:
@@ -313,7 +313,7 @@ class Coluna(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.titulo)
+            self.slug = slugify(self.titulo)[:250]
         super().save(*args, **kwargs)
 
     @property

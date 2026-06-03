@@ -60,9 +60,17 @@ class Perfil(models.Model):
 
 # --- SINAIS (MÁGICA DO DJANGO) ---
 @receiver(post_save, sender=User)
-def criar_perfil_usuario(sender, instance, created, **kwargs):
+def gerenciar_perfil_usuario(sender, instance, created, **kwargs):
     if created:
-        Perfil.objects.create(user=instance, status='APROVADO' if instance.is_superuser else 'PENDENTE')
+        # Cria o perfil automaticamente se for um usuário novo
+        Perfil.objects.get_or_create(user=instance)
+    else:
+        # Na hora de salvar (ex: ao fazer login), só salva o perfil se ele existir
+        if hasattr(instance, 'perfil'):
+            instance.perfil.save()
+        else:
+            # Se for um superuser antigo que não tem perfil, cria um agora
+            Perfil.objects.get_or_create(user=instance)
 
 @receiver(post_save, sender=User)
 def salvar_perfil_usuario(sender, instance, **kwargs):

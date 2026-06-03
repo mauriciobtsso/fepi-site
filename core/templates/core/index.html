@@ -225,37 +225,41 @@
         </div>
     </section>
 
-    <section class="section-padrao section-noticias">
+<section class="section-padrao section-noticias">
         <div class="section-header">
             <h2>Vozes da FEPI</h2>
-            <a href="#" class="btn-link">Ler todos os artigos →</a>
+            <a href="{% url 'colunas' %}" class="btn-link">Ler todos os artigos →</a>
         </div>
 
         <div class="colunas-grid">
-            <a href="#" class="coluna-card">
+            {% for coluna in colunas %}
+            <a href="{% url 'detalhe_coluna' coluna.slug %}" class="coluna-card">
                 <div class="coluna-autor">
-                    <div class="coluna-autor-img">JD</div>
-                    <span class="coluna-autor-nome">João Dias</span>
+                    <div class="coluna-autor-img" style="background: var(--destaque);">
+                        {% if coluna.autor_usuario %}
+                            {{ coluna.autor_usuario.first_name|first|default:coluna.autor_usuario.username|first|upper }}{{ coluna.autor_usuario.last_name|first|upper }}
+                        {% elif coluna.nome_autor %}
+                            {{ coluna.nome_autor|first|upper }}
+                        {% else %}
+                            FE
+                        {% endif %}
+                    </div>
+                    <span class="coluna-autor-nome">
+                        {% if coluna.autor_usuario %}
+                            {{ coluna.autor_usuario.get_full_name|default:coluna.autor_usuario.username }}
+                        {% elif coluna.nome_autor %}
+                            {{ coluna.nome_autor }}
+                        {% else %}
+                            Redação FEPI
+                        {% endif %}
+                    </span>
                 </div>
-                <h3 class="coluna-titulo">O papel do Centro Espírita na sociedade atual</h3>
-                <p class="coluna-resumo">Em tempos de transição, a casa espírita funciona como um hospital da alma, pronto para acolher e orientar...</p>
+                <h3 class="coluna-titulo">{{ coluna.titulo|truncatechars:60 }}</h3>
+                <p class="coluna-resumo">{{ coluna.resumo|truncatechars:120 }}</p>
             </a>
-            <a href="#" class="coluna-card">
-                <div class="coluna-autor">
-                    <div class="coluna-autor-img" style="background: var(--azul-claro);">MS</div>
-                    <span class="coluna-autor-nome">Maria Silva</span>
-                </div>
-                <h3 class="coluna-titulo">Evangelização Infantil: Plantando as sementes do amanhã</h3>
-                <p class="coluna-resumo">A importância de integrar as crianças desde cedo no convívio doutrinário e nos ensinamentos morais do Cristo...</p>
-            </a>
-            <a href="#" class="coluna-card">
-                <div class="coluna-autor">
-                    <div class="coluna-autor-img" style="background: var(--destaque);">FE</div>
-                    <span class="coluna-autor-nome">Diretoria FEPI</span>
-                </div>
-                <h3 class="coluna-titulo">Comunicado sobre a Caravana Federativa</h3>
-                <p class="coluna-resumo">Acompanhe as próximas cidades que receberão a visita fraterna da nossa federação no interior do Estado...</p>
-            </a>
+            {% empty %}
+            <p style="color:#888;">Nenhum artigo publicado recentemente.</p>
+            {% endfor %}
         </div>
     </section>
 

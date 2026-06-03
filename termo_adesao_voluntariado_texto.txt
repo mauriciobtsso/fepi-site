@@ -1,0 +1,144 @@
+<p style="text-align:center"><strong>TERMO DE ADES&Atilde;O AO SERVI&Ccedil;O VOLUNT&Aacute;RIO</strong></p>
+
+<table border="0" cellpadding="3" cellspacing="0" style="width:100%">
+	<tbody>
+		<tr>
+			<td colspan="2"><strong>Nome do volunt&aacute;rio:</strong> {{ voluntario.nome }}</td>
+		</tr>
+		<tr>
+			<td><strong>RG/Exp.:</strong> {{ rg_display }}</td>
+			<td><strong>CPF:</strong> {{ cpf_display }}</td>
+		</tr>
+		<tr>
+			<td><strong>Nasc.:</strong> {% if voluntario.data_nascimento %}{{ voluntario.data_nascimento|date:&quot;d/m/Y&quot; }}{% else %}___/___/_____{% endif %}</td>
+			<td><strong>Telefone(s):</strong> {{ telefones_display }}</td>
+		</tr>
+		<tr>
+			<td colspan="2"><strong>Endere&ccedil;o:</strong> {{ endereco_display }}</td>
+		</tr>
+		<tr>
+			<td><strong>CEP:</strong> {{ cep_display }}</td>
+			<td><strong>Cidade/Estado:</strong> {% if voluntario.cidade_estado %}{{ voluntario.cidade_estado }}{% else %}____________________{% endif %}</td>
+		</tr>
+		<tr>
+			<td colspan="2"><strong>Nome do pai:</strong> {{ nome_pai_display }}</td>
+		</tr>
+		<tr>
+			<td colspan="2"><strong>Nome da m&atilde;e:</strong> {{ nome_mae_display }}</td>
+		</tr>
+		<tr>
+			<td><strong>E-mail:</strong> {{ email_display }}</td>
+			<td><strong>Atividade profissional:</strong> {{ atividade_profissional_display }}</td>
+		</tr>
+	</tbody>
+</table>
+
+<table border="1" cellpadding="3" cellspacing="0" style="width:100%">
+	<tbody>
+		<tr>
+			<td><strong>Tipo de Servi&ccedil;o que o volunt&aacute;rio vai prestar:</strong> {{ tipo_servico_display }}<br />
+			<strong>Dia(s) / Hor&aacute;rio(s):</strong> {{ dias_horarios_display }}</td>
+		</tr>
+	</tbody>
+</table>
+
+<table border="1" cellpadding="2" cellspacing="0" style="width:100%">
+	<tbody>
+		<tr>
+			<td><strong>Institui&ccedil;&atilde;o:</strong> FEDERA&Ccedil;&Atilde;O ESP&Iacute;RITA PIAUIENSE (FEPI)<br />
+			<strong>Endere&ccedil;o:</strong> RUA OLAVO BILAC, 1394 CENTRO TERESINA/PI.</td>
+		</tr>
+	</tbody>
+</table>
+
+<p style="text-align:justify">O trabalho volunt&aacute;rio a ser desempenhado junto &agrave; Institui&ccedil;&atilde;o acima, de acordo com a Lei n&ordm; 9.608 de 18/02/1998, &eacute; atividade n&atilde;o remunerada, com finalidades assistenciais, educacionais, cient&iacute;ficas, c&iacute;vicas, culturais, recreativas ou religiosas, e n&atilde;o gera v&iacute;nculo empregat&iacute;cio nem funcional, ou quaisquer obriga&ccedil;&otilde;es trabalhistas, previdenci&aacute;rias e afins e ser&aacute; prestado de acordo com a disponibilidade de dia e hor&aacute;rio do volunt&aacute;rio.</p>
+
+<p style="text-align:justify">O presente Termo de Ades&atilde;o ser&aacute; por prazo determinado <strong>{{ prazo_display }}</strong>.</p>
+
+<p style="text-align:justify">Declaro estar ciente da legisla&ccedil;&atilde;o espec&iacute;fica sobre Servi&ccedil;o Volunt&aacute;rio e que aceito atuar como volunt&aacute;rio nos termos do presente Termo de Ades&atilde;o. Assim com fornecer os meus dados a fim de consulta a exig&ecirc;ncia e atualiza&ccedil;&atilde;o semestral de certid&otilde;es de antecedentes criminais, conforme a Lei 14.811/2024 ECA.<br />
+&nbsp;</p>
+
+<p style="text-align:center">Teresina/PI, ______ de __________________________ de 20____.<br />
+&nbsp;</p>
+
+<p style="text-align:center">___________________________________<br />
+{{ voluntario.nome }}</p>
+
+<table border="0" cellpadding="3" cellspacing="0" style="text-align:center; width:100%">
+	<tbody>
+		<tr>
+			<td style="text-align:left; width:50%"><br />
+			__________________________________<br />
+			<em>(*) Nome do respons&aacute;vel pela atividade</em></td>
+			<td style="text-align:left; width:50%"><br />
+			________________________________________<br />
+			(*) Assinatura do respons&aacute;vel pelo Departamento</td>
+		</tr>
+		<tr>
+			<td style="text-align:left; width:50%"><br />
+			Testemunhas:</td>
+			<td style="text-align:left; width:50%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="text-align:left">___________________________________<br />
+			Assinatura<br />
+			RG</td>
+			<td style="text-align:left">&nbsp; &nbsp; ___________________________________<br />
+			&nbsp; &nbsp; Assinatura<br />
+			&nbsp; &nbsp; RG</td>
+		</tr>
+		<tr>
+			<td style="text-align:left">
+			<p>De acordo: _________________________<br />
+			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Diretor Presidente - FEPI</p>
+			</td>
+			<td>(*) No caso de volunt&aacute;rio ser menor de idade</td>
+		</tr>
+	</tbody>
+</table>
+
+<p><br />
+&nbsp;</p>
+
+<p style="text-align:center"><strong>LEI N&ordm; 9.608, DE 18 DE FEVEREIRO DE 1998</strong></p>
+
+<p style="text-align:center"><em>Disp&otilde;e sobre o servi&ccedil;o volunt&aacute;rio e d&aacute; outras provid&ecirc;ncias.</em></p>
+
+<p style="text-align:justify">O PRESIDENTE DA REP&Uacute;BLICA Fa&ccedil;o saber que o Congresso Nacional decreta e eu sanciono a seguinte Lei:</p>
+
+<p style="text-align:justify"><strong>Art. 1&ordm;</strong> Considera-se servi&ccedil;o volunt&aacute;rio, para fins desta Lei, a atividade n&atilde;o remunerada, prestada por pessoa f&iacute;sica a entidade p&uacute;blica de qualquer natureza, ou a institui&ccedil;&atilde;o privada de fins n&atilde;o lucrativos, que tenha objetivos c&iacute;vicos, culturais, educacionais, cient&iacute;ficos, recreativos ou de assist&ecirc;ncia social, inclusive mutualidade.</p>
+
+<p style="text-align:justify"><em>Par&aacute;grafo &uacute;nico.</em> O servi&ccedil;o volunt&aacute;rio n&atilde;o gera v&iacute;nculo empregat&iacute;cio, nem obriga&ccedil;&atilde;o de natureza trabalhista previdenci&aacute;ria ou afim.</p>
+
+<p style="text-align:justify"><strong>Art. 2&ordm;</strong> O servi&ccedil;o volunt&aacute;rio ser&aacute; exercido mediante a celebra&ccedil;&atilde;o de termo de ades&atilde;o entre a entidade, p&uacute;blica ou privada, e o prestador do servi&ccedil;o volunt&aacute;rio, dele devendo constar o objeto e as condi&ccedil;&otilde;es de seu exerc&iacute;cio.</p>
+
+<p style="text-align:justify"><strong>Art. 3&ordm;</strong> O prestador do servi&ccedil;o volunt&aacute;rio poder&aacute; ser ressarcido pelas despesas que comprovadamente realizar no desempenho das atividades volunt&aacute;rias.</p>
+
+<p style="text-align:justify"><em>Par&aacute;grafo &uacute;nico.</em> As despesas a serem ressarcidas dever&atilde;o estar expressamente autorizadas pela entidade a que for prestado o servi&ccedil;o volunt&aacute;rio.</p>
+
+<p style="text-align:justify"><strong>Art. 4&ordm;</strong> Esta Lei entra em vigor na data de sua publica&ccedil;&atilde;o.<br />
+<strong>Art. 5&ordm;</strong> Revogam-se as disposi&ccedil;&otilde;es em contr&aacute;rio.</p>
+
+<p style="text-align:center">Bras&iacute;lia, 18 de fevereiro de 1998; 177&ordm; da Independ&ecirc;ncia e 110&ordm; da Rep&uacute;blica.</p>
+
+<p style="text-align:center"><br />
+<strong>FERNANDO HENRIQUE CARDOSO</strong><br />
+Presidente da Rep&uacute;blica</p>
+
+<p>&nbsp;</p>
+
+<p>A <strong>Lei 14.811/2024</strong>, sancionada em janeiro de 2024, alterou o ECA para tornar obrigat&oacute;ria a exig&ecirc;ncia e atualiza&ccedil;&atilde;o semestral de certid&otilde;es de antecedentes criminais para todos os colaboradores de institui&ccedil;&otilde;es (p&uacute;blicas ou privadas) que trabalham com crian&ccedil;as e adolescentes, incluindo escolas, creches e ONGs. A medida visa a preven&ccedil;&atilde;o de abusos e &eacute; v&aacute;lida para funcion&aacute;rios e volunt&aacute;rios.</p>
+
+<p><strong>Principais Pontos da Lei 14.811/2024 sobre Antecedentes:</strong></p>
+
+<ul>
+	<li><strong>Abrang&ecirc;ncia:</strong> Aplica-se a escolas (p&uacute;blicas ou privadas, com ou sem recursos p&uacute;blicos), creches, associa&ccedil;&otilde;es e entidades de assist&ecirc;ncia social.</li>
+	<li><strong>Periodicidade:</strong> A certid&atilde;o de antecedentes criminais deve ser renovada a cada seis meses (semestralmente).</li>
+	<li><strong>Quem deve apresentar:</strong> Todos os colaboradores, funcion&aacute;rios e volunt&aacute;rios que atuam com menores de idade.</li>
+	<li><strong>Obrigatoriedade:</strong> As institui&ccedil;&otilde;es devem manter as fichas cadastrais e os documentos atualizados, reduzindo riscos e garantindo a seguran&ccedil;a do p&uacute;blico infantojuvenil.</li>
+	<li><strong>Objetivo:</strong> Fortalecer a prote&ccedil;&atilde;o de crian&ccedil;as e adolescentes, integrando o monitoramento cont&iacute;nuo ao Estatuto da Crian&ccedil;a e do Adolescente (ECA).</li>
+</ul>
+
+<p style="text-align:center"><br />
+______________________________________________<br />
+Diretor Presidente da FEPI</p>
