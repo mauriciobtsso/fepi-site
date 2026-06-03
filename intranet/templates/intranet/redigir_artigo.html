@@ -1,0 +1,147 @@
+{% extends 'intranet/base_intranet.html' %}
+
+{% block title %}{% if artigo %}Editar Artigo{% else %}Novo Artigo{% endif %} - FEPI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Força o CKEditor a ocupar 100% da largura do contêiner */
+    .django-ckeditor-widget {
+        display: block !important;
+        width: 100% !important;
+    }
+    .django-ckeditor-widget iframe,
+    .django-ckeditor-widget div[id^="cke_"] {
+        width: 100% !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'meus_artigos' %}" class="text-decoration-none text-muted"><i class="fas fa-arrow-left me-1"></i> Voltar para Meus Artigos</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3">
+        <h4 class="mb-0 text-primary">
+            {% if artigo %}Editar: {{ artigo.titulo }}{% else %}Nova Publicação{% endif %}
+        </h4>
+    </div>
+    <div class="card-body p-4">
+        
+        <!-- Alerta Global de Erro no Formulário -->
+        {% if form.errors %}
+        <div class="alert alert-danger shadow-sm border-0">
+            <strong><i class="fas fa-exclamation-triangle me-2"></i>Atenção!</strong> Por favor, verifique os campos em vermelho abaixo antes de prosseguir.
+        </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {{ form.media }} <!-- ESSENCIAL PARA O CKEDITOR FUNCIONAR -->
+            
+            <!-- CAMPO: TÍTULO -->
+            <div class="mb-4">
+                <label class="form-label fw-bold text-dark">Título da Matéria <span class="text-danger">*</span></label>
+                {{ form.titulo }}
+                <!-- Exibição de erro específico deste campo -->
+                {% if form.titulo.errors %}
+                    <div class="text-danger mt-1 small fw-bold">
+                        {% for error in form.titulo.errors %}<i class="fas fa-times-circle me-1"></i>{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+                <!-- Contador -->
+                <div class="d-flex justify-content-end mt-1">
+                    <small class="text-muted"><span id="contador-titulo">0</span>/200 caracteres</small>
+                </div>
+            </div>
+
+            <!-- CAMPO: RESUMO -->
+            <div class="mb-4">
+                <label class="form-label fw-bold text-dark">Resumo (Lide) <span class="text-danger">*</span></label>
+                {{ form.resumo }}
+                <!-- Exibição de erro específico deste campo -->
+                {% if form.resumo.errors %}
+                    <div class="text-danger mt-1 small fw-bold">
+                        {% for error in form.resumo.errors %}<i class="fas fa-times-circle me-1"></i>{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+                <div class="d-flex justify-content-between mt-1">
+                    <small class="text-muted">Aparecerá na vitrine da página inicial do site.</small>
+                    <!-- Contador -->
+                    <small class="text-muted"><span id="contador-resumo">0</span>/400 caracteres</small>
+                </div>
+            </div>
+
+            <!-- CAMPO: IMAGEM -->
+            <div class="mb-4">
+                <label class="form-label fw-bold text-dark">Imagem de Capa (Opcional mas recomendado)</label>
+                {{ form.imagem_capa }}
+                {% if form.imagem_capa.errors %}
+                    <div class="text-danger mt-1 small fw-bold">
+                        {% for error in form.imagem_capa.errors %}<i class="fas fa-times-circle me-1"></i>{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- CAMPO: CONTEÚDO (CKEDITOR) -->
+            <div class="mb-5">
+                <label class="form-label fw-bold text-dark">Conteúdo Completo <span class="text-danger">*</span></label>
+                {{ form.conteudo }}
+                {% if form.conteudo.errors %}
+                    <div class="text-danger mt-1 small fw-bold">
+                        {% for error in form.conteudo.errors %}<i class="fas fa-times-circle me-1"></i>{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-between border-top pt-4">
+                <button type="submit" name="salvar_rascunho" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-save me-2"></i> Salvar Rascunho
+                </button>
+                
+                <button type="submit" name="enviar_revisao" class="btn btn-primary btn-lg px-5">
+                    <i class="fas fa-paper-plane me-2"></i> Enviar para Revisão
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Função universal para contar caracteres de qualquer campo
+        function atualizarContador(campoId, contadorId, limite) {
+            const campo = document.getElementById(campoId);
+            const contador = document.getElementById(contadorId);
+            
+            if (campo && contador) {
+                // Atualiza no carregamento da página (útil quando for editar um artigo existente)
+                contador.textContent = campo.value.length;
+                
+                // Ouve o evento de digitação (input)
+                campo.addEventListener('input', function() {
+                    const tamanho = this.value.length;
+                    contador.textContent = tamanho;
+                    
+                    // Se o usuário chegar ao limite, o contador fica vermelho para alertar
+                    if (tamanho >= limite) {
+                        contador.parentElement.classList.remove('text-muted');
+                        contador.parentElement.classList.add('text-danger', 'fw-bold');
+                    } else {
+                        contador.parentElement.classList.remove('text-danger', 'fw-bold');
+                        contador.parentElement.classList.add('text-muted');
+                    }
+                });
+            }
+        }
+
+        // Inicializa os contadores baseados nos limites definidos no forms.py
+        atualizarContador('id_titulo', 'contador-titulo', 200);
+        atualizarContador('id_resumo', 'contador-resumo', 400);
+    });
+</script>
+{% endblock %}

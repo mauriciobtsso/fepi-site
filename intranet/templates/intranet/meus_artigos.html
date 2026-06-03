@@ -1,0 +1,58 @@
+{% extends 'intranet/base_intranet.html' %}
+
+{% block title %}Meus Artigos - FEPI{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-pen-nib text-primary me-2"></i> Meus Artigos</h2>
+    <a href="{% url 'novo_artigo' %}" class="btn btn-primary shadow-sm"><i class="fas fa-plus me-1"></i> Escrever Novo</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th class="ps-4">Título</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                    <th class="text-end pe-4">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for artigo in artigos %}
+                <tr>
+                    <td class="ps-4">
+                        <strong class="text-dark">{{ artigo.titulo }}</strong>
+                    </td>
+                    <td>
+                        {% if artigo.status == 'RASCUNHO' %}
+                            <span class="badge bg-secondary">Rascunho</span>
+                        {% elif artigo.status == 'PENDENTE' %}
+                            <span class="badge bg-warning text-dark"><i class="fas fa-clock"></i> Em Revisão</span>
+                        {% else %}
+                            <span class="badge bg-success"><i class="fas fa-check-circle"></i> Publicado</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ artigo.data_publicacao|date:"d/m/Y" }}</td>
+                    <td class="text-end pe-4">
+                        {% if artigo.status != 'PUBLICADO' %}
+                            <a href="{% url 'editar_artigo' artigo.pk %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i> Editar</a>
+                        {% else %}
+                            <a href="#" class="btn btn-sm btn-outline-secondary disabled" title="Artigos publicados não podem ser editados por aqui."><i class="fas fa-lock"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-5 text-muted">
+                        <i class="fas fa-file-alt fa-3x mb-3 text-light"></i>
+                        <p>Você ainda não escreveu nenhum artigo.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

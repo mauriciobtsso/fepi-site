@@ -3,7 +3,7 @@ from django.utils.html import format_html
 
 from .models import (
     InformacaoContato, PaginaInstitucional, MembroDiretoria, ConfiguracaoHome,
-    PostInstagram, TipoDiretoria, Cargo, ConfiguracaoYouTube, Autor, Coluna
+    PostInstagram, TipoDiretoria, Cargo, ConfiguracaoYouTube, Coluna
 )
 
 admin.site.register(TipoDiretoria)
@@ -98,10 +98,6 @@ class MembroDiretoriaAdmin(admin.ModelAdmin):
         ('Contato e Informações', {'fields': ('telefone', 'email')}),
     )
 
-@admin.register(Autor)
-class AutorAdmin(admin.ModelAdmin):
-    list_display = ('nome_completo', 'centro_espirita')
-    search_fields = ('nome_completo',)
 
 @admin.register(Coluna)
 class ColunaAdmin(admin.ModelAdmin):

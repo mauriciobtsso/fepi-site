@@ -2,25 +2,28 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.template import engines
-from .models import Voluntario, DocumentoVoluntario, ModeloTermoVoluntario
-from .forms import VoluntarioForm, DocumentoVoluntarioForm, ModeloTermoForm
 import html
 from django.db.models import Q
 from django.core.paginator import Paginator
+
+from .models import DocumentoVoluntario, ModeloTermoVoluntario
+from .forms import VoluntarioForm, DocumentoVoluntarioForm, ModeloTermoForm
+from usuarios.models import Perfil # Importando o Cadastro Único
 
 @login_required
 def listar_voluntarios(request):
     # Pega o termo de busca na URL (se existir)
     query = request.GET.get('q', '')
     
-    voluntarios_list = Voluntario.objects.all().order_by('-data_cadastro')
+    # Busca apenas os Perfis que estão marcados como voluntários
+    voluntarios_list = Perfil.objects.filter(is_voluntario=True).order_by('-id')
     
     # Se o usuário digitou algo, filtra por Nome OU CPF OU Telefone
     if query:
         voluntarios_list = voluntarios_list.filter(
-            Q(nome__icontains=query) |
-            Q(cpf__icontains=query) |
-            Q(telefones__icontains=query)
+            Q(nome_razao_social__icontains=query) |
+            Q(cpf_cnpj__icontains=query) |
+            Q(telefone__icontains=query)
         )
     
     # Paginação: 15 voluntários por página
@@ -38,7 +41,9 @@ def cadastrar_voluntario(request):
     if request.method == 'POST':
         form = VoluntarioForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            voluntario = form.save(commit=False)
+            voluntario.is_voluntario = True # Garante que a flag seja ativada!
+            voluntario.save()
             messages.success(request, 'Voluntário cadastrado com sucesso!')
             return redirect('listar_voluntarios')
     else:
@@ -48,14 +53,14 @@ def cadastrar_voluntario(request):
 @login_required
 def documentos_voluntario(request, pk):
     """Página dedicada ao histórico de arquivos de um voluntário específico"""
-    voluntario = get_object_or_404(Voluntario, pk=pk)
-    documentos = voluntario.documentos.all()
+    voluntario = get_object_or_404(Perfil, pk=pk, is_voluntario=True)
+    documentos = voluntario.documentos_voluntario.all()
     
     if request.method == 'POST':
         form = DocumentoVoluntarioForm(request.POST, request.FILES)
         if form.is_valid():
             doc = form.save(commit=False)
-            doc.voluntario = voluntario # Vincula o arquivo a este voluntário
+            doc.voluntario = voluntario # Vincula o arquivo a este perfil
             doc.save()
             messages.success(request, 'Documento anexado com sucesso!')
             return redirect('documentos_voluntario', pk=voluntario.pk)
@@ -78,7 +83,7 @@ def excluir_documento_voluntario(request, pk):
 
 @login_required
 def editar_voluntario(request, pk):
-    voluntario = get_object_or_404(Voluntario, pk=pk)
+    voluntario = get_object_or_404(Perfil, pk=pk, is_voluntario=True)
     if request.method == 'POST':
         form = VoluntarioForm(request.POST, request.FILES, instance=voluntario)
         if form.is_valid():
@@ -91,16 +96,18 @@ def editar_voluntario(request, pk):
 
 @login_required
 def excluir_voluntario(request, pk):
-    voluntario = get_object_or_404(Voluntario, pk=pk)
+    # ATENÇÃO: Ao excluir o "voluntário", estamos na verdade desativando a flag dele
+    # para não deletar a conta de login (User) acidentalmente, caso ele seja associado também.
+    voluntario = get_object_or_404(Perfil, pk=pk, is_voluntario=True)
     if request.method == 'POST':
-        voluntario.delete()
-        messages.success(request, 'Voluntário removido.')
+        voluntario.is_voluntario = False
+        voluntario.save()
+        messages.success(request, 'Cadastro de voluntário desativado (os dados básicos do usuário foram mantidos).')
         return redirect('listar_voluntarios')
     return render(request, 'voluntarios/confirmar_exclusao.html', {'voluntario': voluntario})
 
 @login_required
 def editar_modelo_termo(request):
-    # Pega o modelo existente ou cria um novo se não existir (ID 1)
     modelo, created = ModeloTermoVoluntario.objects.get_or_create(id=1)
     
     if request.method == 'POST':
@@ -116,33 +123,38 @@ def editar_modelo_termo(request):
 
 @login_required
 def imprimir_termo(request, pk):
-    voluntario = get_object_or_404(Voluntario, pk=pk)
+    voluntario = get_object_or_404(Perfil, pk=pk, is_voluntario=True)
     
-    # 1. Prepara as variáveis
-    campos = ['cpf', 'rg', 'cep', 'nome_pai', 'nome_mae', 'telefones', 'atividade_profissional', 'tipo_servico', 'dias_horarios', 'email']
+    # 1. Prepara as variáveis atualizadas para o novo formato do Perfil
+    campos = ['rg', 'cep', 'nome_pai', 'nome_mae', 'atividade_profissional', 'tipo_servico', 'dias_horarios', 'site']
     context_dict = {'voluntario': voluntario}
     
+    # Campos que mudaram de nome no Perfil Único
+    context_dict['cpf_display'] = voluntario.cpf_cnpj if voluntario.cpf_cnpj else "___________________________"
+    context_dict['telefones_display'] = voluntario.telefone if voluntario.telefone else "___________________________"
+    context_dict['email_display'] = voluntario.user.email if (voluntario.user and voluntario.user.email) else "___________________________"
+
     for campo in campos:
-        valor = getattr(voluntario, campo)
+        valor = getattr(voluntario, campo, None)
         context_dict[f'{campo}_display'] = valor if valor else "___________________________"
     
     # Endereço formatado
-    rua = voluntario.endereco if voluntario.endereco else "________________"
+    rua = voluntario.logradouro if voluntario.logradouro else "________________"
     num = f", nº {voluntario.numero}" if voluntario.numero else ""
     bairro = f", {voluntario.bairro}" if voluntario.bairro else ""
     comp = f" ({voluntario.complemento})" if voluntario.complemento else ""
     context_dict['endereco_display'] = f"{rua}{num}{bairro}{comp}"
 
     # Vigência
-    inicio = voluntario.data_inicio.strftime("%d/%m/%Y") if voluntario.data_inicio else "____/____/____"
-    termino = voluntario.data_termino.strftime("%d/%m/%Y") if voluntario.data_termino else "____/____/____"
+    inicio = voluntario.data_inicio_voluntariado.strftime("%d/%m/%Y") if voluntario.data_inicio_voluntariado else "____/____/____"
+    termino = voluntario.data_termino_voluntariado.strftime("%d/%m/%Y") if voluntario.data_termino_voluntariado else "____/____/____"
     context_dict['prazo_display'] = f"de {inicio} a {termino}"
 
     # 2. Busca o Modelo Exato (ID=1)
     modelo = ModeloTermoVoluntario.objects.filter(id=1).first()
     
     if modelo and modelo.conteudo:
-        # A MÁGICA DE LIMPEZA: Reverte o &#123; de volta para { caso o CKEditor tenha bagunçado
+        # A MÁGICA DE LIMPEZA
         conteudo_limpo = html.unescape(modelo.conteudo)
         
         try:

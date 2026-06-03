@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from core import views
 import os
 
-# --- IMPORT NECESSÁRIO PARA O ROBOTS.TXT (FALTAVA ESSE) ---
+# --- IMPORT NECESSÁRIO PARA O ROBOTS.TXT ---
 from django.views.generic.base import TemplateView
 
 # Views diretas
@@ -17,15 +17,14 @@ from recursos.views import links_uteis, downloads
 from doacoes.views import doacoes_view
 from core.views import home, institucional, fale_conosco, privacidade
 
-# --- IMPORTS DOS SITEMAPS (ADICIONEI EventoSitemap) ---
+# --- IMPORTS DOS SITEMAPS ---
 from core.sitemaps import StaticViewSitemap, NoticiaSitemap, LivroSitemap, EventoSitemap
 
 from livraria.views import detalhe_livro, livraria_completa
 from centros.views import lista_centros
 from programacao.views import atividades, doutrinarias, calendario, lista_cursos, detalhe_curso
-from intranet.views import area_federado
 
-# --- DEFINIÇÃO DO DICIONÁRIO SITEMAPS (O ERRO ERA A FALTA DISSO) ---
+# --- DEFINIÇÃO DO DICIONÁRIO SITEMAPS ---
 sitemaps = {
     'estaticas': StaticViewSitemap,
     'noticias': NoticiaSitemap,
@@ -41,7 +40,8 @@ urlpatterns = [
     # --- SISTEMA DE LOGIN E INTRANET ---
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('area-federado/', area_federado, name='area_federado'),
+    # Agora a área do federado e os artigos do colunista são controlados pelas rotas da intranet
+    path('area-federado/', include('intranet.urls')),
 
     # Institucional
     path('institucional/', institucional, name='institucional'),
@@ -79,10 +79,10 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
 
     # --- SEO (Google) ---
-    # 1. Sitemap.xml (Agora vai funcionar pois 'sitemaps' foi definido acima)
+    # 1. Sitemap.xml 
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
-    # 2. Robots.txt (Agora funciona pois importamos TemplateView)
+    # 2. Robots.txt 
     path("robots.txt", TemplateView.as_view(template_name="core/robots.txt", content_type="text/plain")),
 ]
 

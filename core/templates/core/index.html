@@ -236,22 +236,10 @@
             <a href="{% url 'detalhe_coluna' coluna.slug %}" class="coluna-card">
                 <div class="coluna-autor">
                     <div class="coluna-autor-img" style="background: var(--destaque);">
-                        {% if coluna.autor_usuario %}
-                            {{ coluna.autor_usuario.first_name|first|default:coluna.autor_usuario.username|first|upper }}{{ coluna.autor_usuario.last_name|first|upper }}
-                        {% elif coluna.nome_autor %}
-                            {{ coluna.nome_autor|first|upper }}
-                        {% else %}
-                            FE
-                        {% endif %}
+                        {{ coluna.nome_exibicao|make_list|first|upper }}
                     </div>
                     <span class="coluna-autor-nome">
-                        {% if coluna.autor_usuario %}
-                            {{ coluna.autor_usuario.get_full_name|default:coluna.autor_usuario.username }}
-                        {% elif coluna.nome_autor %}
-                            {{ coluna.nome_autor }}
-                        {% else %}
-                            Redação FEPI
-                        {% endif %}
+                        {{ coluna.nome_exibicao }}
                     </span>
                 </div>
                 <h3 class="coluna-titulo">{{ coluna.titulo|truncatechars:60 }}</h3>

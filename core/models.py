@@ -3,7 +3,10 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
 from django.utils.text import slugify
-
+from io import BytesIO
+from PIL import Image
+from django.core.files import File
+import os
 
 # --- 0. NOTÍCIAS (RESTAURADO) ---
 class Noticia(models.Model):
@@ -252,7 +255,6 @@ class PalestraPublica(models.Model):
 class EventoAgenda(models.Model):
     titulo = models.CharField(max_length=200, verbose_name="Título do Evento")
 
-    # Campo Slug Adicionado para SEO e Sitemaps
     slug = models.SlugField(unique=True, blank=True, null=True, verbose_name="Slug (URL)")
 
     data_inicio = models.DateTimeField(verbose_name="Início")
@@ -275,19 +277,6 @@ class EventoAgenda(models.Model):
     def __str__(self):
         return self.titulo
 
-# --- MODELO DE AUTOR ---
-class Autor(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Associado (Usuário)")
-    nome_completo = models.CharField(max_length=200, verbose_name="Nome Completo")
-    centro_espirita = models.CharField(max_length=200, verbose_name="Centro Espírita ou Entidade")
-    foto = models.ImageField(upload_to='autores/', null=True, blank=True)
-
-    def __str__(self):
-        return self.nome_completo
-
-    class Meta:
-        verbose_name = "Autor/Colaborador"
-        verbose_name_plural = "Autores/Colaboradores"
 
 # --- 6. COLUNAS / ARTIGOS (VOZES DA FEPI) ---
 class Coluna(models.Model):
@@ -298,28 +287,68 @@ class Coluna(models.Model):
     )
     
     titulo = models.CharField(max_length=255, verbose_name="Título")
-    resumo = models.TextField(verbose_name="Resumo", help_text="Uma breve introdução para atrair o leitor na página inicial.") # Campo restaurado
+    resumo = models.TextField(verbose_name="Resumo", help_text="Uma breve introdução para atrair o leitor na página inicial.")
     slug = models.SlugField(max_length=255, unique=True, blank=True, null=True)
     conteudo = RichTextField(verbose_name="Conteúdo")
     
-    # Autor Híbrido:
-    autor_usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Associado (Opcional)")
-    nome_autor = models.CharField(max_length=200, blank=True, verbose_name="Nome do Autor (Se não for associado)")
-    instituicao_autor = models.CharField(max_length=200, blank=True, verbose_name="Instituição")
+    # Autor: Aponta para o User, que agora tem um Perfil Único completo!
+    autor_usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Colunista (Associado/Perfil)")
+    nome_autor = models.CharField(max_length=200, blank=True, verbose_name="Nome do Autor (Se for convidado externo)")
+    instituicao_autor = models.CharField(max_length=200, blank=True, verbose_name="Instituição (Se for convidado externo)")
     
     imagem_capa = models.ImageField(upload_to='colunas/', blank=True, null=True, verbose_name="Imagem de Capa")
     data_publicacao = models.DateTimeField(default=timezone.now, verbose_name="Data de Publicação")
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='PENDENTE')
 
     def save(self, *args, **kwargs):
+        # 1. Gera a URL amigável (slug)
         if not self.slug:
             self.slug = slugify(self.titulo)[:250]
+
+        # 2. MÁGICA DA OTIMIZAÇÃO DE IMAGENS (Pillow)
+        # Primeiro, descobrimos se é um artigo novo ou se a imagem foi trocada
+        try:
+            artigo_antigo = Coluna.objects.get(id=self.id)
+            imagem_mudou = artigo_antigo.imagem_capa != self.imagem_capa
+        except Coluna.DoesNotExist:
+            imagem_mudou = True # É um artigo novo!
+
+        # Só otimiza se houver uma imagem e se ela tiver acabado de ser enviada
+        if self.imagem_capa and imagem_mudou:
+            # Abre a imagem original
+            img = Image.open(self.imagem_capa)
+            
+            # Converte para RGB (Evita erros caso o usuário envie um PNG com transparência)
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+                
+            # Limita as dimensões (Se for gigante, diminui para no máximo 1200x800)
+            if img.width > 1200 or img.height > 800:
+                img.thumbnail((1200, 800), Image.Resampling.LANCZOS)
+                
+            # Salva a imagem otimizada em uma "memória temporária"
+            output = BytesIO()
+            img.save(output, format='JPEG', quality=75) # 75% de qualidade reduz drasticamente o peso (MB)
+            output.seek(0)
+            
+            # Pega o nome original, remove a extensão velha e coloca '.jpg'
+            nome_base = os.path.basename(self.imagem_capa.name)
+            nome_sem_extensao = os.path.splitext(nome_base)[0]
+            novo_nome = f"{nome_sem_extensao}_otimizada.jpg"
+            
+            # Substitui a imagem do formulário pelo arquivo otimizado antes de salvar no banco
+            self.imagem_capa = File(output, name=novo_nome)
+
+        # 3. Salva finalmente no banco de dados
         super().save(*args, **kwargs)
 
     @property
     def nome_exibicao(self):
-        return self.autor_usuario.perfil.nome_razao_social if self.autor_usuario else self.nome_autor
-
+        # A mágica do Cadastro Único: Se tiver usuário logado, puxa o nome do perfil.
+        if self.autor_usuario and hasattr(self.autor_usuario, 'perfil') and self.autor_usuario.perfil.nome_razao_social:
+            return self.autor_usuario.perfil.nome_razao_social
+        return self.nome_autor or "Autor Desconhecido"
+        
     class Meta:
         verbose_name = "Coluna/Artigo"
         verbose_name_plural = "Colunas e Artigos"
