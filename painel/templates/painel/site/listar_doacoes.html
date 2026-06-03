@@ -1,8 +1,15 @@
 {% extends 'painel/base_painel.html' %}
 {% block content %}
-<div class="d-flex justify-content-between mb-4">
-    <h3><i class="fas fa-hand-holding-heart me-2"></i> Formas de Doação</h3>
-    <a href="{% url 'nova_doacao' %}" class="btn btn-success"><i class="fas fa-plus"></i> Nova Forma</a>
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+    <h3><i class="fas fa-hand-holding-heart me-2"></i> Gestão de Doações</h3>
+    <div>
+        <a href="{% url 'config_pagina_doacao' %}" class="btn btn-warning shadow-sm me-2">
+            <i class="fas fa-file-alt"></i> Textos da Página
+        </a>
+        <a href="{% url 'nova_doacao' %}" class="btn btn-success shadow-sm">
+            <i class="fas fa-plus"></i> Nova Forma de Pagamento
+        </a>
+    </div>
 </div>
 
 <div class="row g-4">

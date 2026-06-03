@@ -108,6 +108,7 @@ urlpatterns = [
     path('site/doacoes/novo/', views.gerenciar_doacao, name='nova_doacao'),
     path('site/doacoes/editar/<int:id>/', views.gerenciar_doacao, name='editar_doacao'),
     path('site/doacoes/excluir/<int:id>/', views.excluir_doacao, name='excluir_doacao'),
+    path('site/doacoes/config/', views.config_pagina_doacao, name='config_pagina_doacao'), # <--- NOVA ROTA
 
     # --- RECURSOS / DOWNLOADS ---
     path('site/recursos/', views.recursos_hub, name='recursos_hub'),

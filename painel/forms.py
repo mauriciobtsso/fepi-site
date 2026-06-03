@@ -7,7 +7,7 @@ from intranet.models import DocumentoRestrito, CategoriaDocumento
 from programacao.models import AtividadeSemanal, Doutrinaria, CursoEvento
 from livraria.models import Livro, Categoria, LivrariaConfig
 from centros.models import Centro
-from doacoes.models import FormaDoacao
+from doacoes.models import FormaDoacao, PaginaDoacaoConfig
 from recursos.models import SecaoLink, LinkItem
 from usuarios.models import Perfil
 from django.db.models import Q
@@ -387,6 +387,19 @@ class ColunaForm(forms.ModelForm):
         if not autor_usuario and not nome_autor:
             raise forms.ValidationError("Você deve selecionar um Associado ou preencher o Nome do Autor manualmente.")
         return cleaned_data
+
+class PaginaDoacaoConfigForm(forms.ModelForm):
+    class Meta:
+        model = PaginaDoacaoConfig
+        fields = '__all__'
+        widgets = {
+            'titulo_principal': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Ajude a FEPI'}),
+            'texto_apelo': CKEditorWidget(),
+            'imagem_capa': forms.FileInput(attrs={'class': 'form-control'}),
+            'titulo_socio': forms.TextInput(attrs={'class': 'form-control'}),
+            'texto_socio': CKEditorWidget(),
+            'link_socio': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://...'}),
+        }
 
 
 

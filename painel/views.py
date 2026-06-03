@@ -13,7 +13,7 @@ from intranet.models import DocumentoRestrito, CategoriaDocumento
 from programacao.models import AtividadeSemanal, Doutrinaria, CursoEvento
 from livraria.models import Livro, Categoria as CategoriaLivro, LivrariaConfig
 from centros.models import Centro
-from doacoes.models import FormaDoacao
+from doacoes.models import FormaDoacao, PaginaDoacaoConfig
 from recursos.models import SecaoLink, LinkItem
 from usuarios.models import Perfil
 
@@ -23,7 +23,7 @@ from .forms import (
     TipoDiretoriaForm, MembroDiretoriaForm, PaginaInstitucionalForm, 
     AtividadeSemanalForm, DoutrinariaForm, CursoEventoForm, YoutubeConfigForm, 
     PostInstagramForm, LivroForm, CategoriaLivroForm, LivrariaConfigForm, 
-    CentroForm, FormaDoacaoForm, SecaoLinkForm, LinkItemForm, PerfilForm, ColunaForm
+    CentroForm, FormaDoacaoForm, SecaoLinkForm, LinkItemForm, PerfilForm, ColunaForm, PaginaDoacaoConfigForm
 )
 
 # --- BLINDAGEM DE ACESSO AO PAINEL ---
@@ -740,3 +740,18 @@ def excluir_coluna(request, id):
     coluna.delete()
     messages.success(request, "Artigo excluído.")
     return redirect('listar_colunas')
+
+@login_required(login_url='/login/')
+@user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
+def config_pagina_doacao(request):
+    config, created = PaginaDoacaoConfig.objects.get_or_create(id=1)
+    if request.method == 'POST':
+        form = PaginaDoacaoConfigForm(request.POST, request.FILES, instance=config)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Textos da página de doações atualizados!')
+            return redirect('listar_doacoes')
+    else:
+        form = PaginaDoacaoConfigForm(instance=config)
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Configurar Textos de Doação'})
+
