@@ -21,15 +21,15 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="font-weight-bold">Nome Completo *</label>
-                        {{ form.nome }}
+                        {{ form.nome_razao_social }}
                     </div>
                     <div class="col-md-3 mb-3">
                         <label>Data de Nascimento</label>
-                        {{ form.data_nascimento }}
+                        {{ form.data_nascimento_fundacao }}
                     </div>
                     <div class="col-md-3 mb-3">
                         <label>CPF</label>
-                        {{ form.cpf }}
+                        {{ form.cpf_cnpj }}
                     </div>
                 </div>
 
@@ -58,34 +58,34 @@
                     </div>
                     <div class="col-md-5 mb-3">
                         <label>Logradouro (Rua/Av)</label>
-                        {{ form.endereco }}
+                        {{ form.logradouro }}
                     </div>
                     <div class="col-md-1 mb-3">
                         <label>Nº</label>
                         {{ form.numero }}
                     </div>
-                    <div class="col-md-2 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label>Bairro</label>
                         {{ form.bairro }}
                     </div>
-                    <div class="col-md-2 mb-3">
-                        <label>Cidade/UF</label>
-                        {{ form.cidade_estado }}
+                    <div class="col-md-6 mb-3">
+                        <label>Cidade</label>
+                        {{ form.cidade }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Estado (UF)</label>
+                        {{ form.estado }}
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-6 mb-3">
                         <label>Complemento</label>
                         {{ form.complemento }}
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label>E-mail</label>
-                        {{ form.email }}
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label>Telefone(s)</label>
-                        {{ form.telefones }}
+                    <div class="col-md-6 mb-3">
+                        <label>Telefone(s) / WhatsApp</label>
+                        {{ form.telefone }}
                     </div>
                 </div>
 
@@ -95,11 +95,11 @@
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label>Início do Termo</label>
-                        {{ form.data_inicio }}
+                        {{ form.data_inicio_voluntariado }}
                     </div>
                     <div class="col-md-3 mb-3">
                         <label>Término do Termo</label>
-                        {{ form.data_termino }}
+                        {{ form.data_termino_voluntariado }}
                     </div>
                     <div class="col-md-3 mb-3">
                         <label>Atividade Profissional</label>
@@ -134,7 +134,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
     $(document).ready(function(){
-        $('#id_cpf').mask('000.000.000-00');
+        // IDs atualizados para o novo Form
+        $('#id_cpf_cnpj').mask('000.000.000-00');
         $('#id_cep').mask('00000-000');
         
         var maskBehavior = function (val) {
@@ -145,16 +146,17 @@
               field.mask(maskBehavior.apply({}, arguments), options);
             }
         };
-        $('#id_telefones').mask(maskBehavior, options);
+        $('#id_telefone').mask(maskBehavior, options);
 
         $('#id_cep').blur(function() {
             var cep = $(this).val().replace(/\D/g, '');
             if (cep != "") {
                 $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
                     if (!("erro" in dados)) {
-                        $("#id_endereco").val(dados.logradouro);
+                        $("#id_logradouro").val(dados.logradouro);
                         $("#id_bairro").val(dados.bairro);
-                        $("#id_cidade_estado").val(dados.localidade + "/" + dados.uf);
+                        $("#id_cidade").val(dados.localidade);
+                        $("#id_estado").val(dados.uf);
                         $("#id_numero").focus();
                     }
                 });

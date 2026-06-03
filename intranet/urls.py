@@ -7,7 +7,9 @@ urlpatterns = [
     path('artigos/novo/', views.redigir_artigo, name='novo_artigo'),
     path('artigos/editar/<int:pk>/', views.redigir_artigo, name='editar_artigo'),
     
-    # --- PORTAL DO VOLUNTÁRIO ---
+    # --- PORTAL DO VOLUNTÁRIO (AUTOATENDIMENTO) ---
     path('voluntariado/', views.voluntariado_intro, name='voluntariado_intro'),
     path('voluntariado/cadastro/', views.voluntariado_cadastro, name='voluntariado_cadastro'),
+    path('voluntariado/painel/', views.voluntariado_painel, name='voluntariado_painel'),
+    path('voluntariado/termo/imprimir/', views.voluntariado_imprimir_termo, name='voluntariado_imprimir_termo'),
 ]

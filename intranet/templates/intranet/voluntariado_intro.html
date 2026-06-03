@@ -12,15 +12,20 @@
         </div>
 
         {% if ja_e_voluntario %}
-        <div class="alert alert-success shadow-sm border-0 text-center p-4 rounded-4">
-            <i class="fas fa-heart fa-3x text-success mb-3"></i>
-            <h4>Você já é um de nossos corações voluntários!</h4>
-            <p class="mb-0">Seu cadastro já consta em nossa base. Agradecemos imensamente por dedicar seu tempo e amor à Federação Espírita Piauiense.</p>
+        <div class="card border-0 shadow-sm text-center p-5 rounded-4 bg-white">
+            <i class="fas fa-heart fa-4x text-success mb-4"></i>
+            <h3 class="fw-bold text-success">Você é um de nossos voluntários!</h3>
+            <p class="fs-5 text-muted mb-4">Agradecemos imensamente por dedicar seu tempo e amor à Federação Espírita Piauiense. Acesse seu painel para gerenciar seus documentos e seu termo de adesão.</p>
+            <div>
+                <a href="{% url 'voluntariado_painel' %}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm fw-bold">
+                    <i class="fas fa-id-badge me-2"></i> Acessar Meu Painel
+                </a>
+            </div>
         </div>
         {% else %}
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
             <div class="card-header bg-primary text-white p-4 text-center">
-                <h4 class="mb-0">Como funciona o processo?</h4>
+                <h4 class="mb-0 fw-bold">Como funciona o processo?</h4>
             </div>
             <div class="card-body p-5">
                 <p class="mb-4">Para garantir a segurança jurídica da nossa Casa e o bem-estar de todos os trabalhadores e frequentadores, o ingresso no serviço voluntário segue 3 passos simples:</p>
@@ -28,29 +33,29 @@
                 <div class="d-flex mb-4 align-items-start">
                     <div class="bg-light text-primary rounded-circle d-flex justify-content-center align-items-center me-3 shadow-sm" style="width: 45px; height: 45px; font-weight: bold; font-size: 1.2rem; flex-shrink: 0;">1</div>
                     <div>
-                        <h5 class="fw-bold mb-1">Confirme sua disponibilidade</h5>
-                        <p class="text-muted mb-0">Informando quais dias e horários você pode colaborar conosco e a área de interesse.</p>
+                        <h5 class="fw-bold mb-1">Preencha o Cadastro Integrado</h5>
+                        <p class="text-muted mb-0">Confirme seus dados e informe seus dias e horários de disponibilidade.</p>
                     </div>
                 </div>
 
                 <div class="d-flex mb-4 align-items-start">
                     <div class="bg-light text-primary rounded-circle d-flex justify-content-center align-items-center me-3 shadow-sm" style="width: 45px; height: 45px; font-weight: bold; font-size: 1.2rem; flex-shrink: 0;">2</div>
                     <div>
-                        <h5 class="fw-bold mb-1">Termo de Adesão</h5>
-                        <p class="text-muted mb-0">Você precisará imprimir, assinar e nos enviar a foto/scan do Termo de Adesão ao Serviço Voluntário.</p>
+                        <h5 class="fw-bold mb-1">Assinatura do Termo</h5>
+                        <p class="text-muted mb-0">Após salvar seus dados, você poderá gerar e imprimir seu Termo de Adesão diretamente no seu painel.</p>
                     </div>
                 </div>
 
                 <div class="d-flex mb-5 align-items-start">
                     <div class="bg-light text-primary rounded-circle d-flex justify-content-center align-items-center me-3 shadow-sm" style="width: 45px; height: 45px; font-weight: bold; font-size: 1.2rem; flex-shrink: 0;">3</div>
                     <div>
-                        <h5 class="fw-bold mb-1">Certidão de Antecedentes</h5>
-                        <p class="text-muted mb-0">Em cumprimento ao ECA (Estatuto da Criança e do Adolescente), solicitamos o envio da certidão de antecedentes criminais. <a href="https://servicos.dpf.gov.br/antecedentes-criminais/certidao" target="_blank" class="text-decoration-none">Emita a sua gratuitamente aqui</a>.</p>
+                        <h5 class="fw-bold mb-1">Envio de Documentos</h5>
+                        <p class="text-muted mb-0">No seu painel, você fará o upload do Termo assinado e da Certidão de Antecedentes Criminais.</p>
                     </div>
                 </div>
 
                 <div class="d-grid">
-                    <a href="{% url 'voluntariado_cadastro' %}" class="btn btn-primary btn-lg rounded-pill py-3 fw-bold">
+                    <a href="{% url 'voluntariado_cadastro' %}" class="btn btn-primary btn-lg rounded-pill py-3 fw-bold shadow-sm">
                         Estou ciente e quero me voluntariar <i class="fas fa-arrow-right ms-2"></i>
                     </a>
                 </div>

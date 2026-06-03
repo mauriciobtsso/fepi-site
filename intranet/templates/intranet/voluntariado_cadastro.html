@@ -4,76 +4,108 @@
 
 {% block content %}
 <div class="mb-4">
-    <a href="{% url 'voluntariado_intro' %}" class="text-decoration-none text-muted"><i class="fas fa-arrow-left me-1"></i> Voltar</a>
+    {% if perfil.is_voluntario %}
+        <a href="{% url 'voluntariado_painel' %}" class="text-decoration-none text-muted fw-bold">
+            <i class="fas fa-arrow-left me-1"></i> Voltar para o Painel
+        </a>
+    {% else %}
+        <a href="{% url 'voluntariado_intro' %}" class="text-decoration-none text-muted fw-bold">
+            <i class="fas fa-arrow-left me-1"></i> Voltar para as instruções
+        </a>
+    {% endif %}
 </div>
 
-<div class="card border-0 shadow-sm rounded-4">
-    <div class="card-header bg-white py-4 border-bottom">
-        <h4 class="mb-0 text-primary fw-bold">Ficha de Inscrição Voluntária</h4>
-        <p class="text-muted small mb-0 mt-1">Seus dados pessoais já constam em nosso Cadastro Único.</p>
+<div class="card border-0 shadow-sm rounded-4 mb-5">
+    <div class="card-header bg-white py-4 border-bottom px-4">
+        <h4 class="mb-0 text-primary fw-bold">
+            {% if perfil.is_voluntario %}Atualizar Dados e Vigência{% else %}Ficha de Inscrição Voluntária{% endif %}
+        </h4>
+        <p class="text-muted small mb-0 mt-1">Revise suas informações com atenção antes de gerar o seu Termo de Adesão.</p>
     </div>
     
     <div class="card-body p-4 p-md-5">
-        
-        <div class="row mb-5 bg-light p-3 rounded-3 border">
-            <div class="col-md-6 mb-2 mb-md-0">
-                <small class="text-muted d-block fw-bold">Nome Completo</small>
-                <span>{{ perfil.nome_razao_social|default:"Não informado" }}</span>
-            </div>
-            <div class="col-md-6">
-                <small class="text-muted d-block fw-bold">CPF</small>
-                <span>{{ perfil.cpf_cnpj|default:"Não informado" }}</span>
-            </div>
-        </div>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             
-            <h5 class="fw-bold mb-4 border-bottom pb-2">1. Como você pode ajudar?</h5>
-            
+            <h5 class="fw-bold text-secondary border-bottom pb-2 mb-4">Informações Pessoais e Filiação</h5>
             <div class="row">
-                <div class="col-md-6 mb-4">
-                    <label class="form-label fw-bold">Sua Atividade Profissional/Formação</label>
-                    {{ form.atividade_profissional }}
-                </div>
-                
-                <div class="col-md-6 mb-4">
-                    <label class="form-label fw-bold">Dias e Horários Disponíveis</label>
-                    {{ form.dias_horarios }}
-                </div>
-                
-                <div class="col-12 mb-5">
-                    <label class="form-label fw-bold">Tipo de Serviço que deseja prestar</label>
-                    {{ form.tipo_servico }}
+                <div class="col-md-6 mb-3"><label class="fw-bold">Nome Completo / Razão Social</label>{{ form.nome_razao_social }}</div>
+                <div class="col-md-3 mb-3"><label class="fw-bold">CPF/CNPJ</label>{{ form.cpf_cnpj }}</div>
+                <div class="col-md-3 mb-3"><label class="fw-bold">RG/Exp.</label>{{ form.rg }}</div>
+                <div class="col-md-4 mb-3"><label class="fw-bold">Data de Nascimento</label>{{ form.data_nascimento_fundacao }}</div>
+                <div class="col-md-4 mb-3"><label class="fw-bold">Nome do Pai</label>{{ form.nome_pai }}</div>
+                <div class="col-md-4 mb-3"><label class="fw-bold">Nome da Mãe</label>{{ form.nome_mae }}</div>
+            </div>
+
+            <h5 class="fw-bold text-secondary border-bottom pb-2 mb-4 mt-4">Endereço e Contato</h5>
+            <div class="row">
+                <div class="col-md-3 mb-3"><label class="fw-bold text-success">CEP</label>{{ form.cep }}</div>
+                <div class="col-md-7 mb-3"><label class="fw-bold">Logradouro (Rua/Av)</label>{{ form.logradouro }}</div>
+                <div class="col-md-2 mb-3"><label class="fw-bold">Número</label>{{ form.numero }}</div>
+                <div class="col-md-4 mb-3"><label class="fw-bold">Bairro</label>{{ form.bairro }}</div>
+                <div class="col-md-4 mb-3"><label class="fw-bold">Cidade</label>{{ form.cidade }}</div>
+                <div class="col-md-4 mb-3"><label class="fw-bold">Estado (UF)</label>{{ form.estado }}</div>
+                <div class="col-md-6 mb-3"><label class="fw-bold">Complemento</label>{{ form.complemento }}</div>
+                <div class="col-md-6 mb-3"><label class="fw-bold">Telefone / WhatsApp</label>{{ form.telefone }}</div>
+            </div>
+
+            <h5 class="fw-bold text-secondary border-bottom pb-2 mb-4 mt-4">Disponibilidade e Atuação</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3"><label class="fw-bold">Sua Profissão / Formação</label>{{ form.atividade_profissional }}</div>
+                <div class="col-md-6 mb-3"><label class="fw-bold">Dias e Horários Disponíveis</label>{{ form.dias_horarios }}</div>
+                <div class="col-12 mb-3"><label class="fw-bold">Tipo de serviço que deseja prestar</label>{{ form.tipo_servico }}</div>
+            </div>
+
+            <h5 class="fw-bold text-secondary border-bottom pb-2 mb-4 mt-4">Período de Vigência</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3"><label class="fw-bold">Data Início da Vigência</label>{{ form.data_inicio_voluntariado }}</div>
+                <div class="col-md-6 mb-3"><label class="fw-bold">Data Término da Vigência</label>{{ form.data_termino_voluntariado }}</div>
+                <div class="col-12 mt-2">
+                    <small class="text-muted"><i class="fas fa-info-circle"></i> O termo será gerado cobrindo as datas informadas acima. A data de assinatura do PDF constará como a data atual da impressão.</small>
                 </div>
             </div>
 
-            <h5 class="fw-bold mb-4 border-bottom pb-2">2. Documentação Obrigatória</h5>
-            <div class="alert alert-info shadow-sm border-0 mb-4">
-                <i class="fas fa-info-circle me-2"></i> Envie os arquivos em formato PDF ou imagem (JPG/PNG).
+            <div class="d-flex justify-content-end border-top pt-4 mt-4">
+                <button type="submit" class="btn btn-success btn-lg px-5 rounded-pill shadow-sm fw-bold">
+                    <i class="fas fa-arrow-right me-2"></i> Salvar e Ir para o Painel
+                </button>
             </div>
-
-            <div class="row">
-    <div class="col-md-6 mb-4">
-        <label class="form-label fw-bold text-dark">Termo de Adesão Assinado</label>
-        <input type="file" name="arquivo_termo" class="form-control form-control-lg bg-light" accept=".pdf, image/*">
-        <div class="form-text mt-2">
-            <a href="#" class="btn btn-sm btn-outline-primary mt-1"><i class="fas fa-file-pdf"></i> Baixar Termo para Assinar</a>
-        </div>
-    </div>
-
-    <div class="col-md-6 mb-4">
-        <label class="form-label fw-bold text-dark">Certidão de Antecedentes</label>
-        <input type="file" name="arquivo_certidao" class="form-control form-control-lg bg-light" accept=".pdf, image/*">
-    </div>
-</div>
-
-<div class="d-flex justify-content-end border-top pt-4 mt-3">
-    <button type="submit" class="btn btn-success btn-lg px-5 rounded-pill shadow-sm fw-bold">
-        <i class="fas fa-save me-2"></i> Salvar Minhas Informações
-    </button>
-</div>
         </form>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#id_cpf_cnpj').mask('000.000.000-00');
+        $('#id_cep').mask('00000-000');
+        
+        var maskBehavior = function (val) {
+          return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+        };
+        var options = {
+          onKeyPress: function(val, e, field, options) {
+              field.mask(maskBehavior.apply({}, arguments), options);
+            }
+        };
+        $('#id_telefone').mask(maskBehavior, options);
+
+        $('#id_cep').blur(function() {
+            var cep = $(this).val().replace(/\D/g, '');
+            if (cep != "") {
+                $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+                    if (!("erro" in dados)) {
+                        $("#id_logradouro").val(dados.logradouro);
+                        $("#id_bairro").val(dados.bairro);
+                        $("#id_cidade").val(dados.localidade);
+                        $("#id_estado").val(dados.uf);
+                        $("#id_numero").focus();
+                    }
+                });
+            }
+        });
+    });
+</script>
 {% endblock %}

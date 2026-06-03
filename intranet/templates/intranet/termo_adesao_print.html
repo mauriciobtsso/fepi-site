@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termo de Adesão - Serviço Voluntário FEPI</title>
+    <style>
+        /* Estilos gerais para visualização na tela */
+        body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.6; 
+            margin: 0; 
+            padding: 0; 
+            color: #000; 
+            background: #e9ecef; 
+        }
+        
+        /* Simulação de uma folha A4 */
+        .a4-page { 
+            width: 210mm; 
+            min-height: 297mm; 
+            padding: 20mm; 
+            margin: 10mm auto; 
+            border: 1px solid #ccc; 
+            background: white; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+            box-sizing: border-box; 
+        }
+        
+        h2 { text-align: center; font-size: 18px; text-transform: uppercase; margin-bottom: 30px; }
+        .text-justify { text-align: justify; }
+        .text-center { text-align: center; }
+        .mt-5 { margin-top: 50px; }
+        .mb-4 { margin-bottom: 25px; }
+        
+        .assinatura-box { margin-top: 80px; text-align: center; page-break-inside: avoid; }
+        .linha-assinatura { border-top: 1px solid #000; width: 70%; margin: 0 auto 5px auto; }
+        
+        /* Botão visível apenas na tela */
+        .btn-print { 
+            display: block; 
+            width: 250px; 
+            margin: 20px auto; 
+            padding: 12px; 
+            text-align: center; 
+            background: #1e3c72; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Regras exclusivas para a hora da impressão/geração do PDF */
+        @media print {
+            body { background: white; margin: 0; }
+            .a4-page { 
+                margin: 0; 
+                border: initial; 
+                width: 100%; 
+                min-height: initial; 
+                box-shadow: initial; 
+                padding: 0; 
+            }
+            .btn-print { display: none; } /* Esconde o botão no PDF */
+            @page { margin: 20mm; } /* Margens reais de impressão */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botão superior para o usuário disparar a impressão manualmente se a janela for fechada -->
+    <button onclick="window.print();" class="btn-print">
+        🖨️ Imprimir / Salvar como PDF
+    </button>
+
+    <div class="a4-page">
+        <h2>Termo de Adesão ao Serviço Voluntário</h2>
+        
+        <p class="text-justify mb-4">
+            Pelo presente instrumento, <strong>{{ perfil.nome_razao_social|default:"[NOME DO VOLUNTÁRIO]"|upper }}</strong>, 
+            portador(a) do CPF nº <strong>{{ perfil.cpf_cnpj|default:"[CPF NÃO INFORMADO]" }}</strong>, 
+            residente e domiciliado(a) na cidade de Teresina, Piauí, doravante denominado(a) <strong>VOLUNTÁRIO(A)</strong>, 
+            celebra com a <strong>FEDERAÇÃO ESPÍRITA PIAUIENSE (FEPI)</strong>, pessoa jurídica de direito privado sem fins lucrativos, 
+            o presente Termo de Adesão, nos termos da Lei nº 9.608, de 18 de fevereiro de 1998.
+        </p>
+
+        <p class="text-justify mb-4">
+            <strong>Cláusula Primeira:</strong> O(a) VOLUNTÁRIO(A) prestará serviços não remunerados à FEPI, 
+            de forma espontânea e sem vínculo empregatício, nem obrigação de natureza trabalhista, previdenciária ou afim.
+        </p>
+
+        <p class="text-justify mb-4">
+            <strong>Cláusula Segunda:</strong> O(a) VOLUNTÁRIO(A) compromete-se a atuar com zelo, dedicação e respeito 
+            aos princípios e diretrizes da Doutrina Espírita e ao Estatuto da instituição, cumprindo a programação de 
+            dias e horários previamente acordada com a coordenação de sua respectiva área de atuação.
+        </p>
+
+        <p class="text-justify mb-4">
+            <strong>Cláusula Terceira:</strong> Este Termo poderá ser rescindido a qualquer tempo, por qualquer 
+            uma das partes, mediante comunicação prévia.
+        </p>
+
+        <p class="text-justify mt-5">
+            Por estarem de pleno acordo, o(a) voluntário(a) assina o presente termo.
+        </p>
+
+        <div class="text-center" style="margin-top: 40px; margin-bottom: 60px;">
+            Teresina - PI, {{ hoje|date:"d" }} de {{ hoje|date:"F" }} de {{ hoje|date:"Y" }}.
+        </div>
+
+        <div class="assinatura-box">
+            <div class="linha-assinatura"></div>
+            <strong>{{ perfil.nome_razao_social|default:"NOME DO VOLUNTÁRIO"|upper }}</strong><br>
+            Voluntário(a)
+        </div>
+    </div>
+
+    <!-- Script que abre a janela de PDF/Impressão automaticamente assim que a página carrega -->
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                window.print();
+            }, 500); // Aguarda meio segundo para garantir que a renderização foi concluída
+        };
+    </script>
+</body>
+</html>

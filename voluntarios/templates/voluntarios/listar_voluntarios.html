@@ -44,9 +44,9 @@
                 <tbody>
                     {% for v in voluntarios %}
                     <tr>
-                        <td class="fw-bold text-dark">{{ v.nome }}</td>
-                        <td>{{ v.cpf|default:"---" }}</td>
-                        <td>{{ v.telefones|default:"---" }}</td>
+                        <td class="fw-bold text-dark">{{ v.nome_razao_social|default:"---" }}</td>
+                        <td>{{ v.cpf_cnpj|default:"---" }}</td>
+                        <td>{{ v.telefone|default:"---" }}</td>
                         <td class="text-center">
                             <a href="{% url 'documentos_voluntario' v.pk %}" class="btn btn-sm btn-success shadow-sm" title="Histórico de Anexos">
                                 <i class="fas fa-folder-open"></i> Anexos
