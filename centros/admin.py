@@ -3,23 +3,22 @@ from .models import Centro
 
 @admin.register(Centro)
 class CentroAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'cidade', 'bairro', 'telefone', 'site') # Adicionei site na lista
+    list_display = ('nome', 'cidade', 'bairro', 'telefone', 'site')
     list_filter = ('tipo', 'cidade', 'estado')
-    search_fields = ('nome', 'cnpj', 'bairro')
+    search_fields = ('nome', 'cnpj', 'bairro', 'cidade')
     
-    # Aqui definimos a ordem e os grupos do formulário
     fieldsets = (
         ('Identificação', {
             'fields': ('nome', 'tipo', 'foto', 'cnpj', 'data_fundacao')
         }),
         ('Localização (Digite o CEP para preencher)', {
-            'fields': ('cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'estado')
+            'fields': ('cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'estado', 'latitude', 'longitude')
         }),
         ('Contato', {
-            'fields': ('telefone', 'site') # <--- AQUI ESTÁ ELE! Agora vai aparecer.
+            'fields': ('telefone', 'site')
         }),
     )
 
-    # Carrega o script que busca o CEP
     class Media:
+        # Carrega o script responsável pelo ViaCEP e Máscaras
         js = ('js/admin_cep.js',)

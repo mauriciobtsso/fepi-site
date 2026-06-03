@@ -1,0 +1,182 @@
+{% extends 'painel/base_painel.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h3>
+        <i class="fas fa-map-marker-alt me-2"></i> 
+        {% if form.instance.pk %}Editar Centro Espírita{% else %}Novo Centro Espírita{% endif %}
+    </h3>
+    <a href="javascript:history.back()" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data" class="row g-3">
+            {% csrf_token %}
+            
+            <h5 class="text-primary mt-4 border-bottom pb-2">Identificação</h5>
+            <div class="col-md-6">
+                {{ form.nome.label_tag }}
+                {{ form.nome }}
+            </div>
+            <div class="col-md-3">
+                {{ form.tipo.label_tag }}
+                {{ form.tipo }}
+            </div>
+            <div class="col-md-3">
+                {{ form.data_fundacao.label_tag }}
+                {{ form.data_fundacao }}
+            </div>
+            
+            <div class="col-md-6">
+                {{ form.cnpj.label_tag }}
+                {{ form.cnpj }}
+            </div>
+            <div class="col-md-6">
+                {{ form.foto.label_tag }}
+                {{ form.foto }}
+            </div>
+
+            <h5 class="text-primary mt-5 border-bottom pb-2">Endereço <small class="text-muted" style="font-size:0.8rem;">(Digite o CEP para buscar)</small></h5>
+            <div class="col-md-3">
+                {{ form.cep.label_tag }}
+                {{ form.cep }}
+            </div>
+            <div class="col-md-7">
+                {{ form.endereco.label_tag }}
+                {{ form.endereco }}
+            </div>
+            <div class="col-md-2">
+                {{ form.numero.label_tag }}
+                {{ form.numero }}
+            </div>
+
+            <div class="col-md-4">
+                {{ form.complemento.label_tag }}
+                {{ form.complemento }}
+            </div>
+            <div class="col-md-3">
+                {{ form.bairro.label_tag }}
+                {{ form.bairro }}
+            </div>
+            <div class="col-md-3">
+                {{ form.cidade.label_tag }}
+                {{ form.cidade }}
+            </div>
+            <div class="col-md-2">
+                {{ form.estado.label_tag }}
+                {{ form.estado }}
+            </div>
+
+            <h5 class="text-primary mt-5 border-bottom pb-2">Mapa <small class="text-muted" style="font-size:0.8rem;">(Coordenadas exatas)</small></h5>
+            <div class="col-md-6">
+                {{ form.latitude.label_tag }}
+                {{ form.latitude }}
+                <small class="text-muted">Ex: -5.08921</small>
+            </div>
+            <div class="col-md-6">
+                {{ form.longitude.label_tag }}
+                {{ form.longitude }}
+                <small class="text-muted">Ex: -42.8016</small>
+            </div>
+
+            <h5 class="text-primary mt-5 border-bottom pb-2">Contato</h5>
+            <div class="col-md-4">
+                {{ form.telefone.label_tag }}
+                {{ form.telefone }}
+            </div>
+            <div class="col-md-8">
+                {{ form.site.label_tag }}
+                {{ form.site }}
+            </div>
+
+            <div class="col-12 mt-4 text-end">
+                <button type="submit" class="btn btn-success btn-lg px-5">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. VIA CEP + OPENSTREETMAP (Nominatim)
+    const cepInput = document.getElementById('id_cep');
+    if (cepInput) {
+        cepInput.addEventListener('blur', function() {
+            let cep = this.value.replace(/\D/g, '');
+            if (cep.length === 8) {
+                // Efeito visual carregando
+                cepInput.style.opacity = '0.5';
+                
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        cepInput.style.opacity = '1';
+                        if (!data.erro) {
+                            // Preenche os dados de endereço
+                            document.getElementById('id_endereco').value = data.logradouro || '';
+                            document.getElementById('id_bairro').value = data.bairro || '';
+                            document.getElementById('id_cidade').value = data.localidade || '';
+                            document.getElementById('id_estado').value = data.uf || '';
+                            document.getElementById('id_numero').focus(); // Pula pro número
+
+                            // --- MÁGICA DO MAPA AUTOMÁTICO ---
+                            // Pega o endereço recém preenchido e busca as coordenadas
+                            let enderecoBusca = `${data.logradouro}, ${data.localidade}, ${data.uf}, Brasil`;
+                            
+                            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(enderecoBusca)}`)
+                                .then(resMapa => resMapa.json())
+                                .then(geoData => {
+                                    if (geoData && geoData.length > 0) {
+                                        const latInput = document.getElementById('id_latitude');
+                                        const lngInput = document.getElementById('id_longitude');
+                                        
+                                        if (latInput) latInput.value = geoData[0].lat;
+                                        if (lngInput) lngInput.value = geoData[0].lon;
+                                        
+                                        // Destaca as caixas para o usuário ver que foi preenchido automático
+                                        if(latInput) latInput.style.backgroundColor = '#e8f5e9';
+                                        if(lngInput) lngInput.style.backgroundColor = '#e8f5e9';
+                                    }
+                                })
+                                .catch(err => console.error("Não foi possível achar as coordenadas exatas: ", err));
+
+                        } else {
+                            alert("CEP não encontrado.");
+                        }
+                    })
+                    .catch(error => {
+                        cepInput.style.opacity = '1';
+                        console.error("Erro ao buscar CEP:", error);
+                    });
+            }
+        });
+
+        // Máscara CEP
+        cepInput.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,5})(\d{0,3})/);
+            e.target.value = !x[2] ? x[1] : x[1] + '-' + x[2];
+        });
+    }
+
+    // 2. MÁSCARA TELEFONE
+    const telInput = document.getElementById('id_telefone');
+    if (telInput) {
+        telInput.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    }
+    
+    // Formatação do Bootstrap nos inputs padrão do Django
+    document.querySelectorAll('input[type="text"], input[type="url"], select, input[type="date"]').forEach(function(el) {
+        el.classList.add('form-control');
+    });
+});
+</script>
+{% endblock %}

@@ -1,57 +1,42 @@
-/* centros/static/js/admin_cep.js */
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // --- 1. MÁGICA DO CEP ---
+    // 1. Busca de CEP via API ViaCEP
     const cepInput = document.getElementById('id_cep');
     if (cepInput) {
-        // Evento: Ao sair do campo ou colar algo
         cepInput.addEventListener('blur', function() {
-            // Limpa tudo que não for número (remove pontos e traços)
-            let cepLimpo = this.value.replace(/\D/g, '');
-            
-            // Atualiza o campo com o valor limpo
-            this.value = cepLimpo;
-
-            if (cepLimpo.length === 8) {
-                // Busca na API
-                fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`)
+            let cep = this.value.replace(/\D/g, '');
+            if (cep.length === 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
                     .then(response => response.json())
                     .then(data => {
                         if (!data.erro) {
-                            if(document.getElementById('id_endereco')) document.getElementById('id_endereco').value = data.logradouro;
-                            if(document.getElementById('id_bairro')) document.getElementById('id_bairro').value = data.bairro;
-                            if(document.getElementById('id_cidade')) document.getElementById('id_cidade').value = data.localidade;
-                            if(document.getElementById('id_estado')) document.getElementById('id_estado').value = data.uf;
-                            
-                            // Pula para o número
-                            if(document.getElementById('id_numero')) document.getElementById('id_numero').focus();
+                            document.getElementById('id_endereco').value = data.logradouro;
+                            document.getElementById('id_bairro').value = data.bairro;
+                            document.getElementById('id_cidade').value = data.localidade;
+                            document.getElementById('id_estado').value = data.uf;
+                            document.getElementById('id_numero').focus();
                         } else {
-                            alert("CEP não encontrado na base de dados.");
+                            alert("CEP não encontrado.");
                         }
                     })
-                    .catch(() => console.log('Erro na busca do CEP'));
+                    .catch(error => console.error("Erro ao buscar CEP:", error));
             }
-        });
-        
-        // Permite colar qualquer sujeira que ele limpa na hora
-        cepInput.addEventListener('paste', function(e) {
-            setTimeout(() => {
-                this.value = this.value.replace(/\D/g, '');
-            }, 10);
         });
     }
 
-    // --- 2. MÁGICA DA DATA (01011990 -> 01/01/1990) ---
-    const dataInput = document.getElementById('id_data_fundacao');
-    if (dataInput) {
-        dataInput.placeholder = "DD/MM/AAAA";
-        dataInput.addEventListener('input', function(e) {
-            let v = this.value.replace(/\D/g, ''); // Só números
-            
-            if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2);
-            if (v.length >= 5) v = v.substring(0,5) + '/' + v.substring(5,9);
-            
-            this.value = v;
+    // 2. Máscara Simples de Telefone (Foco em UX)
+    const telInput = document.getElementById('id_telefone');
+    if (telInput) {
+        telInput.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    }
+    
+    // 3. Máscara Simples de CEP
+    if (cepInput) {
+        cepInput.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,5})(\d{0,3})/);
+            e.target.value = !x[2] ? x[1] : x[1] + '-' + x[2];
         });
     }
 });

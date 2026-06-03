@@ -23,7 +23,7 @@ class Centro(models.Model):
     data_fundacao = models.DateField(blank=True, null=True, verbose_name="Data de Fundação")
 
     # Endereço
-    cep = models.CharField(max_length=20, blank=True, null=True, verbose_name="CEP") # Aumentei para aceitar formatação se necessário
+    cep = models.CharField(max_length=20, blank=True, null=True, verbose_name="CEP")
     endereco = models.CharField(max_length=300, verbose_name="Logradouro")
     numero = models.CharField(max_length=20, blank=True, verbose_name="Número")
     complemento = models.CharField(max_length=100, blank=True)
@@ -31,9 +31,13 @@ class Centro(models.Model):
     cidade = models.CharField(max_length=100, default="Teresina")
     estado = models.CharField(max_length=2, choices=ESTADO_CHOICES, default='PI')
     
+    # Coordenadas (Novo)
+    latitude = models.CharField(max_length=50, blank=True, null=True, help_text="Obrigatório para aparecer no mapa. Ex: -5.08921")
+    longitude = models.CharField(max_length=50, blank=True, null=True, help_text="Ex: -42.8016")
+
     # Contatos
     telefone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Telefone")
-    site = models.URLField(blank=True, null=True, verbose_name="Site ou Instagram") # <-- VOLTOU!
+    site = models.URLField(blank=True, null=True, verbose_name="Site ou Instagram")
     
     def __str__(self):
         return self.nome

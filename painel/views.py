@@ -28,7 +28,6 @@ from .forms import (
 
 # --- BLINDAGEM DE ACESSO AO PAINEL ---
 def check_acesso_painel(user):
-    # Somente Superusers ou Colunistas Aprovados acessam o painel administrativo
     if user.is_superuser:
         return True
     if hasattr(user, 'perfil') and user.perfil.is_colunista and user.perfil.status == 'APROVADO':
@@ -38,7 +37,6 @@ def check_acesso_painel(user):
 def is_admin(user):
     return user.is_superuser
 
-# Aplique o check_acesso_painel em todas as views que não são exclusivas de admin
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
 def dashboard(request):
@@ -466,7 +464,8 @@ def gerenciar_centro(request, id=None):
     else:
         form = CentroForm(instance=instancia)
     titulo = "Editar Centro Espírita" if id else "Novo Centro Espírita"
-    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+    # AQUI ESTÁ A CORREÇÃO! APONTANDO PARA O ARQUIVO CORRETO:
+    return render(request, 'painel/secretaria/form_centro.html', {'form': form, 'titulo': titulo})
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
@@ -569,7 +568,6 @@ def gerenciar_usuarios(request):
         if acao == 'aprovar':
             perfil.status = 'APROVADO'
             perfil.save()
-            # Ativa o login no Django
             perfil.user.is_active = True
             perfil.user.save()
             messages.success(request, f"Cadastro de {perfil.user.username} APROVADO com sucesso.")
@@ -577,7 +575,6 @@ def gerenciar_usuarios(request):
         elif acao == 'recusar':
             perfil.status = 'RECUSADO'
             perfil.save()
-            # Desativa o login no Django
             perfil.user.is_active = False
             perfil.user.save()
             messages.error(request, f"Cadastro de {perfil.user.username} RECUSADO.")
@@ -602,7 +599,7 @@ def criar_usuario(request):
         nome = request.POST.get('nome_razao_social')
         tipo = request.POST.get('tipo')
         cpf_cnpj = request.POST.get('cpf_cnpj')
-        data_nasc = request.POST.get('data_nascimento_fundacao') # <-- NOVO
+        data_nasc = request.POST.get('data_nascimento_fundacao') 
         telefone = request.POST.get('telefone')
         is_colunista = request.POST.get('is_colunista') == 'on'
         
@@ -621,7 +618,7 @@ def criar_usuario(request):
                 perfil.nome_razao_social = nome
                 perfil.tipo = tipo
                 perfil.cpf_cnpj = cpf_cnpj
-                perfil.data_nascimento_fundacao = data_nasc if data_nasc else None # <-- NOVO
+                perfil.data_nascimento_fundacao = data_nasc if data_nasc else None
                 perfil.telefone = telefone
                 perfil.cep = request.POST.get('cep')
                 perfil.logradouro = request.POST.get('logradouro')
@@ -646,18 +643,16 @@ def criar_usuario(request):
 def editar_usuario(request, id):
     perfil = get_object_or_404(Perfil, id=id)
     if request.method == 'POST':
-        # Dados Básicos
         perfil.nome_razao_social = request.POST.get('nome_razao_social')
         perfil.tipo = request.POST.get('tipo')
         perfil.cpf_cnpj = request.POST.get('cpf_cnpj')
         
-        data_nasc = request.POST.get('data_nascimento_fundacao') # <-- NOVO
-        perfil.data_nascimento_fundacao = data_nasc if data_nasc else None # <-- NOVO
+        data_nasc = request.POST.get('data_nascimento_fundacao')
+        perfil.data_nascimento_fundacao = data_nasc if data_nasc else None 
         
         perfil.telefone = request.POST.get('telefone')
         perfil.is_colunista = request.POST.get('is_colunista') == 'on'
         
-        # Endereço
         perfil.cep = request.POST.get('cep')
         perfil.logradouro = request.POST.get('logradouro')
         perfil.numero = request.POST.get('numero')
@@ -666,24 +661,21 @@ def editar_usuario(request, id):
         perfil.cidade = request.POST.get('cidade')
         perfil.estado = request.POST.get('estado')
         
-        # Status e User Active
         novo_status = request.POST.get('status')
         if novo_status:
             perfil.status = novo_status
             perfil.user.is_active = (novo_status == 'APROVADO')
         
-        # TROCA DE SENHA PELO ADMIN (NOVO)
         nova_senha = request.POST.get('nova_senha')
         if nova_senha:
             perfil.user.set_password(nova_senha)
             messages.info(request, "A senha do usuário foi redefinida.")
 
-        # Email do User
         email = request.POST.get('email')
         if email:
             perfil.user.email = email
             
-        perfil.user.save() # Salva email, senha e is_active
+        perfil.user.save()
         perfil.save()
         
         messages.success(request, f"Dados de {perfil.user.username} atualizados com sucesso!")

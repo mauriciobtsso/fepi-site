@@ -283,7 +283,7 @@ class PaginaInstitucionalForm(forms.ModelForm):
 class CentroForm(forms.ModelForm):
     class Meta:
         model = Centro
-        fields = ['nome', 'tipo', 'foto', 'cnpj', 'data_fundacao', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'estado', 'telefone', 'site']
+        fields = ['nome', 'tipo', 'foto', 'cnpj', 'data_fundacao', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'estado', 'telefone', 'site', 'latitude', 'longitude']
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control'}),
             'tipo': forms.Select(attrs={'class': 'form-select'}),
