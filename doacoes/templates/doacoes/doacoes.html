@@ -1,144 +1,329 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}FEPI | Quero Doar{% endblock %}
+{% block title %}FEPI | Apoie a Causa Espírita{% endblock %}
 
 {% block extra_css %}
 <style>
-    .hero-doacao {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        color: white;
-        padding: 60px 0;
-        border-radius: 0 0 30px 30px;
-        margin-top: -20px;
-        margin-bottom: 50px;
-        text-align: center;
+    /* Estilização da Seção de Introdução */
+    .doacao-intro {
+        margin-top: 30px;
+        margin-bottom: 45px;
     }
-    .hero-doacao h1 { font-weight: 800; font-size: 2.5rem; margin-bottom: 20px; }
-    
-    .texto-apelo { font-size: 1.15rem; line-height: 1.8; color: #444; margin-bottom: 40px; }
-    
-    .doacao-card { background-color: white; padding: 30px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
-    .doacao-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--azul-escuro); padding-bottom: 10px; margin-bottom: 20px; }
-    .doacao-header h3 { color: var(--azul-escuro); margin: 0; font-size: 1.4rem; font-weight: 700; }
-    .doacao-header i { font-size: 1.5rem; color: var(--azul-escuro); }
+    .titulo-principal {
+        color: #1e3c72;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .subtitulo-espirita {
+        font-style: italic;
+        color: #555;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .imagem-apelo {
+        width: 100%;
+        max-height: 480px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+    .texto-descricao {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #444;
+    }
 
-    .qrcode-box { display: flex; gap: 30px; align-items: center; padding: 20px 0; border-top: 1px dashed #ccc; margin-top: 20px; }
-    .qrcode-img { width: 150px; height: 150px; object-fit: contain; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-radius: 8px; }
-    
-    .pix-key-display { font-weight: 600; color: #006400; background: #d0f7d0; padding: 12px; border-radius: 6px; font-size: 1.1rem; text-align: center; word-break: break-all; }
-    
-    .card-socio { background-color: #f8f9fa; border-left: 5px solid var(--destaque); padding: 40px; border-radius: 12px; margin-top: 50px; margin-bottom: 50px;}
-    .card-socio h3 { color: var(--azul-escuro); font-weight: bold; margin-bottom: 20px; }
-    
-    /* Regras para os textos gerados pelo CKEditor ficarem bonitos */
-    .ckeditor-content p { margin-bottom: 15px; }
-    .ckeditor-content ul { padding-left: 20px; margin-bottom: 15px; }
-    .ckeditor-content li { margin-bottom: 8px; }
-    
-    @media (max-width: 768px) {
-        .qrcode-box { flex-direction: column; text-align: center; }
+    /* Grid e Organização dos Cards Dinâmicos */
+    .secao-formas-titulo {
+        color: #1e3c72;
+        font-weight: 700;
+        margin-top: 40px;
+        margin-bottom: 30px;
+    }
+    .doacao-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .doacao-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+    .card-titulo-area {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid #edf2f7;
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+    }
+    .card-titulo-area h4 {
+        margin: 0;
+        font-weight: 700;
+        color: #2d3748;
+        font-size: 1.3rem;
+    }
+    .card-titulo-area i {
+        font-size: 1.5rem;
+        color: #2a5298;
+    }
+
+    /* Elementos específicos do PIX */
+    .qrcode-box {
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+        padding: 15px;
+        border-radius: 8px;
+        max-width: 180px;
+        margin: 0 auto 20px auto;
+    }
+    .qrcode-box img {
+        width: 100%;
+        height: auto;
+    }
+    .pix-copia-cola-container {
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 8px;
+    }
+    .pix-chave-texto {
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: 600;
+        color: #2d3748;
+        margin: 0;
+        word-break: break-all;
+        font-size: 0.95rem;
+    }
+    .btn-copiar {
+        background-color: #2a5298;
+        color: #ffffff;
+        border: none;
+        padding: 6px 16px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background-color 0.2s;
+    }
+    .btn-copiar:hover {
+        background-color: #1e3c72;
+    }
+
+    /* Elementos de Contas Bancárias */
+    .info-bancaria-item {
+        margin-bottom: 10px;
+        font-size: 1rem;
+        color: #4a5568;
+    }
+    .info-bancaria-item strong {
+        color: #2d3748;
+    }
+
+    /* Seção Sócio Contribuinte */
+    .secao-socio {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-left: 5px solid #ecc94b;
+        border-radius: 12px;
+        padding: 35px;
+        margin-top: 50px;
+        margin-bottom: 60px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .socio-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+    .socio-header h4 {
+        margin: 0;
+        font-weight: 700;
+        color: #1e3c72;
+        font-size: 1.4rem;
+    }
+    .socio-header i {
+        font-size: 1.4rem;
+        color: #ecc94b;
+    }
+    .socio-texto {
+        color: #4a5568;
+        line-height: 1.7;
+        font-size: 1.05rem;
+    }
+    .btn-socio-link {
+        color: #2a5298;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 15px;
+        transition: color 0.2s;
+    }
+    .btn-socio-link:hover {
+        color: #1e3c72;
+        text-decoration: underline;
+    }
+
+    /* Notificação de sucesso flutuante (Toast) */
+    .toast-copiado {
+        visibility: hidden;
+        min-width: 280px;
+        background-color: #2d3748;
+        color: #fff;
+        text-align: center;
+        border-radius: 8px;
+        padding: 12px;
+        position: fixed;
+        z-index: 1050;
+        left: 50%;
+        bottom: 40px;
+        transform: translateX(-50%);
+        font-size: 0.95rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        opacity: 0;
+        transition: opacity 0.3s, visibility 0.3s;
+    }
+    .toast-copiado.show {
+        visibility: visible;
+        opacity: 1;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="hero-doacao">
-    <div class="container">
-        <h1>{{ config.titulo_principal }}</h1>
-        <p class="lead mb-0"><i class="fas fa-heart text-danger"></i> Fora da caridade não há salvação</p>
-    </div>
-</div>
-
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            
-            <div class="row align-items-center mb-5">
-                {% if config.imagem_capa %}
-                <div class="col-md-5 mb-4 mb-md-0">
-                    <img src="{{ config.imagem_capa.url }}" class="img-fluid rounded-4 shadow-sm" alt="Apoie a FEPI">
-                </div>
-                <div class="col-md-7">
-                    <div class="texto-apelo ckeditor-content">
-                        {{ config.texto_apelo|safe }}
-                    </div>
-                </div>
-                {% else %}
-                <div class="col-12">
-                    <div class="texto-apelo ckeditor-content text-center">
-                        {{ config.texto_apelo|safe }}
-                    </div>
-                </div>
-                {% endif %}
-            </div>
+    <!-- INTRODUÇÃO E APELO -->
+    <div class="doacao-intro">
+        <h2 class="titulo-principal">{{ config.titulo_principal|default:"Apoie a Causa Espírita" }}</h2>
+        <div class="subtitulo-espirita">
+            <i class="fas fa-heart text-danger"></i>
+            <span>Fora da caridade não há salvação</span>
+        </div>
 
-            <h3 class="text-center fw-bold mb-4" style="color: var(--azul-escuro);">Como realizar sua doação:</h3>
-            <div class="row">
-                {% for forma in formas %}
-                <div class="col-md-6">
-                    <div class="doacao-card h-100">
-                        <div class="doacao-header">
-                            <h3>{{ forma.titulo }}</h3>
-                            {% if forma.tipo == 'PIX' %}
-                                <i class="fa-brands fa-pix"></i>
-                            {% elif forma.tipo == 'CONTA' %}
-                                <i class="fa-solid fa-building-columns"></i>
-                            {% else %}
-                                <i class="fa-solid fa-hand-holding-heart"></i>
-                            {% endif %}
-                        </div>
-                        
-                        <p style="font-size: 0.95rem; color: #555; margin-bottom: 20px;">{{ forma.descricao }}</p>
+        {% if config.imagem_capa %}
+            <img src="{{ config.imagem_capa.url }}" class="imagem-apelo" alt="Caridade FEPI">
+        {% endif %}
 
-                        {% if forma.tipo == 'PIX' %}
-                            {% if forma.qr_code %}
-                            <div class="text-center mb-3">
-                                <img src="{{ forma.qr_code.url }}" alt="QR Code PIX" class="qrcode-img">
-                            </div>
-                            {% endif %}
-                            
-                            {% if forma.chave_pix %}
-                            <span style="font-size: 0.85rem; color: #666; display: block; margin-bottom: 5px; text-align: center;">Chave PIX (Copiar e Colar):</span>
-                            <div class="pix-key-display">
-                                {{ forma.chave_pix }}
-                            </div>
-                            {% endif %}
-
-                        {% elif forma.tipo == 'CONTA' %}
-                            <div style="font-size: 1rem; color: #333;">
-                                <p class="mb-2"><i class="fa-solid fa-bank text-primary me-2"></i> <strong>Banco:</strong> {{ forma.banco }}</p>
-                                <p class="mb-2"><i class="fa-solid fa-credit-card text-primary me-2"></i> <strong>Agência:</strong> {{ forma.agencia }}</p>
-                                <p class="mb-0"><i class="fa-solid fa-user-check text-primary me-2"></i> <strong>Favorecido/Conta:</strong> {{ forma.conta }}</p>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-                {% empty %}
-                <div class="col-12 text-center text-muted">
-                    <p>Formas de doação sendo atualizadas...</p>
-                </div>
-                {% endfor %}
-            </div>
-
-            {% if config.texto_socio %}
-            <div class="card-socio shadow-sm">
-                <h3><i class="fas fa-users text-primary me-2"></i> {{ config.titulo_socio }}</h3>
-                <div class="ckeditor-content text-dark mb-4" style="font-size: 1.1rem;">
-                    {{ config.texto_socio|safe }}
-                </div>
-                
-                {% if config.link_socio %}
-                <div class="text-start mt-4">
-                    <a href="{{ config.link_socio }}" target="_blank" class="btn btn-lg btn-primary rounded-pill px-5 fw-bold shadow-sm">
-                        Quero ser Sócio Contribuinte <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
-                </div>
-                {% endif %}
-            </div>
-            {% endif %}
-
+        <div class="texto-descricao ckeditor-content">
+            {{ config.texto_apelo|safe }}
         </div>
     </div>
+
+    <!-- SEÇÃO DAS FORMAS DE PAGAMENTO REGISTRADAS NO BANCO -->
+    <h4 class="secao-formas-titulo">Como realizar sua doação:</h4>
+    
+    <div class="row g-4">
+        {% for forma in formas %}
+            <div class="col-md-6 col-lg-6 d-flex align-items-stretch">
+                <div class="doacao-card w-100">
+                    <div class="card-titulo-area">
+                        <h4>{{ forma.titulo }}</h4>
+                        {% if forma.tipo == 'PIX' %}
+                            <i class="fa-brands fa-pix" style="color: #32bcad;"></i>
+                        {% else %}
+                            <i class="fas fa-university"></i>
+                        {% endif %}
+                    </div>
+
+                    <p class="text-muted mb-3" style="font-size: 0.95rem;">{{ forma.descricao }}</p>
+
+                    {% if forma.tipo == 'PIX' %}
+                        {% if forma.qr_code %}
+                            <div class="qrcode-box text-center">
+                                <img src="{{ forma.qr_code.url }}" alt="QR Code para transferência PIX">
+                            </div>
+                        {% endif %}
+
+                        {% if forma.chave_pix %}
+                            <div class="mt-2">
+                                <label class="small text-muted fw-bold d-block mb-1">Chave PIX (Clique ao lado para copiar):</label>
+                                <div class="pix-copia-cola-container">
+                                    <span class="pix-chave-texto" id="chave-{{ forma.id }}">{{ forma.chave_pix }}</span>
+                                    <button class="btn-copiar" onclick="copiarTexto('chave-{{ forma.id }}')">
+                                        <i class="far fa-copy me-1"></i> Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                    {% else %}
+                        <!-- TRATAMENTO PARA CONTAS BANCÁRIAS TRADICIONAIS -->
+                        <div class="mt-2">
+                            <div class="info-bancaria-item"><strong>Banco:</strong> {{ forma.banco|default:"-" }}</div>
+                            <div class="info-bancaria-item"><strong>Agência:</strong> {{ forma.agencia|default:"-" }}</div>
+                            <div class="info-bancaria-item"><strong>Conta Corrente:</strong> {{ forma.conta|default:"-" }}</div>
+                            {% if forma.cnpj_fepi %}
+                                <div class="info-bancaria-item"><strong>CNPJ:</strong> {{ forma.cnpj_fepi }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    Nenhuma forma de doação ativa no momento. Por favor, retorne mais tarde.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- SEÇÃO SÓCIO CONTRIBUINTE -->
+    {% if config.texto_socio %}
+        <div class="secao-socio">
+            <div class="socio-header">
+                <i class="fas fa-users"></i>
+                <h4>{{ config.titulo_socio|default:"Seja um Sócio Contribuinte" }}</h4>
+            </div>
+            <div class="socio-texto ckeditor-content">
+                {{ config.texto_socio|safe }}
+            </div>
+            {% if config.link_socio %}
+                <a href="{{ config.link_socio }}" class="btn-socio-link" target="_blank">
+                    Quero ser Sócio Contribuinte <i class="fas fa-arrow-right"></i>
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
 </div>
+
+<!-- Feedback visual de cópia bem-sucedida -->
+<div id="toastCopiado" class="toast-copiado">
+    <i class="fas fa-check text-success me-2"></i> Chave copiada para a área de transferência!
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copiarTexto(elementId) {
+        var textoElemento = document.getElementById(elementId).innerText;
+        
+        // Utilitário assíncrono nativo para cópia segura
+        navigator.clipboard.writeText(textoElemento).then(function() {
+            var toast = document.getElementById("toastCopiado");
+            toast.className = "toast-copiado show";
+            setTimeout(function() { 
+                toast.className = toast.className.replace("show", ""); 
+            }, 2500);
+        }).catch(function(err) {
+            console.error('Falha ao copiar texto: ', err);
+        });
+    }
+</script>
 {% endblock %}

@@ -264,7 +264,7 @@
         }
         .footer-inner {
             max-width: 1200px; margin: 0 auto;
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem; font-size: 0.9rem;
         }
         .footer-title { color: #fff; font-weight: 600; margin-bottom: 1rem; border-left: 3px solid var(--destaque); padding-left: 10px; } 
@@ -373,7 +373,7 @@
                         <li><a href="{% url 'atividades' %}">Horários Semanais</a></li>
                     </ul>
                 </li>
-                            
+                                    
                 <li><a href="{% url 'lista_centros' %}">Centros</a></li>
                 <li><a href="{% url 'lista_noticias' %}">Notícias</a></li>
 
@@ -456,10 +456,24 @@
                 <li><a href="/painel" target="_blank">Área Administrativa</a></li> 
             </ul>
         </div>
+        
+        <div>
+            <div class="footer-title">Links Úteis</div>
+            <ul class="footer-list">
+                <li><a href="{% url 'links_uteis' %}">Páginas e Parceiros</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <div class="footer-title">Downloads</div>
+            <ul class="footer-list">
+                <li><a href="{% url 'downloads' %}">Arquivos e Documentos</a></li>
+            </ul>
+        </div>
     </div>
     {% endwith %}
     <div class="footer-bottom">
-        © 2025 Federação Espírita Piauiense. Todos os direitos reservados.
+        © {% now "Y" %} Federação Espírita Piauiense. Todos os direitos reservados.
     </div>
 </footer>
 
