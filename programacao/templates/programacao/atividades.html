@@ -40,8 +40,12 @@
                     {% for atv in dia.list %}
                     <div class="item-atividade">
                         <span class="horario-badge"><i class="fa-regular fa-clock"></i> {{ atv.horario }}</span>
-                        <span class="nome-atividade">{{ atv.nome }}</span>
-                        {% if atv.descricao %}<span class="desc-atividade">{{ atv.descricao }}</span>{% endif %}
+                        <!-- Aplicado o filtro safe para interpretar as tags HTML e acentuações -->
+                        <span class="nome-atividade">{{ atv.nome|safe }}</span>
+                        {% if atv.descricao %}
+                            <!-- Aplicado o filtro safe também na descrição por precaução -->
+                            <span class="desc-atividade">{{ atv.descricao|safe }}</span>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
