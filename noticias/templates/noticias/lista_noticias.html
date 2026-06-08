@@ -153,6 +153,10 @@
   .news-row__title{
     font-size: 1.12rem;
   }
+  
+  .form-control {
+    font-size: 16px !important;
+  }
 }
 </style>
 {% endblock %}
@@ -165,9 +169,53 @@
     <div class="news-header">
       <h1 class="page-title">Notícias e Atualizações</h1>
       <p class="page-subtitle">Acompanhe as novidades e comunicados da FEPI.</p>
+      
+      <!-- Campo de Busca -->
+      <div style="margin-top: 24px;">
+        <form method="get" style="display: flex; gap: 8px; max-width: 500px; margin: 0 auto;">
+          <input 
+            type="text" 
+            name="q" 
+            value="{{ query }}" 
+            placeholder="Buscar notícias..." 
+            class="form-control"
+            style="flex: 1; border-radius: 8px; border: 1px solid #ddd; padding: 10px 14px; font-size: 0.95rem;"
+          >
+          <button 
+            type="submit" 
+            class="btn" 
+            style="background-color: var(--azul-escuro); color: white; border: none; border-radius: 8px; padding: 10px 20px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;"
+          >
+            Buscar
+          </button>
+          {% if query %}
+            <a 
+              href="{% url 'lista_noticias' %}" 
+              class="btn" 
+              style="background-color: #f0f0f0; color: #333; border: none; border-radius: 8px; padding: 10px 20px; font-weight: 600; cursor: pointer; text-decoration: none; transition: background-color 0.2s;"
+            >
+              Limpar
+            </a>
+          {% endif %}
+        </form>
+        {% if query %}
+          <p style="text-align: center; color: #666; margin-top: 12px; font-size: 0.9rem;">
+            {% if total_resultados > 0 %}
+              Encontrados <strong>{{ total_resultados }}</strong> resultado{{ total_resultados|pluralize:"s" }} para "<strong>{{ query }}</strong>"
+            {% else %}
+              Nenhuma notícia encontrada para "<strong>{{ query }}</strong>"
+            {% endif %}
+          </p>
+        {% endif %}
+      </div>
     </div>
 
-    {% if noticias %}
+    {% if query and not noticias %}
+      <div style="text-align:center; padding:60px; color:#888; border:1px dashed #ddd; border-radius:14px;">
+        <p style="margin:0; font-size: 1.1rem;">Nenhuma notícia encontrada para "<strong>{{ query }}</strong>"</p>
+        <p style="margin:10px 0 0; font-size: 0.9rem;"><a href="{% url 'lista_noticias' %}" style="color: var(--azul-escuro); text-decoration: none;">Ver todas as notícias</a></p>
+      </div>
+    {% elif noticias %}
       <div class="news-list">
         {% for noticia in noticias %}
           <a href="{% url 'detalhe_noticia' noticia.slug %}" class="news-row">

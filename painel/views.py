@@ -55,7 +55,7 @@ def criar_noticia(request):
             noticia.save()
             return redirect('painel_home')
     else:
-        form = NoticiaForm(initial={'data_publicacao': timezone.now().date(), 'autor': 'FEPI'})
+        form = NoticiaForm(initial={'data_publicacao': timezone.now(), 'autor': 'FEPI'})
     return render(request, 'painel/criar_noticia.html', {'form': form})
 
 @login_required(login_url='/login/')
