@@ -103,6 +103,12 @@
             </select>
 
             <button type="submit" class="search-btn"><i class="fas fa-search"></i> Filtrar</button>
+
+            {% if geolocation_ativa %}
+                <input type="hidden" name="user_lat" id="user_lat_input" value="{{ user_lat }}">
+                <input type="hidden" name="user_lon" id="user_lon_input" value="{{ user_lon }}">
+                <input type="hidden" name="raio" id="raio_input" value="{{ raio_km }}">
+            {% endif %}
         </form>
         
         <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
@@ -111,10 +117,6 @@
             </button>
             
             {% if geolocation_ativa %}
-                <input type="hidden" name="user_lat" id="user_lat" value="{{ user_lat }}">
-                <input type="hidden" name="user_lon" id="user_lon" value="{{ user_lon }}">
-                <input type="hidden" name="raio" id="raio" value="{{ raio_km }}">
-                
                 <button type="button" class="search-btn" style="background-color: #dc3545;" onclick="limparGeolocation()">
                     <i class="fas fa-times"></i> Limpar Localização
                 </button>
@@ -360,14 +362,8 @@
                     // Adiciona os parâmetros de geolocalização à URL
                     var form = document.getElementById('search-form');
                     
-                    // Remove inputs anteriores se existirem
-                    var oldLat = form.querySelector('input[name="user_lat"]');
-                    var oldLon = form.querySelector('input[name="user_lon"]');
-                    var oldRaio = form.querySelector('input[name="raio"]');
-                    
-                    if (oldLat) oldLat.remove();
-                    if (oldLon) oldLon.remove();
-                    if (oldRaio) oldRaio.remove();
+                    // Remove inputs anteriores se existirem (pelo nome)
+                    Array.from(form.querySelectorAll('input[name="user_lat"], input[name="user_lon"], input[name="raio"]')).forEach(el => el.remove());
                     
                     // Adiciona novos inputs
                     var inputLat = document.createElement('input');
@@ -439,10 +435,15 @@
         var form = document.getElementById('search-form');
         var raioInput = form.querySelector('input[name="raio"]');
         
-        if (raioInput) {
-            raioInput.value = novoRaio;
-            form.submit();
+        if (!raioInput) {
+            raioInput = document.createElement('input');
+            raioInput.type = 'hidden';
+            raioInput.name = 'raio';
+            form.appendChild(raioInput);
         }
+        
+        raioInput.value = novoRaio;
+        form.submit();
     };
     
     // Função para mostrar a localização do usuário no mapa

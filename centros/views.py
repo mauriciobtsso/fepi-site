@@ -30,9 +30,9 @@ def lista_centros(request):
     estado_req = request.GET.get('estado', '')
     cidade_req = request.GET.get('cidade', '')
     bairro_req = request.GET.get('bairro', '')
-    user_lat = request.GET.get('user_lat', '')
-    user_lon = request.GET.get('user_lon', '')
-    raio_km = request.GET.get('raio', '50')  # Raio padrão de 50 km
+    user_lat = request.GET.get('user_lat', '').replace(',', '.')
+    user_lon = request.GET.get('user_lon', '').replace(',', '.')
+    raio_km = request.GET.get('raio', '50').replace(',', '.')  # Raio padrão de 50 km
     
     centros = Centro.objects.all().order_by('nome')
 
