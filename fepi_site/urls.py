@@ -21,7 +21,7 @@ from core.views import home, institucional, fale_conosco, privacidade
 from core.sitemaps import StaticViewSitemap, NoticiaSitemap, LivroSitemap, EventoSitemap
 
 from livraria.views import detalhe_livro, livraria_completa
-from centros.views import lista_centros
+from centros.views import lista_centros, api_centros_proximidade
 from programacao.views import atividades, doutrinarias, calendario, lista_cursos, detalhe_curso
 
 # --- DEFINIÇÃO DO DICIONÁRIO SITEMAPS ---
@@ -58,6 +58,7 @@ urlpatterns = [
     path('fale-conosco/', fale_conosco, name='fale_conosco'),
     path('livraria/', livraria_completa, name='livraria'),
     path('centros/', lista_centros, name='lista_centros'),
+    path('api/centros-proximidade/', api_centros_proximidade, name='api_centros_proximidade'),
     path('painel/voluntarios/', include('voluntarios.urls')),
     
     # Livraria Detalhe
