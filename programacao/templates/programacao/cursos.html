@@ -266,7 +266,7 @@
                                 <span><i class="fa-solid fa-location-dot"></i> {{ curso.local }}</span>
                                 {% if curso.descricao %}
                                     <div style="margin-top: 5px; color: #666; font-size: 0.9rem;">
-                                        {{ curso.descricao|striptags|truncatewords:20 }}
+                                        {{ curso.descricao|striptags|safe|truncatewords:20 }}
                                     </div>
                                 {% endif %}
                             </div>

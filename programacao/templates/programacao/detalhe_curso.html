@@ -20,165 +20,253 @@
 
 {% block extra_css %}
 <style>
-    .page-header { background: var(--azul-escuro); color: white; padding: 40px 0; margin-bottom: 40px; }
-    .header-content { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
-    .header-content h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; line-height: 1.2; }
-    .header-content p { opacity: 0.8; font-size: 1.1rem; }
-
-    .main-content-grid { 
-        display: grid; grid-template-columns: 2fr 1fr; gap: 40px; 
-        max-width: 1200px; margin: 0 auto; padding: 0 1.25rem 60px;
-    }
-    
-    /* Coluna Lateral de Info */
-    .info-card { 
-        background: var(--azul-claro); padding: 30px; border-radius: var(--radius); 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 100px;
-    }
-    
-    .info-item { 
-        padding: 15px 0; border-bottom: 1px solid rgba(28,86,127,0.1); 
-        display: flex; align-items: flex-start; gap: 15px;
-    }
-    .info-item:last-child { border-bottom: none; }
-    
-    .info-icon { 
-        font-size: 1.5rem; color: var(--dourado); 
-        min-width: 30px; text-align: center;
-    }
-    
-    .info-text strong { 
-        display: block; font-size: 1.1rem; color: var(--azul-escuro); 
-        font-weight: 700; margin-bottom: 3px; 
-    }
-    .info-text span { 
-        font-size: 0.95rem; color: #555; display: block; 
+    /* ======================================================
+       HEADER DO CURSO
+    ====================================================== */
+    .course-detail-header {
+        background: var(--azul-escuro);
+        color: white;
+        padding: 60px 0;
+        margin-bottom: 40px;
+        text-align: center;
     }
 
-    .btn-inscricao {
-        display: block; width: 100%; text-align: center;
-        background-color: var(--dourado); color: var(--azul-escuro);
-        padding: 12px 20px; border-radius: 8px; font-size: 1.1rem;
-        font-weight: bold; margin-top: 20px; transition: 0.2s;
+    .course-detail-header .breadcrumb {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.7;
+        margin-bottom: 15px;
+        display: block;
     }
-    .btn-inscricao:hover { background-color: #ffc14d; }
+
+    .course-detail-header h1 {
+        font-size: 2.8rem;
+        font-weight: 900;
+        color: white;
+        margin: 0;
+        line-height: 1.2;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* ======================================================
+       LAYOUT EM GRID
+    ====================================================== */
+    .course-grid {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 40px;
+        max-width: 1100px;
+        margin: 0 auto 60px;
+        padding: 0 20px;
+    }
 
     /* Conteúdo Principal */
-    .curso-descricao h2 { 
-        font-size: 1.8rem; color: var(--azul-escuro); font-weight: 800; 
-        margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; 
+    .course-main-img {
+        width: 100%;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
     }
-    .curso-descricao p { margin-bottom: 1.5rem; line-height: 1.7; }
-    .curso-descricao ul { margin-left: 20px; margin-bottom: 1.5rem; }
-    .curso-descricao li { margin-bottom: 8px; }
 
-    .imagem-curso {
-        width: 100%; height: auto; border-radius: var(--radius); 
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin-bottom: 30px;
+    .course-description {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #374151;
     }
-    
+
+    .course-description h2 {
+        font-size: 1.6rem;
+        color: var(--azul-escuro);
+        margin: 40px 0 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f3f4f6;
+    }
+
+    /* Sidebar de Informações */
+    .course-sidebar {
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+    }
+
+    .info-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .info-row i {
+        font-size: 1.4rem;
+        color: var(--destaque);
+        margin-top: 3px;
+    }
+
+    .info-row div strong {
+        display: block;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #64748b;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .info-row div span {
+        font-size: 1.05rem;
+        color: var(--azul-escuro);
+        font-weight: 700;
+    }
+
+    .btn-action {
+        display: block;
+        width: 100%;
+        text-align: center;
+        background: var(--destaque);
+        color: white !important;
+        padding: 16px;
+        border-radius: 12px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
+        margin-top: 10px;
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+    }
+
+    .btn-action:hover {
+        background: var(--azul-escuro);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 51, 102, 0.3);
+    }
+
+    /* Compartilhamento */
+    .share-box {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .share-box p {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+    }
+
+    .share-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .share-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px;
+        border-radius: 8px;
+        color: white !important;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    .share-btn.whatsapp { background: #25D366; }
+    .share-btn.facebook { background: #1877F2; }
+
+    /* ======================================================
+       RESPONSIVIDADE
+    ====================================================== */
     @media (max-width: 900px) {
-        .main-content-grid { grid-template-columns: 1fr; gap: 30px; }
-        .info-card { position: static; margin-bottom: 30px; }
-        .page-header h1 { font-size: 2rem; }
+        .course-grid {
+            grid-template-columns: 1fr;
+        }
+        .course-detail-header h1 {
+            font-size: 2rem;
+            padding: 0 20px;
+        }
+        .course-sidebar {
+            position: static;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <div class="header-content">
-        <p>Curso, Evento ou Atividade</p>
+<div class="course-detail-header">
+    <div class="container">
+        <span class="breadcrumb">Cursos e Eventos</span>
         <h1>{{ curso.titulo }}</h1>
     </div>
 </div>
 
-<div class="main-content-grid">
+<div class="course-grid">
     
-    <div>
+    <div class="course-main">
         {% if curso.imagem %}
-            <img src="{{ curso.imagem.url }}" alt="Imagem do {{ curso.titulo }}" class="imagem-curso">
+            <img src="{{ curso.imagem.url }}" alt="{{ curso.titulo }}" class="course-main-img">
         {% endif %}
 
-        <div class="curso-descricao">
-            <h2>Detalhes</h2>
+        <div class="course-description">
+            <h2>Sobre este evento</h2>
             {{ curso.descricao|safe }}
-
-            {% if curso.palestrante %}
-                <h2>Ministrante</h2>
-                <p>O curso será ministrado por <strong>{{ curso.palestrante }}</strong>.</p>
-            {% endif %}
-            
-            {% if curso.link_inscricao and curso.data_evento|date:"Y-m-d" >= "now"|date:"Y-m-d" %}
-                <h2>Inscrição</h2>
-                <p>Garanta sua vaga! As inscrições estão abertas.</p>
-                <a href="{{ curso.link_inscricao }}" target="_blank" class="btn-inscricao">
-                    Quero me Inscrever Agora
-                </a>
-            {% endif %}
         </div>
-
-        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
-            <h4 style="font-size: 1rem; color: #555; margin-bottom: 15px;">Ajude a divulgar este evento:</h4>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <a href="https://api.whatsapp.com/send?text=Olha%20este%20evento%20na%20FEPI:%20*{{ curso.titulo|urlencode }}*%0A{{ request.build_absolute_uri|urlencode }}" 
-                   target="_blank" 
-                   style="background: #25D366; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
-                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
-                </a>
-                
-                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}" 
-                   target="_blank" 
-                   style="background: #1877F2; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
-                    <i class="fa-brands fa-facebook"></i> Facebook
-                </a>
-            </div>
-        </div>
-
     </div>
 
-    <div>
+    <aside class="course-sidebar">
         <div class="info-card">
-            
-            <div class="info-item">
-                <i class="fa-solid fa-clock info-icon"></i>
-                <div class="info-text">
-                    <strong>Data e Hora</strong>
-                    <span>{{ curso.data_evento|date:"d de F \à\s H:i" }}h</span>
+            <div class="info-row">
+                <i class="fa-solid fa-calendar-days"></i>
+                <div>
+                    <strong>Data e Horário</strong>
+                    <span>{{ curso.data_evento|date:"d \d\e F" }} às {{ curso.data_evento|date:"H:i" }}h</span>
                 </div>
             </div>
 
-            {% if curso.local %}
-            <div class="info-item">
-                <i class="fa-solid fa-location-dot info-icon"></i>
-                <div class="info-text">
+            <div class="info-row">
+                <i class="fa-solid fa-location-dot"></i>
+                <div>
                     <strong>Local</strong>
                     <span>{{ curso.local }}</span>
                 </div>
             </div>
-            {% endif %}
-
-            {% if curso.palestrante %}
-            <div class="info-item">
-                <i class="fa-solid fa-user info-icon"></i>
-                <div class="info-text">
-                    <strong>Expositor(a)</strong>
-                    <span>{{ curso.palestrante }}</span>
-                </div>
-            </div>
-            {% endif %}
 
             {% if curso.link_inscricao and curso.data_evento|date:"Y-m-d" >= "now"|date:"Y-m-d" %}
-                <a href="{{ curso.link_inscricao }}" target="_blank" class="btn-inscricao">
+                <a href="{{ curso.link_inscricao }}" target="_blank" class="btn-action">
                     Fazer Inscrição
                 </a>
             {% else %}
-                <p style="text-align: center; color: #888; font-size: 0.9rem; margin-top: 20px;">
-                    Inscrições encerradas ou evento passado.
-                </p>
+                <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center; color: #64748b; font-weight: 600;">
+                    Inscrições encerradas ou evento passado
+                </div>
             {% endif %}
+
+            <div class="share-box">
+                <p>Compartilhar</p>
+                <div class="share-buttons">
+                    <a href="https://api.whatsapp.com/send?text=Olha%20este%20evento%20na%20FEPI:%20*{{ curso.titulo|urlencode }}*%0A{{ request.build_absolute_uri|urlencode }}" 
+                       target="_blank" class="share-btn whatsapp">
+                        <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}" 
+                       target="_blank" class="share-btn facebook">
+                        <i class="fa-brands fa-facebook"></i> Facebook
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
-    
+    </aside>
+
 </div>
 {% endblock %}
