@@ -4,9 +4,12 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Case, When, Value, IntegerField
 from django.utils import timezone
 from django.utils.formats import date_format # <-- IMPORTANTE: Para o mês em PT-BR
+from django.utils.timezone import make_naive, is_aware
+from django.core.paginator import Paginator
 from itertools import chain, groupby 
 from operator import attrgetter 
 from .models import AtividadeSemanal, Doutrinaria, CursoEvento
+from core.models import InformacaoContato
 
 
 def atividades(request):
@@ -26,8 +29,44 @@ def atividades(request):
     return render(request, 'programacao/atividades.html', {'atividades': atividades})
 
 def doutrinarias(request):
-    palestras = Doutrinaria.objects.all().order_by('-data_hora')
-    return render(request, 'programacao/doutrinarias.html', {'palestras': palestras})
+    """ Exibe as palestras. O Python organiza as futuras e passadas numa lista única para evitar bugs no Aiven. """
+    agora = timezone.now()
+    # Garante que a data atual esteja no mesmo formato "ingênuo" do banco para não dar erro
+    agora_naive = make_naive(agora) if is_aware(agora) else agora
+    
+    todas_palestras = Doutrinaria.objects.all()
+    
+    futuras = []
+    passadas = []
+    
+    for p in todas_palestras:
+        if p.data_hora:
+            p_data_naive = make_naive(p.data_hora) if is_aware(p.data_hora) else p.data_hora
+            if p_data_naive >= agora_naive:
+                p.is_past = False  # Etiqueta para o HTML
+                futuras.append(p)
+            else:
+                p.is_past = True   # Etiqueta para o HTML
+                passadas.append(p)
+                
+    # Ordena as futuras da mais próxima para a mais distante (Crescente)
+    futuras.sort(key=lambda x: x.data_hora)
+    
+    # Ordena as passadas da mais recente para a mais velha (Decrescente)
+    passadas.sort(key=lambda x: x.data_hora, reverse=True)
+    
+    # Junta tudo em uma lista só (O HTML antigo já lê isso!)
+    lista_final = futuras + passadas
+
+    # Paginação para não pesar a tela
+    paginator = Paginator(lista_final, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'programacao/doutrinarias.html', {
+        'palestras': page_obj,
+        'contato': InformacaoContato.objects.first()
+    })
 
 def calendario(request):
     agora = timezone.now()
