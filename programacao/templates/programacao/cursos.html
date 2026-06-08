@@ -5,213 +5,304 @@
 
 {% block extra_css %}
 <style>
-    /* --- GRID RESPONSIVO (A Correção) --- */
-    .grid-cursos { 
-        display: grid; 
-        gap: 30px; 
-        margin-bottom: 60px;
-        /* Por padrão (telemóvel), 1 coluna */
-        grid-template-columns: 1fr; 
-    }
-
-    /* Tablet (Telas maiores que 700px): FORÇA 2 colunas */
-    @media (min-width: 700px) {
-        .grid-cursos {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    /* Desktop (Telas maiores que 1024px): FORÇA 3 colunas */
-    @media (min-width: 1024px) {
-        .grid-cursos {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    /* --- ESTILO DO CARD --- */
-    .card-curso { 
-        background: white; 
-        border-radius: var(--radius); 
-        overflow: hidden; 
-        border: 1px solid #e5e7eb; 
-        transition: all 0.3s ease; 
-        display: flex; 
-        flex-direction: column;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        height: 100%; /* Garante altura igual na linha */
-    }
-    
-    .card-curso:hover { 
-        transform: translateY(-5px); 
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1); 
-        border-color: var(--destaque); 
-    }
-
-    /* Wrapper da Imagem */
-    .img-wrapper {
-        height: 200px;
+    /* ======================================================
+       ESTILO BASEADO NAS NOTÍCIAS
+    ====================================================== */
+    .courses-wrapper {
         width: 100%;
-        background-color: #f4f6f8;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 0 6px 60px;
+        box-sizing: border-box;
+    }
+
+    .courses-header {
+        text-align: center;
+        margin-bottom: 26px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .page-title {
+        color: var(--azul-escuro);
+        font-size: 2.0rem;
+        font-weight: 900;
+        margin: 0;
+        line-height: 1.15;
+    }
+
+    .page-subtitle {
+        color: #6b7280;
+        font-size: 1.05rem;
+        margin: 10px 0 0;
+    }
+
+    /* ======================================================
+       LISTA DE CURSOS (Estilo Notícias)
+    ====================================================== */
+    .course-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-row {
+        display: flex;
+        gap: 20px;
+        padding: 20px 0;
+        border-bottom: 1px solid rgba(0,0,0,.08);
+        text-decoration: none;
+        color: inherit;
+        transition: background 0.2s;
+    }
+
+    .course-row:hover .course-row__title {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+    }
+
+    .course-row__thumb {
+        flex: 0 0 240px;
+        width: 240px;
+        height: 150px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #eef2f7;
+    }
+
+    .course-row__thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .course-placeholder {
+        width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
-        position: relative;
+        color: #b9c2d1;
+        font-size: 2.5rem;
     }
 
-    .img-curso { 
-        width: 100%; 
-        height: 100%; 
-        object-fit: cover; 
-        transition: 0.5s;
+    .course-row__content {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
-    
-    .card-curso:hover .img-curso { transform: scale(1.05); }
 
-    /* Conteúdo do Card */
-    .info-curso { 
-        padding: 25px; 
-        flex: 1; 
-        display: flex; 
-        flex-direction: column; 
-    }
-    
-    .data-badge { 
-        background: var(--azul-claro); 
-        color: var(--azul-escuro); 
-        font-weight: 800; 
-        font-size: 0.75rem; 
-        padding: 6px 12px; 
-        border-radius: 50px; 
-        width: fit-content; 
-        margin-bottom: 15px; 
+    .course-row__meta {
+        font-size: .78rem;
+        color: #8b95a7;
+        font-weight: 900;
+        letter-spacing: .35px;
         text-transform: uppercase;
-        display: flex; align-items: center; gap: 8px; 
-    }
-    
-    .titulo-curso { 
-        font-size: 1.25rem; 
-        font-weight: 800; 
-        color: var(--azul-escuro); 
-        margin-bottom: 10px; 
-        line-height: 1.3; 
-    }
-    
-    .local-curso { 
-        font-size: 0.9rem; color: #666; margin-bottom: 20px; 
-        display: flex; align-items: center; gap: 8px; 
+        margin: 0 0 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .btn-inscrever { 
-        margin-top: auto; 
-        text-align: center;
-        color: var(--azul-medio); 
-        font-weight: 700; 
-        text-decoration: none; 
-        padding: 15px 0 0;
-        border-top: 1px solid #eee;
-        display: block;
-        transition: 0.2s;
+    .course-row__meta .badge-aberto {
+        background-color: #dcfce7;
+        color: #166534;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
     }
-    .btn-inscrever:hover { color: var(--destaque); }
 
-    /* Estilos de Passado */
-    .passado { opacity: 0.8; }
-    .passado .img-wrapper { filter: grayscale(100%); }
-    .passado:hover { opacity: 1; }
-    .passado:hover .img-wrapper { filter: none; }
-    
-    .divider { margin: 60px 0 40px; border-top: 1px solid #ddd; text-align: center; }
+    .course-row__title {
+        font-size: 1.3rem;
+        font-weight: 900;
+        color: var(--azul-escuro);
+        margin: 0 0 10px;
+        line-height: 1.25;
+    }
+
+    .course-row__info {
+        margin: 0;
+        color: #4b5563;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .course-row__info span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* ======================================================
+       HISTÓRICO (Estilo mais discreto)
+    ====================================================== */
+    .divider { margin: 60px 0 30px; border-top: 1px solid #ddd; text-align: center; }
     .divider span { 
-        background: #f4f6f8; padding: 0 20px; 
+        background: #f8f9fa; padding: 0 20px; 
         position: relative; top: -14px; 
         color: #888; font-weight: bold; 
         text-transform: uppercase; font-size: 0.85rem;
+    }
+
+    .history-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        opacity: 0.8;
+    }
+
+    .history-card {
+        background: white;
+        border-radius: 10px;
+        border: 1px solid #eee;
+        padding: 15px;
+        display: flex;
+        gap: 15px;
+        text-decoration: none;
+        color: inherit;
+        transition: 0.2s;
+    }
+
+    .history-card:hover {
+        opacity: 1;
+        border-color: #ddd;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .history-card__thumb {
+        flex: 0 0 80px;
+        height: 80px;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #f0f0f0;
+    }
+
+    .history-card__thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(1);
+    }
+
+    .history-card__content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .history-card__title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #444;
+        margin-bottom: 4px;
+    }
+
+    .history-card__date {
+        font-size: 0.8rem;
+        color: #888;
+    }
+
+    /* ======================================================
+       MOBILE
+    ====================================================== */
+    @media (max-width: 720px) {
+        .course-row {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .course-row__thumb {
+            width: 100%;
+            height: 180px;
+            flex: 0 0 auto;
+        }
+
+        .course-row__title {
+            font-size: 1.2rem;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top: 40px; padding-bottom: 60px;">
-    
-    <div class="header-pagina" style="text-align: center; margin-bottom: 50px;">
-        <h2 style="font-size: 2.2rem; font-weight: 800; color: var(--azul-escuro); margin-bottom: 10px;">Cursos e Eventos</h2>
-        <p style="color: #666; font-size: 1.1rem;">Acompanhe e participe das nossas atividades de estudo.</p>
-    </div>
+<div class="container" style="padding-top: 40px;">
 
-    {% if futuros %}
-    <div class="grid-cursos">
-        {% for curso in futuros %}
-        <div class="card-curso">
-            <a href="{% url 'detalhe_curso' curso.slug %}" class="img-wrapper">
-                {% if curso.imagem %}
-                    <img src="{{ curso.imagem.url }}" class="img-curso" alt="{{ curso.titulo }}" loading="lazy">
-                {% else %}
-                    <i class="fa-solid fa-book-open" style="font-size: 3rem; color: #ddd;"></i>
-                {% endif %}
-            </a>
-            
-            <div class="info-curso">
-                <span class="data-badge">
-                    <i class="fa-solid fa-calendar-day"></i> {{ curso.data_evento|date:"d M Y" }}
-                    <span style="border-left: 1px solid rgba(0,0,0,0.1); padding-left: 8px; margin-left: 0;">
-                        {{ curso.data_evento|date:"H:i" }}h
-                    </span>
-                </span>
-                
-                <div class="titulo-curso">
-                    <a href="{% url 'detalhe_curso' curso.slug %}" style="text-decoration: none; color: inherit;">
-                        {{ curso.titulo }}
+    <div class="courses-wrapper">
+
+        <div class="courses-header">
+            <h1 class="page-title">Cursos e Eventos</h1>
+            <p class="page-subtitle">Participe das nossas atividades de estudo e aperfeiçoamento.</p>
+        </div>
+
+        {% if futuros %}
+            <div class="course-list">
+                {% for curso in futuros %}
+                    <a href="{% url 'detalhe_curso' curso.slug %}" class="course-row">
+                        <div class="course-row__thumb">
+                            {% if curso.imagem %}
+                                <img src="{{ curso.imagem.url }}" alt="{{ curso.titulo }}">
+                            {% else %}
+                                <div class="course-placeholder">📚</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="course-row__content">
+                            <p class="course-row__meta">
+                                <span class="badge-aberto">Inscrições Abertas</span>
+                                <span class="dot">•</span>
+                                {{ curso.data_evento|date:"d/m/Y" }} às {{ curso.data_evento|date:"H:i" }}h
+                            </p>
+
+                            <h3 class="course-row__title">{{ curso.titulo }}</h3>
+
+                            <div class="course-row__info">
+                                <span><i class="fa-solid fa-location-dot"></i> {{ curso.local }}</span>
+                                {% if curso.descricao %}
+                                    <div style="margin-top: 5px; color: #666; font-size: 0.9rem;">
+                                        {{ curso.descricao|striptags|truncatewords:20 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </a>
-                </div>
-                
-                <div class="local-curso">
-                    <i class="fa-solid fa-location-dot" style="color:var(--destaque);"></i> 
-                    {{ curso.local }}
-                </div>
-                
-                <a href="{% url 'detalhe_curso' curso.slug %}" class="btn-inscrever">
-                    Saiba mais e Inscreva-se <i class="fa-solid fa-arrow-right-long" style="margin-left: 5px;"></i>
-                </a>
+                {% endfor %}
             </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div style="text-align:center; padding: 40px; background: white; border-radius: 8px; border: 1px dashed #ccc;">
-        <i class="fa-regular fa-calendar" style="font-size: 2rem; color: #ccc; margin-bottom: 15px;"></i>
-        <p style="color:#888; margin: 0;">Nenhum curso com inscrições abertas no momento.</p>
-    </div>
-    {% endif %}
+        {% else %}
+            <div style="text-align:center; padding:60px; color:#888; border:1px dashed #ddd; border-radius:14px;">
+                <p style="margin:0;">Nenhum curso com inscrições abertas no momento.</p>
+            </div>
+        {% endif %}
 
-    {% if passados %}
-    <div class="divider"><span>Histórico de Realizações</span></div>
-    
-    <div class="grid-cursos">
-        {% for curso in passados %}
-        <div class="card-curso passado">
-            <div class="img-wrapper" style="height: 160px;">
-                {% if curso.imagem %}
-                    <img src="{{ curso.imagem.url }}" class="img-curso" loading="lazy">
-                {% else %}
-                     <i class="fa-solid fa-check" style="font-size: 2rem; color: #ddd;"></i>
-                {% endif %}
+        {% if passados %}
+            <div class="divider"><span>Histórico de Realizações</span></div>
+            
+            <div class="history-grid">
+                {% for curso in passados %}
+                    <a href="{% url 'detalhe_curso' curso.slug %}" class="history-card">
+                        <div class="history-card__thumb">
+                            {% if curso.imagem %}
+                                <img src="{{ curso.imagem.url }}" alt="{{ curso.titulo }}">
+                            {% else %}
+                                <div class="course-placeholder" style="font-size: 1.5rem;">🎓</div>
+                            {% endif %}
+                        </div>
+                        <div class="history-card__content">
+                            <h4 class="history-card__title">{{ curso.titulo }}</h4>
+                            <span class="history-card__date">Realizado em {{ curso.data_evento|date:"d/m/Y" }}</span>
+                        </div>
+                    </a>
+                {% endfor %}
             </div>
+        {% endif %}
 
-            <div class="info-curso">
-                <span class="data-badge" style="background:#eee; color:#666;">
-                    Realizado em {{ curso.data_evento|date:"d/m/Y" }}
-                </span>
-                <div class="titulo-curso" style="font-size: 1.1rem;">{{ curso.titulo }}</div>
-                
-                <a href="{% url 'detalhe_curso' curso.slug %}" class="btn-inscrever" style="margin-top: auto; color: #888;">
-                    Ver detalhes
-                </a>
-            </div>
-        </div>
-        {% endfor %}
     </div>
-    {% endif %}
 
 </div>
 {% endblock %}
