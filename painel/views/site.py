@@ -1,8 +1,10 @@
 # painel/views/site.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
-from core.models import ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram, PaginaInstitucional
-from painel.forms import PopupForm, YoutubeConfigForm, PostInstagramForm, PaginaInstitucionalForm
+from core.models import (ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram, 
+                         PaginaInstitucional, InformacaoContato)
+from painel.forms import (PopupForm, YoutubeConfigForm, PostInstagramForm, 
+                          PaginaInstitucionalForm, InformacaoContatoForm)
 from .auth import check_acesso_painel
 
 @login_required(login_url='/login/')
@@ -36,7 +38,7 @@ def config_youtube(request):
             return redirect('site_hub')
     else:
         form = YoutubeConfigForm(instance=config)
-    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Destaque do YouTube'})
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Destaque do YouTube', 'voltar_url': 'site_hub'})
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
@@ -56,7 +58,7 @@ def gerenciar_post_insta(request, id=None):
     else:
         form = PostInstagramForm(instance=post)
     titulo = "Editar Post da Vitrine" if id else "Novo Post da Vitrine"
-    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo, 'voltar_url': 'listar_instagram'})
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
@@ -76,4 +78,17 @@ def editar_institucional(request):
             return redirect('site_hub')
     else:
         form = PaginaInstitucionalForm(instance=pagina)
-    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Editar Página Institucional'})
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Editar Página Institucional', 'voltar_url': 'site_hub'})
+80	
+81	@login_required(login_url='/login/')
+82	@user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
+83	def editar_contato(request):
+84	    contato, created = InformacaoContato.objects.get_or_create(pk=1)
+85	    if request.method == 'POST':
+86	        form = InformacaoContatoForm(request.POST, instance=contato)
+87	        if form.is_valid():
+88	            form.save()
+89	            return redirect('site_hub')
+90	    else:
+91	        form = InformacaoContatoForm(instance=contato)
+92	    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Configuração de Contato', 'voltar_url': 'site_hub'})

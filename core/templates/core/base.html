@@ -336,7 +336,7 @@
 
 <header>
     <div class="topbar">
-        <span><i class="fa-solid fa-location-dot"></i> {{ contato.endereco|default:"Rua Olavo Bilac, 1394 - Teresina/PI" }}</span>
+        <span><i class="fa-solid fa-location-dot"></i> {{ contato.endereco|default:"Rua Olavo Bilac, 1394" }} - {{ contato.cidade|default:"Teresina/PI" }}</span>
         <a href="https://www.instagram.com/fepiaui/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
         <a href="https://www.youtube.com/@fepiaui" target="_blank"><i class="fa-brands fa-youtube"></i> YouTube</a>
     </div>
@@ -440,7 +440,7 @@
         <div>
             <div class="footer-title">Contato</div>
             <ul class="footer-list">
-                <li><i class="fa-solid fa-location-dot"></i> {{ contato.endereco|default:"Endereço" }}</li>
+                <li><i class="fa-solid fa-location-dot"></i> {{ contato.endereco|default:"Endereço" }} - {{ contato.cidade|default:"Teresina/PI" }}</li>
                 <li><i class="fa-brands fa-whatsapp"></i> {{ contato.telefone|default:"(86) 3221-3021" }}</li>
             </ul>
         </div>

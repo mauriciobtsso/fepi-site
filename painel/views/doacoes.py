@@ -24,7 +24,7 @@ def gerenciar_doacao(request, id=None):
     else:
         form = FormaDoacaoForm(instance=instancia)
     titulo = "Editar Forma de Doação" if id else "Nova Forma de Doação"
-    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo, 'voltar_url': 'listar_doacoes'})
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
@@ -44,4 +44,4 @@ def config_pagina_doacao(request):
             return redirect('listar_doacoes')
     else:
         form = PaginaDoacaoConfigForm(instance=config)
-    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Configurar Textos de Doação'})
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Configurar Textos de Doação', 'voltar_url': 'listar_doacoes'})
