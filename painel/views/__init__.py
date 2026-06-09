@@ -3,7 +3,7 @@
 from .auth import check_acesso_painel, is_admin
 from .dashboard import dashboard
 from .noticias import criar_noticia, listar_noticias, editar_noticia, deletar_noticia
-from .site import site_hub, gerenciar_popup, config_youtube, listar_instagram, gerenciar_post_insta, excluir_post_insta, editar_institucional
+from .site import site_hub, gerenciar_popup, config_youtube, listar_instagram, gerenciar_post_insta, excluir_post_insta, editar_contato, editar_institucional
 from .intranet import listar_documentos, criar_documento, editar_documento, excluir_documento, listar_categorias_doc, excluir_categoria_doc
 from .programacao import programacao_hub, listar_atividades, gerenciar_atividade, excluir_atividade, listar_palestras, gerenciar_palestra, excluir_palestra, listar_eventos, gerenciar_evento, excluir_evento
 from .livraria import livraria_hub, listar_livros, gerenciar_livro, excluir_livro, listar_categorias_liv, excluir_categoria_liv, config_livraria

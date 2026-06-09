@@ -79,16 +79,16 @@ def editar_institucional(request):
     else:
         form = PaginaInstitucionalForm(instance=pagina)
     return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Editar Página Institucional', 'voltar_url': 'site_hub'})
-80	
-81	@login_required(login_url='/login/')
-82	@user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
-83	def editar_contato(request):
-84	    contato, created = InformacaoContato.objects.get_or_create(pk=1)
-85	    if request.method == 'POST':
-86	        form = InformacaoContatoForm(request.POST, instance=contato)
-87	        if form.is_valid():
-88	            form.save()
-89	            return redirect('site_hub')
-90	    else:
-91	        form = InformacaoContatoForm(instance=contato)
-92	    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Configuração de Contato', 'voltar_url': 'site_hub'})
+    
+@login_required(login_url='/login/')
+@user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
+def editar_contato(request):
+    contato, created = InformacaoContato.objects.get_or_create(pk=1)
+    if request.method == 'POST':
+        form = InformacaoContatoForm(request.POST, instance=contato)
+        if form.is_valid():
+            form.save()
+            return redirect('site_hub')
+    else:
+        form = InformacaoContatoForm(instance=contato)
+    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Configuração de Contato', 'voltar_url': 'site_hub'})

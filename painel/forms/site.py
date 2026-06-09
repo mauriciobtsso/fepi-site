@@ -1,4 +1,3 @@
-# painel/forms/site.py
 from django import forms
 from ckeditor.widgets import CKEditorWidget
 from core.models import ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram, PaginaInstitucional, InformacaoContato
@@ -75,17 +74,17 @@ class PaginaInstitucionalForm(forms.ModelForm):
             'ano_inicio': forms.NumberInput(attrs={'class': 'form-control', 'style':'width: 100px; display:inline-block;'}),
             'ano_fim': forms.NumberInput(attrs={'class': 'form-control', 'style':'width: 100px; display:inline-block;'}),
             'conteudo': CKEditorWidget(),
-79	        }
-80	
-81	class InformacaoContatoForm(forms.ModelForm):
-82	    class Meta:
-83	        model = InformacaoContato
-84	        fields = ['endereco', 'cidade', 'cep', 'telefone', 'email', 'horario_livraria']
-85	        widgets = {
-86	            'endereco': forms.TextInput(attrs={'class': 'form-control'}),
-87	            'cidade': forms.TextInput(attrs={'class': 'form-control'}),
-88	            'cep': forms.TextInput(attrs={'class': 'form-control'}),
-89	            'telefone': forms.TextInput(attrs={'class': 'form-control'}),
-90	            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-91	            'horario_livraria': forms.TextInput(attrs={'class': 'form-control'}),
-92	        }
+        }
+
+class InformacaoContatoForm(forms.ModelForm):
+    class Meta:
+        model = InformacaoContato
+        fields = ['endereco', 'cidade', 'cep', 'telefone', 'email', 'horario_livraria']
+        widgets = {
+            'endereco': forms.TextInput(attrs={'class': 'form-control'}),
+            'cidade': forms.TextInput(attrs={'class': 'form-control'}),
+            'cep': forms.TextInput(attrs={'class': 'form-control'}),
+            'telefone': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'horario_livraria': forms.TextInput(attrs={'class': 'form-control'}),
+        }

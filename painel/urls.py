@@ -96,7 +96,7 @@ urlpatterns = [
 
     # --- SITE: INSTITUCIONAL ---
     path('site/institucional/', views.editar_institucional, name='editar_institucional'),
-99	    path('site/contato/', views.editar_contato, name='editar_contato'),
+    path('site/contato/', views.editar_contato, name='editar_contato'),
 
     # --- CENTROS ESPÍRITAS ---
     path('secretaria/centros/', views.listar_centros, name='listar_centros'),
