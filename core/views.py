@@ -10,8 +10,8 @@ from django.views.decorators.cache import cache_page, never_cache
 from django.views.decorators.vary import vary_on_headers
 import requests
 import xml.etree.ElementTree as ET
-from core.models import Coluna
 
+from core.models import Coluna
 from .models import (
     ConfiguracaoHome, PostInstagram, InformacaoContato,
     PaginaInstitucional, MembroDiretoria, ConfiguracaoYouTube
@@ -21,34 +21,23 @@ from noticias.models import Noticia
 from programacao.models import Doutrinaria, CursoEvento
 from .forms import ContatoForm
 
-# Função auxiliar interna com User-Agent para evitar bloqueio do YouTube
 def get_latest_youtube_video_id(channel_id):
-    print(f"--- TENTANDO BUSCAR YOUTUBE: {channel_id} ---") # DEBUG
     try:
         url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
-        # O SEGREDO: Adicionar um User-Agent para simular um navegador real
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
         
         response = requests.get(url, headers=headers, timeout=5)
-        print(f"--- STATUS YOUTUBE: {response.status_code} ---") # DEBUG
         
         if response.status_code == 200:
             root = ET.fromstring(response.content)
-            # Namespace do YouTube
             ns = {'yt': 'http://www.youtube.com/xml/schemas/2015', 'atom': 'http://www.w3.org/2005/Atom'}
             entry = root.find('atom:entry', ns)
             if entry:
-                vid = entry.find('yt:videoId', ns).text
-                print(f"--- VIDEO ENCONTRADO: {vid} ---") # DEBUG
-                return vid
-        else:
-            print(f"--- ERRO REQUISICAO: {response.status_code} ---")
-            
+                return entry.find('yt:videoId', ns).text
     except Exception as e:
-        print(f"--- ERRO EXCEPTION YOUTUBE: {e} ---") # DEBUG
-        
+        print(f"Erro YOUTUBE: {e}") 
     return None
 
 
@@ -57,17 +46,19 @@ def get_latest_youtube_video_id(channel_id):
 def home(request):
     agora = timezone.now()
 
-    # 1. CARROSSEL
     ultimas_noticias = Noticia.objects.all().order_by('-data_publicacao')[:4]
-    proximos_cursos = CursoEvento.objects.filter(data_evento__gte=agora).order_by('data_evento')[:3]
+    
+    # Tratamento para SQLite Timezone no Home
+    todos_cursos = CursoEvento.objects.all().order_by('data_evento')
+    proximos_cursos = [c for c in todos_cursos if c.data_evento.replace(tzinfo=None) >= agora.replace(tzinfo=None)][:3]
+    
     lista_carrossel = list(chain(ultimas_noticias, proximos_cursos))
 
-    # 2. AGENDA
-    palestras_agenda = Doutrinaria.objects.filter(data_hora__gte=agora)
-    cursos_agenda = CursoEvento.objects.filter(data_evento__gte=agora)
+    todas_palestras = Doutrinaria.objects.all().order_by('data_hora')
+    palestras_agenda = [p for p in todas_palestras if p.data_hora.replace(tzinfo=None) >= agora.replace(tzinfo=None)]
 
     eventos_agenda_temp = sorted(
-        chain(palestras_agenda, cursos_agenda),
+        chain(palestras_agenda, proximos_cursos),
         key=lambda evento: evento.data_hora if hasattr(evento, 'data_hora') else evento.data_evento
     )
 
@@ -82,7 +73,6 @@ def home(request):
             item.data_hora = item.data_evento
         eventos_agenda.append(item)
 
-    # 3. LIVROS
     lista_livros = list(Livro.objects.filter(destaque_home=True).order_by('?')[:12])
     if len(lista_livros) < 12:
         faltam = 12 - len(lista_livros)
@@ -92,45 +82,32 @@ def home(request):
         )
         lista_livros = lista_livros + extras
 
-    # 4. CONFIGURAÇÕES
     config_home = ConfiguracaoHome.objects.first()
     contato = InformacaoContato.objects.first()
     livraria_config = LivrariaConfig.objects.first()
     posts_insta = PostInstagram.objects.all()[:4]
+    colunas_home = Coluna.objects.filter(status='PUBLICADO').order_by('-data_publicacao')[:3]
 
-    # 5. YOUTUBE (Lógica com Debug e Correção)
     youtube_cfg = ConfiguracaoYouTube.objects.first()
     latest_video_id = None
 
-    colunas_home = Coluna.objects.filter(status='PUBLICADO').order_by('-data_publicacao')[:3]
-
     if youtube_cfg:
-        print(f"--- CONFIG YOUTUBE CARREGADA. MODO: {youtube_cfg.youtube_mode} ---") # DEBUG
         mode = (youtube_cfg.youtube_mode or 'auto').strip()
-
         if mode == 'off':
             latest_video_id = None
-
         elif mode == 'fixed':
-            fixed_id = (youtube_cfg.youtube_video_id or "").strip()
-            latest_video_id = fixed_id or None
-            print(f"--- MODO FIXO ID: {latest_video_id} ---") # DEBUG
-
-        else: # modo auto
+            latest_video_id = (youtube_cfg.youtube_video_id or "").strip() or None
+        else:
             channel_id = (youtube_cfg.youtube_channel_id or "").strip()
-            # Cache básico para não bombardear o YouTube a cada F5
             cache_key = f"fepi_yt_vid:{channel_id}"
             cached_vid = cache.get(cache_key)
 
             if cached_vid:
                  latest_video_id = cached_vid
-                 print(f"--- VIDEO VINDO DO CACHE: {cached_vid} ---")
             elif channel_id:
                 latest_video_id = get_latest_youtube_video_id(channel_id)
                 if latest_video_id:
-                    cache.set(cache_key, latest_video_id, 60 * 15) # Cache de 15 min
-    else:
-        print("--- NENHUMA CONFIGURACAO YOUTUBE ENCONTRADA NO BANCO ---") # DEBUG
+                    cache.set(cache_key, latest_video_id, 60 * 15)
 
     contexto = {
         'carrossel': lista_carrossel,
@@ -141,9 +118,8 @@ def home(request):
         'contato': contato,
         'livraria_config': livraria_config,
         'instagram': posts_insta,
-        
         'youtube_cfg': youtube_cfg,
-        'youtube_video_id': latest_video_id, # Variável correta para o template
+        'youtube_video_id': latest_video_id,
         'colunas': colunas_home,
     }
     return render(request, 'core/index.html', contexto)
@@ -157,19 +133,17 @@ def institucional(request):
 
     executiva = membros.filter(tipo__nome='Diretoria Executiva').order_by('ordem')
     fiscal = membros.filter(tipo__nome='Conselho Fiscal').order_by('ordem')
-
     outros_departamentos = membros.exclude(
         Q(tipo__nome='Diretoria Executiva') | Q(tipo__nome='Conselho Fiscal')
     ).order_by('tipo__ordem', 'ordem')
 
-    contexto = {
+    return render(request, 'core/institucional.html', {
         'pagina': pagina,
         'executiva': executiva,
         'fiscal': fiscal,
         'outros_departamentos': outros_departamentos,
         'contato': contato
-    }
-    return render(request, 'core/institucional.html', contexto)
+    })
 
 
 @never_cache
@@ -185,20 +159,12 @@ def fale_conosco(request):
             mensagem = form.cleaned_data['mensagem']
 
             subject = f"[{topico.upper()}] Novo Contato do Site - {nome}"
-            body = (
-                f"Mensagem de: {nome}\n"
-                f"Email: {email}\n"
-                f"Assunto: {form.get_topico_display(topico)}\n\n"
-                f"--- Mensagem ---\n{mensagem}"
-            )
+            body = f"Mensagem de: {nome}\nEmail: {email}\nAssunto: {form.get_topico_display(topico)}\n\n--- Mensagem ---\n{mensagem}"
 
             try:
-                send_mail(
-                    subject, body, settings.DEFAULT_FROM_EMAIL, [settings.EMAIL_RECEIVER], fail_silently=False
-                )
+                send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [settings.EMAIL_RECEIVER], fail_silently=False)
                 return render(request, 'core/fale_conosco.html', {'contato': contato, 'sucesso': True})
             except Exception as e:
-                print(f"ERRO DE EMAIL: {e}")
                 return render(request, 'core/fale_conosco.html', {'contato': contato, 'form': form, 'erro': True})
     else:
         form = ContatoForm()
@@ -208,56 +174,118 @@ def fale_conosco(request):
 
 @cache_page(60 * 60)
 def privacidade(request):
-    contato = InformacaoContato.objects.first()
-    return render(request, 'core/privacidade.html', {'contato': contato})
+    return render(request, 'core/privacidade.html', {'contato': InformacaoContato.objects.first()})
 
-def detalhe_coluna(request, slug):
-    coluna = get_object_or_404(Coluna, slug=slug)
-    contato = InformacaoContato.objects.first()
-    return render(request, 'core/detalhe_coluna.html', {
-        'coluna': coluna,
-        'contato': contato
-    })
 
 def listar_colunas_publicas(request):
-    """Página que lista todos os artigos publicados (Vozes da FEPI) com Busca e Paginação"""
-    
-    # 1. Captura o que o usuário digitou na busca (se houver)
     query = request.GET.get('q', '')
-    
-    # 2. Puxa todos os artigos publicados
     colunas_list = Coluna.objects.filter(status='PUBLICADO').order_by('-data_publicacao')
     
-    # 3. Filtra se houver uma pesquisa
     if query:
         colunas_list = colunas_list.filter(
-            Q(titulo__icontains=query) |
-            Q(resumo__icontains=query) |
-            Q(nome_autor__icontains=query) |
-            Q(autor_usuario__perfil__nome_razao_social__icontains=query)
+            Q(titulo__icontains=query) | Q(resumo__icontains=query) |
+            Q(nome_autor__icontains=query) | Q(autor_usuario__perfil__nome_razao_social__icontains=query)
         ).distinct()
 
-    # 4. Configura a Paginação (ex: 6 artigos por página)
-    paginator = Paginator(colunas_list, 6) # Muda aqui se quiser 9 ou 12 por página
+    paginator = Paginator(colunas_list, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    contato = InformacaoContato.objects.first()
-    
     return render(request, 'core/colunas.html', {
-        'colunas': page_obj,  # Passa o objeto paginado ao invés da lista inteira
-        'query': query,       # Passa o termo buscado para manter na barra
-        'contato': contato
+        'colunas': page_obj,
+        'query': query,
+        'contato': InformacaoContato.objects.first()
     })
 
 def detalhe_coluna(request, slug):
-    """Página que mostra o texto completo de um artigo específico"""
-    # Só permite acessar se estiver PUBLICADO
     coluna = get_object_or_404(Coluna, slug=slug, status='PUBLICADO')
-    contato = InformacaoContato.objects.first()
-    
     return render(request, 'core/detalhe_coluna.html', {
         'coluna': coluna,
-        'contato': contato
+        'contato': InformacaoContato.objects.first()
     })
 
+
+# =========================================================
+# VIEWS PÚBLICAS DE PROGRAMAÇÃO E NOTÍCIAS (COM PAGINAÇÃO)
+# =========================================================
+
+def doutrinarias(request):
+    """ Exibe as palestras. O Python organiza as futuras e passadas numa lista única para evitar bugs no Aiven. """
+    agora = timezone.now()
+    # Garante que a data atual esteja no mesmo formato "ingênuo" do banco para não dar erro
+    agora_naive = make_naive(agora) if is_aware(agora) else agora
+    
+    todas_palestras = Doutrinaria.objects.all()
+    
+    futuras = []
+    passadas = []
+    
+    for p in todas_palestras:
+        if p.data_hora:
+            p_data_naive = make_naive(p.data_hora) if is_aware(p.data_hora) else p.data_hora
+            if p_data_naive >= agora_naive:
+                p.is_past = False  # Etiqueta para o HTML
+                futuras.append(p)
+            else:
+                p.is_past = True   # Etiqueta para o HTML
+                passadas.append(p)
+                
+    # Ordena as futuras da mais próxima para a mais distante (Crescente)
+    futuras.sort(key=lambda x: x.data_hora)
+    
+    # Ordena as passadas da mais recente para a mais velha (Decrescente)
+    passadas.sort(key=lambda x: x.data_hora, reverse=True)
+    
+    # Junta tudo em uma lista só (O HTML antigo já lê isso!)
+    lista_final = futuras + passadas
+
+    # Paginação para não pesar a tela
+    paginator = Paginator(lista_final, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'core/doutrinarias.html', {
+        'palestras': page_obj,
+        'contato': InformacaoContato.objects.first()
+    })
+
+def lista_cursos(request):
+    """ Exibe os cursos e eventos com a mesma blindagem de fuso horário """
+    agora = timezone.now().replace(tzinfo=None)
+    
+    todos_cursos = CursoEvento.objects.all().order_by('data_evento')
+    
+    futuras_list = []
+    passadas_list = []
+    
+    for curso in todos_cursos:
+        if curso.data_evento:
+            data_limpa = curso.data_evento.replace(tzinfo=None)
+            if data_limpa >= agora:
+                futuras_list.append(curso)
+            else:
+                passadas_list.append(curso)
+                
+    passadas_list.reverse()
+    
+    paginator = Paginator(passadas_list, 6)
+    page_number = request.GET.get('page')
+    passadas_paginadas = paginator.get_page(page_number)
+    
+    return render(request, 'core/cursos.html', {
+        'futuras': futuras_list,
+        'passadas': passadas_paginadas,
+        'contato': InformacaoContato.objects.first()
+    })
+
+def lista_noticias(request):
+    noticias_list = Noticia.objects.all().order_by('-data_publicacao')
+    
+    paginator = Paginator(noticias_list, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'core/lista_noticias.html', {
+        'noticias': page_obj,
+        'contato': InformacaoContato.objects.first()
+    })

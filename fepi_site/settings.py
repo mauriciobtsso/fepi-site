@@ -125,6 +125,7 @@ INSTALLED_APPS = [
     'voluntarios',
     'painel',
     'usuarios',
+    'blogs',
 ]
 
 MIDDLEWARE = [
