@@ -5,83 +5,479 @@
 
 {% block extra_css %}
 <style>
-    /* Hero Section */
+    /* ===== HERO SECTION MELHORADA ===== */
     .hero-institucional {
-        background: linear-gradient(rgba(0, 51, 102, 0.8), rgba(0, 51, 102, 0.8)), url('{% static "img/hero-institucional.webp" %}') center/cover;
-        padding: 80px 20px;
+        background: linear-gradient(135deg, #003366 0%, #004080 50%, #005a99 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 120px 20px;
         text-align: center;
         color: white;
-        border-radius: 0 0 50px 50px;
-        margin-bottom: 50px;
-    }
-    .hero-institucional h1 { color: white; font-size: 3rem; margin-bottom: 15px; border: none; }
-    .hero-institucional p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
-
-    /* Container Principal */
-    .pagina-conteudo { 
-        max-width: 1100px; margin: 0 auto 60px; background: white; 
-        padding: 0; border-radius: 12px; box-shadow: none; 
+        margin-bottom: 0;
     }
 
-    /* Seção História */
-    .secao-historia { padding: 40px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
-    .texto-historia { text-align: justify; color: #444; line-height: 1.8; font-size: 1.1em; }
-    .texto-historia p { margin-bottom: 20px; }
-    .destaque-box { 
-        background-color: #f0f7ff; padding: 30px; border-left: 5px solid var(--destaque); 
-        margin: 30px 0; border-radius: 0 15px 15px 0; font-style: italic; 
-        color: var(--azul-escuro); font-size: 1.2em; font-family: 'Lora', serif;
+    .hero-institucional::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.05)"/></svg>') repeat-x;
+        background-position: 0 bottom;
+        animation: wave 15s linear infinite;
+        pointer-events: none;
     }
 
-    /* Gestão */
-    .secao-diretoria { background: #f9fbff; padding: 60px 20px; border-radius: 30px; margin: 40px 0; }
-    .titulo-secao { text-align: center; margin-bottom: 40px; }
-    .titulo-secao h2 { display: inline-block; border-bottom: 3px solid var(--destaque); padding-bottom: 10px; font-size: 2rem; }
-    .gestao-periodo { text-align: center; font-weight: 700; color: var(--azul-medio); margin-bottom: 40px; font-size: 1.1rem; }
-
-    /* Grid de Membros */
-    .membros-grid { 
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-        gap: 30px; margin-top: 30px; 
+    @keyframes wave {
+        0% { background-position: 0 bottom; }
+        100% { background-position: 1200px bottom; }
     }
+
+    .hero-institucional .container {
+        position: relative;
+        z-index: 1;
+        animation: fadeInDown 0.8s ease;
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero-institucional h1 {
+        color: white;
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        border: none;
+        line-height: 1.1;
+    }
+
+    .hero-institucional p {
+        font-size: 1.3rem;
+        opacity: 0.95;
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+        font-weight: 300;
+    }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb-section {
+        background: #f8fafb;
+        padding: 15px 20px;
+        text-align: center;
+        font-size: 0.95rem;
+        color: #666;
+    }
+
+    .breadcrumb-section a {
+        color: var(--destaque);
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .breadcrumb-section a:hover {
+        color: var(--azul-escuro);
+    }
+
+    /* ===== CONTAINER PRINCIPAL ===== */
+    .pagina-conteudo {
+        max-width: 1200px;
+        margin: 0 auto 80px;
+        background: white;
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    /* ===== SEÇÃO HISTÓRIA COM LAYOUT MODERNO ===== */
+    .secao-historia {
+        padding: 80px 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .texto-historia {
+        text-align: justify;
+        color: #444;
+        line-height: 1.9;
+        font-size: 1.05em;
+    }
+
+    .texto-historia p {
+        margin-bottom: 25px;
+        color: #555;
+    }
+
+    .texto-historia p:first-letter {
+        font-size: 1.2em;
+        font-weight: 700;
+        color: var(--destaque);
+    }
+
+    .destaque-box {
+        background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%);
+        padding: 35px;
+        border-left: 5px solid var(--destaque);
+        margin: 40px 0;
+        border-radius: 0 15px 15px 0;
+        font-style: italic;
+        color: var(--azul-escuro);
+        font-size: 1.15em;
+        font-family: 'Lora', serif;
+        box-shadow: 0 5px 20px rgba(0, 51, 102, 0.08);
+        position: relative;
+        padding-left: 45px;
+    }
+
+    .destaque-box::before {
+        content: '"';
+        position: absolute;
+        left: 15px;
+        top: 0;
+        font-size: 4rem;
+        color: var(--destaque);
+        opacity: 0.3;
+        line-height: 1;
+    }
+
+    .imagem-historia img {
+        border-radius: 20px;
+        box-shadow: 0 30px 60px rgba(0, 51, 102, 0.15);
+        transition: transform 0.3s ease;
+    }
+
+    .imagem-historia img:hover {
+        transform: translateY(-10px);
+    }
+
+    /* ===== SEÇÃO DIRETORIA MODERNA ===== */
+    .secao-diretoria {
+        background: linear-gradient(135deg, #f8fafb 0%, #f0f5fa 100%);
+        padding: 100px 20px;
+        border-radius: 0;
+        margin: 0;
+    }
+
+    .titulo-secao {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .titulo-secao h2,
+    .titulo-secao h3 {
+        display: inline-block;
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--azul-escuro);
+        position: relative;
+        padding-bottom: 15px;
+        letter-spacing: -0.5px;
+    }
+
+    .titulo-secao h2::after,
+    .titulo-secao h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--destaque), var(--azul-claro));
+        border-radius: 2px;
+    }
+
+    .gestao-periodo {
+        text-align: center;
+        font-weight: 700;
+        color: var(--azul-medio);
+        margin-bottom: 60px;
+        font-size: 1.15rem;
+        letter-spacing: 0.5px;
+    }
+
+    .gestao-periodo i {
+        color: var(--destaque);
+        margin-right: 8px;
+    }
+
+    /* ===== GRID DE MEMBROS APRIMORADO ===== */
+    .membros-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 40px;
+        margin-top: 50px;
+    }
+
     .membro-card {
-        background: white; border-radius: 15px; overflow: hidden;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: 0.3s;
-        border: 1px solid #eee; text-align: center; padding: 30px 20px;
-    }
-    .membro-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-    
-    .membro-foto-wrapper {
-        width: 120px; height: 120px; margin: 0 auto 20px;
-        border-radius: 50%; padding: 5px; border: 3px solid var(--azul-claro);
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid #f0f0f0;
+        text-align: center;
+        padding: 40px 25px;
         position: relative;
     }
-    .membro-foto { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+    .membro-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--destaque), var(--azul-claro));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .membro-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 25px 50px rgba(0, 51, 102, 0.15);
+    }
+
+    .membro-card:hover::before {
+        opacity: 1;
+    }
+
+    .membro-foto-wrapper {
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 25px;
+        border-radius: 50%;
+        padding: 5px;
+        border: 4px solid var(--azul-claro);
+        position: relative;
+        background: white;
+        box-shadow: 0 10px 25px rgba(102, 204, 204, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .membro-card:hover .membro-foto-wrapper {
+        border-color: var(--destaque);
+        box-shadow: 0 15px 35px rgba(243, 156, 18, 0.3);
+        transform: scale(1.05);
+    }
+
+    .membro-foto {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
     .membro-foto-placeholder {
-        width: 100%; height: 100%; border-radius: 50%; background: #f0f2f5;
-        display: flex; align-items: center; justify-content: center;
-        color: #bcc0c4; font-size: 3rem;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e6f2ff 0%, #f0f7ff 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--azul-claro);
+        font-size: 3.5rem;
     }
 
-    .membro-nome { font-size: 1.25rem; font-weight: 800; color: var(--azul-escuro); margin-bottom: 5px; }
-    .membro-cargo { font-size: 0.95rem; color: var(--destaque-escuro); font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
-    
-    .membro-contato { border-top: 1px solid #f0f0f0; pt: 15px; display: flex; justify-content: center; gap: 15px; margin-top: 15px; padding-top: 15px;}
-    .membro-contato a { color: #666; font-size: 1.1rem; transition: 0.2s; }
-    .membro-contato a:hover { color: var(--destaque); }
-
-    /* Outros Departamentos */
-    .departamentos-container { margin-top: 60px; }
-    .depto-grupo { margin-bottom: 50px; }
-    .depto-titulo { 
-        background: var(--azul-escuro); color: white; padding: 10px 25px; 
-        border-radius: 50px; display: inline-block; margin-bottom: 25px;
-        font-size: 1.1rem; font-weight: 600;
+    .membro-nome {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--azul-escuro);
+        margin-bottom: 8px;
+        letter-spacing: -0.3px;
     }
 
-    @media (max-width: 900px) {
-        .secao-historia { grid-template-columns: 1fr; }
-        .hero-institucional h1 { font-size: 2.2rem; }
+    .membro-cargo {
+        font-size: 0.9rem;
+        color: var(--destaque);
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    .membro-contato {
+        border-top: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+
+    .membro-contato a {
+        color: #999;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #f5f5f5;
+    }
+
+    .membro-contato a:hover {
+        color: white;
+        background: var(--destaque);
+        transform: scale(1.15);
+    }
+
+    /* ===== DEPARTAMENTOS ===== */
+    .departamentos-container {
+        margin-top: 80px;
+    }
+
+    .depto-grupo {
+        margin-bottom: 70px;
+        animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .depto-titulo {
+        background: linear-gradient(135deg, var(--azul-escuro) 0%, var(--azul-medio) 100%);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 50px;
+        display: inline-block;
+        margin-bottom: 40px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 5px 15px rgba(0, 51, 102, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .depto-titulo:hover {
+        transform: translateX(5px);
+        box-shadow: 0 8px 20px rgba(0, 51, 102, 0.3);
+    }
+
+    /* ===== RESPONSIVIDADE ===== */
+    @media (max-width: 1024px) {
+        .secao-historia {
+            grid-template-columns: 1fr;
+            gap: 40px;
+            padding: 60px 20px;
+        }
+
+        .membros-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .hero-institucional h1 {
+            font-size: 2.5rem;
+        }
+
+        .titulo-secao h2,
+        .titulo-secao h3 {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-institucional {
+            padding: 80px 15px;
+        }
+
+        .hero-institucional h1 {
+            font-size: 2rem;
+        }
+
+        .hero-institucional p {
+            font-size: 1.1rem;
+        }
+
+        .secao-historia {
+            padding: 40px 15px;
+        }
+
+        .secao-diretoria {
+            padding: 60px 15px;
+        }
+
+        .titulo-secao h2,
+        .titulo-secao h3 {
+            font-size: 1.6rem;
+        }
+
+        .membros-grid {
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .membro-card {
+            padding: 30px 20px;
+        }
+
+        .membro-foto-wrapper {
+            width: 120px;
+            height: 120px;
+        }
+
+        .membro-nome {
+            font-size: 1.2rem;
+        }
+
+        .breadcrumb-section {
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-institucional h1 {
+            font-size: 1.6rem;
+        }
+
+        .hero-institucional p {
+            font-size: 1rem;
+        }
+
+        .titulo-secao h2,
+        .titulo-secao h3 {
+            font-size: 1.4rem;
+        }
+
+        .membro-card {
+            padding: 25px 15px;
+        }
+
+        .membro-contato {
+            gap: 15px;
+        }
+
+        .membro-contato a {
+            width: 35px;
+            height: 35px;
+            font-size: 0.9rem;
+        }
     }
 </style>
 {% endblock %}
@@ -94,26 +490,34 @@
     </div>
 </section>
 
-<div class="pagina-conteudo container">
+<div class="breadcrumb-section">
+    <div class="container">
+        <a href="/">Home</a> / <span>Institucional</span>
+    </div>
+</div>
+
+<div class="pagina-conteudo">
     
-    <div class="secao-historia">
+    <section class="secao-historia">
         <div class="texto-historia">
             {% if pagina.conteudo %}
                 {{ pagina.conteudo|safe }}
             {% else %}
                 <p>A Federação Espírita Piauiense (FEPI) é a entidade federativa que representa o Movimento Espírita no estado do Piauí, vinculada à Federação Espírita Brasileira (FEB).</p>
+                <p>Fundada com o propósito de unir corações, esclarecer mentes e consolar almas, a FEPI trabalha incansavelmente pela difusão da Doutrina Espírita, promovendo estudos, eventos e ações sociais que transformam vidas e comunidades.</p>
+                <p>Nossa missão é fortalecer o movimento espírita no estado, apoiando centros espíritas, grupos de estudo e voluntários que dedicam suas vidas ao serviço do bem e à elevação moral da humanidade.</p>
             {% endif %}
             
             {% if pagina.frase_destaque %}
             <div class="destaque-box">
-                "{{ pagina.frase_destaque }}"
+                {{ pagina.frase_destaque }}
             </div>
             {% endif %}
         </div>
         <div class="imagem-historia">
-            <img src="{% static 'img/fepi-sede.webp' %}" alt="Sede da FEPI" style="border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+            <img src="{% static 'img/fepi-sede.webp' %}" alt="Sede da FEPI" loading="lazy">
         </div>
-    </div>
+    </section>
 
     <section class="secao-diretoria">
         <div class="titulo-secao">
@@ -122,19 +526,21 @@
 
         {% if pagina.ano_inicio and pagina.ano_fim %}
         <div class="gestao-periodo">
-            <i class="fa-regular fa-calendar-days"></i> Período da Gestão: {{ pagina.ano_inicio }} — {{ pagina.ano_fim }}
+            <i class="fa-regular fa-calendar-days"></i> Período da Gestão: <strong>{{ pagina.ano_inicio }} — {{ pagina.ano_fim }}</strong>
         </div>
         {% endif %}
         
         {% if executiva %}
         <div class="depto-grupo">
-            <div class="depto-titulo">Diretoria Executiva</div>
+            <div class="depto-titulo">
+                <i class="fa-solid fa-star"></i> Diretoria Executiva
+            </div>
             <div class="membros-grid">
                 {% for membro in executiva %}
                 <div class="membro-card">
                     <div class="membro-foto-wrapper">
                         {% if membro.foto %}
-                            <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}">
+                            <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}" loading="lazy">
                         {% else %}
                             <div class="membro-foto-placeholder"><i class="fa-solid fa-user"></i></div>
                         {% endif %}
@@ -144,10 +550,10 @@
                     
                     <div class="membro-contato">
                         {% if membro.email %}
-                            <a href="mailto:{{ membro.email }}" title="{{ membro.email }}"><i class="fa-solid fa-envelope"></i></a>
+                            <a href="mailto:{{ membro.email }}" title="Enviar email para {{ membro.nome }}" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
                         {% endif %}
                         {% if membro.telefone %}
-                            <a href="tel:{{ membro.telefone }}" title="{{ membro.telefone }}"><i class="fa-solid fa-phone"></i></a>
+                            <a href="tel:{{ membro.telefone }}" title="Ligar para {{ membro.nome }}" aria-label="Telefone"><i class="fa-solid fa-phone"></i></a>
                         {% endif %}
                     </div>
                 </div>
@@ -157,14 +563,16 @@
         {% endif %}
 
         {% if fiscal %}
-        <div class="depto-grupo" style="margin-top: 50px;">
-            <div class="depto-titulo">Conselho Fiscal</div>
+        <div class="depto-grupo" style="margin-top: 70px;">
+            <div class="depto-titulo">
+                <i class="fa-solid fa-gavel"></i> Conselho Fiscal
+            </div>
             <div class="membros-grid">
                 {% for membro in fiscal %}
                 <div class="membro-card">
                     <div class="membro-foto-wrapper">
                         {% if membro.foto %}
-                            <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}">
+                            <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}" loading="lazy">
                         {% else %}
                             <div class="membro-foto-placeholder"><i class="fa-solid fa-user"></i></div>
                         {% endif %}
@@ -173,8 +581,11 @@
                     <div class="membro-cargo">{{ membro.cargo.nome }}</div>
                     
                     <div class="membro-contato">
+                        {% if membro.email %}
+                            <a href="mailto:{{ membro.email }}" title="Enviar email para {{ membro.nome }}" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+                        {% endif %}
                         {% if membro.telefone %}
-                            <a href="tel:{{ membro.telefone }}" title="{{ membro.telefone }}"><i class="fa-solid fa-phone"></i></a>
+                            <a href="tel:{{ membro.telefone }}" title="Ligar para {{ membro.nome }}" aria-label="Telefone"><i class="fa-solid fa-phone"></i></a>
                         {% endif %}
                     </div>
                 </div>
@@ -185,7 +596,7 @@
         
         {% if outros_departamentos %}
         <div class="departamentos-container">
-            <div class="titulo-secao" style="margin-top: 40px;">
+            <div class="titulo-secao" style="margin-top: 60px;">
                 <h3>Departamentos e Coordenadorias</h3>
             </div>
             
@@ -193,26 +604,28 @@
 
             {% for departamento in membros_departamentos %}
                 <div class="depto-grupo">
-                    <div class="depto-titulo">{{ departamento.grouper.nome }}</div>
+                    <div class="depto-titulo">
+                        <i class="fa-solid fa-users"></i> {{ departamento.grouper.nome }}
+                    </div>
                     <div class="membros-grid">
                         {% for membro in departamento.list %}
                         <div class="membro-card">
-                            <div class="membro-foto-wrapper" style="width: 100px; height: 100px;">
+                            <div class="membro-foto-wrapper" style="width: 120px; height: 120px;">
                                 {% if membro.foto %}
-                                    <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}">
+                                    <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}" loading="lazy">
                                 {% else %}
-                                    <div class="membro-foto-placeholder" style="font-size: 2.5rem;"><i class="fa-solid fa-user"></i></div>
+                                    <div class="membro-foto-placeholder" style="font-size: 2.8rem;"><i class="fa-solid fa-user"></i></div>
                                 {% endif %}
                             </div>
-                            <div class="membro-nome" style="font-size: 1.1rem;">{{ membro.nome }}</div>
+                            <div class="membro-nome" style="font-size: 1.15rem;">{{ membro.nome }}</div>
                             <div class="membro-cargo" style="font-size: 0.85rem;">{{ membro.cargo.nome }}</div>
                             
                             <div class="membro-contato">
                                 {% if membro.email %}
-                                    <a href="mailto:{{ membro.email }}" title="{{ membro.email }}"><i class="fa-solid fa-envelope"></i></a>
+                                    <a href="mailto:{{ membro.email }}" title="Enviar email para {{ membro.nome }}" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
                                 {% endif %}
                                 {% if membro.telefone %}
-                                    <a href="tel:{{ membro.telefone }}" title="{{ membro.telefone }}"><i class="fa-solid fa-phone"></i></a>
+                                    <a href="tel:{{ membro.telefone }}" title="Ligar para {{ membro.nome }}" aria-label="Telefone"><i class="fa-solid fa-phone"></i></a>
                                 {% endif %}
                             </div>
                         </div>
