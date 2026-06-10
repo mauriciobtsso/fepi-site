@@ -125,16 +125,22 @@ def home(request):
     return render(request, 'core/index.html', contexto)
 
 
-@cache_page(60 * 60)
+@never_cache
 def institucional(request):
-    pagina = PaginaInstitucional.objects.first()
-    contato = InformacaoContato.objects.first()
+    pagina, _ = PaginaInstitucional.objects.get_or_create(pk=1, defaults={
+        'titulo': 'Nossa História',
+        'conteudo': '',
+        'frase_destaque': '',
+        'ano_inicio': 2024,
+        'ano_fim': 2027
+    })
+    contato, _ = InformacaoContato.objects.get_or_create(pk=1)
     membros = MembroDiretoria.objects.all()
 
-    executiva = membros.filter(tipo__nome='Diretoria Executiva').order_by('ordem')
-    fiscal = membros.filter(tipo__nome='Conselho Fiscal').order_by('ordem')
+    executiva = membros.filter(tipo__nome__iexact='Diretoria Executiva').order_by('ordem')
+    fiscal = membros.filter(tipo__nome__iexact='Conselho Fiscal').order_by('ordem')
     outros_departamentos = membros.exclude(
-        Q(tipo__nome='Diretoria Executiva') | Q(tipo__nome='Conselho Fiscal')
+        Q(tipo__nome__iexact='Diretoria Executiva') | Q(tipo__nome__iexact='Conselho Fiscal')
     ).order_by('tipo__ordem', 'ordem')
 
     return render(request, 'core/institucional.html', {
