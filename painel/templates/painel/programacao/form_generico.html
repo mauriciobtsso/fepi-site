@@ -53,11 +53,17 @@
                                 </div>
                             {% endif %}
 
-                            {% if field.name == 'imagem' and field.value %}
-                                <div class="mt-2 p-2 bg-light border rounded d-inline-block">
-                                    <small class="d-block text-muted mb-1">Imagem Atual:</small>
-                                    <img src="/media/{{ field.value }}" style="height: 80px; width: auto; object-fit: cover; border-radius: 4px;">
-                                </div>
+                            {% if field.name == 'imagem' or field.name == 'foto' or field.name == 'imagem_capa' or field.name == 'popup_imagem' %}
+                                {% if field.value %}
+                                    <div class="mt-2 p-2 bg-light border rounded d-inline-block">
+                                        <small class="d-block text-muted mb-1">Arquivo/Imagem Atual:</small>
+                                        {% if field.value.url %}
+                                            <img src="{{ field.value.url }}" style="height: 100px; width: auto; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
+                                        {% else %}
+                                            <img src="/media/{{ field.value }}" style="height: 100px; width: auto; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
                             {% endif %}
                         
                         </div> {% endfor %}

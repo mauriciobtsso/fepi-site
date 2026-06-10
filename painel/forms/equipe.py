@@ -21,12 +21,13 @@ class TipoDiretoriaForm(forms.ModelForm):
 class MembroDiretoriaForm(forms.ModelForm):
     class Meta:
         model = MembroDiretoria
-        fields = ['nome', 'cargo', 'tipo', 'telefone', 'email', 'ordem']
+        fields = ['nome', 'cargo', 'tipo', 'foto', 'telefone', 'email', 'ordem']
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control'}),
             'cargo': forms.Select(attrs={'class': 'form-select'}),
             'tipo': forms.Select(attrs={'class': 'form-select'}), 
-            'telefone': forms.TextInput(attrs={'class': 'form-control'}),
+            'foto': forms.FileInput(attrs={'class': 'form-control'}),
+            'telefone': forms.TextInput(attrs={'class': 'form-control sp_celphones', 'placeholder': '(00) 00000-0000'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'ordem': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ordem de exibição'}),
         }

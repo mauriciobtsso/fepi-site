@@ -101,6 +101,7 @@ class MembroDiretoria(models.Model):
     nome = models.CharField(max_length=200, verbose_name="Nome do Responsável")
     cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT, verbose_name="Cargo")
     tipo = models.ForeignKey(TipoDiretoria, on_delete=models.PROTECT, verbose_name="Tipo/Departamento")
+    foto = models.ImageField(upload_to='equipe/', blank=True, null=True, verbose_name="Foto")
 
     telefone = models.CharField(max_length=20, blank=True, verbose_name="Telefone")
     email = models.EmailField(blank=True, verbose_name="Email")

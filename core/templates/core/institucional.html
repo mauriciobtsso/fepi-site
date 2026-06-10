@@ -27,14 +27,24 @@
     /* Linha dos Cargos */
     .cargo-item { 
         margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #ccc; 
-        grid-template-columns: 3fr 2fr; gap: 15px; display: grid;
+        display: flex; align-items: center; justify-content: space-between; gap: 15px;
     }
     .cargo-item:last-child { border-bottom: none; }
     
-    .cargo-info { font-weight: 700; color: var(--azul-medio); font-size: 1.05rem; }
+    .membro-foto {
+        width: 60px; height: 60px; border-radius: 50%; object-fit: cover;
+        border: 2px solid var(--azul-claro); margin-right: 15px;
+    }
+    .membro-foto-placeholder {
+        width: 60px; height: 60px; border-radius: 50%; background: #eee;
+        display: flex; align-items: center; justify-content: center; margin-right: 15px;
+        color: #999; border: 2px solid var(--azul-claro);
+    }
+
+    .cargo-info { font-weight: 700; color: var(--azul-medio); font-size: 1.05rem; flex-grow: 1; }
     .cargo-info strong { color: var(--texto); font-weight: 700; margin-left: 5px; }
 
-    .cargo-contato { font-size: 0.9rem; color: #666; text-align: right; }
+    .cargo-contato { font-size: 0.9rem; color: #666; text-align: right; min-width: 150px; }
     .cargo-contato i { margin-right: 5px; color: var(--dourado); }
 
     /* Estilo da Gestão */
@@ -83,12 +93,20 @@
         <h3>Diretoria Executiva</h3>
         {% for membro in executiva %}
         <div class="cargo-item">
-            <span class="cargo-info" style="color:var(--azul-medio);">
-                {{ membro.cargo.nome }}: <span style="color:var(--texto); font-weight:normal;">{{ membro.nome }}</span>
-            </span>
+            <div class="d-flex align-items-center">
+                {% if membro.foto %}
+                    <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}">
+                {% else %}
+                    <div class="membro-foto-placeholder"><i class="fa-solid fa-user"></i></div>
+                {% endif %}
+                <span class="cargo-info" style="color:var(--azul-medio);">
+                    {{ membro.cargo.nome }}: <br>
+                    <span style="color:var(--texto); font-weight:normal; font-size: 1.1rem;">{{ membro.nome }}</span>
+                </span>
+            </div>
             
             <div class="cargo-contato">
-                {% if membro.telefone %}<i class="fa-solid fa-phone"></i> {{ membro.telefone }}{% endif %}
+                {% if membro.telefone %}<i class="fa-solid fa-phone"></i> {{ membro.telefone }}<br>{% endif %}
                 {% if membro.email %}<i class="fa-solid fa-envelope"></i> {{ membro.email }}{% endif %}
             </div>
         </div>
@@ -101,9 +119,17 @@
         <h3>Conselho Fiscal</h3>
         {% for membro in fiscal %}
         <div class="cargo-item">
-            <span class="cargo-info" style="color:var(--azul-medio);">
-                {{ membro.cargo.nome }}: <span style="color:var(--texto); font-weight:normal;">{{ membro.nome }}</span>
-            </span>
+            <div class="d-flex align-items-center">
+                {% if membro.foto %}
+                    <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}">
+                {% else %}
+                    <div class="membro-foto-placeholder"><i class="fa-solid fa-user"></i></div>
+                {% endif %}
+                <span class="cargo-info" style="color:var(--azul-medio);">
+                    {{ membro.cargo.nome }}: <br>
+                    <span style="color:var(--texto); font-weight:normal; font-size: 1.1rem;">{{ membro.nome }}</span>
+                </span>
+            </div>
             
             <div class="cargo-contato">
                  {% if membro.telefone %}<i class="fa-solid fa-phone"></i> {{ membro.telefone }}{% endif %}
@@ -125,12 +151,20 @@
             </h3>
             {% for membro in departamento.list %}
                 <div class="cargo-item" style="border-bottom: 1px dotted #ccc;">
-                    <span class="cargo-info" style="color:var(--azul-medio);">
-                        {{ membro.cargo.nome }}: <span style="color:var(--texto); font-weight:normal;">{{ membro.nome }}</span>
-                    </span>
+                    <div class="d-flex align-items-center">
+                        {% if membro.foto %}
+                            <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}" style="width: 50px; height: 50px;">
+                        {% else %}
+                            <div class="membro-foto-placeholder" style="width: 50px; height: 50px;"><i class="fa-solid fa-user"></i></div>
+                        {% endif %}
+                        <span class="cargo-info" style="color:var(--azul-medio);">
+                            {{ membro.cargo.nome }}: <br>
+                            <span style="color:var(--texto); font-weight:normal;">{{ membro.nome }}</span>
+                        </span>
+                    </div>
                     <div class="cargo-contato">
-                        {% if membro.email %}<i class="fa-solid fa-envelope"></i> {{ membro.email }}{% endif %}
-                        {% if membro.telefone %}<i class="fa-solid fa-phone" style="margin-left: 10px;"></i> {{ membro.telefone }}{% endif %}
+                        {% if membro.email %}<i class="fa-solid fa-envelope"></i> {{ membro.email }}<br>{% endif %}
+                        {% if membro.telefone %}<i class="fa-solid fa-phone"></i> {{ membro.telefone }}{% endif %}
                     </div>
                 </div>
             {% endfor %}

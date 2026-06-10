@@ -35,11 +35,22 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body p-0">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light"><tr><th>Nome</th><th>Cargo / Depto</th><th>Contato</th><th class="text-end pe-4">Ações</th></tr></thead>
+                    <thead class="bg-light"><tr><th>Membro</th><th>Cargo / Depto</th><th>Contato</th><th class="text-end pe-4">Ações</th></tr></thead>
                     <tbody>
                         {% for m in membros %}
                         <tr>
-                            <td class="ps-4 fw-bold">{{ m.nome }}</td>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    {% if m.foto %}
+                                        <img src="{{ m.foto.url }}" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #eee;">
+                                    {% else %}
+                                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; border: 2px solid #eee;">
+                                            <i class="fas fa-user text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    <span class="fw-bold">{{ m.nome }}</span>
+                                </div>
+                            </td>
                             <td>
                                 <span class="badge bg-primary">{{ m.cargo.nome }}</span><br>
                                 <small class="text-muted">{{ m.tipo.nome }}</small>
