@@ -94,7 +94,7 @@ class MembroDiretoriaAdmin(admin.ModelAdmin):
     list_editable = ('ordem',)
 
     fieldsets = (
-        (None, {'fields': ('nome', 'cargo', 'tipo', 'ordem')}),
+        (None, {'fields': ('nome', 'cargo', 'tipo', 'foto', 'ordem')}),
         ('Contato e Informações', {'fields': ('telefone', 'email')}),
     )
 

@@ -5,173 +5,224 @@
 
 {% block extra_css %}
 <style>
+    /* Hero Section */
+    .hero-institucional {
+        background: linear-gradient(rgba(0, 51, 102, 0.8), rgba(0, 51, 102, 0.8)), url('{% static "img/hero-institucional.webp" %}') center/cover;
+        padding: 80px 20px;
+        text-align: center;
+        color: white;
+        border-radius: 0 0 50px 50px;
+        margin-bottom: 50px;
+    }
+    .hero-institucional h1 { color: white; font-size: 3rem; margin-bottom: 15px; border: none; }
+    .hero-institucional p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+
     /* Container Principal */
     .pagina-conteudo { 
-        max-width: 900px; margin: 40px auto; background: white; 
-        padding: 50px; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.08); 
+        max-width: 1100px; margin: 0 auto 60px; background: white; 
+        padding: 0; border-radius: 12px; box-shadow: none; 
     }
 
-    /* Estilos do Título e Gestão */
-    h1 { color: var(--azul-escuro); font-size: 2.2em; margin-bottom: 20px; border-bottom: 2px solid var(--azul-claro); display: inline-block; padding-bottom: 10px; }
-    h2 { color: var(--azul-escuro); margin-top: 50px; border-left: 5px solid var(--dourado); padding-left: 15px; font-size: 1.5rem; }
-    h3 { color: #555; margin-top: 30px; font-size: 1.3em; }
+    /* Seção História */
+    .secao-historia { padding: 40px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .texto-historia { text-align: justify; color: #444; line-height: 1.8; font-size: 1.1em; }
+    .texto-historia p { margin-bottom: 20px; }
+    .destaque-box { 
+        background-color: #f0f7ff; padding: 30px; border-left: 5px solid var(--destaque); 
+        margin: 30px 0; border-radius: 0 15px 15px 0; font-style: italic; 
+        color: var(--azul-escuro); font-size: 1.2em; font-family: 'Lora', serif;
+    }
 
-    /* Estilos de Texto */
-    .texto-historia { margin-bottom: 20px; text-align: justify; color: #444; line-height: 1.8; font-size: 1.05em; }
-    .texto-historia p { margin-bottom: 25px; } /* FIX: Espaçamento de parágrafo */
-    .destaque-box { background-color: var(--azul-claro); padding: 25px; border-left: 5px solid var(--dourado); margin: 30px 0; border-radius: 0 8px 8px 0; font-style: italic; color: var(--azul-escuro); font-size: 1.1em; }
+    /* Gestão */
+    .secao-diretoria { background: #f9fbff; padding: 60px 20px; border-radius: 30px; margin: 40px 0; }
+    .titulo-secao { text-align: center; margin-bottom: 40px; }
+    .titulo-secao h2 { display: inline-block; border-bottom: 3px solid var(--destaque); padding-bottom: 10px; font-size: 2rem; }
+    .gestao-periodo { text-align: center; font-weight: 700; color: var(--azul-medio); margin-bottom: 40px; font-size: 1.1rem; }
 
-    /* Box da Diretoria */
-    .diretoria-box { background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin-top: 20px; border: 1px solid #e9ecef; }
+    /* Grid de Membros */
+    .membros-grid { 
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+        gap: 30px; margin-top: 30px; 
+    }
+    .membro-card {
+        background: white; border-radius: 15px; overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: 0.3s;
+        border: 1px solid #eee; text-align: center; padding: 30px 20px;
+    }
+    .membro-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
     
-    /* Linha dos Cargos */
-    .cargo-item { 
-        margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #ccc; 
-        display: flex; align-items: center; justify-content: space-between; gap: 15px;
+    .membro-foto-wrapper {
+        width: 120px; height: 120px; margin: 0 auto 20px;
+        border-radius: 50%; padding: 5px; border: 3px solid var(--azul-claro);
+        position: relative;
     }
-    .cargo-item:last-child { border-bottom: none; }
-    
-    .membro-foto {
-        width: 60px; height: 60px; border-radius: 50%; object-fit: cover;
-        border: 2px solid var(--azul-claro); margin-right: 15px;
-    }
+    .membro-foto { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
     .membro-foto-placeholder {
-        width: 60px; height: 60px; border-radius: 50%; background: #eee;
-        display: flex; align-items: center; justify-content: center; margin-right: 15px;
-        color: #999; border: 2px solid var(--azul-claro);
+        width: 100%; height: 100%; border-radius: 50%; background: #f0f2f5;
+        display: flex; align-items: center; justify-content: center;
+        color: #bcc0c4; font-size: 3rem;
     }
 
-    .cargo-info { font-weight: 700; color: var(--azul-medio); font-size: 1.05rem; flex-grow: 1; }
-    .cargo-info strong { color: var(--texto); font-weight: 700; margin-left: 5px; }
+    .membro-nome { font-size: 1.25rem; font-weight: 800; color: var(--azul-escuro); margin-bottom: 5px; }
+    .membro-cargo { font-size: 0.95rem; color: var(--destaque-escuro); font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
+    
+    .membro-contato { border-top: 1px solid #f0f0f0; pt: 15px; display: flex; justify-content: center; gap: 15px; margin-top: 15px; padding-top: 15px;}
+    .membro-contato a { color: #666; font-size: 1.1rem; transition: 0.2s; }
+    .membro-contato a:hover { color: var(--destaque); }
 
-    .cargo-contato { font-size: 0.9rem; color: #666; text-align: right; min-width: 150px; }
-    .cargo-contato i { margin-right: 5px; color: var(--dourado); }
-
-    /* Estilo da Gestão */
-    .gestao-periodo-texto {
-        font-size: 1rem; color: var(--azul-escuro); font-weight: 700; 
-        margin-bottom: 20px; display: block;
-        padding: 5px 0;
+    /* Outros Departamentos */
+    .departamentos-container { margin-top: 60px; }
+    .depto-grupo { margin-bottom: 50px; }
+    .depto-titulo { 
+        background: var(--azul-escuro); color: white; padding: 10px 25px; 
+        border-radius: 50px; display: inline-block; margin-bottom: 25px;
+        font-size: 1.1rem; font-weight: 600;
     }
 
-    @media (max-width: 600px) { 
-        .cargo-item { grid-template-columns: 1fr; gap: 5px; }
-        .cargo-contato { text-align: left; }
+    @media (max-width: 900px) {
+        .secao-historia { grid-template-columns: 1fr; }
+        .hero-institucional h1 { font-size: 2.2rem; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="pagina-conteudo">
-    
-    <h1>{{ pagina.titulo|default:"Nossa História" }}</h1>
-    
-    {% if pagina.frase_destaque %}
-    <div class="destaque-box">
-        "{{ pagina.frase_destaque }}"
+<section class="hero-institucional">
+    <div class="container">
+        <h1>{{ pagina.titulo|default:"Nossa História" }}</h1>
+        <p>Conheça a trajetória da Federação Espírita Piauiense e as mãos que trabalham pela união e difusão da Doutrina Espírita em nosso estado.</p>
     </div>
-    {% endif %}
+</section>
 
-    {% if pagina.conteudo %}
+<div class="pagina-conteudo container">
+    
+    <div class="secao-historia">
         <div class="texto-historia">
-            {{ pagina.conteudo|safe }}
-        </div>
-    {% endif %}
-
-
-    <h2>Administração e Responsáveis</h2>
-    <p>Estrutura do Conselho Diretor e responsáveis pelos departamentos:</p>
-    
-    {% if pagina.ano_inicio and pagina.ano_fim %}
-    <span class="gestao-periodo-texto">
-        Período da Gestão: <strong>{{ pagina.ano_inicio }} — {{ pagina.ano_fim }}</strong>
-    </span>
-    {% endif %}
-    
-{% if executiva %}
-    <div class="diretoria-box">
-        <h3>Diretoria Executiva</h3>
-        {% for membro in executiva %}
-        <div class="cargo-item">
-            <div class="d-flex align-items-center">
-                {% if membro.foto %}
-                    <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}">
-                {% else %}
-                    <div class="membro-foto-placeholder"><i class="fa-solid fa-user"></i></div>
-                {% endif %}
-                <span class="cargo-info" style="color:var(--azul-medio);">
-                    {{ membro.cargo.nome }}: <br>
-                    <span style="color:var(--texto); font-weight:normal; font-size: 1.1rem;">{{ membro.nome }}</span>
-                </span>
-            </div>
+            {% if pagina.conteudo %}
+                {{ pagina.conteudo|safe }}
+            {% else %}
+                <p>A Federação Espírita Piauiense (FEPI) é a entidade federativa que representa o Movimento Espírita no estado do Piauí, vinculada à Federação Espírita Brasileira (FEB).</p>
+            {% endif %}
             
-            <div class="cargo-contato">
-                {% if membro.telefone %}<i class="fa-solid fa-phone"></i> {{ membro.telefone }}<br>{% endif %}
-                {% if membro.email %}<i class="fa-solid fa-envelope"></i> {{ membro.email }}{% endif %}
+            {% if pagina.frase_destaque %}
+            <div class="destaque-box">
+                "{{ pagina.frase_destaque }}"
             </div>
+            {% endif %}
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-{% if fiscal %}
-    <div class="diretoria-box" style="margin-top: 30px;">
-        <h3>Conselho Fiscal</h3>
-        {% for membro in fiscal %}
-        <div class="cargo-item">
-            <div class="d-flex align-items-center">
-                {% if membro.foto %}
-                    <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}">
-                {% else %}
-                    <div class="membro-foto-placeholder"><i class="fa-solid fa-user"></i></div>
-                {% endif %}
-                <span class="cargo-info" style="color:var(--azul-medio);">
-                    {{ membro.cargo.nome }}: <br>
-                    <span style="color:var(--texto); font-weight:normal; font-size: 1.1rem;">{{ membro.nome }}</span>
-                </span>
-            </div>
-            
-            <div class="cargo-contato">
-                 {% if membro.telefone %}<i class="fa-solid fa-phone"></i> {{ membro.telefone }}{% endif %}
-            </div>
+        <div class="imagem-historia">
+            <img src="{% static 'img/fepi-sede.webp' %}" alt="Sede da FEPI" style="border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
         </div>
-        {% endfor %}
     </div>
-    {% endif %}
-    
-    <h2 style="margin-top: 60px;">Outros Departamentos e Coordenadorias</h2>
-    <p>Responsáveis pelas áreas de estudo, evangelização e assistência:</p>
-    
-    {% regroup outros_departamentos by tipo as membros_departamentos %}
 
-    <div class="diretoria-box">
-        {% for departamento in membros_departamentos %}
-            <h3 style="margin-top: 10px; font-size: 1.2rem; color: var(--azul-medio);">
-                {{ departamento.grouper.nome }}
-            </h3>
-            {% for membro in departamento.list %}
-                <div class="cargo-item" style="border-bottom: 1px dotted #ccc;">
-                    <div class="d-flex align-items-center">
+    <section class="secao-diretoria">
+        <div class="titulo-secao">
+            <h2>Administração e Responsáveis</h2>
+        </div>
+
+        {% if pagina.ano_inicio and pagina.ano_fim %}
+        <div class="gestao-periodo">
+            <i class="fa-regular fa-calendar-days"></i> Período da Gestão: {{ pagina.ano_inicio }} — {{ pagina.ano_fim }}
+        </div>
+        {% endif %}
+        
+        {% if executiva %}
+        <div class="depto-grupo">
+            <div class="depto-titulo">Diretoria Executiva</div>
+            <div class="membros-grid">
+                {% for membro in executiva %}
+                <div class="membro-card">
+                    <div class="membro-foto-wrapper">
                         {% if membro.foto %}
-                            <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}" style="width: 50px; height: 50px;">
+                            <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}">
                         {% else %}
-                            <div class="membro-foto-placeholder" style="width: 50px; height: 50px;"><i class="fa-solid fa-user"></i></div>
+                            <div class="membro-foto-placeholder"><i class="fa-solid fa-user"></i></div>
                         {% endif %}
-                        <span class="cargo-info" style="color:var(--azul-medio);">
-                            {{ membro.cargo.nome }}: <br>
-                            <span style="color:var(--texto); font-weight:normal;">{{ membro.nome }}</span>
-                        </span>
                     </div>
-                    <div class="cargo-contato">
-                        {% if membro.email %}<i class="fa-solid fa-envelope"></i> {{ membro.email }}<br>{% endif %}
-                        {% if membro.telefone %}<i class="fa-solid fa-phone"></i> {{ membro.telefone }}{% endif %}
+                    <div class="membro-nome">{{ membro.nome }}</div>
+                    <div class="membro-cargo">{{ membro.cargo.nome }}</div>
+                    
+                    <div class="membro-contato">
+                        {% if membro.email %}
+                            <a href="mailto:{{ membro.email }}" title="{{ membro.email }}"><i class="fa-solid fa-envelope"></i></a>
+                        {% endif %}
+                        {% if membro.telefone %}
+                            <a href="tel:{{ membro.telefone }}" title="{{ membro.telefone }}"><i class="fa-solid fa-phone"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if fiscal %}
+        <div class="depto-grupo" style="margin-top: 50px;">
+            <div class="depto-titulo">Conselho Fiscal</div>
+            <div class="membros-grid">
+                {% for membro in fiscal %}
+                <div class="membro-card">
+                    <div class="membro-foto-wrapper">
+                        {% if membro.foto %}
+                            <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}">
+                        {% else %}
+                            <div class="membro-foto-placeholder"><i class="fa-solid fa-user"></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="membro-nome">{{ membro.nome }}</div>
+                    <div class="membro-cargo">{{ membro.cargo.nome }}</div>
+                    
+                    <div class="membro-contato">
+                        {% if membro.telefone %}
+                            <a href="tel:{{ membro.telefone }}" title="{{ membro.telefone }}"><i class="fa-solid fa-phone"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if outros_departamentos %}
+        <div class="departamentos-container">
+            <div class="titulo-secao" style="margin-top: 40px;">
+                <h3>Departamentos e Coordenadorias</h3>
+            </div>
+            
+            {% regroup outros_departamentos by tipo as membros_departamentos %}
+
+            {% for departamento in membros_departamentos %}
+                <div class="depto-grupo">
+                    <div class="depto-titulo">{{ departamento.grouper.nome }}</div>
+                    <div class="membros-grid">
+                        {% for membro in departamento.list %}
+                        <div class="membro-card">
+                            <div class="membro-foto-wrapper" style="width: 100px; height: 100px;">
+                                {% if membro.foto %}
+                                    <img src="{{ membro.foto.url }}" class="membro-foto" alt="{{ membro.nome }}">
+                                {% else %}
+                                    <div class="membro-foto-placeholder" style="font-size: 2.5rem;"><i class="fa-solid fa-user"></i></div>
+                                {% endif %}
+                            </div>
+                            <div class="membro-nome" style="font-size: 1.1rem;">{{ membro.nome }}</div>
+                            <div class="membro-cargo" style="font-size: 0.85rem;">{{ membro.cargo.nome }}</div>
+                            
+                            <div class="membro-contato">
+                                {% if membro.email %}
+                                    <a href="mailto:{{ membro.email }}" title="{{ membro.email }}"><i class="fa-solid fa-envelope"></i></a>
+                                {% endif %}
+                                {% if membro.telefone %}
+                                    <a href="tel:{{ membro.telefone }}" title="{{ membro.telefone }}"><i class="fa-solid fa-phone"></i></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             {% endfor %}
-        {% empty %}
-            <p>Nenhum responsável de departamento cadastrado ainda.</p>
-        {% endfor %}
-    </div>
+        </div>
+        {% endif %}
+    </section>
 
 </div>
 {% endblock %}

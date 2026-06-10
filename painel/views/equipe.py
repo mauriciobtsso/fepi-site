@@ -22,7 +22,7 @@ def equipe_hub(request):
 def gerenciar_membro(request, id=None):
     instancia = get_object_or_404(MembroDiretoria, id=id) if id else None
     if request.method == 'POST':
-        form = MembroDiretoriaForm(request.POST, instance=instancia)
+        form = MembroDiretoriaForm(request.POST, request.FILES, instance=instancia)
         if form.is_valid():
             form.save()
             return redirect('equipe_hub')
