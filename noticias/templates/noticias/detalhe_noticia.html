@@ -55,38 +55,72 @@
 <style>
     /* Estilos Base */
     .news-meta { color: #888; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-    .news-meta-item { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .news-meta-item { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 5px; margin-right: 15px;}
     .news-meta-item i { color: var(--destaque); } 
-    .news-title { color: var(--azul-escuro); font-size: 2.2rem; line-height: 1.2; margin: 0; font-weight: 800; }
-    .news-img-full { width: 100%; height: 100%; object-fit: contain; }
-    .news-content { font-size: 1.15rem; line-height: 1.8; color: #333; text-align: justify; }
+    .news-title { color: var(--azul-escuro); font-size: 2.5rem; line-height: 1.2; margin: 0; font-weight: 800; }
+    
+    .news-img-container { width: 100%; max-height: 500px; overflow: hidden; display: flex; justify-content: center; align-items: center; margin-bottom: 50px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .news-img-full { width: 100%; height: 100%; object-fit: cover; }
+    
+    /* ===== FORMATAÇÃO DO CKEDITOR (AQUI ESTÁ A MÁGICA) ===== */
+    .news-content { font-size: 1.15rem; line-height: 1.8; color: #334155; text-align: justify; }
     .news-content p { margin-bottom: 1.5rem; }
+    .news-content h2, .news-content h3, .news-content h4 { color: var(--azul-escuro); margin-top: 2rem; margin-bottom: 1rem; font-weight: 700; }
     .news-content ul, .news-content ol { margin-left: 20px; margin-bottom: 1.5rem; }
-    .news-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0; }
-    .btn-voltar-news { display: inline-flex; margin-bottom: 30px; color: var(--azul-medio); text-decoration: none; font-weight: bold; border: 1px solid var(--azul-medio); padding: 8px 15px; border-radius: 20px; transition: 0.2s; font-size: 0.9rem; align-items: center; gap: 8px; }
-    .btn-voltar-news:hover { background-color: var(--azul-medio); color: white; }
-    @media (max-width: 600px) { .news-title { font-size: 1.8rem; } }
+    .news-content a { color: var(--destaque); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+    .news-content blockquote { border-left: 4px solid var(--destaque); background: #f8fafc; padding: 20px; margin: 20px 0; font-style: italic; color: #475569; border-radius: 0 8px 8px 0; }
+    
+    /* Regras para Imagens inseridas no meio do texto via CKEditor */
+    .news-content img { 
+        max-width: 100%; 
+        height: auto !important; 
+        border-radius: 8px; 
+        margin: 20px 0; 
+        display: block;
+    }
+    
+    /* Regras para Vídeos (Iframe do YouTube responsivo) inseridos via CKEditor */
+    .news-content iframe {
+        width: 100%;
+        max-width: 800px;
+        height: 450px;
+        border-radius: 12px;
+        margin: 30px auto;
+        display: block;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    /* Botão Voltar */
+    .btn-voltar-news { display: inline-flex; margin-bottom: 30px; color: #64748b; text-decoration: none; font-weight: 700; background: #f1f5f9; padding: 10px 20px; border-radius: 50px; transition: 0.3s ease; font-size: 0.95rem; align-items: center; gap: 8px; }
+    .btn-voltar-news:hover { background-color: var(--azul-escuro); color: white; transform: translateX(-5px); }
+    
+    /* Responsivo */
+    @media (max-width: 768px) { 
+        .news-title { font-size: 1.8rem; } 
+        .news-content { font-size: 1.05rem; }
+        .news-content iframe { height: 250px; } /* Vídeo menor em celulares */
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="pagina-conteudo">
+<div class="pagina-conteudo" style="max-width: 900px; margin: 0 auto; padding: 40px 20px;">
     
     <a href="{% url 'lista_noticias' %}" class="btn-voltar-news">
         <i class="fa-solid fa-arrow-left"></i> Voltar para as Notícias
     </a>
 
     <article>
-        <div class="news-header" style="border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 60px !important;">
-            <div class="news-meta">
-                <span class="news-meta-item"><i class="fa-solid fa-calendar-alt"></i> {{ noticia.data_publicacao|date:"d \d\e F \d\e Y" }}</span>
-                <span class="news-meta-item"><i class="fa-solid fa-user-circle"></i> Publicado por: {{ noticia.autor|default:"FEPI" }}</span>
-            </div>
+        <div class="news-header" style="border-bottom: 2px solid #f1f5f9; padding-bottom: 25px; margin-bottom: 40px;">
             <h1 class="news-title">{{ noticia.titulo }}</h1>
+            <div class="news-meta" style="margin-top: 15px;">
+                <span class="news-meta-item"><i class="fa-solid fa-calendar-alt"></i> {{ noticia.data_publicacao|date:"d \d\e F \d\e Y" }}</span>
+                <span class="news-meta-item"><i class="fa-solid fa-user-circle"></i> {{ noticia.autor|default:"FEPI" }}</span>
+            </div>
         </div>
 
         {% if noticia.imagem %}
-            <div class="news-img-container" style="width: 100%; max-height: 450px; overflow: hidden; display: flex; justify-content: center; align-items: center; margin-bottom: 60px !important; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div class="news-img-container">
                 <img src="{{ noticia.imagem.url }}" alt="Imagem de {{ noticia.titulo }}" class="news-img-full" loading="lazy">
             </div>
         {% endif %}
@@ -95,21 +129,14 @@
             {{ noticia.conteudo|safe }}
         </div>
 
-        <div class="share-section" style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
-            <h4 style="font-size: 1.1rem; color: #555; margin-bottom: 15px;">Gostou? Compartilhe:</h4>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <a href="https://api.whatsapp.com/send?text=*{{ noticia.titulo|urlencode }}*%0A{{ request.build_absolute_uri|urlencode }}" target="_blank" style="background: #25D366; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
-                </a>
-                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}" target="_blank" style="background: #1877F2; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-brands fa-facebook"></i> Facebook
-                </a>
-                <button onclick="copiarLink()" style="background: #eee; color: #333; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-link"></i> Copiar Link
-                </button>
+        <div class="share-section" style="margin-top: 60px; padding-top: 30px; border-top: 2px solid #f1f5f9; display: flex; flex-direction: column; align-items: center;">
+            <h4 style="font-size: 1.2rem; color: var(--azul-escuro); margin-bottom: 20px; font-weight: 800;">Compartilhe esta notícia</h4>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                <a href="https://api.whatsapp.com/send?text=*{{ noticia.titulo|urlencode }}*%0A{{ request.build_absolute_uri|urlencode }}" target="_blank" style="background: #25D366; color: white; padding: 12px 25px; border-radius: 50px; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}" target="_blank" style="background: #1877F2; color: white; padding: 12px 25px; border-radius: 50px; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;"><i class="fa-brands fa-facebook"></i> Facebook</a>
+                <button onclick="copiarLink()" style="background: #e2e8f0; color: #475569; border: none; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;"><i class="fa-solid fa-link"></i> Copiar Link</button>
             </div>
         </div>
-
     </article>
 </div>
 

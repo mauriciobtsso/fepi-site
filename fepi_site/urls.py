@@ -35,6 +35,7 @@ sitemaps = {
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('painel/', include('painel.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', home, name='home'),
     
     # --- SISTEMA DE LOGIN E INTRANET ---

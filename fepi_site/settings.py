@@ -122,6 +122,7 @@ INSTALLED_APPS = [
     'intranet', 
     # Libs
     'ckeditor',
+    'ckeditor_uploader',
     'voluntarios',
     'painel',
     'usuarios',
@@ -224,20 +225,26 @@ STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 # Opcional: Diga ao WhiteNoise para usar nomes de arquivo imutáveis
 WHITENOISE_IMMUTABLE_FILE_TEST = lambda path, url: ('.' in url and url.rsplit('.', 1)[1] in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'css', 'js', 'woff', 'woff2', 'ttf', 'eot'])
 
-# --- CONFIGURAÇÃO CKEDITOR ---
-CKEDITOR_UPLOAD_PATH = "uploads/"
-CKEDITOR_IMAGE_BACKEND = "pillow"
+# --- CONFIGURAÇÕES DO CKEDITOR ---
+CKEDITOR_UPLOAD_PATH = "uploads/ckeditor/"
+
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
         'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
             ['Link', 'Unlink'],
-            ['RemoveFormat', 'Source', 'Image', 'Table']
+            ['Image', 'Iframe', 'Table', 'HorizontalRule'], # <--- BOTÕES MÁGICOS AQUI
+            ['Styles', 'Format', 'Font', 'FontSize'],
+            ['TextColor', 'BGColor'],
+            ['Maximize', 'Source']
         ],
-        'width': 'auto',
-    },
+        'width': '100%',
+        'height': 400,
+        'toolbarCanCollapse': False,
+    }
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

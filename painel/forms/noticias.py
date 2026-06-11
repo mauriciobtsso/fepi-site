@@ -1,5 +1,6 @@
 # painel/forms/noticias.py
 from django import forms
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from noticias.models import Noticia
 
 class NoticiaForm(forms.ModelForm):
@@ -9,6 +10,7 @@ class NoticiaForm(forms.ModelForm):
         
         widgets = {
             'titulo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Título da Notícia'}),
+            'conteudo': CKEditorUploadingWidget(),
             'resumo': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Breve resumo...'}),
             'autor': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Autor da Matéria'}),
             'imagem': forms.FileInput(attrs={'class': 'form-control'}),
