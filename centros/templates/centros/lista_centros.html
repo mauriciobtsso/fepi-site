@@ -7,77 +7,232 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
 <style>
-    /* CORREÇÃO CRÍTICA: Impede o Bootstrap de quebrar os blocos de imagem do mapa */
-    .leaflet-container img {
-        max-width: none !important;
-        max-height: none !important;
+    /* ===== CORREÇÃO LEAFLET ===== */
+    .leaflet-container img { max-width: none !important; max-height: none !important; }
+
+    /* ===== CABEÇALHO ===== */
+    .header-pagina {
+        text-align: center;
+        margin: 40px 0;
+    }
+    .header-pagina h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--azul-escuro, #003366);
+        margin-bottom: 10px;
+        letter-spacing: -0.5px;
+    }
+    .header-pagina p {
+        color: #64748b;
+        font-size: 1.15rem;
     }
 
-    /* Estilos da Busca e Filtros */
-    .search-container { background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin-bottom: 30px; }
-    .search-form { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 10px; align-items: center; }
-    .search-input, .search-select { padding: 10px 15px; border-radius: 8px; border: 1px solid #ccc; width: 100%; font-size: 0.9rem; outline: none; }
-    .search-btn { background-color: #0056b3; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s;}
-    .search-btn:hover { background-color: #004494; }
-    .search-btn:disabled { background-color: #ccc; cursor: not-allowed; }
+    /* ===== PAINEL DE BUSCA ===== */
+    .search-container { 
+        background-color: white; 
+        padding: 30px; 
+        border-radius: 16px; 
+        margin-bottom: 40px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid #f1f5f9;
+    }
+    .search-form { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+        gap: 15px; 
+        align-items: center; 
+    }
+    .search-input, .search-select { 
+        padding: 12px 15px; 
+        border-radius: 8px; 
+        border: 2px solid #e2e8f0; 
+        background-color: #f8fafc;
+        width: 100%; 
+        font-size: 0.95rem; 
+        color: #334155;
+        outline: none; 
+        transition: all 0.3s ease;
+    }
+    .search-input:focus, .search-select:focus {
+        border-color: var(--destaque, #f39c12);
+        background-color: white;
+    }
+    .search-btn { 
+        background: linear-gradient(135deg, var(--azul-escuro, #003366) 0%, #005a99 100%);
+        color: white; 
+        border: none; 
+        padding: 12px 20px; 
+        border-radius: 8px; 
+        cursor: pointer; 
+        font-weight: 700; 
+        transition: 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 100%;
+    }
+    .search-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 51, 102, 0.2); }
+    .search-btn:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* Estilo do Mapa */
+    /* ===== BOTÕES DE GEOLOCALIZAÇÃO ===== */
+    .geo-actions {
+        margin-top: 20px; 
+        display: flex; 
+        gap: 15px; 
+        justify-content: center; 
+        flex-wrap: wrap;
+        border-top: 1px solid #f1f5f9;
+        padding-top: 20px;
+    }
+    .btn-geo {
+        background-color: #10b981; /* Verde moderno */
+        border-radius: 50px;
+        padding: 10px 25px;
+    }
+    .btn-geo:hover { background-color: #059669; box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
+    .btn-clear-geo {
+        background-color: #ef4444; /* Vermelho moderno */
+        border-radius: 50px;
+        padding: 10px 25px;
+    }
+    .btn-clear-geo:hover { background-color: #dc2626; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); }
+
+    /* Aviso de Geolocalização */
+    .geolocation-info { 
+        background-color: #f0fdf4; 
+        border-left: 4px solid #10b981; 
+        color: #065f46; 
+        padding: 15px 20px; 
+        border-radius: 0 8px 8px 0; 
+        margin-top: 20px; 
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+        font-weight: 500;
+    }
+    .raio-selector { display: flex; gap: 10px; align-items: center; margin-top: 15px; justify-content: center;}
+    .raio-selector label { font-weight: 700; color: #475569; }
+
+    /* ===== MAPA ===== */
     #mapa { 
         width: 100%; 
-        height: 500px; 
-        border-radius: 10px; 
-        border: 2px solid #ddd; 
-        margin-bottom: 40px; 
-        z-index: 1; /* Mantém o mapa atrás dos menus do site */
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        height: 550px; 
+        border-radius: 16px; 
+        border: 4px solid white; 
+        margin-bottom: 50px; 
+        z-index: 1; 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
     }
 
-    /* Lista Compacta e Design dos Cards */
-    .lista-compacta { display: flex; flex-direction: column; gap: 8px; margin-bottom: 40px; }
-    .item-centro { display: grid; grid-template-columns: 50px 1fr auto; align-items: center; background: white; padding: 10px 15px; border-radius: 6px; border: 1px solid #eee; gap: 15px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-    .item-centro:hover { border-color: #0056b3; transform: translateX(3px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    /* ===== TÍTULOS DE GRUPOS ===== */
+    .grupo-titulo { 
+        color: var(--azul-escuro, #003366); 
+        font-size: 1.5rem; 
+        font-weight: 800; 
+        margin: 40px 0 20px 0; 
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .grupo-titulo::after {
+        content: '';
+        flex-grow: 1;
+        height: 2px;
+        background: #f1f5f9;
+        margin-left: 15px;
+    }
 
-    .centro-img { width: 45px; height: 45px; object-fit: cover; border-radius: 50%; border: 1px solid #eee; background: #f9f9f9; }
-    .centro-main { display: flex; flex-direction: column; line-height: 1.2; }
-    .nome { font-weight: 700; color: #0056b3; font-size: 1.1rem; }
+    /* ===== CARTÕES DE CENTROS ESPÍRITAS ===== */
+    .lista-compacta { display: flex; flex-direction: column; gap: 15px; margin-bottom: 50px; }
     
-    .info-row { display: flex; align-items: center; gap: 6px; margin-top: 5px; font-size: 0.9rem; color: #555; }
-    .info-row i { color: #6c757d; font-size: 0.9rem; width: 15px; text-align: center; }
-    .distancia-badge { background-color: #e7f3ff; color: #0056b3; padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; }
-    
-    .acoes { display: flex; gap: 8px; align-items: center; }
-    .btn-mini { font-size: 0.8rem; font-weight: 600; padding: 8px 15px; border-radius: 20px; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.2s; border: none; cursor: pointer;}
-    .btn-rota { background-color: #e9ecef; color: #0056b3; }
-    .btn-rota:hover { background-color: #0056b3; color: white; }
-    .btn-site { background-color: #fce4ec; color: #c2185b; }
-    .btn-site:hover { background-color: #c2185b; color: white; }
+    .item-centro { 
+        display: grid; 
+        grid-template-columns: 60px 1fr auto; 
+        align-items: center; 
+        background: white; 
+        padding: 20px; 
+        border-radius: 12px; 
+        border: 1px solid #e2e8f0; 
+        gap: 20px; 
+        transition: all 0.3s ease; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02); 
+    }
+    .item-centro:hover { 
+        border-color: #cbd5e1; 
+        transform: translateY(-3px); 
+        box-shadow: 0 12px 25px rgba(0,0,0,0.06); 
+    }
 
-    .grupo-titulo { color: #333; font-size: 1.4rem; font-weight: 700; margin: 30px 0 15px 0; border-bottom: 2px solid #eee; padding-bottom: 5px; }
-    
-    .geolocation-info { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-    .geolocation-info i { font-size: 1.2rem; }
-    
-    .raio-selector { display: flex; gap: 10px; align-items: center; margin-top: 15px; }
-    .raio-selector label { font-weight: 600; color: #333; }
-    .raio-selector select { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; }
+    .centro-img-container {
+        width: 60px; height: 60px;
+        border-radius: 50%;
+        background: #f8fafc;
+        border: 2px solid #f1f5f9;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden;
+    }
+    .centro-img { width: 100%; height: 100%; object-fit: cover; }
+    .centro-img-placeholder { color: #94a3b8; font-size: 0.8rem; font-weight: 800; }
 
-    /* Responsividade para mobile */
+    .centro-main { display: flex; flex-direction: column; line-height: 1.4; }
+    .nome { font-weight: 800; color: var(--azul-escuro, #003366); font-size: 1.2rem; margin-bottom: 5px;}
+    
+    .info-row { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; color: #64748b; margin-bottom: 2px;}
+    .info-row i { color: var(--destaque, #f39c12); font-size: 0.9rem; width: 16px; text-align: center; }
+    
+    .distancia-badge { 
+        background-color: #f0fdf4; 
+        color: #10b981; 
+        padding: 4px 10px; 
+        border-radius: 6px; 
+        font-weight: 700; 
+        font-size: 0.85rem; 
+        border: 1px solid #bbf7d0;
+    }
+    
+    .acoes { display: flex; gap: 10px; align-items: center; }
+    .btn-mini { 
+        font-size: 0.85rem; 
+        font-weight: 700; 
+        padding: 10px 18px; 
+        border-radius: 8px; 
+        text-decoration: none; 
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+        transition: 0.2s; 
+        border: none; 
+        cursor: pointer;
+    }
+    .btn-rota { background-color: #f1f5f9; color: #475569; }
+    .btn-rota:hover { background-color: var(--azul-escuro, #003366); color: white; }
+    .btn-site { background-color: #fff1f2; color: #be123c; }
+    .btn-site:hover { background-color: #be123c; color: white; }
+
+    /* ===== RESPONSIVIDADE ===== */
     @media (max-width: 900px) {
-        .search-form { grid-template-columns: 1fr; }
-        .item-centro { grid-template-columns: 1fr; text-align: center; }
-        .centro-img { margin: 0 auto; }
+        .item-centro { 
+            grid-template-columns: 1fr; 
+            text-align: center; 
+            padding: 25px 20px;
+        }
+        .centro-img-container { margin: 0 auto 10px; width: 80px; height: 80px; }
         .acoes, .info-row { justify-content: center; }
+        .acoes { flex-direction: column; margin-top: 15px;}
+        .btn-mini { width: 100%; justify-content: center; }
+        .header-pagina h1 { font-size: 2rem; }
     }
 </style>
 
 <div class="container py-4">
     
-    <div class="text-center mb-4">
-        <h1 class="display-5 fw-bold" style="color: #0056b3;">Casas Espíritas no Piauí</h1>
-        <p class="lead text-muted">Explore o mapa ou utilize os filtros abaixo para encontrar o centro mais próximo.</p>
+    <div class="header-pagina">
+        <h1>Casas Espíritas no Piauí</h1>
+        <p>Explore o mapa ou utilize os filtros abaixo para encontrar a instituição mais próxima.</p>
     </div>
 
-    <div class="search-container shadow-sm">
+    <div class="search-container">
         <form method="GET" action="." class="search-form" id="search-form">
             <input type="text" name="q" class="search-input" placeholder="Pesquise por nome ou rua..." value="{{ busca_ativa }}">
             
@@ -111,41 +266,39 @@
             {% endif %}
         </form>
         
-        <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-            <button type="button" id="btn-geolocation" class="search-btn" style="background-color: #28a745;" onclick="ativarGeolocation()">
-                <i class="fas fa-location-arrow"></i> Usar Minha Localização
+        <div class="geo-actions">
+            <button type="button" id="btn-geolocation" class="search-btn btn-geo" onclick="ativarGeolocation()">
+                <i class="fas fa-location-crosshairs"></i> Encontrar Próximos a Mim
             </button>
             
             {% if geolocation_ativa %}
-                <button type="button" class="search-btn" style="background-color: #dc3545;" onclick="limparGeolocation()">
-                    <i class="fas fa-times"></i> Limpar Localização
+                <button type="button" class="search-btn btn-clear-geo" onclick="limparGeolocation()">
+                    <i class="fas fa-times"></i> Desativar Localização
                 </button>
+            {% endif %}
+
+            {% if busca_ativa or estado_req or cidade_req or bairro_req %}
+                <a href="{% url 'lista_centros' %}" class="search-btn" style="background: white; color: #64748b; border: 2px solid #e2e8f0; text-decoration: none;">
+                    <i class="fas fa-eraser"></i> Limpar Filtros
+                </a>
             {% endif %}
         </div>
         
         {% if geolocation_ativa %}
             <div class="geolocation-info">
-                <i class="fas fa-check-circle"></i>
-                <span>Mostrando <strong>{{ centros|length }} centro(s)</strong> dentro de <strong>{{ raio_km }} km</strong> da sua localização</span>
+                <i class="fas fa-satellite-dish" style="font-size: 1.5rem;"></i>
+                <div>Mostrando <strong>{{ centros|length }} centro(s)</strong> dentro de <strong>{{ raio_km }} km</strong> da sua localização atual.</div>
             </div>
             
             <div class="raio-selector">
-                <label for="raio-select">Raio de Busca:</label>
-                <select id="raio-select" class="search-select" style="width: auto; max-width: 150px;" onchange="mudarRaio(this.value)">
+                <label for="raio-select">Ajustar Raio de Busca:</label>
+                <select id="raio-select" class="search-select" style="width: auto; max-width: 150px; padding: 8px 15px;" onchange="mudarRaio(this.value)">
                     <option value="5" {% if raio_km == "5" %}selected{% endif %}>5 km</option>
                     <option value="10" {% if raio_km == "10" %}selected{% endif %}>10 km</option>
                     <option value="25" {% if raio_km == "25" %}selected{% endif %}>25 km</option>
                     <option value="50" {% if raio_km == "50" %}selected{% endif %}>50 km</option>
                     <option value="100" {% if raio_km == "100" %}selected{% endif %}>100 km</option>
                 </select>
-            </div>
-        {% endif %}
-        
-        {% if busca_ativa or estado_req or cidade_req or bairro_req %}
-            <div style="margin-top: 15px; text-align: center;">
-                <a href="{% url 'lista_centros' %}" style="color: #dc3545; font-weight:bold; text-decoration: none;">
-                    <i class="fas fa-times-circle"></i> Limpar Filtros
-                </a>
             </div>
         {% endif %}
     </div>
@@ -166,51 +319,60 @@
     </div>
 
     {% if geolocation_ativa %}
-        <h3 class="grupo-titulo">Centros Próximos ({{ centros|length }})</h3>
+        <h3 class="grupo-titulo"><i class="fa-solid fa-map-location-dot"></i> Centros Próximos ({{ centros|length }})</h3>
         <div class="lista-compacta">
             {% for centro in centros %}
             <div class="item-centro">
-                {% if centro.foto %}
-                    <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
-                {% else %}
-                    <div class="centro-img" style="display:flex; align-items:center; justify-content:center; color:#ccc; font-size:0.7rem;">FEPI</div>
-                {% endif %}
+                <div class="centro-img-container">
+                    {% if centro.foto %}
+                        <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
+                    {% else %}
+                        <div class="centro-img-placeholder">FEPI</div>
+                    {% endif %}
+                </div>
 
                 <div class="centro-main">
                     <span class="nome">{{ centro.nome }}</span>
                     <div class="info-row"><i class="fa-solid fa-location-dot"></i><span>{{ centro.bairro }} • {{ centro.endereco }}{% if centro.numero %}, {{ centro.numero }}{% endif %}</span></div>
                     <div class="info-row"><i class="fa-solid fa-phone"></i><span>{% if centro.telefone %}{{ centro.telefone }}{% else %}Não informado{% endif %}</span></div>
                     {% if centro.distancia %}
-                        <div class="info-row"><i class="fa-solid fa-road"></i><span class="distancia-badge">{{ centro.distancia }} km</span></div>
+                        <div class="info-row" style="margin-top: 5px;">
+                            <span class="distancia-badge"><i class="fa-solid fa-route"></i> A {{ centro.distancia }} km de distância</span>
+                        </div>
                     {% endif %}
                 </div>
 
                 <div class="acoes">
-                    {% if centro.site %}<a href="{{ centro.site }}" target="_blank" class="btn-mini btn-site" title="Instagram/Site"><i class="fa-solid fa-globe"></i> Acessar</a>{% endif %}
+                    {% if centro.site %}
+                        <a href="{{ centro.site }}" target="_blank" class="btn-mini btn-site" title="Acessar Site/Instagram"><i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar</a>
+                    {% endif %}
                     <button type="button" class="btn-mini btn-rota" onclick="focarNoMapa('{{ centro.latitude|unlocalize }}', '{{ centro.longitude|unlocalize }}')">
-                        <i class="fa-solid fa-map-pin"></i> Ver no Mapa
+                        <i class="fa-solid fa-magnifying-glass-location"></i> Ver no Mapa
                     </button>
                 </div>
             </div>
             {% empty %}
-            <div style="text-align: center; padding: 30px; color: #666;">
-                <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                <p>Nenhum centro espírita encontrado dentro do raio de busca.</p>
-                <p style="font-size: 0.9rem;">Tente aumentar o raio ou verificar se sua localização está correta.</p>
+            <div style="text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                <i class="fas fa-satellite-dish" style="font-size: 3rem; color: #94a3b8; margin-bottom: 15px; display: block;"></i>
+                <h4 style="color: #475569; font-weight: 700;">Nenhum centro encontrado</h4>
+                <p style="color: #64748b; margin-bottom: 0;">Tente aumentar o raio de busca ou verifique se sua localização está correta.</p>
             </div>
             {% endfor %}
         </div>
     {% else %}
+        
         {% if capital %}
-        <h3 class="grupo-titulo">Em Teresina ({{ capital|length }})</h3>
+        <h3 class="grupo-titulo"><i class="fa-solid fa-city"></i> Em Teresina ({{ capital|length }})</h3>
         <div class="lista-compacta">
             {% for centro in capital %}
             <div class="item-centro">
-                {% if centro.foto %}
-                    <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
-                {% else %}
-                    <div class="centro-img" style="display:flex; align-items:center; justify-content:center; color:#ccc; font-size:0.7rem;">FEPI</div>
-                {% endif %}
+                <div class="centro-img-container">
+                    {% if centro.foto %}
+                        <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
+                    {% else %}
+                        <div class="centro-img-placeholder">FEPI</div>
+                    {% endif %}
+                </div>
 
                 <div class="centro-main">
                     <span class="nome">{{ centro.nome }}</span>
@@ -219,9 +381,9 @@
                 </div>
 
                 <div class="acoes">
-                    {% if centro.site %}<a href="{{ centro.site }}" target="_blank" class="btn-mini btn-site" title="Instagram/Site"><i class="fa-solid fa-globe"></i> Acessar</a>{% endif %}
+                    {% if centro.site %}<a href="{{ centro.site }}" target="_blank" class="btn-mini btn-site"><i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar</a>{% endif %}
                     <button type="button" class="btn-mini btn-rota" onclick="focarNoMapa('{{ centro.latitude|unlocalize }}', '{{ centro.longitude|unlocalize }}')">
-                        <i class="fa-solid fa-map-pin"></i> Ver no Mapa
+                        <i class="fa-solid fa-magnifying-glass-location"></i> Ver no Mapa
                     </button>
                 </div>
             </div>
@@ -230,26 +392,28 @@
         {% endif %}
 
         {% if interior %}
-        <h3 class="grupo-titulo">No Interior ({{ interior|length }})</h3>
+        <h3 class="grupo-titulo"><i class="fa-solid fa-map-location"></i> No Interior ({{ interior|length }})</h3>
         <div class="lista-compacta">
             {% for centro in interior %}
             <div class="item-centro">
-                {% if centro.foto %}
-                    <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
-                {% else %}
-                    <div class="centro-img" style="display:flex; align-items:center; justify-content:center; color:#ccc; font-size:0.7rem;">FEPI</div>
-                {% endif %}
+                <div class="centro-img-container">
+                    {% if centro.foto %}
+                        <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
+                    {% else %}
+                        <div class="centro-img-placeholder">FEPI</div>
+                    {% endif %}
+                </div>
 
                 <div class="centro-main">
                     <span class="nome">{{ centro.nome }}</span>
-                    <div class="info-row"><i class="fa-solid fa-city"></i><strong>{{ centro.cidade }} - {{ centro.estado }}</strong></div>
+                    <div class="info-row"><i class="fa-solid fa-building"></i><strong>{{ centro.cidade }} - {{ centro.estado }}</strong></div>
                     <div class="info-row"><i class="fa-solid fa-location-dot"></i><span>{{ centro.endereco }}</span></div>
                 </div>
 
                 <div class="acoes">
-                    {% if centro.site %}<a href="{{ centro.site }}" target="_blank" class="btn-mini btn-site"><i class="fa-solid fa-globe"></i> Acessar</a>{% endif %}
+                    {% if centro.site %}<a href="{{ centro.site }}" target="_blank" class="btn-mini btn-site"><i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar</a>{% endif %}
                     <button type="button" class="btn-mini btn-rota" onclick="focarNoMapa('{{ centro.latitude|unlocalize }}', '{{ centro.longitude|unlocalize }}')">
-                        <i class="fa-solid fa-map-pin"></i> Ver no Mapa
+                        <i class="fa-solid fa-magnifying-glass-location"></i> Ver no Mapa
                     </button>
                 </div>
             </div>
@@ -258,23 +422,25 @@
         {% endif %}
 
         {% if especializadas %}
-        <h3 class="grupo-titulo">Entidades Especializadas ({{ especializadas|length }})</h3>
+        <h3 class="grupo-titulo"><i class="fa-solid fa-star"></i> Entidades Especializadas ({{ especializadas|length }})</h3>
         <div class="lista-compacta">
             {% for centro in especializadas %}
             <div class="item-centro">
-                {% if centro.foto %}
-                    <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
-                {% else %}
-                    <div class="centro-img" style="display:flex; align-items:center; justify-content:center; color:#ccc; font-size:0.7rem;">FEPI</div>
-                {% endif %}
+                <div class="centro-img-container">
+                    {% if centro.foto %}
+                        <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
+                    {% else %}
+                        <div class="centro-img-placeholder">FEPI</div>
+                    {% endif %}
+                </div>
                 <div class="centro-main">
                     <span class="nome">{{ centro.nome }}</span>
                     <div class="info-row"><i class="fa-solid fa-location-dot"></i><span>{{ centro.cidade }} | {{ centro.endereco }}</span></div>
                 </div>
                 <div class="acoes">
-                    {% if centro.site %}<a href="{{ centro.site }}" target="_blank" class="btn-mini btn-site"><i class="fa-solid fa-globe"></i> Acessar</a>{% endif %}
+                    {% if centro.site %}<a href="{{ centro.site }}" target="_blank" class="btn-mini btn-site"><i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar</a>{% endif %}
                     <button type="button" class="btn-mini btn-rota" onclick="focarNoMapa('{{ centro.latitude|unlocalize }}', '{{ centro.longitude|unlocalize }}')">
-                        <i class="fa-solid fa-map-pin"></i> Ver no Mapa
+                        <i class="fa-solid fa-magnifying-glass-location"></i> Ver no Mapa
                     </button>
                 </div>
             </div>
@@ -292,16 +458,13 @@
     var userCircle = null;
     
     document.addEventListener('DOMContentLoaded', function() {
-        // Inicializa o Mapa focado no Piauí
         map = L.map('mapa').setView([-5.08921, -42.8016], 6);
 
-        // Camada gratuita OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap'
         }).addTo(map);
 
-        // Invalida o tamanho do mapa logo após carregar (força o navegador a recalcular o quadro)
         setTimeout(function(){ map.invalidateSize(); }, 400);
 
         var centrosData = document.querySelectorAll('.centro-data');
@@ -319,24 +482,22 @@
 
                 if (!isNaN(lat) && !isNaN(lng)) {
                     var marker = L.marker([lat, lng]).addTo(map);
-                    marker.bindPopup(`<strong style="color: #0056b3; font-size:1.1em;">${nome}</strong><br><small>${endereco}</small>`);
+                    marker.bindPopup(`<strong style="color: #003366; font-size:1.1em;">${nome}</strong><br><small>${endereco}</small>`);
                     markers.push(marker);
                 }
             }
         });
 
-        // Foca o mapa englobando todos os pinos carregados
         if (markers.length > 0) {
             var group = new L.featureGroup(markers);
             map.fitBounds(group.getBounds().pad(0.1));
         }
         
-        // Se geolocalização está ativa, mostra o marcador do usuário
-        var userLat = document.getElementById('user_lat');
-        var userLon = document.getElementById('user_lon');
-        var raioInput = document.getElementById('raio');
+        var userLat = document.getElementById('user_lat_input');
+        var userLon = document.getElementById('user_lon_input');
+        var raioInput = document.getElementById('raio_input');
         
-        if (userLat && userLon) {
+        if (userLat && userLon && raioInput) {
             var lat = parseFloat(userLat.value);
             var lon = parseFloat(userLon.value);
             var raio = parseFloat(raioInput.value);
@@ -347,7 +508,6 @@
         }
     });
 
-    // Função para ativar geolocalização
     window.ativarGeolocation = function() {
         var btn = document.getElementById('btn-geolocation');
         btn.disabled = true;
@@ -359,13 +519,9 @@
                     var lat = position.coords.latitude;
                     var lon = position.coords.longitude;
                     
-                    // Adiciona os parâmetros de geolocalização à URL
                     var form = document.getElementById('search-form');
-                    
-                    // Remove inputs anteriores se existirem (pelo nome)
                     Array.from(form.querySelectorAll('input[name="user_lat"], input[name="user_lon"], input[name="raio"]')).forEach(el => el.remove());
                     
-                    // Adiciona novos inputs
                     var inputLat = document.createElement('input');
                     inputLat.type = 'hidden';
                     inputLat.name = 'user_lat';
@@ -388,7 +544,7 @@
                 },
                 function(error) {
                     btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-location-arrow"></i> Usar Minha Localização';
+                    btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Encontrar Próximos a Mim';
                     
                     var mensagem = 'Erro ao obter localização: ';
                     switch(error.code) {
@@ -409,16 +565,13 @@
             );
         } else {
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-location-arrow"></i> Usar Minha Localização';
+            btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Encontrar Próximos a Mim';
             alert('Geolocalização não é suportada pelo seu navegador.');
         }
     };
     
-    // Função para limpar geolocalização
     window.limparGeolocation = function() {
         var form = document.getElementById('search-form');
-        
-        // Remove inputs de geolocalização
         var oldLat = form.querySelector('input[name="user_lat"]');
         var oldLon = form.querySelector('input[name="user_lon"]');
         var oldRaio = form.querySelector('input[name="raio"]');
@@ -430,7 +583,6 @@
         form.submit();
     };
     
-    // Função para mudar o raio de busca
     window.mudarRaio = function(novoRaio) {
         var form = document.getElementById('search-form');
         var raioInput = form.querySelector('input[name="raio"]');
@@ -446,20 +598,13 @@
         form.submit();
     };
     
-    // Função para mostrar a localização do usuário no mapa
     function mostrarLocalizacaoUsuario(lat, lon, raio) {
-        // Remove marcador anterior se existir
-        if (userMarker) {
-            map.removeLayer(userMarker);
-        }
-        if (userCircle) {
-            map.removeLayer(userCircle);
-        }
+        if (userMarker) { map.removeLayer(userMarker); }
+        if (userCircle) { map.removeLayer(userCircle); }
         
-        // Adiciona marcador da localização do usuário
         userMarker = L.marker([lat, lon], {
             icon: L.icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
@@ -468,21 +613,18 @@
             })
         }).addTo(map);
         
-        userMarker.bindPopup('<strong style="color: #0056b3;">Sua Localização</strong>');
+        userMarker.bindPopup('<strong style="color: #dc2626;">Você está aqui</strong>');
         
-        // Adiciona círculo de raio
         userCircle = L.circle([lat, lon], {
-            color: '#0056b3',
-            fillColor: '#0056b3',
-            fillOpacity: 0.1,
-            radius: raio * 1000  // Converte km para metros
+            color: '#10b981',
+            fillColor: '#10b981',
+            fillOpacity: 0.15,
+            radius: raio * 1000 
         }).addTo(map);
         
-        // Foca o mapa na localização do usuário
-        map.setView([lat, lon], 12);
+        map.setView([lat, lon], 11);
     }
 
-    // Função dos botões "Ver no Mapa"
     window.focarNoMapa = function(latStr, lngStr) {
         if(latStr && lngStr && latStr !== 'None' && lngStr !== 'None') {
             var lat = parseFloat(latStr.replace(',','.'));
@@ -491,7 +633,7 @@
             if (!isNaN(lat) && !isNaN(lng)) {
                 map.setView([lat, lng], 17); 
                 window.scrollTo({
-                    top: document.getElementById('mapa').offsetTop - 20,
+                    top: document.getElementById('mapa').offsetTop - 100,
                     behavior: 'smooth'
                 });
             } else {
