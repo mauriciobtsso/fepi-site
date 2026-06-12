@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from painel.views import ia_views
+from painel.views import ia_views, radar_views
 
 urlpatterns = [
     path('', views.dashboard, name='painel_home'),
@@ -14,6 +14,7 @@ urlpatterns = [
     path('noticias/editar/<int:noticia_id>/', views.editar_noticia, name='editar_noticia'),
     path('noticias/deletar/<int:noticia_id>/', views.deletar_noticia, name='deletar_noticia'),
     path('popup/', views.gerenciar_popup, name='gerenciar_popup'),
+    path('noticias/radar/', radar_views.radar_noticias, name='radar_noticias'),
 
     # Colunas
     path('colunas/', views.listar_colunas, name='listar_colunas'),
