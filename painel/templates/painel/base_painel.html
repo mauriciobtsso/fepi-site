@@ -19,6 +19,13 @@
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
         }
         
+        
+        /* Ajustes para a formatação do texto da IA (Markdown) */
+        .ai-msg p { margin-bottom: 8px; }
+        .ai-msg p:last-child { margin-bottom: 0; }
+        .ai-msg ul, .ai-msg ol { padding-left: 20px; margin-bottom: 8px; }
+        .ai-msg h1, .ai-msg h2, .ai-msg h3 { font-size: 16px; margin-top: 10px; margin-bottom: 5px; color: #1e3c72; }
+
         /* ATUALIZADO: O botão de logout agora herda os mesmos estilos dos links */
         .sidebar a, .sidebar button.btn-logout {
             color: rgba(255, 255, 255, 0.8); /* Branco levemente transparente */
@@ -71,6 +78,96 @@
                 left: 0;
                 overflow-y: auto;
             }
+        }
+
+        /* ========================================== */
+        /* CHATBOT IA DA FEPI                         */
+        /* ========================================== */
+        #fepi-ai-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50; /* Verde FEPI */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1050;
+            transition: transform 0.3s;
+        }
+        #fepi-ai-btn:hover { transform: scale(1.1); }
+        
+        #fepi-ai-chat {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1050;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        #ai-chat-header {
+            background-color: #1e3c72; /* Combinando com o painel */
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        #ai-chat-header button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        #ai-chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            font-size: 14px;
+        }
+        
+        .ai-msg, .user-msg { margin-bottom: 10px; padding: 10px; border-radius: 8px; max-width: 85%; line-height: 1.4; }
+        .ai-msg { background-color: #e0f2f1; align-self: flex-start; color: #333;}
+        .user-msg { background-color: #c8e6c9; margin-left: auto; color: #000; }
+        
+        #ai-chat-footer {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            background: white;
+        }
+        
+        #ai-chat-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        #ai-send-btn {
+            background-color: #1e3c72;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin-left: 5px;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -182,10 +279,27 @@
         </div>
     </div>
 
+    <button id="fepi-ai-btn" onclick="toggleChat()" title="Assistente IA FEPI">✨</button>
+
+    <div id="fepi-ai-chat">
+        <div id="ai-chat-header">
+            <span>Assistente FEPI ✨</span>
+            <button onclick="toggleChat()">✖</button>
+        </div>
+        <div id="ai-chat-body">
+            <div class="ai-msg">Olá! Sou o assistente com IA da FEPI. Como posso ajudar você hoje? (Ex: "Escreva uma notícia sobre a palestra", "Corrija esse texto", etc).</div>
+        </div>
+        <div id="ai-chat-footer">
+            <input type="text" id="ai-chat-input" placeholder="Digite sua pergunta..." onkeypress="handleEnter(event)">
+            <button id="ai-send-btn" onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
     <script>
         $(document).ready(function(){
             var SPMaskBehavior = function (val) {
@@ -211,12 +325,66 @@
             
             links.forEach(function(link) {
                 var href = link.getAttribute('href');
-                // Se a URL do link estiver contida na URL atual
                 if (href && href !== '#' && currentUrl.includes(href)) {
                     link.classList.add('active');
                 }
             });
         });
+
+        // ----------------------------------------
+        // FUNÇÕES DO CHATBOT DA IA
+        // ----------------------------------------
+        function toggleChat() {
+            const chat = document.getElementById('fepi-ai-chat');
+            chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const inputField = document.getElementById('ai-chat-input');
+            const text = inputField.value.trim();
+            if (!text) return;
+
+            const chatBody = document.getElementById('ai-chat-body');
+            
+            // Adiciona a mensagem do usuário na tela
+            chatBody.innerHTML += `<div class="user-msg">${text}</div>`;
+            inputField.value = '';
+            
+            // Indicador de digitação
+            const typingId = 'typing-' + Date.now();
+            chatBody.innerHTML += `<div class="ai-msg" id="${typingId}">Pensando...</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            try {
+                const response = await fetch("{% url 'assistente_ia' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}' 
+                    },
+                    body: JSON.stringify({ mensagem: text })
+                });
+
+                const data = await response.json();
+                document.getElementById(typingId).remove();
+
+                if (data.resposta) {
+                    const formatado = marked.parse(data.resposta);
+                    chatBody.innerHTML += `<div class="ai-msg">${formatado}</div>`;
+                } else {
+                    chatBody.innerHTML += `<div class="ai-msg" style="color:red;">Erro: ${data.erro}</div>`;
+                }
+            } catch (error) {
+                document.getElementById(typingId).remove();
+                chatBody.innerHTML += `<div class="ai-msg" style="color:red;">Erro na conexão com a IA. Verifique sua chave API.</div>`;
+            }
+            
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
     </script>
 </body>
 </html>

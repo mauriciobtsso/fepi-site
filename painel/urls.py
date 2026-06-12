@@ -1,9 +1,13 @@
 from django.urls import path
 from . import views
+from painel.views import ia_views
 
 urlpatterns = [
     path('', views.dashboard, name='painel_home'),
     path('noticias/nova/', views.criar_noticia, name='criar_noticia'),
+    
+    # Rota da Inteligência Artificial
+    path('api/assistente-ia/', ia_views.chat_assistente_ia, name='assistente_ia'),
 
     # --- NOVAS ROTAS ---
     path('noticias/', views.listar_noticias, name='listar_noticias'),

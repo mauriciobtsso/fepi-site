@@ -18,6 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Tenta pegar do ambiente (Render) ou usa uma padrão insegura para local
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-#up2mw6n4z7=cl@*$c$y@!!la*(*-!idc+0y_dabnogc$2zjj(')
 
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+
 # --------------------------------------------------------
 # 🚀 SEGURANÇA GLOBAL - CSRF E HOSTS
 # --------------------------------------------------------
