@@ -10,6 +10,7 @@ def chat_assistente_ia(request):
     """
     Endpoint com sistema de fallback automático: tenta Gemini primeiro pelo tom,
     se falhar aciona o Groq (Llama 3.1) como plano B estável.
+    Contém Injeção de Contexto da FEPI e Regras Estruturais de Conteúdo.
     """
     if request.method == 'POST':
         try:
@@ -19,6 +20,40 @@ def chat_assistente_ia(request):
             if not mensagem_usuario:
                 return JsonResponse({'erro': 'Mensagem vazia'}, status=400)
 
+            # ==========================================
+            # SUPER PROMPT (REGRAS E CONTEXTO DA FEPI)
+            # ==========================================
+            prompt_base = (
+                "Você é o Assistente Executivo de Inteligência Artificial da Federação Espírita Piauiense (FEPI). "
+                "Sua função principal é redigir, estruturar e revisar conteúdos para o site da instituição de forma ágil.\n\n"
+                
+                "DADOS INSTITUCIONAIS DA FEPI (Incorpore aos textos quando fizer sentido ou quando solicitado):\n"
+                "- Instagram: https://www.instagram.com/fepiaui/\n"
+                "- Facebook: https://www.facebook.com/fepiaui\n"
+                "- Site Oficial: http://fepiaui.org.br/site/\n"
+                "- Endereço: Rua Olavo Bilac, 1394 - Centro - Teresina - PI - CEP: 64001-280\n"
+                "- Telefone/Contato: (86) 3221-2500\n\n"
+                
+                "REGRAS ESTRUTURAIS OBRIGATÓRIAS PARA CRIAÇÃO DE CONTEÚDO:\n"
+                "1. QUANDO FOR NOTÍCIA: Você DEVE retornar a estrutura com:\n"
+                "   - TÍTULO:\n"
+                "   - RESUMO: (rigorosamente até 250 caracteres)\n"
+                "   - CONTEÚDO: (o texto completo da notícia).\n"
+                "2. QUANDO FOR EVENTO: Você DEVE retornar a estrutura com:\n"
+                "   - TÍTULO:\n"
+                "   - DESCRIÇÃO: (detalhada, incluindo datas, horários e apelos de participação).\n"
+                "3. QUANDO FOR COLUNA/ARTIGO: Você DEVE retornar a estrutura com:\n"
+                "   - TÍTULO:\n"
+                "   - RESUMO: (rigorosamente até 300 caracteres)\n"
+                "   - CONTEÚDO: (texto completo do artigo reflexivo ou doutrinário).\n\n"
+                
+                "DIRETRIZES DE TOM E ESTILO:\n"
+                "- Responda em Português do Brasil natural, fluente e simpático.\n"
+                "- Seja prático, direto e moderno. Vá direto ao ponto.\n"
+                "- NÃO seja 'meloso' e NÃO utilize jargões religiosos exagerados ou saudações doutrinárias longas.\n"
+                "- Nunca utilize traduções literais estranhas (ex: use sempre 'Rodas de Conversa' e nunca 'rondas')."
+            )
+
             # ------------------------------------------------------------
             # TENTATIVA 1: GOOGLE GEMINI (Tom ideal do painel)
             # ------------------------------------------------------------
@@ -26,26 +61,15 @@ def chat_assistente_ia(request):
             if chave_gemini:
                 try:
                     client_google = google_genai.Client(api_key=chave_gemini)
-                    
-                    prompt_sistema_gemini = (
-                        "Você é o Assistente Virtual do painel administrativo da Federação Espírita Piauiense (FEPI). "
-                        "Sua função é auxiliar os voluntários e funcionários a criar notícias, revisar textos, "
-                        "sugerir títulos e explicar como usar o sistema. "
-                        "REGRA DE TOM E PERSONALIDADE: Seja extremamente prático, direto, moderno e profissional. "
-                        "NÃO seja 'meloso' e NÃO utilize jargões religiosos exagerados ou saudações doutrinárias longas. "
-                        "Vá direto ao ponto para ajudar o usuário a ser produtivo. Seja cordial, mas focado no trabalho."
-                    )
 
                     response = client_google.models.generate_content(
                         model='gemini-3.5-flash',
-                        contents=f"{prompt_sistema_gemini}\n\nUsuário: {mensagem_usuario}"
+                        contents=f"{prompt_base}\n\nMENSAGEM DO USUÁRIO: {mensagem_usuario}"
                     )
                     
-                    # Se chegou aqui, deu certo! Retorna a resposta do Gemini
                     return JsonResponse({'resposta': response.text})
                     
                 except Exception as e_google:
-                    # Se falhar (erro 503, por exemplo), não trava. Apenas avisa o log e passa para o plano B
                     print(f"[IA FEPI] Gemini instável ({str(e_google)}). Acionando plano B (Groq)...")
                     pass
 
@@ -59,18 +83,9 @@ def chat_assistente_ia(request):
             client_groq = Groq(api_key=chave_groq)
             modelo_groq = getattr(settings, 'GROQ_MODEL', 'llama-3.1-8b-instant')
 
-            prompt_sistema_groq = (
-                "Você é o Assistente de Inteligência Artificial do painel da Federação Espírita Piauiense (FEPI). "
-                "Sua função é ajudar os voluntários a redigir notícias de forma ágil. "
-                "DIRETRIZES OBRIGATÓRIAS: "
-                "1. Responda em Português do Brasil natural, fluente e simpático. "
-                "2. Seja direto e profissional, sem jargões religiosos. "
-                "3. Use SEMPRE o termo correto 'Rodas de Conversa'. NUNCA use a palavra 'rondas'."
-            )
-
             chat_completion = client_groq.chat.completions.create(
                 messages=[
-                    {"role": "system", "content": prompt_sistema_groq},
+                    {"role": "system", "content": prompt_base},
                     {"role": "user", "content": mensagem_usuario}
                 ],
                 model=modelo_groq,
@@ -80,6 +95,10 @@ def chat_assistente_ia(request):
             return JsonResponse({'resposta': resposta_groq})
 
         except Exception as e:
-            return JsonResponse({'erro': f'Ocorreu um erro geral de comunicação com o assistente: {str(e)}'}, status=500)
+            erro_str = str(e)
+            if '503' in erro_str or 'UNAVAILABLE' in erro_str:
+                msg_amigavel = "Puxa, meus servidores estão um pouco sobrecarregados neste exato segundo! Poderia tentar enviar sua mensagem de novo em alguns instantes?"
+                return JsonResponse({'erro': msg_amigavel}, status=503)
+            return JsonResponse({'erro': f'Ocorreu um erro geral de comunicação com o assistente: {erro_str}'}, status=500)
             
     return JsonResponse({'erro': 'Método não permitido'}, status=405)
