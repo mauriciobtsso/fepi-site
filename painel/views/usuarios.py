@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import transaction
-from usuarios.models import Perfil
+from usuarios.models import Perfil, PaginaSejaMembro # <-- ADICIONADO PaginaSejaMembro
+from painel.forms.usuarios import PaginaSejaMembroForm # <-- ADICIONADO o form que vamos criar a seguir
 from .auth import is_admin
 
 @login_required(login_url='/login/')
@@ -152,3 +153,27 @@ def excluir_usuario(request, id):
     usuario.delete()
     messages.success(request, "Usuário excluído permanentemente.")
     return redirect('gerenciar_usuarios')
+
+# 🔴 NOVA VIEW: Editar Página Seja Membro
+@login_required(login_url='/login/')
+@user_passes_test(is_admin, login_url='/painel/')
+def editar_pagina_membro(request):
+    # Puxa a página (cria uma em branco se não existir)
+    pagina, created = PaginaSejaMembro.objects.get_or_create(pk=1)
+    
+    if request.method == 'POST':
+        form = PaginaSejaMembroForm(request.POST, instance=pagina)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Página Seja Membro atualizada com sucesso!")
+            # Redireciona para o hub do site ou outra página desejada no painel
+            return redirect('site_hub') 
+    else:
+        form = PaginaSejaMembroForm(instance=pagina)
+        
+    # Reutilizamos o form_generico
+    return render(request, 'painel/programacao/form_generico.html', {
+        'form': form, 
+        'titulo': 'Editar Página "Seja Membro"', 
+        'voltar_url': 'site_hub'
+    })

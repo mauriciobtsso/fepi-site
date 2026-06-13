@@ -3,40 +3,54 @@
 <div class="row">
     <div class="col-12 mb-4">
         <h2><i class="fas fa-globe me-2"></i> Gestão do Site e Redes</h2>
-        <p class="text-muted">Configure o vídeo da Home, a vitrine de fotos e informações de contato.</p>
+        <p class="text-muted">Configure o vídeo da Home, a vitrine de fotos, informações de contato e a página de associação.</p>
     </div>
 
-    <div class="col-md-4 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card h-100 shadow-sm border-0 text-center p-4">
             <div class="card-body">
                 <i class="fab fa-youtube fa-4x text-danger mb-3"></i>
                 <h4>Destaque YouTube</h4>
-                <p class="text-muted small">Defina se o vídeo da Home é automático (último do canal) ou um vídeo fixo específico.</p>
-                <a href="{% url 'config_youtube' %}" class="btn btn-danger w-100">Configurar YouTube</a>
+                <p class="text-muted small">Defina se o vídeo da Home é automático ou um vídeo específico.</p>
+                <a href="{% url 'config_youtube' %}" class="btn btn-danger w-100 mt-2">Configurar YouTube</a>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card h-100 shadow-sm border-0 text-center p-4">
             <div class="card-body">
                 <i class="fab fa-instagram fa-4x mb-3" style="background: -webkit-linear-gradient(#405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
                 <h4>Vitrine Instagram</h4>
                 <p class="text-muted small">Gerencie as fotos que aparecem no rodapé/vitrine do site.</p>
-                <a href="{% url 'listar_instagram' %}" class="btn btn-outline-dark w-100">Gerenciar Vitrine</a>
+                <a href="{% url 'listar_instagram' %}" class="btn btn-outline-dark w-100 mt-2">Gerenciar Vitrine</a>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card h-100 shadow-sm border-0 text-center p-4">
             <div class="card-body">
                 <i class="fas fa-address-book fa-4x text-primary mb-3"></i>
                 <h4>Dados de Contato</h4>
                 <p class="text-muted small">Atualize endereço, telefone, e-mail e horário da livraria.</p>
-                <a href="{% url 'editar_contato' %}" class="btn btn-primary w-100">Editar Contato</a>
+                <a href="{% url 'editar_contato' %}" class="btn btn-primary w-100 mt-2">Editar Contato</a>
             </div>
         </div>
     </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-4">
+            <div class="card-body">
+                <i class="fa-solid fa-users fa-4x text-success mb-3"></i>
+                <h4>Página Seja Membro</h4>
+                <p class="text-muted small">Edite o texto da história, missão e os motivos para se associar.</p>
+                <a href="{% url 'editar_pagina_membro' %}" class="btn btn-success w-100 mt-2">
+                    <i class="fa-solid fa-pen me-1"></i> Editar Página
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

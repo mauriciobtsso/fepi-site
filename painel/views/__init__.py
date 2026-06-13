@@ -11,5 +11,5 @@ from .equipe import equipe_hub, gerenciar_membro, excluir_membro, gerenciar_depa
 from .centros import listar_centros, gerenciar_centro, excluir_centro
 from .doacoes import listar_doacoes, gerenciar_doacao, excluir_doacao, config_pagina_doacao
 from .recursos import recursos_hub, gerenciar_recurso, excluir_recurso, gerenciar_secao_recurso, excluir_secao_recurso
-from .usuarios import gerenciar_usuarios, criar_usuario, editar_usuario, excluir_usuario
+from .usuarios import gerenciar_usuarios, criar_usuario, editar_usuario, excluir_usuario, editar_pagina_membro
 from .colunas import listar_colunas, criar_coluna, editar_coluna, excluir_coluna

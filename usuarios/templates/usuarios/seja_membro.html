@@ -1,142 +1,181 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
-{% block content %}
+{% block title %}Seja Membro | FEPI{% endblock %}
+
+{% block extra_css %}
 <style>
-    /* Estilos Exclusivos para o Formulário de Cadastro (Independente de Frameworks) */
-    .fepi-cadastro-container {
-        max-width: 800px;
-        margin: 40px auto;
-        padding: 0 20px;
-        font-family: Arial, sans-serif;
-    }
-    .fepi-header {
+    /* ===== HERO E STORYTELLING ===== */
+    .hero-membro {
+        background: linear-gradient(135deg, var(--azul-escuro) 0%, #004080 100%);
+        padding: 100px 20px 100px;
         text-align: center;
-        margin-bottom: 30px;
-    }
-    .fepi-header h2 {
-        color: #1e3c72;
-        font-weight: bold;
-        font-size: 28px;
-        margin-bottom: 10px;
-    }
-    .fepi-header p {
-        color: #666;
-        font-size: 16px;
-    }
-    .fepi-card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        padding: 40px;
-    }
-    .fepi-section-title {
-        color: #1e3c72;
-        font-size: 18px;
-        font-weight: bold;
-        border-bottom: 2px solid #f0f0f0;
-        padding-bottom: 10px;
-        margin: 30px 0 20px 0;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .fepi-section-title:first-child {
-        margin-top: 0;
-    }
-    .fepi-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin-bottom: 20px;
-    }
-    .fepi-row-full {
-        grid-template-columns: 1fr;
-    }
-    .fepi-row-cep {
-        grid-template-columns: 1fr 2fr 1fr;
-    }
-    .fepi-form-group {
-        display: flex;
-        flex-direction: column;
-    }
-    .fepi-label {
-        font-weight: 600;
-        margin-bottom: 8px;
-        color: #333;
-        font-size: 14px;
-    }
-    .fepi-asterisk {
-        color: #e74c3c;
-    }
-    .fepi-input, .fepi-select {
-        padding: 12px 15px;
-        border: 1px solid #dcdcdc;
-        border-radius: 8px;
-        font-size: 15px;
-        transition: all 0.3s ease;
-        box-sizing: border-box;
-        width: 100%;
-    }
-    .fepi-input:focus, .fepi-select:focus {
-        border-color: #1e3c72;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
-    }
-    .fepi-btn {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         color: white;
-        border: none;
-        padding: 16px 20px;
-        font-size: 18px;
-        font-weight: bold;
-        border-radius: 8px;
-        cursor: pointer;
-        width: 100%;
-        transition: transform 0.2s, box-shadow 0.2s;
-        margin-top: 20px;
+        position: relative;
     }
-    .fepi-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(30, 60, 114, 0.3);
-    }
-    .fepi-alert {
-        background: #f8d7da;
-        color: #721c24;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        border: 1px solid #f5c6cb;
-    }
-    .fepi-loading-text {
-        display: none;
-        color: #27ae60;
-        font-size: 12px;
-        margin-top: 6px;
-        font-weight: 600;
+    .hero-membro h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 15px; }
+    .hero-membro p { font-size: 1.2rem; max-width: 700px; margin: 0 auto; opacity: 0.9; line-height: 1.6; }
+    
+    .conteudo-editavel {
+        max-width: 900px;
+        margin: -60px auto 40px;
+        background: white;
+        padding: 50px;
+        border-radius: 16px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        position: relative;
+        z-index: 10;
+        font-size: 1.15rem;
+        color: #475569;
+        line-height: 1.8;
+        text-align: justify;
     }
     
-    /* Responsivo para celulares */
-    @media (max-width: 768px) {
-        .fepi-row, .fepi-row-cep {
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        .fepi-card {
-            padding: 25px 20px;
-        }
+    .conteudo-editavel img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
     }
-</style>
 
-<div class="fepi-cadastro-container">
+    .motivos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 30px; margin-top: 30px;}
+    .motivo-card { background: #f8fafc; padding: 30px 20px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: center; transition: 0.3s; }
+    .motivo-card:hover { transform: translateY(-5px); border-color: var(--destaque); }
+    .motivo-card i { font-size: 2.5rem; color: var(--destaque); margin-bottom: 15px; }
+    .motivo-card h4 { font-size: 1.2rem; color: var(--azul-escuro); font-weight: 800; margin-bottom: 10px; }
+    .motivo-card p { font-size: 0.95rem; color: #64748b; line-height: 1.5; margin: 0; }
+
+    .btn-descer-form {
+        display: inline-flex; align-items: center; gap: 10px;
+        background: var(--destaque); color: white; font-size: 1.1rem; font-weight: 800;
+        padding: 15px 35px; border-radius: 50px; text-decoration: none;
+        transition: 0.3s; margin-top: 20px; justify-content: center;
+    }
+    .btn-descer-form:hover { background: #d68910; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(243, 156, 18, 0.3);}
+
+    /* ===== ESTILOS DO FORMULÁRIO (BLINDADOS) ===== */
+    .fepi-cadastro-container {
+        max-width: 900px;
+        margin: 0 auto 80px;
+        padding: 0 20px;
+    }
+
+    .fepi-header { text-align: center; margin-bottom: 40px; }
+    .fepi-header h2 { color: var(--azul-escuro); font-weight: 800; font-size: 2.2rem; margin-bottom: 10px; }
+    .fepi-header p { color: #64748b; font-size: 1.1rem; }
+    
+    .fepi-card {
+        background: #ffffff; border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid #f1f5f9; padding: 40px;
+    }
+
+    /* GRELHA DO FORMULÁRIO A PROVA DE FALHAS */
+    .fepi-form-box { display: flex; flex-direction: column; gap: 25px; }
+    
+    .fepi-linha-1 { display: grid; grid-template-columns: 1fr; gap: 25px; }
+    .fepi-linha-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+    .fepi-linha-3 { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 25px; }
+
+    @media (max-width: 768px) {
+        .fepi-linha-2, .fepi-linha-3 { grid-template-columns: 1fr; }
+        .conteudo-editavel { padding: 30px 20px; margin-top: -30px; }
+        .fepi-card { padding: 25px 20px; }
+        .hero-membro h1 { font-size: 2rem; }
+    }
+
+    .fepi-section-title {
+        color: var(--azul-escuro); font-size: 1.2rem; font-weight: 800;
+        border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;
+        margin: 15px 0 5px 0; display: flex; align-items: center; gap: 10px;
+    }
+    .fepi-section-title i { color: var(--destaque); }
+    
+    .fepi-campo { display: flex; flex-direction: column; width: 100%; }
+    .fepi-label { font-weight: 700; margin-bottom: 10px; color: #334155; font-size: 0.95rem; display: block; }
+    .fepi-asterisk { color: #e74c3c; }
+    
+    .fepi-input, .fepi-select {
+        padding: 14px 15px !important; border: 2px solid #e2e8f0 !important; background: #f8fafc !important;
+        border-radius: 8px !important; font-size: 1rem !important; transition: all 0.3s ease !important;
+        width: 100% !important; color: #334155 !important; box-sizing: border-box !important; margin: 0 !important;
+    }
+    .fepi-input:focus, .fepi-select:focus {
+        border-color: var(--azul-medio) !important; background: white !important; outline: none !important;
+        box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1) !important;
+    }
+    
+    .fepi-btn {
+        background: linear-gradient(135deg, var(--azul-escuro) 0%, var(--azul-medio) 100%);
+        color: white; border: none; padding: 18px 20px; font-size: 1.1rem;
+        font-weight: 800; border-radius: 8px; cursor: pointer; width: 100%;
+        transition: 0.3s; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;
+    }
+    .fepi-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 51, 102, 0.2); }
+    
+    .fepi-alert { background: #fef2f2; color: #991b1b; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #fecaca; font-weight: 600;}
+    .fepi-loading-text { display: none; color: #059669; font-size: 0.85rem; margin-top: 8px; font-weight: 700; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-membro">
+    <div class="container">
+        <h1>Junte-se à Seara do Bem</h1>
+    </div>
+</section>
+
+<div class="container">
+    <div class="conteudo-editavel">
+        {% if pagina_membro and pagina_membro.conteudo %}
+            {{ pagina_membro.conteudo|safe }}
+        {% else %}
+            <div style="text-align: center;">
+                <i class="fa-solid fa-hands-holding-circle" style="font-size: 3rem; color: var(--azul-claro); margin-bottom: 20px;"></i>
+                <h2 style="color: var(--azul-escuro); font-weight: 800; margin-bottom: 25px;">Por que a FEPI precisa de você?</h2>
+            </div>
+            
+            <p>A Federação Espírita Piauiense (FEPI) trabalha incansavelmente há décadas para manter acesa a luz da Doutrina Espírita no nosso estado. Mas este trabalho não é feito por paredes ou documentos; ele é feito por <strong>corações dispostos a servir</strong>.</p>
+            <p>Manter a infraestrutura da nossa sede, apoiar os Centros Espíritas da capital ao interior, promover congressos e distribuir a mensagem de Allan Kardec e do Cristo exige um esforço contínuo e recursos materiais. Ao tornar-se um Membro, você transforma-se no alicerce que sustenta todas estas atividades.</p>
+
+            <div class="motivos-grid">
+                <div class="motivo-card">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                    <h4>Difusão da Doutrina</h4>
+                    <p>A sua contribuição subsidia publicações, eventos e transmissões online.</p>
+                </div>
+                <div class="motivo-card">
+                    <i class="fa-solid fa-house-chimney-heart"></i>
+                    <h4>Apoio aos Centros</h4>
+                    <p>Ajudamos a estruturar pequenas e grandes Casas Espíritas no Piauí.</p>
+                </div>
+                <div class="motivo-card">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <h4>Manutenção da Casa</h4>
+                    <p>Garantimos que as portas da nossa sede continuem abertas e acolhedoras.</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px dashed #e2e8f0;">
+                <h3 style="color: var(--azul-escuro); font-weight: 800; margin-bottom: 15px;">Dê o seu Sim para o Bem!</h3>
+                <p style="margin-bottom: 0;">Faça o seu registo abaixo. Ele passará por uma aprovação e logo fará parte do nosso quadro oficial.</p>
+                <a href="#formulario-cadastro" class="btn-descer-form">
+                    <i class="fa-solid fa-arrow-down"></i> Preencher Formulário
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="fepi-cadastro-container" id="formulario-cadastro">
     <div class="fepi-header">
-        <h2>Associe-se à FEPI</h2>
-        <p>Preencha o formulário abaixo. Seu cadastro passará por aprovação da diretoria.</p>
+        <h2>Dados de Associação</h2>
+        <p>Preencha os campos abaixo com atenção para criar o seu registo.</p>
     </div>
 
     {% if messages %}
         {% for message in messages %}
             <div class="fepi-alert">
-                {{ message }}
+                <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
             </div>
         {% endfor %}
     {% endif %}
@@ -145,98 +184,96 @@
         <form method="post" id="formCadastro">
             {% csrf_token %}
             
-            <div class="fepi-section-title"><i class="fas fa-user-tag"></i> Tipo de Cadastro</div>
-            <div class="fepi-row fepi-row-full">
-                <div class="fepi-form-group">
-                    <select name="tipo" id="tipoCadastro" class="fepi-select" required>
-                        <option value="PF" selected>Sou Pessoa Física (Trabalhador/Associado)</option>
-                        <option value="CE">Sou Representante de Instituição (Centro Espírita)</option>
-                    </select>
+            <div class="fepi-form-box">
+                <div class="fepi-section-title"><i class="fas fa-user-tag"></i> Tipo de Registo</div>
+                <div class="fepi-linha-1">
+                    <div class="fepi-campo">
+                        <select name="tipo" id="tipoCadastro" class="fepi-select" required>
+                            <option value="PF" selected>Sou Pessoa Física (Trabalhador/Associado)</option>
+                            <option value="CE">Sou Representante de Instituição (Centro Espírita)</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            <div class="fepi-section-title"><i class="fas fa-lock"></i> Dados de Acesso</div>
-            <div class="fepi-row">
-                <div class="fepi-form-group">
-                    <label class="fepi-label">E-mail (Seu Login) <span class="fepi-asterisk">*</span></label>
-                    <input type="email" name="email" class="fepi-input" placeholder="seu@email.com" required>
+                <div class="fepi-section-title"><i class="fas fa-lock"></i> Dados de Acesso</div>
+                <div class="fepi-linha-2">
+                    <div class="fepi-campo">
+                        <label class="fepi-label">E-mail (O seu Login) <span class="fepi-asterisk">*</span></label>
+                        <input type="email" name="email" class="fepi-input" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="fepi-campo">
+                        <label class="fepi-label">Crie uma Palavra-passe <span class="fepi-asterisk">*</span></label>
+                        <input type="password" name="senha" class="fepi-input" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
                 </div>
-                <div class="fepi-form-group">
-                    <label class="fepi-label">Crie uma Senha <span class="fepi-asterisk">*</span></label>
-                    <input type="password" name="senha" class="fepi-input" placeholder="Mínimo 6 caracteres" required minlength="6">
-                </div>
-            </div>
 
-            <div class="fepi-section-title"><i class="fas fa-id-card"></i> Identificação</div>
-            
-            <div class="fepi-row fepi-row-full">
-                <div class="fepi-form-group">
-                    <label class="fepi-label" id="labelNome">Nome Completo <span class="fepi-asterisk">*</span></label>
-                    <input type="text" name="nome_razao_social" id="nome" class="fepi-input" required>
+                <div class="fepi-section-title"><i class="fas fa-id-card"></i> Identificação</div>
+                <div class="fepi-linha-1">
+                    <div class="fepi-campo">
+                        <label class="fepi-label" id="labelNome">Nome Completo <span class="fepi-asterisk">*</span></label>
+                        <input type="text" name="nome_razao_social" id="nome" class="fepi-input" required>
+                    </div>
                 </div>
-            </div>
 
-            <div class="fepi-row">
-                <div class="fepi-form-group">
-                    <label class="fepi-label" id="labelDoc">CPF <span class="fepi-asterisk">*</span></label>
-                    <input type="text" name="cpf_cnpj" id="cpf_cnpj" class="fepi-input" required>
-                    <div id="cnpjAviso" class="fepi-loading-text"><i class="fas fa-spinner fa-spin"></i> Buscando dados do CNPJ...</div>
+                <div class="fepi-linha-2">
+                    <div class="fepi-campo">
+                        <label class="fepi-label" id="labelDoc">CPF <span class="fepi-asterisk">*</span></label>
+                        <input type="text" name="cpf_cnpj" id="cpf_cnpj" class="fepi-input" required>
+                        <div id="cnpjAviso" class="fepi-loading-text"><i class="fas fa-spinner fa-spin"></i> A procurar dados do CNPJ...</div>
+                    </div>
+                    <div class="fepi-campo">
+                        <label class="fepi-label" id="labelData">Data de Nascimento</label>
+                        <input type="date" name="data_nascimento_fundacao" class="fepi-input">
+                    </div>
                 </div>
-                <div class="fepi-form-group">
-                    <label class="fepi-label" id="labelData">Data de Nascimento</label>
-                    <input type="date" name="data_nascimento_fundacao" class="fepi-input">
+                
+                <div class="fepi-linha-1">
+                    <div class="fepi-campo">
+                        <label class="fepi-label">Telefone / WhatsApp <span class="fepi-asterisk">*</span></label>
+                        <input type="text" name="telefone" id="telefone" class="fepi-input" placeholder="(DD) 90000-0000" required>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="fepi-row">
-                <div class="fepi-form-group">
-                    <label class="fepi-label">Telefone / WhatsApp <span class="fepi-asterisk">*</span></label>
-                    <input type="text" name="telefone" id="telefone" class="fepi-input" placeholder="(DD) 90000-0000" required>
-                </div>
-            </div>
 
-            <div class="fepi-section-title"><i class="fas fa-map-marker-alt"></i> Endereço</div>
-            
-            <div class="fepi-row fepi-row-cep">
-                <div class="fepi-form-group">
-                    <label class="fepi-label">CEP</label>
-                    <input type="text" name="cep" id="cep" class="fepi-input" placeholder="00000-000">
-                    <div id="cepAviso" class="fepi-loading-text"><i class="fas fa-spinner fa-spin"></i> Buscando CEP...</div>
+                <div class="fepi-section-title"><i class="fas fa-map-marker-alt"></i> Endereço</div>
+                <div class="fepi-linha-3">
+                    <div class="fepi-campo">
+                        <label class="fepi-label">CEP</label>
+                        <input type="text" name="cep" id="cep" class="fepi-input" placeholder="00000-000">
+                        <div id="cepAviso" class="fepi-loading-text"><i class="fas fa-spinner fa-spin"></i> A procurar CEP...</div>
+                    </div>
+                    <div class="fepi-campo">
+                        <label class="fepi-label">Logradouro (Rua/Av)</label>
+                        <input type="text" name="logradouro" id="logradouro" class="fepi-input">
+                    </div>
+                    <div class="fepi-campo">
+                        <label class="fepi-label">Número</label>
+                        <input type="text" name="numero" id="numero" class="fepi-input">
+                    </div>
                 </div>
-                <div class="fepi-form-group">
-                    <label class="fepi-label">Logradouro (Rua/Av)</label>
-                    <input type="text" name="logradouro" id="logradouro" class="fepi-input">
-                </div>
-                <div class="fepi-form-group">
-                    <label class="fepi-label">Número</label>
-                    <input type="text" name="numero" id="numero" class="fepi-input">
-                </div>
-            </div>
 
-            <div class="fepi-row fepi-row-cep">
-                <div class="fepi-form-group">
-                    <label class="fepi-label">Complemento</label>
-                    <input type="text" name="complemento" id="complemento" class="fepi-input" placeholder="Apto, Sala...">
+                <div class="fepi-linha-3">
+                    <div class="fepi-campo">
+                        <label class="fepi-label">Complemento</label>
+                        <input type="text" name="complemento" id="complemento" class="fepi-input" placeholder="Apto, Sala...">
+                    </div>
+                    <div class="fepi-campo">
+                        <label class="fepi-label">Bairro</label>
+                        <input type="text" name="bairro" id="bairro" class="fepi-input">
+                    </div>
+                    <div class="fepi-campo">
+                        <label class="fepi-label">Cidade</label>
+                        <input type="text" name="cidade" id="cidade" class="fepi-input">
+                    </div>
                 </div>
-                <div class="fepi-form-group">
-                    <label class="fepi-label">Bairro</label>
-                    <input type="text" name="bairro" id="bairro" class="fepi-input">
-                </div>
-                <div class="fepi-form-group">
-                    <label class="fepi-label">Cidade</label>
-                    <input type="text" name="cidade" id="cidade" class="fepi-input">
-                </div>
-            </div>
 
-            <div class="fepi-row">
-                <div class="fepi-form-group">
-                    <label class="fepi-label">Estado (UF)</label>
-                    <input type="text" name="estado" id="estado" class="fepi-input" placeholder="PI" maxlength="2">
+                <div class="fepi-linha-2">
+                    <div class="fepi-campo">
+                        <label class="fepi-label">Estado (UF)</label>
+                        <input type="text" name="estado" id="estado" class="fepi-input" placeholder="PI" maxlength="2">
+                    </div>
                 </div>
-            </div>
-
-            <button type="submit" class="fepi-btn">
-                <i class="fas fa-paper-plane"></i> Enviar Solicitação de Cadastro
+            </div> <button type="submit" class="fepi-btn">
+                <i class="fas fa-paper-plane"></i> Finalizar Registo e Enviar
             </button>
         </form>
     </div>
@@ -327,6 +364,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     });
             }
         }
+    });
+    
+    // Rolagem suave para o formulário
+    document.querySelector('.btn-descer-form').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('#formulario-cadastro').scrollIntoView({ behavior: 'smooth' });
     });
 });
 </script>

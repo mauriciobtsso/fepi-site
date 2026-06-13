@@ -16,6 +16,7 @@ from django.views.generic.base import TemplateView
 from recursos.views import links_uteis, downloads
 from doacoes.views import doacoes_view
 from core.views import home, institucional, fale_conosco, privacidade
+from usuarios import views as usuarios_views
 
 # --- IMPORTS DOS SITEMAPS ---
 from core.sitemaps import StaticViewSitemap, NoticiaSitemap, LivroSitemap, EventoSitemap
@@ -72,6 +73,7 @@ urlpatterns = [
     path('links-uteis/', links_uteis, name='links_uteis'),
     path('downloads/', downloads, name='downloads'),
     path('doar/', doacoes_view, name='doacoes_view'),
+    path('seja-membro/', usuarios_views.seja_membro, name='seja_membro'),
     path('usuarios/', include('usuarios.urls')),
 
     path('vozes-da-fepi/', views.listar_colunas_publicas, name='colunas'),

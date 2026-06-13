@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from ckeditor_uploader.fields import RichTextUploadingField
 
 class Perfil(models.Model):
     TIPO_USUARIO = [
@@ -87,3 +88,19 @@ def gerenciar_perfil_usuario(sender, instance, created, **kwargs):
             instance.perfil.save()
         else:
             Perfil.objects.get_or_create(user=instance)
+
+class PaginaSejaMembro(models.Model):
+    conteudo = RichTextUploadingField(
+        verbose_name="Conteúdo da Página (História e Motivos)", 
+        blank=True, 
+        null=True,
+        help_text="Escreva aqui o texto convidativo. Se deixar em branco, o texto padrão será exibido."
+    )
+
+    class Meta:
+        verbose_name = "Página Seja Membro"
+        verbose_name_plural = "Página Seja Membro"
+
+    def __str__(self):
+        return "Configuração da Página Seja Membro"
+

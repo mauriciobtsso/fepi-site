@@ -1,3 +1,4 @@
+# painel/urls.py
 from django.urls import path
 from . import views
 from painel.views import ia_views, radar_views
@@ -9,7 +10,7 @@ urlpatterns = [
     # Rota da Inteligência Artificial
     path('api/assistente-ia/', ia_views.chat_assistente_ia, name='assistente_ia'),
 
-    # --- NOVAS ROTAS ---
+    # --- NOTICIAS ---
     path('noticias/', views.listar_noticias, name='listar_noticias'),
     path('noticias/editar/<int:noticia_id>/', views.editar_noticia, name='editar_noticia'),
     path('noticias/deletar/<int:noticia_id>/', views.deletar_noticia, name='deletar_noticia'),
@@ -114,7 +115,7 @@ urlpatterns = [
     path('site/doacoes/novo/', views.gerenciar_doacao, name='nova_doacao'),
     path('site/doacoes/editar/<int:id>/', views.gerenciar_doacao, name='editar_doacao'),
     path('site/doacoes/excluir/<int:id>/', views.excluir_doacao, name='excluir_doacao'),
-    path('site/doacoes/config/', views.config_pagina_doacao, name='config_pagina_doacao'), # <--- NOVA ROTA
+    path('site/doacoes/config/', views.config_pagina_doacao, name='config_pagina_doacao'),
 
     # --- RECURSOS / DOWNLOADS ---
     path('site/recursos/', views.recursos_hub, name='recursos_hub'),
@@ -132,4 +133,7 @@ urlpatterns = [
     path('usuarios/novo/', views.criar_usuario, name='criar_usuario'),
     path('usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
     path('usuarios/excluir/<int:id>/', views.excluir_usuario, name='excluir_usuario'),
+    
+    # 🔴 NOVA ROTA: Editar a Página "Seja Membro"
+    path('usuarios/pagina-seja-membro/', views.editar_pagina_membro, name='editar_pagina_membro'),
 ]

@@ -5,7 +5,13 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 
+# Importamos o modelo da página editável
+from .models import PaginaSejaMembro
+
 def seja_membro(request):
+    # Procura a configuração da página (história, motivos, etc.)
+    pagina_membro = PaginaSejaMembro.objects.first()
+
     if request.method == 'POST':
         tipo = request.POST.get('tipo')
         nome = request.POST.get('nome_razao_social')
@@ -55,7 +61,11 @@ def seja_membro(request):
             messages.error(request, f"Ocorreu um erro ao processar seu cadastro: {str(e)}")
             return redirect('seja_membro')
 
-    return render(request, 'usuarios/seja_membro.html')
+    # Passamos a variável 'pagina_membro' para o template HTML
+    context = {
+        'pagina_membro': pagina_membro,
+    }
+    return render(request, 'usuarios/seja_membro.html', context)
 
 @login_required(login_url='/login/')
 def minha_conta(request):
