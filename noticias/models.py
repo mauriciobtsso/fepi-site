@@ -15,6 +15,7 @@ class Noticia(models.Model):
     
     conteudo = RichTextField(verbose_name="Conteúdo Antigo (Não preencher em novas notícias)", blank=True, null=True)
     
+    # 🔴 ATUALIZADO: Autorizando o EditorJS a processar vídeos do YouTube, Insta, etc.
     conteudo_blocos = EditorJsJSONField(
         verbose_name='Conteúdo da Notícia (Editor Moderno)',
         plugins=[
@@ -24,12 +25,24 @@ class Noticia(models.Model):
             "@editorjs/quote",
             "@editorjs/embed",
         ],
+        tools={
+            "Embed": {
+                "class": "Embed",
+                "config": {
+                    "services": {
+                        "youtube": True,
+                        "vimeo": True,
+                        "instagram": True,
+                        "facebook": True
+                    }
+                }
+            }
+        },
         blank=True, null=True
     )
     
     imagem = models.ImageField(upload_to='noticias/', blank=True, null=True, verbose_name="Imagem de Capa")
     
-    # 🔴 MOTOR INTELIGENTE ATUALIZADO 🔴
     def get_blocos_list(self):
         raw_data = self.conteudo_blocos
         
@@ -52,17 +65,14 @@ class Noticia(models.Model):
         elif isinstance(data, list):
             blocos_originais = data
             
-        # FILTRO MÁGICO: Transforma nomes como "Paragraph" ou "@editorjs/image" 
-        # em palavras minúsculas simples que o HTML entenda ("paragraph", "image")
+        # Filtro que limpa nomes estranhos
         blocos_limpos = []
         for b in blocos_originais:
             if isinstance(b, dict) and 'type' in b:
-                # Remove espaços, coloca em minúsculas e remove prefixos de plugins
                 tipo_limpo = str(b['type']).lower().replace('@editorjs/', '').strip()
                 b['type'] = tipo_limpo
                 blocos_limpos.append(b)
                 
-        print(f"--- DEBUG: Blocos Prontos para a Tela: {[b.get('type') for b in blocos_limpos]} ---")
         return blocos_limpos
 
     def save(self, *args, **kwargs):
