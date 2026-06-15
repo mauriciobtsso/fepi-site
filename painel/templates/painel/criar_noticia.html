@@ -1,13 +1,48 @@
 {% extends 'painel/base_painel.html' %}
 
 {% block content %}
+<style>
+    /* ==========================================================
+       1. CSS PARA FORÇAR A LARGURA TOTAL DO EDITOR.JS
+       ========================================================== */
+    
+    /* Quebra a trava nativa de 650px de largura */
+    div.ce-block__content, 
+    div.ce-toolbar__content {
+        max-width: 100% !important; 
+    }
+    
+    /* Joga o botão de '+' e opções (:::) para a esquerda */
+    div.ce-toolbar__actions {
+        left: -40px !important;
+        right: auto !important;
+    }
+    
+    /* Dá um respiro à esquerda para o botão '+' não colar na borda */
+    .editor-container {
+        padding-left: 50px !important; 
+        padding-right: 20px !important;
+        padding-top: 20px !important;
+        padding-bottom: 40px !important;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background: #fff;
+        min-height: 400px;
+    }
+
+    /* Melhora a caixa cinza de fundo da imagem (quando se faz upload) */
+    .image-tool__image-picture {
+        border-radius: 8px !important;
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h3><i class="fas fa-pen-nib me-2"></i> Escrever Nova Notícia</h3>
-    </div>
+</div>
 
 <div class="card border-0 shadow-sm">
     <div class="card-body p-4">
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" id="form-noticia">
             {% csrf_token %}
             {{ form.media }}
 
@@ -37,7 +72,6 @@
                     <label class="form-label fw-bold">{{ form.imagem.label }}</label>
                     {{ form.imagem }}
                     
-                    <!-- Prévia da Imagem Atual -->
                     {% if form.instance.imagem %}
                         <div style="margin-top: 16px; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
                             <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #666; font-weight: 500;">Imagem Atual:</p>
@@ -45,17 +79,22 @@
                         </div>
                     {% endif %}
                     
-                    <!-- Preview da Nova Imagem (JavaScript) -->
                     <div id="preview-container" style="margin-top: 16px; display: none; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
                         <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #666; font-weight: 500;">Prévia da Nova Imagem:</p>
                         <img id="preview-image" alt="Prévia" style="max-width: 100%; max-height: 300px; border-radius: 6px; display: block;">
                     </div>
                 </div>
 
-                <div class="col-12">
-                    <label class="form-label fw-bold">{{ form.conteudo.label }}</label>
-                    <div class="django-ckeditor-widget" data-field-id="{{ form.conteudo.id_for_label }}" style="width: 100%;">
-                        {{ form.conteudo }}
+                <div class="col-12 mt-4">
+                    <label class="form-label fw-bold" style="font-size: 1.1rem; color: var(--azul-escuro);">
+                        <i class="fa-solid fa-layer-group me-2"></i> {{ form.conteudo_blocos.label }}
+                    </label>
+                    <div class="form-text text-muted mb-3">
+                        Clique abaixo para começar a escrever. Use o botão <strong>+</strong> à esquerda para adicionar fotos, títulos, listas ou vídeos!
+                    </div>
+                    
+                    <div class="editor-container w-100">
+                        {{ form.conteudo_blocos }}
                     </div>
                 </div>
             </div>
@@ -63,7 +102,7 @@
             <hr class="my-4">
 
             <div class="d-flex gap-2 justify-content-end">
-                <a href="{% url 'painel_home' %}" class="btn btn-outline-secondary px-4">
+                <a href="{% url 'listar_noticias' %}" class="btn btn-outline-secondary px-4">
                     Cancelar
                 </a>
                 <button type="submit" class="btn btn-success px-5">
@@ -74,19 +113,10 @@
     </div>
 </div>
 
-<style>
-    .django-ckeditor-widget {
-        width: 100% !important;
-    }
-    .cke_chrome {
-        width: 100% !important; 
-        border-color: #dee2e6 !important; /* Cor da borda do Bootstrap */
-        box-shadow: none !important;
-    }
-</style>
-
 <script>
-    // Preview de imagem em tempo real
+    // ==========================================================
+    // 1. PREVIEW DE IMAGEM DA CAPA
+    // ==========================================================
     document.addEventListener('DOMContentLoaded', function() {
         const imageInput = document.querySelector('input[type="file"][name="imagem"]');
         const previewContainer = document.getElementById('preview-container');
@@ -95,21 +125,78 @@
         if (imageInput) {
             imageInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
-                
                 if (file) {
                     const reader = new FileReader();
-                    
                     reader.onload = function(event) {
                         previewImage.src = event.target.result;
                         previewContainer.style.display = 'block';
                     };
-                    
                     reader.readAsDataURL(file);
                 } else {
                     previewContainer.style.display = 'none';
                 }
             });
         }
+    });
+
+    // ==========================================================
+    // 2. TRADUTOR "OLHEIRO" (MUTATION OBSERVER) PARA O EDITOR.JS
+    // ==========================================================
+    document.addEventListener("DOMContentLoaded", function() {
+        // Dicionário de Tradução
+        const dict = {
+            "Text": "Texto",
+            "Heading": "Título",
+            "List": "Lista",
+            "Image": "Imagem",
+            "Quote": "Citação",
+            "Embed": "Vídeo (YouTube)",
+            "Delimiter": "Linha Divisória",
+            "Table": "Tabela",
+            "Link": "Link",
+            "Bold": "Negrito",
+            "Italic": "Itálico",
+            "Move up": "Mover para cima",
+            "Move down": "Mover para baixo",
+            "Delete": "Excluir Bloco",
+            "Click to tune": "Ajustes do Bloco",
+            "Type text or paste a link": "Digite o texto ou cole um link",
+            "Filter": "Pesquisar..."
+        };
+
+        // Função que percorre a tela procurando palavras em inglês e traduz
+        const translateDOM = () => {
+            // Títulos do menu principal (+)
+            document.querySelectorAll('.ce-popover-item__title').forEach(el => {
+                const text = el.textContent.trim();
+                if (dict[text]) el.textContent = dict[text];
+            });
+
+            // Tooltips (balõezinhos que aparecem ao passar o rato)
+            document.querySelectorAll('[title]').forEach(el => {
+                if (dict[el.title]) el.title = dict[el.title];
+            });
+
+            // Campo de inserir Link
+            const linkInput = document.querySelector('.ce-inline-toolbar__input');
+            if (linkInput && linkInput.placeholder === 'Type text or paste a link') {
+                linkInput.placeholder = dict[linkInput.placeholder];
+            }
+            
+            // Campo de pesquisar blocos
+            const searchInput = document.querySelector('.ce-popover__search');
+            if (searchInput && searchInput.placeholder === 'Filter') {
+                searchInput.placeholder = dict[searchInput.placeholder];
+            }
+        };
+
+        // Configura o "Olheiro" para vigiar o corpo da página. 
+        // Sempre que o EditorJS abrir um menu novo, ele dispara a tradução na hora!
+        const observer = new MutationObserver(translateDOM);
+        observer.observe(document.body, { childList: true, subtree: true });
+        
+        // Dispara uma primeira vez logo após carregar a página
+        setTimeout(translateDOM, 500);
     });
 </script>
 {% endblock %}

@@ -133,6 +133,7 @@ INSTALLED_APPS = [
     'painel',
     'usuarios',
     'blogs',
+    'django_editorjs_fields',
 ]
 
 MIDDLEWARE = [

@@ -38,6 +38,7 @@ urlpatterns = [
     path('painel/', include('painel.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', home, name='home'),
+    path('editorjs/', include('django_editorjs_fields.urls')),
     
     # --- SISTEMA DE LOGIN E INTRANET ---
     path('login/', auth_views.LoginView.as_view(), name='login'),

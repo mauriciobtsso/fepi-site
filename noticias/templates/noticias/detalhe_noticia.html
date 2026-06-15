@@ -62,33 +62,17 @@
     .news-img-container { width: 100%; max-height: 500px; overflow: hidden; display: flex; justify-content: center; align-items: center; margin-bottom: 50px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
     .news-img-full { width: 100%; height: 100%; object-fit: cover; }
     
-    /* ===== FORMATAÇÃO DO CKEDITOR (AQUI ESTÁ A MÁGICA) ===== */
+    /* ===== FORMATAÇÃO GERAL ===== */
     .news-content { font-size: 1.15rem; line-height: 1.8; color: #334155; text-align: justify; }
     .news-content p { margin-bottom: 1.5rem; }
     .news-content h2, .news-content h3, .news-content h4 { color: var(--azul-escuro); margin-top: 2rem; margin-bottom: 1rem; font-weight: 700; }
     .news-content ul, .news-content ol { margin-left: 20px; margin-bottom: 1.5rem; }
     .news-content a { color: var(--destaque); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+    
+    /* Fallbacks para as notícias antigas que foram feitas no CKEditor */
     .news-content blockquote { border-left: 4px solid var(--destaque); background: #f8fafc; padding: 20px; margin: 20px 0; font-style: italic; color: #475569; border-radius: 0 8px 8px 0; }
-    
-    /* Regras para Imagens inseridas no meio do texto via CKEditor */
-    .news-content img { 
-        max-width: 100%; 
-        height: auto !important; 
-        border-radius: 8px; 
-        margin: 20px 0; 
-        display: block;
-    }
-    
-    /* Regras para Vídeos (Iframe do YouTube responsivo) inseridos via CKEditor */
-    .news-content iframe {
-        width: 100%;
-        max-width: 800px;
-        height: 450px;
-        border-radius: 12px;
-        margin: 30px auto;
-        display: block;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
+    .news-content img { max-width: 100%; height: auto !important; border-radius: 8px; margin: 20px 0; display: block; }
+    .news-content iframe { width: 100%; max-width: 800px; height: 450px; border-radius: 12px; margin: 30px auto; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
     /* Botão Voltar */
     .btn-voltar-news { display: inline-flex; margin-bottom: 30px; color: #64748b; text-decoration: none; font-weight: 700; background: #f1f5f9; padding: 10px 20px; border-radius: 50px; transition: 0.3s ease; font-size: 0.95rem; align-items: center; gap: 8px; }
@@ -98,7 +82,7 @@
     @media (max-width: 768px) { 
         .news-title { font-size: 1.8rem; } 
         .news-content { font-size: 1.05rem; }
-        .news-content iframe { height: 250px; } /* Vídeo menor em celulares */
+        .news-content iframe { height: 250px; } 
     }
 </style>
 {% endblock %}
@@ -126,7 +110,66 @@
         {% endif %}
 
         <div class="news-content">
-            {{ noticia.conteudo|safe }}
+            {% with dict_blocos=noticia.get_blocos_dit %}
+            
+                {% if dict_blocos and dict_blocos.blocks %}
+                    
+                    {% for block in dict_blocos.blocks %}
+                        
+                        {% if block.type == 'paragraph' %}
+                            <p>{{ block.data.text|safe }}</p>
+                            
+                        {% elif block.type == 'header' %}
+                            <h{{ block.data.level }} style="color: var(--azul-escuro); font-weight: 800; margin-top: 2rem;">
+                                {{ block.data.text|safe }}
+                            </h{{ block.data.level }}>
+                            
+                        {% elif block.type == 'image' %}
+                            <figure style="margin: 2rem 0; text-align: center;">
+                                <img src="{{ block.data.file.url }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="{{ block.data.caption }}">
+                                {% if block.data.caption %}
+                                    <figcaption style="font-size: 0.9rem; color: #64748b; margin-top: 8px; font-style: italic;">
+                                        {{ block.data.caption|safe }}
+                                    </figcaption>
+                                {% endif %}
+                            </figure>
+                            
+                        {% elif block.type == 'quote' %}
+                            <blockquote style="border-left: 4px solid var(--destaque); background: #f8fafc; padding: 20px; border-radius: 0 8px 8px 0; font-style: italic; color: #475569; margin: 2rem 0;">
+                                "{{ block.data.text|safe }}"
+                                {% if block.data.caption %}
+                                    <footer style="margin-top: 10px; font-weight: bold; color: var(--azul-escuro);">— {{ block.data.caption|safe }}</footer>
+                                {% endif %}
+                            </blockquote>
+                            
+                        {% elif block.type == 'embed' %}
+                            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 2rem 0; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                                <iframe src="{{ block.data.embed }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen></iframe>
+                            </div>
+                            
+                        {% elif block.type == 'list' %}
+                            {% if block.data.style == 'ordered' %}
+                                <ol style="margin-left: 20px; margin-bottom: 1.5rem;">
+                            {% else %}
+                                <ul style="margin-left: 20px; margin-bottom: 1.5rem;">
+                            {% endif %}
+                                {% for item in block.data.items %}
+                                    <li style="margin-bottom: 8px;">{{ item|safe }}</li>
+                                {% endfor %}
+                            {% if block.data.style == 'ordered' %}
+                                </ol>
+                            {% else %}
+                                </ul>
+                            {% endif %}
+                        
+                        {% endif %}
+                    {% endfor %}
+                    
+                {% else %}
+                    {{ noticia.conteudo|safe }}
+                {% endif %}
+                
+            {% endwith %}
         </div>
 
         <div class="share-section" style="margin-top: 60px; padding-top: 30px; border-top: 2px solid #f1f5f9; display: flex; flex-direction: column; align-items: center;">
