@@ -110,11 +110,11 @@
         {% endif %}
 
         <div class="news-content">
-            {% with dict_blocos=noticia.get_blocos_dit %}
+            {% with blocos=noticia.get_blocos_list %}
             
-                {% if dict_blocos and dict_blocos.blocks %}
+                {% if blocos %}
                     
-                    {% for block in dict_blocos.blocks %}
+                    {% for block in blocos %}
                         
                         {% if block.type == 'paragraph' %}
                             <p>{{ block.data.text|safe }}</p>
@@ -126,7 +126,12 @@
                             
                         {% elif block.type == 'image' %}
                             <figure style="margin: 2rem 0; text-align: center;">
-                                <img src="{{ block.data.file.url }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="{{ block.data.caption }}">
+                                {% if block.data.file.url %}
+                                    <img src="{{ block.data.file.url }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="Imagem da notícia">
+                                {% elif block.data.url %}
+                                    <img src="{{ block.data.url }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="Imagem da notícia">
+                                {% endif %}
+                                
                                 {% if block.data.caption %}
                                     <figcaption style="font-size: 0.9rem; color: #64748b; margin-top: 8px; font-style: italic;">
                                         {{ block.data.caption|safe }}
@@ -162,6 +167,11 @@
                                 </ul>
                             {% endif %}
                         
+                        {% else %}
+                            <div style="background: #fff3f3; border: 2px dashed #dc3545; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                                <h5 style="color: #dc3545; margin-top: 0; font-size: 1.2rem;">⚠️ Bloco não reconhecido: <b>{{ block.type }}</b></h5>
+                                <p style="font-family: monospace; font-size: 0.9rem; color: #555; word-wrap: break-word; margin-bottom: 0;">{{ block.data }}</p>
+                            </div>
                         {% endif %}
                     {% endfor %}
                     
