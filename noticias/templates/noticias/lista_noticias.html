@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load cloudinary_tags %}
 
 {% block title %}FEPI | Notícias{% endblock %}
 
@@ -170,7 +171,6 @@
       <h1 class="page-title">Notícias e Atualizações</h1>
       <p class="page-subtitle">Acompanhe as novidades e comunicados da FEPI.</p>
       
-      <!-- Campo de Busca -->
       <div style="margin-top: 24px;">
         <form method="get" style="display: flex; gap: 8px; max-width: 500px; margin: 0 auto;">
           <input 
@@ -222,7 +222,7 @@
 
             <div class="news-row__thumb">
               {% if noticia.imagem %}
-                <img src="{{ noticia.imagem.url }}" alt="{{ noticia.titulo }}">
+                <img src="{{ noticia.imagem.url|cloudinary_transform:'w_440,h_260,c_fill,f_auto,q_auto' }}" alt="{{ noticia.titulo }}" loading="lazy">
               {% else %}
                 <div class="news-placeholder">📰</div>
               {% endif %}

@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static l10n %}
+{% load cloudinary_tags %}
 
 {% block title %}FEPI | Centros Espíritas{% endblock %}
 
@@ -325,7 +326,7 @@
             <div class="item-centro">
                 <div class="centro-img-container">
                     {% if centro.foto %}
-                        <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
+                        <img src="{{ centro.foto.url|cloudinary_transform:'w_160,h_160,c_fill,f_auto,q_auto' }}" class="centro-img" alt="Logo" loading="lazy">
                     {% else %}
                         <div class="centro-img-placeholder">FEPI</div>
                     {% endif %}
@@ -368,7 +369,7 @@
             <div class="item-centro">
                 <div class="centro-img-container">
                     {% if centro.foto %}
-                        <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
+                        <img src="{{ centro.foto.url|cloudinary_transform:'w_160,h_160,c_fill,f_auto,q_auto' }}" class="centro-img" alt="Logo" loading="lazy">
                     {% else %}
                         <div class="centro-img-placeholder">FEPI</div>
                     {% endif %}
@@ -398,7 +399,7 @@
             <div class="item-centro">
                 <div class="centro-img-container">
                     {% if centro.foto %}
-                        <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
+                        <img src="{{ centro.foto.url|cloudinary_transform:'w_160,h_160,c_fill,f_auto,q_auto' }}" class="centro-img" alt="Logo" loading="lazy">
                     {% else %}
                         <div class="centro-img-placeholder">FEPI</div>
                     {% endif %}
@@ -428,7 +429,7 @@
             <div class="item-centro">
                 <div class="centro-img-container">
                     {% if centro.foto %}
-                        <img src="{{ centro.foto.url }}" class="centro-img" alt="Logo">
+                        <img src="{{ centro.foto.url|cloudinary_transform:'w_160,h_160,c_fill,f_auto,q_auto' }}" class="centro-img" alt="Logo" loading="lazy">
                     {% else %}
                         <div class="centro-img-placeholder">FEPI</div>
                     {% endif %}

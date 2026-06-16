@@ -129,7 +129,7 @@
             <a href="{% if item.data_publicacao %}{% url 'detalhe_noticia' item.slug %}{% else %}{% url 'detalhe_curso' item.slug %}{% endif %}"
                class="carousel-slide {% if forloop.first %}active{% endif %}">
                 {% if item.imagem %}
-                    <img src="{{ item.imagem.url|cloudinary_transform:'w_815,h_455,c_fill,f_webp,q_auto:eco' }}" 
+                    <img src="{{ item.imagem.url|cloudinary_transform:'w_815,h_455,c_fill,f_auto,q_auto' }}" 
                          class="slide-img" 
                          alt="{{ item.titulo }}" 
                          loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
@@ -180,7 +180,7 @@
                                     <span class="insta-mini-meta"><i class="fa-brands fa-instagram"></i> FEPI</span>
 
                                     {% if post.imagem %}
-                                        <img src="{{ post.imagem.url|cloudinary_transform:'w_400,h_400,c_fill,f_webp,q_auto:eco' }}" alt="{{ post.legenda|default:'Post do Instagram' }}" loading="lazy">
+                                        <img src="{{ post.imagem.url|cloudinary_transform:'w_400,h_400,c_fill,f_auto,q_auto' }}" alt="{{ post.legenda|default:'Post do Instagram' }}" loading="lazy">
                                     {% else %}
                                         <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:2rem;">📷</div>
                                     {% endif %}
@@ -210,7 +210,7 @@
             {% for noticia in noticias %}
             <a href="{% url 'detalhe_noticia' noticia.slug %}" class="news-card">
                 {% if noticia.imagem %}
-                    <img src="{{ noticia.imagem.url|cloudinary_transform:'w_80,h_80,c_fill,f_webp,q_auto:eco' }}" class="news-thumb" alt="{{ noticia.titulo }}" loading="lazy">
+                    <img src="{{ noticia.imagem.url|cloudinary_transform:'w_160,h_160,c_fill,f_auto,q_auto' }}" class="news-thumb" alt="{{ noticia.titulo }}" loading="lazy">
                 {% else %}
                     <div class="news-thumb"></div>
                 {% endif %}
@@ -326,7 +326,7 @@
             {% for livro in livros %}
                 <a href="{% url 'detalhe_livro' livro.slug %}" class="book-card">
                     {% if livro.capa %}
-                        <img src="{{ livro.capa.url|cloudinary_transform:'w_180,h_250,c_fill,f_webp,q_auto:eco' }}" alt="{{ livro.titulo }}" class="book-cover" loading="lazy">
+                        <img src="{{ livro.capa.url|cloudinary_transform:'w_360,h_500,c_fill,f_auto,q_auto' }}" alt="{{ livro.titulo }}" class="book-cover" loading="lazy">
                     {% else %}
                         <div class="book-cover" style="background:#eee;"></div>
                     {% endif %}

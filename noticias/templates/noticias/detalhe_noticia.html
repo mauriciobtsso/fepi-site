@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load cloudinary_tags %}
 
 {% block title %}{{ noticia.titulo }} | FEPI{% endblock %}
 
@@ -105,7 +106,7 @@
 
         {% if noticia.imagem %}
             <div class="news-img-container">
-                <img src="{{ noticia.imagem.url }}" alt="Imagem de {{ noticia.titulo }}" class="news-img-full" loading="lazy">
+                <img src="{{ noticia.imagem.url|cloudinary_transform:'w_1200,h_800,c_limit,f_auto,q_auto' }}" alt="Imagem de {{ noticia.titulo }}" class="news-img-full" fetchpriority="high">
             </div>
         {% endif %}
 
@@ -127,9 +128,9 @@
                         {% elif block.type == 'image' %}
                             <figure style="margin: 2rem 0; text-align: center;">
                                 {% if block.data.file.url %}
-                                    <img src="{{ block.data.file.url }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="Imagem da notícia">
+                                    <img src="{{ block.data.file.url|cloudinary_transform:'w_1000,c_limit,f_auto,q_auto' }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="Imagem da notícia" loading="lazy">
                                 {% elif block.data.url %}
-                                    <img src="{{ block.data.url }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="Imagem da notícia">
+                                    <img src="{{ block.data.url|cloudinary_transform:'w_1000,c_limit,f_auto,q_auto' }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="Imagem da notícia" loading="lazy">
                                 {% endif %}
                                 
                                 {% if block.data.caption %}

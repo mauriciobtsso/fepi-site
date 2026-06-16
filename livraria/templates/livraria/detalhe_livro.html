@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load cloudinary_tags %}
 
 {% block title %}{{ livro.titulo }} | Livraria FEPI{% endblock %}
 
@@ -148,7 +149,7 @@
             
             <div class="capa-box">
                 {% if livro.capa %}
-                    <img src="{{ livro.capa.url }}" alt="{{ livro.titulo }}" class="capa-full">
+                    <img src="{{ livro.capa.url|cloudinary_transform:'w_600,h_840,c_fit,f_auto,q_auto' }}" alt="{{ livro.titulo }}" class="capa-full" fetchpriority="high">
                 {% else %}
                     <div style="color:#ccc; font-size:3rem;">📚</div>
                 {% endif %}
