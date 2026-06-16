@@ -209,10 +209,10 @@ CLOUDINARY_STORAGE = {
 }
 
 # 2. NOVA CONFIGURAÇÃO: Exigida pelo 'CloudinaryField' direto
-CLOUDINARY = {
-    'cloud_name': 'dym1yoj68',
-    'api_key': '283348431723888',
-    'api_secret': 'PRLSa_vmaDRFTE0TJnDBsec-N24',
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
 }
 
 # --- CONFIGURAÇÃO DEFINITIVA DE STORAGES ---
