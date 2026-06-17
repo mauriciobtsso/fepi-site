@@ -165,11 +165,14 @@ def fale_conosco(request):
             email_usuario = form.cleaned_data['email']
             mensagem = form.cleaned_data['mensagem']
 
+            # Pega o "nome bonito" da escolha direto do formulário
+            assunto_display = dict(form.fields['topico'].choices).get(topico, topico)
+
             subject = f"[{topico.upper()}] Novo Contato do Site - {nome}"
             body = (
                 f"Mensagem de: {nome}\n"
                 f"Email: {email_usuario}\n"
-                f"Assunto: {form.get_topico_display(topico)}\n\n"
+                f"Assunto: {assunto_display}\n\n"
                 f"--- Mensagem ---\n{mensagem}"
             )
 
@@ -179,7 +182,6 @@ def fale_conosco(request):
             config_email = ConfiguracaoEmail.objects.first()
             
             if config_email and config_email.senha_app:
-                # Se o voluntário preencheu o painel, cria uma conexão dinâmica!
                 connection = get_connection(
                     host='smtp.gmail.com',
                     port=587,
@@ -190,13 +192,11 @@ def fale_conosco(request):
                 destino = config_email.email_destino
                 remetente = config_email.email_remetente
             else:
-                # Se o painel estiver vazio, usa o settings.py como plano B
                 connection = get_connection()
                 destino = settings.EMAIL_RECEIVER
                 remetente = settings.DEFAULT_FROM_EMAIL
 
             try:
-                # O envio agora usa a conexão personalizada!
                 send_mail(
                     subject, body, remetente, [destino], 
                     connection=connection, fail_silently=False
