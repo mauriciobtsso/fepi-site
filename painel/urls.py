@@ -2,6 +2,7 @@
 from django.urls import path
 from . import views
 from painel.views import ia_views, radar_views
+from painel.views.site import config_email
 
 urlpatterns = [
     path('', views.dashboard, name='painel_home'),
@@ -72,6 +73,7 @@ urlpatterns = [
 
     # --- SITE E REDES ---
     path('site/', views.site_hub, name='site_hub'),
+    path('site/email/', config_email, name='config_email'),
     
     # YouTube
     path('site/youtube/', views.config_youtube, name='config_youtube'),
@@ -84,6 +86,7 @@ urlpatterns = [
 
     # --- SECRETARIA: EQUIPE E ESTRUTURA ---
     path('secretaria/equipe/', views.equipe_hub, name='equipe_hub'),
+   
     
     # Membros
     path('secretaria/membro/novo/', views.gerenciar_membro, name='novo_membro'),

@@ -52,5 +52,18 @@
         </div>
     </div>
 
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-4">
+            <div class="card-body">
+                <i class="fa-solid fa-envelope-open-text fa-4x text-info mb-3"></i>
+                <h4>E-mail do Site</h4>
+                <p class="text-muted small">Configure a conta Gmail que processa o envio e quem recebe as mensagens.</p>
+                <a href="{% url 'config_email' %}" class="btn btn-info text-white w-100 mt-2">
+                    <i class="fa-solid fa-gear me-1"></i> Configurar E-mail
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

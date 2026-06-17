@@ -357,3 +357,34 @@ class Coluna(models.Model):
 
     def __str__(self):
         return self.titulo
+
+
+class ConfiguracaoEmail(models.Model):
+    email_destino = models.EmailField(
+        default="site.fepi@gmail.com", 
+        verbose_name="E-mail de Destino (Recebedor)",
+        help_text="E-mail que vai RECEBER as mensagens do Fale Conosco (ex: diretoria@fepi.org.br)."
+    )
+    email_remetente = models.EmailField(
+        default="seu_email_fepi@gmail.com", 
+        verbose_name="E-mail Remetente (Gmail)",
+        help_text="A conta do Gmail da FEPI usada para ENVIAR as mensagens pelo sistema."
+    )
+    senha_app = models.CharField(
+        max_length=50, 
+        blank=True, 
+        verbose_name="Senha de Aplicativo (Google)",
+        help_text="A senha de 16 letras gerada na segurança do Google (sem espaços)."
+    )
+
+    class Meta:
+        verbose_name = "Configuração de E-mail"
+        verbose_name_plural = "Configuração de E-mail"
+
+    def save(self, *args, **kwargs):
+        # Garante que só exista 1 registro no banco de dados (Singleton)
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return "⚙️ Gerenciar Credenciais de E-mail"

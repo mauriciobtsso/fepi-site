@@ -3,7 +3,8 @@ from django.utils import timezone
 from itertools import chain
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.core.mail import send_mail
+from django.core.mail import send_mail, get_connection
+from .models import ConfiguracaoEmail
 from django.conf import settings
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page, never_cache
@@ -161,16 +162,48 @@ def fale_conosco(request):
         if form.is_valid():
             topico = form.cleaned_data['topico']
             nome = form.cleaned_data['nome']
-            email = form.cleaned_data['email']
+            email_usuario = form.cleaned_data['email']
             mensagem = form.cleaned_data['mensagem']
 
             subject = f"[{topico.upper()}] Novo Contato do Site - {nome}"
-            body = f"Mensagem de: {nome}\nEmail: {email}\nAssunto: {form.get_topico_display(topico)}\n\n--- Mensagem ---\n{mensagem}"
+            body = (
+                f"Mensagem de: {nome}\n"
+                f"Email: {email_usuario}\n"
+                f"Assunto: {form.get_topico_display(topico)}\n\n"
+                f"--- Mensagem ---\n{mensagem}"
+            )
+
+            # ---------------------------------------------------------
+            # LÓGICA DINÂMICA DE E-MAIL (Buscando do Banco de Dados)
+            # ---------------------------------------------------------
+            config_email = ConfiguracaoEmail.objects.first()
+            
+            if config_email and config_email.senha_app:
+                # Se o voluntário preencheu o painel, cria uma conexão dinâmica!
+                connection = get_connection(
+                    host='smtp.gmail.com',
+                    port=587,
+                    username=config_email.email_remetente,
+                    password=config_email.senha_app,
+                    use_tls=True
+                )
+                destino = config_email.email_destino
+                remetente = config_email.email_remetente
+            else:
+                # Se o painel estiver vazio, usa o settings.py como plano B
+                connection = get_connection()
+                destino = settings.EMAIL_RECEIVER
+                remetente = settings.DEFAULT_FROM_EMAIL
 
             try:
-                send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [settings.EMAIL_RECEIVER], fail_silently=False)
+                # O envio agora usa a conexão personalizada!
+                send_mail(
+                    subject, body, remetente, [destino], 
+                    connection=connection, fail_silently=False
+                )
                 return render(request, 'core/fale_conosco.html', {'contato': contato, 'sucesso': True})
             except Exception as e:
+                print(f"ERRO DE EMAIL: {e}")
                 return render(request, 'core/fale_conosco.html', {'contato': contato, 'form': form, 'erro': True})
     else:
         form = ContatoForm()

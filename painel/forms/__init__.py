@@ -1,7 +1,7 @@
 # painel/forms/__init__.py
 
 from .noticias import NoticiaForm
-from .site import PopupForm, YoutubeConfigForm, PostInstagramForm, PaginaInstitucionalForm, InformacaoContatoForm
+from .site import PopupForm, YoutubeConfigForm, PostInstagramForm, PaginaInstitucionalForm, InformacaoContatoForm, ConfiguracaoEmailForm
 from .intranet import CategoriaDocForm, DocumentoForm
 from .programacao import AtividadeSemanalForm, DoutrinariaForm, CursoEventoForm
 from .livraria import LivroForm, CategoriaLivroForm, LivrariaConfigForm

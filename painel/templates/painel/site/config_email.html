@@ -1,0 +1,61 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block title %}Configurar E-mail | Painel FEPI{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2><i class="fa-solid fa-envelope" style="color: var(--azul-escuro);"></i> Configuração de E-mail</h2>
+        <p class="text-muted">Gerencie a conta que envia e recebe as mensagens do Fale Conosco.</p>
+    </div>
+    <a href="{% url 'site_hub' %}" class="btn btn-secondary shadow-sm">
+        <i class="fa-solid fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="card shadow-sm border-0" style="border-top: 4px solid var(--azul-medio) !important;">
+    <div class="card-body p-4">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <label class="form-label fw-bold" style="color: var(--azul-escuro);">
+                        <i class="fa-solid fa-inbox text-success"></i> {{ form.email_destino.label }}
+                    </label>
+                    {{ form.email_destino }}
+                    <div class="form-text">{{ form.email_destino.help_text }}</div>
+                </div>
+
+                <hr>
+
+                <div class="col-md-6 mb-3 mt-2">
+                    <label class="form-label fw-bold" style="color: var(--azul-escuro);">
+                        <i class="fa-solid fa-paper-plane text-primary"></i> {{ form.email_remetente.label }}
+                    </label>
+                    {{ form.email_remetente }}
+                    <div class="form-text">{{ form.email_remetente.help_text }}</div>
+                </div>
+
+                <div class="col-md-6 mb-3 mt-2">
+                    <label class="form-label fw-bold" style="color: var(--azul-escuro);">
+                        <i class="fa-solid fa-key text-warning"></i> {{ form.senha_app.label }}
+                    </label>
+                    {{ form.senha_app }}
+                    <div class="form-text">{{ form.senha_app.help_text }}</div>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-top text-end">
+                <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm">
+                    <i class="fa-solid fa-save"></i> Salvar Configurações
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4 border-0 shadow-sm">
+    <i class="fa-solid fa-circle-info"></i> <strong>Atenção:</strong> A senha solicitada acima não é a senha normal do seu e-mail, mas sim uma <strong>"Senha de Aplicativo"</strong> de 16 letras gerada na seção de Segurança da Conta Google.
+</div>
+{% endblock %}

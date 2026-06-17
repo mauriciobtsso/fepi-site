@@ -1,6 +1,7 @@
+# painel/forms/site.py
 from django import forms
 from ckeditor.widgets import CKEditorWidget
-from core.models import ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram, PaginaInstitucional, InformacaoContato
+from core.models import ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram, PaginaInstitucional, InformacaoContato, ConfiguracaoEmail
 
 class PopupForm(forms.ModelForm):
     class Meta:
@@ -87,4 +88,14 @@ class InformacaoContatoForm(forms.ModelForm):
             'telefone': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'horario_livraria': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class ConfiguracaoEmailForm(forms.ModelForm):
+    class Meta:
+        model = ConfiguracaoEmail
+        fields = ['email_destino', 'email_remetente', 'senha_app']
+        widgets = {
+            'email_destino': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'ex: contato@fepiaui.org.br'}),
+            'email_remetente': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'ex: site.fepi@gmail.com'}),
+            'senha_app': forms.PasswordInput(render_value=True, attrs={'class': 'form-control', 'placeholder': 'Senha de 16 letras gerada no Google'}),
         }

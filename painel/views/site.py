@@ -2,9 +2,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from core.models import (ConfiguracaoHome, ConfiguracaoYouTube, PostInstagram, 
-                         PaginaInstitucional, InformacaoContato)
+                         PaginaInstitucional, InformacaoContato, ConfiguracaoEmail)
 from painel.forms import (PopupForm, YoutubeConfigForm, PostInstagramForm, 
-                          PaginaInstitucionalForm, InformacaoContatoForm)
+                          PaginaInstitucionalForm, InformacaoContatoForm, ConfiguracaoEmailForm)
 from .auth import check_acesso_painel
 
 @login_required(login_url='/login/')
@@ -92,3 +92,22 @@ def editar_contato(request):
     else:
         form = InformacaoContatoForm(instance=contato)
     return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': 'Configuração de Contato', 'voltar_url': 'site_hub'})
+@login_required(login_url='/login/')
+@user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
+def config_email(request):
+    config, created = ConfiguracaoEmail.objects.get_or_create(pk=1)
+    if request.method == 'POST':
+        form = ConfiguracaoEmailForm(request.POST, instance=config)
+        if form.is_valid():
+            form.save()
+            return redirect('site_hub')
+    else:
+        form = ConfiguracaoEmailForm(instance=config)
+        
+    return render(request, 'painel/programacao/form_generico.html', {
+        'form': form, 
+        'titulo': 'Configuração de E-mail (Fale Conosco)', 
+        'voltar_url': 'site_hub',
+        'mensagem_alerta': 'Atenção: A Senha de Aplicativo solicitada acima não é a senha normal do seu e-mail, mas sim uma senha de 16 letras gerada na seção de Segurança da Conta Google.'
+    })
+

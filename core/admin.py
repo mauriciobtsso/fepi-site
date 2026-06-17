@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from .models import ConfiguracaoEmail
 
 from .models import (
     InformacaoContato, PaginaInstitucional, MembroDiretoria, ConfiguracaoHome,
@@ -111,3 +112,13 @@ class ColunaAdmin(admin.ModelAdmin):
     def nome_exibicao(self, obj):
         return obj.nome_exibicao
     nome_exibicao.short_description = 'Autor'
+
+@admin.register(ConfiguracaoEmail)
+class ConfiguracaoEmailAdmin(admin.ModelAdmin):
+    # Remove o botão de "Adicionar novo" se já existir um configurado
+    def has_add_permission(self, request):
+        if ConfiguracaoEmail.objects.exists():
+            return False
+        return True
+
+
