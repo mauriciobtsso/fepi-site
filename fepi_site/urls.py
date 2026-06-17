@@ -92,7 +92,9 @@ urlpatterns = [
     path('recuperar-senha/', 
          auth_views.PasswordResetView.as_view(
              template_name='registration/password_reset_form.html',
-             form_class=CustomPasswordResetForm  # <-- Injetamos o nosso form aqui!
+             form_class=CustomPasswordResetForm,
+             html_email_template_name='registration/password_reset_email.html', # <-- FALTAVA ISSO
+             subject_template_name='registration/password_reset_subject.txt'    # <-- FALTAVA ISSO
          ), 
          name='password_reset'),
          

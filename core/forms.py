@@ -33,6 +33,7 @@ class ContatoForm(forms.Form):
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Detalhe sua dúvida ou sugestão...'})
     )
 
+
 class CustomPasswordResetForm(PasswordResetForm):
     def send_mail(self, subject_template_name, email_template_name,
                   context, from_email, to_email, html_email_template_name=None):
@@ -49,20 +50,26 @@ class CustomPasswordResetForm(PasswordResetForm):
 
         # 2. A NOSSA MÁGICA: Busca as credenciais do Painel (Banco de Dados)
         config_email = ConfiguracaoEmail.objects.first()
+        
         if config_email and config_email.senha_app:
             connection = get_connection(
                 host='smtp.gmail.com',
                 port=587,
                 username=config_email.email_remetente,
                 password=config_email.senha_app,
-                use_tls=True
+                use_tls=True,
+                timeout=10  # <-- PROTEÇÃO: Aborta se o Google demorar mais de 10s
             )
             email_message.from_email = config_email.email_remetente
         else:
             # Fallback de segurança para o settings.py
-            connection = get_connection()
+            connection = get_connection(timeout=10) # <-- PROTEÇÃO AQUI TAMBÉM
             email_message.from_email = settings.DEFAULT_FROM_EMAIL
 
-        # 3. Dispara o e-mail usando a conexão correta
+        # 3. Dispara o e-mail com proteção anti-crash
         email_message.connection = connection
-        email_message.send()
+        try:
+            email_message.send()
+        except Exception as e:
+            # Falha silenciosamente para o usuário não ver o Erro 500
+            print(f"CRÍTICO: Falha ao enviar e-mail de recuperação. Motivo: {e}")
