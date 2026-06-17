@@ -1,4 +1,9 @@
 from django import forms
+from django.contrib.auth.forms import PasswordResetForm
+from django.core.mail import EmailMultiAlternatives, get_connection
+from django.template import loader
+from django.conf import settings
+from core.models import ConfiguracaoEmail
 
 class ContatoForm(forms.Form):
     TOPICOS = [
@@ -27,3 +32,37 @@ class ContatoForm(forms.Form):
         label="Sua Mensagem", 
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Detalhe sua dúvida ou sugestão...'})
     )
+
+class CustomPasswordResetForm(PasswordResetForm):
+    def send_mail(self, subject_template_name, email_template_name,
+                  context, from_email, to_email, html_email_template_name=None):
+        
+        # 1. Prepara o Assunto e o Corpo usando o padrão do Django
+        subject = loader.render_to_string(subject_template_name, context)
+        subject = ''.join(subject.splitlines())
+        body = loader.render_to_string(email_template_name, context)
+
+        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
+        if html_email_template_name is not None:
+            html_email = loader.render_to_string(html_email_template_name, context)
+            email_message.attach_alternative(html_email, 'text/html')
+
+        # 2. A NOSSA MÁGICA: Busca as credenciais do Painel (Banco de Dados)
+        config_email = ConfiguracaoEmail.objects.first()
+        if config_email and config_email.senha_app:
+            connection = get_connection(
+                host='smtp.gmail.com',
+                port=587,
+                username=config_email.email_remetente,
+                password=config_email.senha_app,
+                use_tls=True
+            )
+            email_message.from_email = config_email.email_remetente
+        else:
+            # Fallback de segurança para o settings.py
+            connection = get_connection()
+            email_message.from_email = settings.DEFAULT_FROM_EMAIL
+
+        # 3. Dispara o e-mail usando a conexão correta
+        email_message.connection = connection
+        email_message.send()

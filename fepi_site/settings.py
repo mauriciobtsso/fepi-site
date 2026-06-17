@@ -40,31 +40,31 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # --------------------------------------------------------
-# 🚀 Configuração Dinâmica de Ambientes (Render)
+# 🚀 Configuração Dinâmica de Ambientes (Railway / Render)
 # --------------------------------------------------------
 
-# O Render injeta automaticamente a variável 'RENDER' no ambiente de produção
-IS_RENDER_PROD = 'RENDER' in os.environ
+# Detecta automaticamente se está no Railway ou no Render
+IS_PRODUCTION = 'RAILWAY_ENVIRONMENT' in os.environ or 'RENDER' in os.environ
 
-if IS_RENDER_PROD:
-    # MODO PRODUÇÃO (RENDER)
+if IS_PRODUCTION:
+    # MODO PRODUÇÃO (ONLINE) - Ativa a página 404 elegante automaticamente
     DEBUG = False
     
     ALLOWED_HOSTS = [
         'fepiaui.org.br', 
         'www.fepiaui.org.br',
         'fepiaui.cewantuildefreitas.com.br', 
-        'fepi.cewantuildefreitas.com.br'     
+        'fepi.cewantuildefreitas.com.br',
+        'fepiaui.up.railway.app' # <-- ADICIONADO: Garante o funcionamento seguro no Railway
     ]
 
-    # O Render fornece o domínio da aplicação dinamicamente
-    RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-    if RENDER_EXTERNAL_HOSTNAME:
-        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-    else:
-        ALLOWED_HOSTS.append('*')
+    # Captura domínios públicos dinâmicos que os servidores possam injetar
+    for env_var in ['RAILWAY_PUBLIC_DOMAIN', 'RENDER_EXTERNAL_HOSTNAME']:
+        host = os.environ.get(env_var)
+        if host:
+            ALLOWED_HOSTS.append(host)
     
-    # Conexão com o Banco de Dados do Render
+    # Conexão com o Banco de Dados em Produção
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
@@ -73,20 +73,17 @@ if IS_RENDER_PROD:
         )
     }
 
-    # Segurança HTTPS
+    # Segurança HTTPS em Produção
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
 else:
-    # MODO DESENVOLVIMENTO (Local)
+    # MODO DESENVOLVIMENTO (Seu computador local)
     DEBUG = True 
-    # Garantimos os domínios aqui também caso o Render rode como local
     ALLOWED_HOSTS = ['*', 'fepi.cewantuildefreitas.com.br', 'fepiaui.cewantuildefreitas.com.br'] 
     
-    # Se passarmos o link do banco no terminal, liga-se à nuvem (Render)
-    # Se não passarmos nada, usa o banco SQLite local vazio para testes isolados
     if 'DATABASE_URL' in os.environ:
         DATABASES = {
             'default': dj_database_url.config(
@@ -200,13 +197,6 @@ STATICFILES_FINDERS = [
 # --- ARQUIVOS DE MÍDIA (FOTOS, PDFs) ---
 MEDIA_URL = '/media/' 
 MEDIA_ROOT = BASE_DIR / 'media' 
-
-# 1. Configuração para o Storage do Django (que você já tinha)
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dym1yoj68',
-    'API_KEY': '283348431723888',
-    'API_SECRET': 'PRLSa_vmaDRFTE0TJnDBsec-N24',
-}
 
 # 2. NOVA CONFIGURAÇÃO: Exigida pelo 'CloudinaryField' direto
 CLOUDINARY_STORAGE = {

@@ -8,6 +8,7 @@ from django.contrib.auth import views as auth_views
 from django.http import JsonResponse
 from core import views
 import os
+from core.forms import CustomPasswordResetForm
 
 # --- IMPORT NECESSÁRIO PARA O ROBOTS.TXT ---
 from django.views.generic.base import TemplateView
@@ -80,15 +81,33 @@ urlpatterns = [
     path('vozes-da-fepi/', views.listar_colunas_publicas, name='colunas'),
     path('vozes-da-fepi/artigo/<slug:slug>/', views.detalhe_coluna, name='detalhe_coluna'),
     
-    # CKEditor
-    path('ckeditor/', include('ckeditor_uploader.urls')),
-
     # --- SEO (Google) ---
     # 1. Sitemap.xml 
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
     # 2. Robots.txt 
     path("robots.txt", TemplateView.as_view(template_name="core/robots.txt", content_type="text/plain")),
+
+    # --- RECUPERAÇÃO DE SENHA ---
+    path('recuperar-senha/', 
+         auth_views.PasswordResetView.as_view(
+             template_name='registration/password_reset_form.html',
+             form_class=CustomPasswordResetForm  # <-- Injetamos o nosso form aqui!
+         ), 
+         name='password_reset'),
+         
+    path('recuperar-senha/enviado/', 
+         auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), 
+         name='password_reset_done'),
+         
+    path('recuperar-senha/<uidb64>/<token>/', 
+         auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), 
+         name='password_reset_confirm'),
+         
+    path('recuperar-senha/concluido/', 
+         auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), 
+         name='password_reset_complete'),
+
 ]
 
 # --- CONFIGURAÇÃO PARA SERVIR ARQUIVOS DE MÍDIA NO RAILWAY ---
