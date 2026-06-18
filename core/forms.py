@@ -38,41 +38,46 @@ class CustomPasswordResetForm(PasswordResetForm):
     def send_mail(self, subject_template_name, email_template_name,
                   context, from_email, to_email, html_email_template_name=None):
         
-        # 1. Prepara o Assunto e o Corpo usando o padrão do Django
+        # 1. Prepara o Assunto e o Corpo
         subject = loader.render_to_string(subject_template_name, context)
         subject = ''.join(subject.splitlines())
         body = loader.render_to_string(email_template_name, context)
 
-        # 2. Busca as credenciais do Painel (Banco de Dados)
+        # 2. Busca as credenciais do Painel
         config_email = ConfiguracaoEmail.objects.first()
         
+        # --- CONFIGURAÇÕES FIXAS DA BREVO ---
+        BREVO_HOST = 'smtp-relay.brevo.com'
+        BREVO_PORT = 587
+        BREVO_LOGIN = 'af2580001@smtp-brevo.com' # <-- Seu login de infraestrutura
+        
         if config_email and config_email.senha_app:
-            # Configura a máscara do remetente dinâmico
+            # O remetente que o usuário vai ver (vem do painel)
             remetente_formatado = f"Federação Espírita Piauiense <{config_email.email_remetente}>"
             
             connection = get_connection(
-                host='smtp.gmail.com',      # <-- Nome oficial exigido pelo SSL do Google
-                port=465,                   # <-- Nova porta do Google (SSL)
-                username=config_email.email_remetente,
-                password=config_email.senha_app,
-                use_ssl=True,               # <-- Ativamos o SSL implícito
-                use_tls=False,              # <-- Desligamos o TLS
+                host=BREVO_HOST,
+                port=BREVO_PORT,
+                username=BREVO_LOGIN,                  # <-- Login da Brevo
+                password=config_email.senha_app,       # <-- Senha SMTP (vem do painel)
+                use_tls=True,
+                use_ssl=False,
                 timeout=10
             )
         else:
-            # Fallback de segurança para o settings.py caso o painel esteja vazio
+            # Fallback
             remetente_formatado = f"Federação Espírita Piauiense <{settings.DEFAULT_FROM_EMAIL}>"
             connection = get_connection(
-                host='smtp.gmail.com',
-                port=465,
-                username=settings.EMAIL_HOST_USER,
+                host=BREVO_HOST,
+                port=BREVO_PORT,
+                username=BREVO_LOGIN,
                 password=settings.EMAIL_HOST_PASSWORD,
-                use_ssl=True,
-                use_tls=False,
+                use_tls=True,
+                use_ssl=False,
                 timeout=10
             ) 
 
-        # 3. Monta a mensagem aplicando o remetente elegante e e-mail de resposta
+        # 3. Monta a mensagem
         email_message = EmailMultiAlternatives(
             subject=subject,
             body=body,
@@ -85,10 +90,9 @@ class CustomPasswordResetForm(PasswordResetForm):
             html_email = loader.render_to_string(html_email_template_name, context)
             email_message.attach_alternative(html_email, 'text/html')
 
-        # 4. Dispara o e-mail com proteção anti-crash
+        # 4. Dispara o e-mail
         email_message.connection = connection
         try:
             email_message.send()
         except Exception as e:
-            # Falha silenciosamente para o usuário não ver o Erro 500
-            print(f"CRÍTICO: Falha ao enviar e-mail de recuperação. Motivo: {e}")
+            print(f"CRÍTICO: Falha ao enviar e-mail pela Brevo. Motivo: {e}")
