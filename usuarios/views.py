@@ -5,23 +5,22 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 
-# Importamos o modelo da página editável
+# Importamos a central de e-mails da FEPI
+from core.utils import enviar_email_sistema
 from .models import PaginaSejaMembro
 
 def seja_membro(request):
-    # Procura a configuração da página (história, motivos, etc.)
     pagina_membro = PaginaSejaMembro.objects.first()
 
     if request.method == 'POST':
         tipo = request.POST.get('tipo')
         nome = request.POST.get('nome_razao_social')
         cpf_cnpj = request.POST.get('cpf_cnpj')
-        data_nasc = request.POST.get('data_nascimento_fundacao') # <-- NOVO
+        data_nasc = request.POST.get('data_nascimento_fundacao')
         email = request.POST.get('email')
         telefone = request.POST.get('telefone')
         senha = request.POST.get('senha')
         
-        # Endereço
         cep = request.POST.get('cep')
         logradouro = request.POST.get('logradouro')
         numero = request.POST.get('numero')
@@ -42,8 +41,8 @@ def seja_membro(request):
                 perfil.tipo = tipo
                 perfil.nome_razao_social = nome
                 perfil.cpf_cnpj = cpf_cnpj
-                perfil.data_nascimento_fundacao = data_nasc if data_nasc else None # <-- NOVO
-                perfil.telefone = telefone
+                perfil.data_nascimento_fundacao = data_nasc if data_nasc else None
+                perfil.telefone = telephone
                 perfil.cep = cep
                 perfil.logradouro = logradouro
                 perfil.numero = numero
@@ -54,6 +53,15 @@ def seja_membro(request):
                 perfil.status = 'PENDENTE'
                 perfil.save()
                 
+            # Dispara o e-mail de Boas-Vindas usando o template HTML profissional
+            enviar_email_sistema(
+                assunto="Recebemos sua solicitação de cadastro! - FEPI",
+                corpo="", # Opcional se usar template
+                destinatarios=[email],
+                template_name="emails/boas_vindas.html",
+                context={"nome": nome}
+            )
+                
             messages.success(request, "Cadastro realizado com sucesso! Sua solicitação foi enviada para a diretoria. Você só conseguirá acessar o sistema após a aprovação.")
             return redirect('login')
             
@@ -61,7 +69,6 @@ def seja_membro(request):
             messages.error(request, f"Ocorreu um erro ao processar seu cadastro: {str(e)}")
             return redirect('seja_membro')
 
-    # Passamos a variável 'pagina_membro' para o template HTML
     context = {
         'pagina_membro': pagina_membro,
     }
@@ -75,8 +82,8 @@ def minha_conta(request):
     if request.method == 'POST':
         if 'atualizar_dados' in request.POST:
             perfil.nome_razao_social = request.POST.get('nome_razao_social')
-            data_nasc = request.POST.get('data_nascimento_fundacao') # <-- NOVO
-            perfil.data_nascimento_fundacao = data_nasc if data_nasc else None # <-- NOVO
+            data_nasc = request.POST.get('data_nascimento_fundacao')
+            perfil.data_nascimento_fundacao = data_nasc if data_nasc else None
             perfil.telefone = request.POST.get('telefone')
             perfil.cep = request.POST.get('cep')
             perfil.logradouro = request.POST.get('logradouro')

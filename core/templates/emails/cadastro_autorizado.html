@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; background: #fff; margin: 0 auto; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 2px solid #28a745; padding-bottom: 20px; margin-bottom: 20px; }
+        .header h1 { color: #28a745; margin: 0; font-size: 24px; }
+        .content { line-height: 1.6; }
+        .btn-container { text-align: center; margin: 30px 0; }
+        .btn { background-color: #28a745; color: white !important; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; }
+        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #777; border-top: 1px solid #eee; padding-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Cadastro Autorizado! 🎉</h1>
+        </div>
+        <div class="content">
+            <p>Olá, <strong>{{ nome }}</strong>!</p>
+            <p>Excelente notícia! A administração da FEPI revisou e **autorizou** o seu acesso ao nosso portal.</p>
+            <p>A partir de agora, você já pode acessar a nossa Intranet/Área do Federado para acompanhar as atividades, escalas e programações.</p>
+            
+            <div class="btn-container">
+                <a href="https://fepiaui.up.railway.app/login/" class="btn">Acessar Área do Federado</a>
+            </div>
+
+            <p>Seu usuário de acesso é o e-mail: <code>{{ email }}</code></p>
+            <p>Caso tenha esquecido a senha cadastrada, basta utilizar a ferramenta de "Recuperar Senha" na tela de login.</p>
+            <p>Seja muito bem-vindo(a) ao grupo de trabalho!</p>
+        </div>
+        <div class="footer">
+            <p>Este é um e-mail automático, por favor não responda.</p>
+            <p>&copy; Federação Espírita Piauiense - FEPI</p>
+        </div>
+    </div>
+</body>
+</html>
