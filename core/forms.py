@@ -4,6 +4,7 @@ from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template import loader
 from django.conf import settings
 from core.models import ConfiguracaoEmail
+import socket  # <-- NOVO IMPORT NECESSÁRIO PARA BURLAR O BLOQUEIO DO RAILWAY
 
 class ContatoForm(forms.Form):
     TOPICOS = [
@@ -48,12 +49,22 @@ class CustomPasswordResetForm(PasswordResetForm):
             html_email = loader.render_to_string(html_email_template_name, context)
             email_message.attach_alternative(html_email, 'text/html')
 
+        # -------------------------------------------------------------
+        # A MÁGICA: Forçar o IPv4 para burlar o bloqueio do Railway
+        # -------------------------------------------------------------
+        try:
+            # Pega o IP numérico exato (IPv4) em vez do nome 'smtp.gmail.com'
+            gmail_host_ipv4 = socket.gethostbyname('smtp.gmail.com')
+        except socket.gaierror:
+            # Fallback de segurança se o DNS falhar
+            gmail_host_ipv4 = 'smtp.gmail.com'
+
         # 2. A NOSSA MÁGICA: Busca as credenciais do Painel (Banco de Dados)
         config_email = ConfiguracaoEmail.objects.first()
         
         if config_email and config_email.senha_app:
             connection = get_connection(
-                host='smtp.gmail.com',
+                host=gmail_host_ipv4,  # <-- USAMOS O IP RESOLVIDO AQUI
                 port=587,
                 username=config_email.email_remetente,
                 password=config_email.senha_app,
@@ -63,7 +74,10 @@ class CustomPasswordResetForm(PasswordResetForm):
             email_message.from_email = config_email.email_remetente
         else:
             # Fallback de segurança para o settings.py
-            connection = get_connection(timeout=10) # <-- PROTEÇÃO AQUI TAMBÉM
+            connection = get_connection(
+                host=gmail_host_ipv4,  # <-- AQUI TAMBÉM NO FALLBACK
+                timeout=10
+            ) 
             email_message.from_email = settings.DEFAULT_FROM_EMAIL
 
         # 3. Dispara o e-mail com proteção anti-crash
