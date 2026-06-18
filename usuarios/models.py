@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from ckeditor_uploader.fields import RichTextUploadingField
+from core.utils import enviar_email_sistema  # <-- Importamos nossa ferramenta aqui
 
 class Perfil(models.Model):
     TIPO_USUARIO = [
@@ -74,6 +75,40 @@ class Perfil(models.Model):
     def __str__(self):
         return f"{self.nome_razao_social or self.user.username} ({self.get_tipo_display()})"
 
+    def save(self, *args, **kwargs):
+        """
+        Sobrescrevemos o método save para monitorar mudanças de status.
+        Se o perfil mudar para APROVADO, ativamos o usuário e mandamos o e-mail.
+        """
+        if self.pk: # Garante que o perfil já existia no banco (não é um cadastro novo na hora)
+            try:
+                # Buscamos como o perfil estava antes desta alteração
+                perfil_antigo = Perfil.objects.get(pk=self.pk)
+                
+                # Se antes NÃO era aprovado, e AGORA é aprovado...
+                if perfil_antigo.status != 'APROVADO' and self.status == 'APROVADO':
+                    # 1. Ativa a conta para ele conseguir fazer login
+                    if not self.user.is_active:
+                        self.user.is_active = True
+                        self.user.save()
+                        
+                        # 2. Dispara o e-mail de comemoração!
+                        enviar_email_sistema(
+                            assunto="Seu acesso ao Portal FEPI foi Liberado! 🎉",
+                            corpo="",
+                            destinatarios=[self.user.email],
+                            template_name="emails/cadastro_autorizado.html",
+                            context={
+                                "nome": self.nome_razao_social or self.user.username,
+                                "email": self.user.email
+                            }
+                        )
+            except Perfil.DoesNotExist:
+                pass # Caso de segurança, segue a vida normal.
+                
+        # Continua o salvamento natural do Django
+        super().save(*args, **kwargs)
+
 
 # --- SINAIS (MÁGICA DO DJANGO) ---
 @receiver(post_save, sender=User)
@@ -103,4 +138,3 @@ class PaginaSejaMembro(models.Model):
 
     def __str__(self):
         return "Configuração da Página Seja Membro"
-
