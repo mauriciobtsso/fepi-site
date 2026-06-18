@@ -42,7 +42,7 @@ def seja_membro(request):
                 perfil.nome_razao_social = nome
                 perfil.cpf_cnpj = cpf_cnpj
                 perfil.data_nascimento_fundacao = data_nasc if data_nasc else None
-                perfil.telefone = telephone
+                perfil.telefone = telefone # <--- AQUI ESTAVA O ERRO (telephone)
                 perfil.cep = cep
                 perfil.logradouro = logradouro
                 perfil.numero = numero
@@ -56,7 +56,7 @@ def seja_membro(request):
             # Dispara o e-mail de Boas-Vindas usando o template HTML profissional
             enviar_email_sistema(
                 assunto="Recebemos sua solicitação de cadastro! - FEPI",
-                corpo="", # Opcional se usar template
+                corpo="",
                 destinatarios=[email],
                 template_name="emails/boas_vindas.html",
                 context={"nome": nome}
