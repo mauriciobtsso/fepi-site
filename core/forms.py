@@ -4,7 +4,6 @@ from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template import loader
 from django.conf import settings
 from core.models import ConfiguracaoEmail
-import socket  # <-- NOVO IMPORT NECESSÁRIO PARA BURLAR O BLOQUEIO DO RAILWAY
 
 class ContatoForm(forms.Form):
     TOPICOS = [
@@ -44,17 +43,7 @@ class CustomPasswordResetForm(PasswordResetForm):
         subject = ''.join(subject.splitlines())
         body = loader.render_to_string(email_template_name, context)
 
-        # -------------------------------------------------------------
-        # A MÁGICA: Forçar o IPv4 para burlar o bloqueio do Railway
-        # -------------------------------------------------------------
-        try:
-            # Pega o IP numérico exato (IPv4) em vez do nome 'smtp.gmail.com'
-            gmail_host_ipv4 = socket.gethostbyname('smtp.gmail.com')
-        except socket.gaierror:
-            # Fallback de segurança se o DNS falhar
-            gmail_host_ipv4 = 'smtp.gmail.com'
-
-        # 2. A NOSSA MÁGICA: Busca as credenciais do Painel (Banco de Dados)
+        # 2. Busca as credenciais do Painel (Banco de Dados)
         config_email = ConfiguracaoEmail.objects.first()
         
         if config_email and config_email.senha_app:
@@ -62,19 +51,19 @@ class CustomPasswordResetForm(PasswordResetForm):
             remetente_formatado = f"Federação Espírita Piauiense <{config_email.email_remetente}>"
             
             connection = get_connection(
-                host=gmail_host_ipv4,
+                host='smtp.gmail.com',      # <-- Nome oficial exigido pelo SSL do Google
                 port=465,                   # <-- Nova porta do Google (SSL)
                 username=config_email.email_remetente,
                 password=config_email.senha_app,
                 use_ssl=True,               # <-- Ativamos o SSL implícito
-                use_tls=False,              # <-- Desligamos o TLS para evitar conflito
+                use_tls=False,              # <-- Desligamos o TLS
                 timeout=10
             )
         else:
             # Fallback de segurança para o settings.py caso o painel esteja vazio
             remetente_formatado = f"Federação Espírita Piauiense <{settings.DEFAULT_FROM_EMAIL}>"
             connection = get_connection(
-                host=gmail_host_ipv4,
+                host='smtp.gmail.com',
                 port=465,
                 username=settings.EMAIL_HOST_USER,
                 password=settings.EMAIL_HOST_PASSWORD,
@@ -83,7 +72,7 @@ class CustomPasswordResetForm(PasswordResetForm):
                 timeout=10
             ) 
 
-        # Constroi a mensagem aplicando o remetente elegante e e-mail de resposta
+        # 3. Monta a mensagem aplicando o remetente elegante e e-mail de resposta
         email_message = EmailMultiAlternatives(
             subject=subject,
             body=body,
@@ -96,7 +85,7 @@ class CustomPasswordResetForm(PasswordResetForm):
             html_email = loader.render_to_string(html_email_template_name, context)
             email_message.attach_alternative(html_email, 'text/html')
 
-        # 3. Dispara o e-mail com proteção anti-crash
+        # 4. Dispara o e-mail com proteção anti-crash
         email_message.connection = connection
         try:
             email_message.send()
