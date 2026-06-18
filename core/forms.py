@@ -50,6 +50,9 @@ class CustomPasswordResetForm(PasswordResetForm):
         """
         Envia e-mail de recuperação de senha via API HTTP Brevo (Porta 443).
         """
+        api_key = None
+        remetente_email = None
+        
         try:
             # 1. Prepara o Assunto e o Corpo HTML
             subject = loader.render_to_string(subject_template_name, context)
@@ -67,19 +70,14 @@ class CustomPasswordResetForm(PasswordResetForm):
                 # Usa credenciais do painel administrativo
                 api_key = config_email.senha_app
                 remetente_email = config_email.email_remetente
-                logger.info(f"Usando credenciais do banco de dados para {to_email}")
             else:
                 # Usa variáveis de ambiente (settings.py)
                 api_key = getattr(settings, 'BREVO_API_KEY', '')
                 remetente_email = getattr(settings, 'EMAIL_HOST_USER', '')
-                logger.info(f"Usando credenciais de ambiente para {to_email}")
 
             # 3. Valida se a chave API está configurada
             if not api_key:
-                logger.error("BREVO_API_KEY não configurada em settings ou variáveis de ambiente")
-                # Se não houver chave API, tentamos o envio padrão do Django (SMTP) como fallback
-                super().send_mail(subject_template_name, email_template_name, context, from_email, to_email, html_email_template_name)
-                return
+                raise ValueError("BREVO_API_KEY não configurada")
             
             # 4. Prepara a requisição para API HTTP Brevo (Porta 443 - Imbloqueável)
             url = "https://api.brevo.com/v3/smtp/email"
@@ -100,12 +98,26 @@ class CustomPasswordResetForm(PasswordResetForm):
                 'content-type': 'application/json'
             })
 
-            # 5. Executa a chamada
-            with urllib.request.urlopen(req, timeout=10) as response:
+            # 5. Executa a chamada com timeout curto para não travar o worker
+            with urllib.request.urlopen(req, timeout=5) as response:
                 logger.info(f"✅ E-mail enviado com sucesso para {to_email} via Brevo API")
+                return # Sucesso!
                 
         except Exception as e:
-            logger.error(f"❌ Erro ao enviar e-mail via API Brevo: {str(e)}")
-            # Fallback para o método padrão do Django (SMTP) caso a API falhe
-            logger.info("Tentando fallback via SMTP padrão...")
-            super().send_mail(subject_template_name, email_template_name, context, from_email, to_email, html_email_template_name)
+            logger.error(f"❌ Erro Brevo API ({to_email}): {str(e)}")
+            
+            # 6. Fallback SILENCIOSO para SMTP padrão do Django
+            # Se a API falhar (401, timeout, etc), tentamos o SMTP configurado no settings.py
+            try:
+                logger.info(f"Tentando fallback via SMTP para {to_email}...")
+                super().send_mail(
+                    subject_template_name, 
+                    email_template_name, 
+                    context, 
+                    from_email, 
+                    to_email, 
+                    html_email_template_name
+                )
+                logger.info(f"✅ Fallback SMTP funcionou para {to_email}")
+            except Exception as smtp_err:
+                logger.error(f"❌ Falha crítica: API e SMTP falharam para {to_email}. Erro SMTP: {str(smtp_err)}")
