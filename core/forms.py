@@ -3,10 +3,16 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.template import loader
 from django.conf import settings
 from core.models import ConfiguracaoEmail
-import sib_api_v3_sdk
-from sib_api_v3_sdk.rest import ApiException
 import logging
-import os
+import threading
+
+# Tenta importar o SDK, mas não quebra se não estiver instalado
+try:
+    import sib_api_v3_sdk
+    from sib_api_v3_sdk.rest import ApiException
+    SDK_AVAILABLE = True
+except ImportError:
+    SDK_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -41,14 +47,33 @@ class ContatoForm(forms.Form):
 
 class CustomPasswordResetForm(PasswordResetForm):
     """
-    Formulário customizado para recuperação de senha que envia e-mails via SDK Oficial Brevo.
-    Isso garante maior compatibilidade e melhores mensagens de erro.
+    Formulário customizado para recuperação de senha.
+    Envia e-mails em segundo plano (Background Thread) para evitar Timeout no Railway.
     """
     
     def send_mail(self, subject_template_name, email_template_name,
                   context, from_email, to_email, html_email_template_name=None):
         """
-        Envia e-mail de recuperação de senha via SDK Oficial Brevo.
+        Inicia o envio do e-mail em uma thread separada.
+        Isso faz o site responder instantaneamente ao usuário, enquanto o e-mail é enviado "por fora".
+        """
+        # Prepara os dados antes de disparar a thread (para evitar erros de contexto do Django)
+        subject = loader.render_to_string(subject_template_name, context)
+        subject = ''.join(subject.splitlines())
+        body = loader.render_to_string(email_template_name, context)
+        html_content = loader.render_to_string(html_email_template_name, context) if html_email_template_name else body
+
+        # Dispara o envio em segundo plano
+        thread = threading.Thread(
+            target=self._execute_send,
+            args=(subject, body, html_content, to_email, subject_template_name, email_template_name, context, from_email, html_email_template_name)
+        )
+        thread.start()
+        logger.info(f"Thread de envio iniciada para {to_email}")
+
+    def _execute_send(self, subject, body, html_content, to_email, *args):
+        """
+        Executa o envio real (dentro da thread).
         """
         # 1. Busca as credenciais
         config_email = ConfiguracaoEmail.objects.first()
@@ -59,46 +84,31 @@ class CustomPasswordResetForm(PasswordResetForm):
             api_key = getattr(settings, 'BREVO_API_KEY', '')
             remetente_email = getattr(settings, 'EMAIL_HOST_USER', '')
 
-        # Se não houver chave API, fallback imediato para o padrão do Django (SMTP)
-        if not api_key:
-            logger.warning(f"BREVO_API_KEY não encontrada. Usando fallback SMTP para {to_email}")
-            super().send_mail(subject_template_name, email_template_name, context, from_email, to_email, html_email_template_name)
-            return
-
-        # 2. Configura o SDK Brevo
-        configuration = sib_api_v3_sdk.Configuration()
-        configuration.api_key['api-key'] = api_key
-        api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
-
-        # 3. Prepara o conteúdo
-        subject = loader.render_to_string(subject_template_name, context)
-        subject = ''.join(subject.splitlines())
-        body = loader.render_to_string(email_template_name, context)
-        html_content = loader.render_to_string(html_email_template_name, context) if html_email_template_name else body
-
-        # 4. Cria o objeto de e-mail
-        send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
-            to=[{"email": to_email}],
-            reply_to={"email": "naoresponder@fepi.org.br"},
-            sender={"name": "Federação Espírita Piauiense", "email": remetente_email},
-            subject=subject,
-            html_content=html_content
-        )
-
-        try:
-            # 5. Tenta enviar via API
-            api_response = api_instance.send_transac_email(send_smtp_email)
-            logger.info(f"✅ E-mail enviado via Brevo SDK para {to_email}. ID: {api_response.message_id}")
-        except ApiException as e:
-            logger.error(f"❌ Erro Brevo SDK ({to_email}): {e}")
-            # Se der erro 401, 403 ou qualquer outro na API, tentamos o SMTP
+        # 2. Tenta via SDK Brevo (API HTTP)
+        if SDK_AVAILABLE and api_key:
             try:
-                logger.info(f"Iniciando fallback SMTP para {to_email}...")
-                super().send_mail(subject_template_name, email_template_name, context, from_email, to_email, html_email_template_name)
-                logger.info(f"✅ Fallback SMTP funcionou para {to_email}")
-            except Exception as smtp_err:
-                logger.error(f"❌ Falha total: API e SMTP falharam para {to_email}. Erro SMTP: {str(smtp_err)}")
-        except Exception as e:
-            logger.error(f"❌ Erro inesperado no envio para {to_email}: {str(e)}")
-            # Fallback genérico
-            super().send_mail(subject_template_name, email_template_name, context, from_email, to_email, html_email_template_name)
+                configuration = sib_api_v3_sdk.Configuration()
+                configuration.api_key['api-key'] = api_key
+                api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+
+                send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+                    to=[{"email": to_email}],
+                    sender={"name": "Federação Espírita Piauiense", "email": remetente_email},
+                    subject=subject,
+                    html_content=html_content
+                )
+                
+                api_instance.send_transac_email(send_smtp_email)
+                logger.info(f"✅ E-mail enviado via Brevo API para {to_email}")
+                return # Sucesso!
+            except Exception as e:
+                logger.error(f"❌ Falha na API Brevo ({to_email}): {str(e)}")
+
+        # 3. Fallback para SMTP padrão do Django
+        try:
+            logger.info(f"Tentando fallback via SMTP para {to_email}...")
+            # Chamamos o método original da classe pai para usar o SMTP configurado
+            super().send_mail(*args)
+            logger.info(f"✅ E-mail enviado via SMTP Fallback para {to_email}")
+        except Exception as smtp_err:
+            logger.error(f"❌ Falha crítica: API e SMTP falharam para {to_email}. Erro SMTP: {str(smtp_err)}")
