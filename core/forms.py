@@ -48,7 +48,7 @@ class CustomPasswordResetForm(PasswordResetForm):
         
         # --- CONFIGURAÇÕES FIXAS DA BREVO ---
         BREVO_HOST = 'smtp-relay.brevo.com'
-        BREVO_PORT = 587
+        BREVO_PORT = 2525
         BREVO_LOGIN = 'af2580001@smtp-brevo.com' # <-- Seu login de infraestrutura
         
         if config_email and config_email.senha_app:
