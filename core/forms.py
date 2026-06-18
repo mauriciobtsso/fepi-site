@@ -80,9 +80,14 @@ class CustomPasswordResetForm(PasswordResetForm):
         if config_email and config_email.senha_app:
             api_key = config_email.senha_app
             remetente_email = config_email.email_remetente
+            logger.info(f"Usando credenciais do banco de dados para {to_email}")
         else:
             api_key = getattr(settings, 'BREVO_API_KEY', '')
             remetente_email = getattr(settings, 'EMAIL_HOST_USER', '')
+            logger.info(f"Usando credenciais de ambiente para {to_email} (Remetente: {remetente_email})")
+        
+        if api_key:
+            logger.info(f"Chave API carregada (final: {api_key[-4:]})")
 
         # 2. Tenta via SDK Brevo (API HTTP)
         if SDK_AVAILABLE and api_key:
