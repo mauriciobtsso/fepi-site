@@ -250,12 +250,16 @@ SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 # Email
 EMAIL_RECEIVER = 'contato@fepiaui.org.br' 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+# Configuração para Brevo (Porta 587 - TLS)
+EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'seu_email_remetente@gmail.com') 
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'sua_senha_de_app_aqui') 
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Chave API HTTP Brevo (para CustomPasswordResetForm)
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
 
 # Login
 LOGIN_URL = 'login'                
