@@ -71,11 +71,11 @@ class CustomPasswordResetForm(PasswordResetForm):
         thread.start()
         logger.info(f"Thread de envio iniciada para {to_email}")
 
-    def _execute_send(self, subject, body, html_content, to_email, *args):
+def _execute_send(self, subject, body, html_content, to_email, *args):
         """
         Executa o envio real (dentro da thread).
         """
-        # 1. Busca as credenciais
+        # 1. Busca as credenciais dando prioridade à Chave de API correta
         config_email = ConfiguracaoEmail.objects.first()
         if config_email and config_email.senha_app:
             api_key = config_email.senha_app
@@ -86,10 +86,7 @@ class CustomPasswordResetForm(PasswordResetForm):
             remetente_email = getattr(settings, 'EMAIL_HOST_USER', '')
             logger.info(f"Usando credenciais de ambiente para {to_email} (Remetente: {remetente_email})")
         
-        if api_key:
-            logger.info(f"Chave API carregada (final: {api_key[-4:]})")
-
-        # 2. Tenta via SDK Brevo (API HTTP)
+        # 2. Tenta via SDK Brevo (API HTTP) usando a porta 443 implícita
         if SDK_AVAILABLE and api_key:
             try:
                 configuration = sib_api_v3_sdk.Configuration()
@@ -99,6 +96,7 @@ class CustomPasswordResetForm(PasswordResetForm):
                 send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
                     to=[{"email": to_email}],
                     sender={"name": "Federação Espírita Piauiense", "email": remetente_email},
+                    reply_to={"email": "naoresponder@fepi.org.br"}, # <-- Seu e-mail elegante adicionado aqui
                     subject=subject,
                     html_content=html_content
                 )
@@ -107,12 +105,11 @@ class CustomPasswordResetForm(PasswordResetForm):
                 logger.info(f"✅ E-mail enviado via Brevo API para {to_email}")
                 return # Sucesso!
             except Exception as e:
-                logger.error(f"❌ Falha na API Brevo ({to_email}): {str(e)}")
+                logger.error(f"❌ Falha na API Brevo ({to_email}). Verifique se a chave de API (xkeysib) está correta. Detalhe: {str(e)}")
 
-        # 3. Fallback para SMTP padrão do Django
+        # 3. Fallback para SMTP padrão do Django (Saberemos que falhará no Railway, mas fica de segurança para local)
         try:
             logger.info(f"Tentando fallback via SMTP para {to_email}...")
-            # Chamamos o método original da classe pai para usar o SMTP configurado
             super().send_mail(*args)
             logger.info(f"✅ E-mail enviado via SMTP Fallback para {to_email}")
         except Exception as smtp_err:
