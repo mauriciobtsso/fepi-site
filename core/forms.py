@@ -44,11 +44,6 @@ class CustomPasswordResetForm(PasswordResetForm):
         subject = ''.join(subject.splitlines())
         body = loader.render_to_string(email_template_name, context)
 
-        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
-        if html_email_template_name is not None:
-            html_email = loader.render_to_string(html_email_template_name, context)
-            email_message.attach_alternative(html_email, 'text/html')
-
         # -------------------------------------------------------------
         # A MÁGICA: Forçar o IPv4 para burlar o bloqueio do Railway
         # -------------------------------------------------------------
@@ -63,22 +58,43 @@ class CustomPasswordResetForm(PasswordResetForm):
         config_email = ConfiguracaoEmail.objects.first()
         
         if config_email and config_email.senha_app:
+            # Configura a máscara do remetente dinâmico
+            remetente_formatado = f"Federação Espírita Piauiense <{config_email.email_remetente}>"
+            
             connection = get_connection(
-                host=gmail_host_ipv4,  # <-- USAMOS O IP RESOLVIDO AQUI
-                port=587,
+                host=gmail_host_ipv4,
+                port=465,                   # <-- Nova porta do Google (SSL)
                 username=config_email.email_remetente,
                 password=config_email.senha_app,
-                use_tls=True,
-                timeout=10  # <-- PROTEÇÃO: Aborta se o Google demorar mais de 10s
+                use_ssl=True,               # <-- Ativamos o SSL implícito
+                use_tls=False,              # <-- Desligamos o TLS para evitar conflito
+                timeout=10
             )
-            email_message.from_email = config_email.email_remetente
         else:
-            # Fallback de segurança para o settings.py
+            # Fallback de segurança para o settings.py caso o painel esteja vazio
+            remetente_formatado = f"Federação Espírita Piauiense <{settings.DEFAULT_FROM_EMAIL}>"
             connection = get_connection(
-                host=gmail_host_ipv4,  # <-- AQUI TAMBÉM NO FALLBACK
+                host=gmail_host_ipv4,
+                port=465,
+                username=settings.EMAIL_HOST_USER,
+                password=settings.EMAIL_HOST_PASSWORD,
+                use_ssl=True,
+                use_tls=False,
                 timeout=10
             ) 
-            email_message.from_email = settings.DEFAULT_FROM_EMAIL
+
+        # Constroi a mensagem aplicando o remetente elegante e e-mail de resposta
+        email_message = EmailMultiAlternatives(
+            subject=subject,
+            body=body,
+            from_email=remetente_formatado,
+            to=[to_email],
+            reply_to=['naoresponder@fepi.org.br']
+        )
+
+        if html_email_template_name is not None:
+            html_email = loader.render_to_string(html_email_template_name, context)
+            email_message.attach_alternative(html_email, 'text/html')
 
         # 3. Dispara o e-mail com proteção anti-crash
         email_message.connection = connection
