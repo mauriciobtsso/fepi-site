@@ -7,6 +7,7 @@ from django.views.static import serve
 from django.contrib.auth import views as auth_views
 from django.http import JsonResponse
 from core import views
+from django.contrib import admin
 import os
 from core.forms import CustomPasswordResetForm
 
@@ -40,6 +41,8 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', home, name='home'),
     path('editorjs/', include('django_editorjs_fields.urls')),
+    path('blogs/', include('blogs.urls')),
+    path('painel/', include('painel.urls')),
     
     # --- SISTEMA DE LOGIN E INTRANET ---
     path('login/', auth_views.LoginView.as_view(), name='login'),

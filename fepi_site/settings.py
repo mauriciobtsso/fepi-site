@@ -142,6 +142,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'blogs.middleware.SubdomainBlogMiddleware',
 ]
 
 ROOT_URLCONF = 'fepi_site.urls'
@@ -241,6 +242,15 @@ CKEDITOR_CONFIGS = {
         'width': '100%',
         'height': 400,
         'toolbarCanCollapse': False,
+    }
+}
+
+EDITORJS_FIELDS_CONFIG = {
+    "tools": {
+        "Header": {"class": "Header", "config": {"levels": [2, 3, 4]}},
+        "List": {"class": "List", "config": {"defaultStyle": "unordered"}},
+        "Paragraph": {"class": "Paragraph"},
+        "Image": {"class": "ImageTool"}
     }
 }
 

@@ -139,4 +139,12 @@ urlpatterns = [
     
     # 🔴 NOVA ROTA: Editar a Página "Seja Membro"
     path('usuarios/pagina-seja-membro/', views.editar_pagina_membro, name='editar_pagina_membro'),
+
+    # Novas rotas de gerenciamento dos Blogs dos Departamentos
+    path('blogs-departamentos/', views.blogs_hub, name='blogs_hub'),
+    path('blogs-departamentos/post/novo/', views.gerenciar_post_blog, name='criar_post_blog'),
+    path('blogs-departamentos/post/editar/<int:id>/', views.gerenciar_post_blog, name='editar_post_blog'),
+    path('blogs-departamentos/post/excluir/<int:id>/', views.excluir_post_blog, name='excluir_post_blog'),
+    path('blogs-departamentos/configurar/<int:depto_id>/', views.configurar_rede_social_blog, name='configurar_rede_social_blog'),
+
 ]

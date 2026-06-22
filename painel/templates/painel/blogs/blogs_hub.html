@@ -1,0 +1,106 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 text-gray-800 fw-bold">Blogs dos Departamentos</h1>
+            <p class="text-muted">Gerencie as publicações independentes e redes sociais de cada setor.</p>
+        </div>
+        <a href="{% url 'criar_post_blog' %}" class="btn btn-primary rounded-pill px-4 fw-bold">
+            <i class="fas fa-plus me-2"></i> Escrever Artigo
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="m-0 font-weight-bold text-primary"><i class="fab fa-instagram me-2 text-danger"></i>Configurações de Canais e Instagram</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Departamento</th>
+                            <th>Subdomínio</th>
+                            <th>Link Externo</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for depto in departamentos %}
+                        <tr>
+                            <td class="fw-bold text-dark">{{ depto.nome }}</td>
+                            <td><span class="badge bg-info text-dark">{{ depto.subdominio }}.fepiaui.org.br</span></td>
+                            <td>
+                                {% if depto.instagram_url %}
+                                    <a href="{{ depto.instagram_url }}" target="_blank" class="text-danger text-decoration-none small">
+                                        <i class="fab fa-instagram me-1"></i> Ver Perfil
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted small">Sem Instagram vinculado</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'configurar_rede_social_blog' depto.id %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                    <i class="fas fa-cog me-1"></i> Configurar Canal & Feed
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="m-0 font-weight-bold text-dark"><i class="fas fa-newspaper me-2 text-success"></i>Artigos Publicados nos Blogs</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Título</th>
+                            <th>Blog / Destino</th>
+                            <th>Data</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in posts %}
+                        <tr>
+                            <td class="fw-bold">{{ post.titulo }}</td>
+                            <td><span class="badge bg-secondary">{{ post.departamento.subdominio|upper }}</span></td>
+                            <td class="small text-muted">{{ post.data_publicacao|date:"d/m/Y H:i" }}</td>
+                            <td class="text-center">
+                                {% if post.publicado %}
+                                    <span class="badge bg-success">No Ar</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Rascunho</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'editar_post_blog' post.id %}" class="btn btn-sm btn-warning text-dark me-1 rounded-circle shadow-sm" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'excluir_post_blog' post.id %}" class="btn btn-sm btn-danger rounded-circle shadow-sm" onclick="return confirm('Tem certeza que deseja excluir esta publicação?');" title="Excluir">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">Nenhum artigo publicado por enquanto.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

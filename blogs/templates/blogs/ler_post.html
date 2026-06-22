@@ -1,0 +1,183 @@
+{% extends 'blogs/base_blogs.html' %}
+
+{% block title %}{{ post.titulo }} - {{ departamento.nome }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Cabeçalho exclusivo do Post */
+    .post-read-header {
+        background-color: #ffffff;
+        padding: 5rem 0;
+        border-bottom: 1px solid #eaeaea;
+        margin-bottom: 3rem;
+    }
+    .post-read-meta {
+        color: var(--fepi-teal);
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+    .post-read-meta i { margin-right: 0.3rem; }
+    
+    .post-read-title {
+        font-weight: 800;
+        color: var(--fepi-dark);
+        font-size: 3rem;
+        line-height: 1.2;
+        letter-spacing: -1.5px;
+    }
+
+    /* Área de Conteúdo */
+    .post-read-content {
+        font-size: 1.2rem;
+        line-height: 1.85;
+        color: #333;
+        margin-bottom: 5rem;
+    }
+    
+    /* Regras para os blocos gerados pelo Editor.js */
+    .post-read-content .ce-header {
+        color: var(--fepi-dark);
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+    .post-read-content img {
+        max-width: 100%; 
+        height: auto;
+        border-radius: 12px;
+        margin: 2rem 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+    }
+    .post-read-content blockquote {
+        border-left: 5px solid var(--fepi-teal);
+        color: #555;
+        font-style: italic;
+        margin: 2rem 0;
+        background-color: var(--fepi-bg);
+        padding: 1.5rem 2rem;
+        border-radius: 0 12px 12px 0;
+    }
+    .post-read-content ul, .post-read-content ol {
+        margin-bottom: 1.8rem;
+        padding-left: 2.5rem;
+    }
+    .post-read-content li {
+        margin-bottom: 0.7rem;
+    }
+
+    /* Estilo da Imagem de Capa */
+    .capa-postagem {
+        width: 100%;
+        max-height: 550px;
+        object-fit: cover;
+        border-radius: 16px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        margin-bottom: 3rem;
+    }
+
+    @media (max-width: 768px) {
+        .post-read-title { font-size: 2.2rem; }
+        .capa-postagem { max-height: 300px; border-radius: 12px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<header class="post-read-header text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="post-read-meta">
+                    <div><i class="far fa-calendar-alt"></i> {{ post.data_publicacao|date:"d \d\e F \d\e Y" }}</div>
+                    <span class="text-muted opacity-50">|</span>
+                    <div><i class="far fa-folder-open"></i> {{ departamento.nome }}</div>
+                </div>
+                <h1 class="post-read-title">{{ post.titulo }}</h1>
+            </div>
+        </div>
+    </div>
+</header>
+
+<article class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-xl-8">
+            
+            {% if post.imagem_capa %}
+                <img src="{{ post.imagem_capa.url }}" alt="{{ post.titulo }}" class="capa-postagem">
+            {% endif %}
+
+<div class="post-read-content">
+                {% if post.conteudo.blocks %}
+                    {% for block in post.conteudo.blocks %}
+                        
+                        {% if block.type|lower == 'header' %}
+                            <h{{ block.data.level }} class="ce-header">{{ block.data.text|safe }}</h{{ block.data.level }}>
+                            
+                        {% elif block.type|lower == 'paragraph' %}
+                            <p>{{ block.data.text|safe }}</p>
+                            
+                        {% elif block.type|lower == 'list' %}
+                            {% if block.data.style == 'ordered' %}
+                                <ol>
+                                    {% for item in block.data.items %}<li>{{ item|safe }}</li>{% endfor %}
+                                </ol>
+                            {% else %}
+                                <ul>
+                                    {% for item in block.data.items %}<li>{{ item|safe }}</li>{% endfor %}
+                                </ul>
+                            {% endif %}
+                            
+                            {% elif block.type|lower == 'image' %}
+                            <figure class="my-5 text-center">
+                                {% if block.data.file and block.data.file.url %}
+                                    <img src="{{ block.data.file.url }}" 
+                                         alt="{{ block.data.caption|default:'Imagem do artigo' }}" 
+                                         class="img-fluid rounded shadow-sm">
+                                {% endif %}
+                                
+                                {% if block.data.caption %}
+                                    <figcaption class="text-muted small mt-2">{{ block.data.caption|safe }}</figcaption>
+                                {% endif %}
+                            </figure>
+
+                        {% elif block.type|lower == 'quote' %}
+                            <blockquote>
+                                <p>{{ block.data.text|safe }}</p>
+                                {% if block.data.caption %}<footer>— {{ block.data.caption|safe }}</footer>{% endif %}
+                            </blockquote>
+                            
+                        {% elif block.type|lower == 'delimiter' %}
+                            <hr class="my-5" style="border-top: 3px solid #eaeaea; width: 50px; margin: 0 auto;">
+                            
+                        {% else %}
+                            <div style="border: 2px dashed red; padding: 15px; margin: 20px 0; background-color: #fff5f5; border-radius: 8px;">
+                                <h5 style="color: red; margin-top:0;">⚠️ Bloco com nome diferente encontrado</h5>
+                                <strong>Tipo do Bloco (type):</strong> <code>{{ block.type }}</code><br>
+                                <strong>Dados que ele gerou (data):</strong> <code>{{ block.data }}</code>
+                            </div>
+                        {% endif %}
+
+                    {% endfor %}
+                {% else %}
+                    {{ post.conteudo|safe }}
+                {% endif %}
+            </div>
+
+            <hr class="my-5" style="opacity: 0.08;">
+
+            <div class="text-center mb-5 pb-5">
+                <a href="{% url 'home_blog' departamento.subdominio %}" class="btn btn-fepi-outline px-4 py-2">
+                    <i class="fas fa-arrow-left me-2"></i> Voltar para artigos de {{ departamento.nome }}
+                </a>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

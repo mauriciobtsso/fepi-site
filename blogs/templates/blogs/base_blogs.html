@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Blog - {{ departamento.nome }}{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* DEFINIÇÃO DA PALETA DE CORES DA FEPI (Baseada na imagem) */
+        :root {
+            --fepi-teal: #008080; /* Tom de Verde-Água/Ciano principal */
+            --fepi-teal-light: #e0f2f1; /* Tom muito claro para fundos */
+            --fepi-dark: #2c3e50; /* Azul escuro para textos e rodapé */
+            --fepi-gray: #7f8c8d; /* Cinza para metadados */
+            --fepi-bg: #f4f7f6; /* Fundo suave da página */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--fepi-bg);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* Menu Navbar Elegante */
+        .navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #eaeaea;
+            padding: 1rem 0;
+        }
+        .navbar-brand {
+            font-weight: 800;
+            color: var(--fepi-dark) !important;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+        .navbar-brand span {
+            color: var(--fepi-teal);
+        }
+        .nav-link {
+            font-weight: 600;
+            color: var(--fepi-dark);
+            transition: color 0.3s;
+            font-size: 1rem;
+        }
+        .nav-link:hover {
+            color: var(--fepi-teal);
+        }
+
+        /* Botão Voltar Estilizado */
+        .btn-fepi-outline {
+            border: 2px solid var(--fepi-teal);
+            color: var(--fepi-teal);
+            font-weight: 700;
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s;
+        }
+        .btn-fepi-outline:hover {
+            background-color: var(--fepi-teal);
+            color: #ffffff;
+        }
+
+        /* Rodapé FEPI */
+        .blog-footer {
+            background-color: var(--fepi-dark);
+            color: #ecf0f1;
+            padding: 3rem 0;
+            margin-top: auto;
+            font-size: 0.95rem;
+        }
+        .blog-footer a {
+            color: var(--fepi-teal);
+            text-decoration: none;
+        }
+        .blog-footer a:hover {
+            color: #ffffff;
+        }
+        
+        /* Utilitário para cor FEPI Teal */
+        .fepi-teal-text {
+            color: var(--fepi-teal) !important;
+        }
+        
+        /* Espaço para CSS das páginas filhas */
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home_blog' departamento.subdominio %}">
+                FEPI <span>| {{ departamento.subdominio|upper }}</span>
+            </a>
+            
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home_blog' departamento.subdominio %}">Início</a>
+                    </li>
+                    <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
+                        <a class="btn btn-fepi-outline btn-sm" href="/">
+                            <i class="fas fa-arrow-left me-1"></i> Site FEPI
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-shrink-0">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="blog-footer text-center mt-5">
+        <div class="container">
+            <p class="mb-2 fw-bold">&copy; {% now "Y" %} Federação Espírita Piauiense.</p>
+            <p class="mb-1 text-white-50">{{ departamento.nome }} - Todos os direitos reservados.</p>
+            <p class="mb-0 small text-white-50 mt-3">Desenvolvido com <i class="fas fa-heart fepi-teal-text"></i> por voluntários.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -11,3 +11,4 @@ from .doacoes import FormaDoacaoForm, PaginaDoacaoConfigForm
 from .recursos import SecaoLinkForm, LinkItemForm
 from .usuarios import PerfilForm
 from .colunas import ColunaForm
+from .blogs import PostBlogForm, ConfigBlogForm
