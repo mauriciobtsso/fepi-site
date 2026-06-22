@@ -2,10 +2,10 @@
 
 {% block extra_css %}
 <style>
-    /* Estilo do Banner de Boas Vindas (Simplificado e Elegante) */
+    /* Estilo do Banner de Boas Vindas */
     .hero-section {
         background-color: #ffffff;
-        padding: 4rem 0;
+        padding: 4rem 0 3rem 0;
         border-bottom: 1px solid #eaeaea;
         margin-bottom: 3rem;
     }
@@ -17,6 +17,16 @@
     }
     .hero-title span {
         color: var(--fepi-teal);
+    }
+
+    /* BARRA DE PESQUISA PÚBLICA */
+    .search-bar-public {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        transition: transform 0.2s;
+    }
+    .search-bar-public:focus-within {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(0,128,128,0.15);
     }
 
     /* ESTILO DOS CARTÕES FEPI */
@@ -33,16 +43,12 @@
         transform: translateY(-5px);
         box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
-    
-    /* Estilo da Imagem de Capa no Cartão */
     .fepi-card-img-top {
         width: 100%;
-        height: 200px; /* Altura fixa para manter o alinhamento dos cartões */
-        object-fit: cover; /* Recorta a imagem proporcionalmente sem distorcer */
+        height: 200px; 
+        object-fit: cover; 
         border-bottom: 1px solid #f0f0f0;
     }
-    
-    /* Área de conteúdo do cartão */
     .fepi-post-card .card-body {
         padding: 2.2rem;
         display: flex;
@@ -148,7 +154,35 @@
 <section class="hero-section text-center">
     <div class="container">
         <h1 class="hero-title">Blog do <span>{{ departamento.nome }}</span></h1>
-        <p class="lead text-muted mt-3">Reflexões e atualizações da Federação Espírita Piauiense.</p>
+        <p class="lead text-muted mt-3 mb-5">Reflexões e atualizações da Federação Espírita Piauiense.</p>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <form method="GET" action="{% url 'home_blog' departamento.subdominio %}" class="d-flex search-bar-public rounded-pill overflow-hidden">
+                    <input type="text" name="q" value="{{ query }}" class="form-control border-0 px-4 py-3 bg-light" placeholder="Pesquisar artigos em {{ departamento.subdominio|upper }}...">
+                    {% if query %}
+                        <a href="{% url 'home_blog' departamento.subdominio %}" class="btn btn-light d-flex align-items-center px-3 text-muted" title="Limpar Busca">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    {% endif %}
+                    <button class="btn btn-primary px-4 fw-bold" style="background-color: var(--fepi-teal); border: none;" type="submit">
+                        <i class="fas fa-search me-2"></i> Buscar
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        {% if query %}
+            <p class="text-muted mt-3 small">Mostrando resultados para: <strong>"{{ query }}"</strong></p>
+        {% elif categoria_atual %}
+            <div class="mt-4">
+                <span class="text-muted small me-2">Filtrando pela categoria:</span>
+                <span class="badge rounded-pill px-3 py-2" style="background-color: {{ categoria_atual.cor }}; color: #fff;">
+                    <i class="fas fa-tag"></i> {{ categoria_atual.nome }}
+                </span>
+                <a href="{% url 'home_blog' departamento.subdominio %}" class="text-danger ms-2 text-decoration-none small" title="Remover filtro"><i class="fas fa-times"></i> Limpar</a>
+            </div>
+        {% endif %}
     </div>
 </section>
 
@@ -158,7 +192,6 @@
             {% for post in posts %}
             <div class="col-md-6 col-lg-4">
                 <article class="card h-100 fepi-post-card shadow-sm border-0">
-                    
                     {% if post.imagem_capa %}
                         <a href="{% url 'ler_post' departamento.subdominio post.slug %}">
                             <img src="{{ post.imagem_capa.url }}" alt="{{ post.titulo }}" class="fepi-card-img-top">
@@ -166,17 +199,20 @@
                     {% endif %}
                     
                     <div class="card-body">
-                        
                         <div class="card-prefix">
                             <span class="prefix-text">FEPI</span>
                             <span class="prefix-divider">|</span>
                             <span class="prefix-text">{{ departamento.subdominio|upper }}</span>
+                            
+                            {% if post.categoria %}
+                                <a href="{% url 'home_blog' departamento.subdominio %}?categoria={{ post.categoria.slug }}" class="badge ms-auto text-decoration-none" style="background-color: {{ post.categoria.cor }}; color: #fff;">
+                                    {{ post.categoria.nome }}
+                                </a>
+                            {% endif %}
                         </div>
 
                         <h2 class="post-card-title">
-                            <a href="{% url 'ler_post' departamento.subdominio post.slug %}">
-                                {{ post.titulo }}
-                            </a>
+                            <a href="{% url 'ler_post' departamento.subdominio post.slug %}">{{ post.titulo }}</a>
                         </h2>
 
                         <p class="card-text post-card-excerpt">
@@ -212,13 +248,53 @@
             </div>
             {% endfor %}
         </div>
+
+        {% if posts.has_other_pages %}
+        <nav aria-label="Navegação de página" class="mt-5 pt-5 border-top">
+            <ul class="pagination justify-content-center">
+                {% if posts.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link text-dark" href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categoria_atual %}&categoria={{ categoria_atual.slug }}{% endif %}">Anterior</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link text-muted">Anterior</span></li>
+                {% endif %}
+
+                {% for num in posts.paginator.page_range %}
+                    {% if posts.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link" style="background-color: var(--fepi-teal); border-color: var(--fepi-teal);">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link text-dark" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if categoria_atual %}&categoria={{ categoria_atual.slug }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if posts.has_next %}
+                    <li class="page-item">
+                        <a class="page-link text-dark" href="?page={{ posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categoria_atual %}&categoria={{ categoria_atual.slug }}{% endif %}">Próxima</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link text-muted">Próxima</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
     {% else %}
         <div class="text-center py-5 my-5">
             <div class="text-muted mb-4">
-                <i class="far fa-folder-open fa-4x text-light-gray" style="color: #bdc3c7;"></i>
+                <i class="fas fa-search fa-4x text-light-gray" style="color: #bdc3c7;"></i>
             </div>
-            <h3 class="fw-bold" style="color: var(--fepi-dark);">Nenhuma postagem ainda</h3>
-            <p class="text-muted">O {{ departamento.nome }} ainda não publicou nenhum artigo. Volte em breve!</p>
+            <h3 class="fw-bold" style="color: var(--fepi-dark);">Nenhum artigo encontrado</h3>
+            {% if query or categoria_atual %}
+                <p class="text-muted">Não encontramos resultados para o seu filtro atual.</p>
+                <a href="{% url 'home_blog' departamento.subdominio %}" class="btn btn-outline-secondary mt-3 rounded-pill px-4">Limpar Filtros</a>
+            {% else %}
+                <p class="text-muted">O {{ departamento.nome }} ainda não publicou nenhum artigo. Volte em breve!</p>
+            {% endif %}
         </div>
     {% endif %}
 </section>

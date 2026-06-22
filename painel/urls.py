@@ -3,6 +3,7 @@ from django.urls import path
 from . import views
 from painel.views import ia_views, radar_views
 from painel.views.site import config_email
+from .views import departamentos
 
 urlpatterns = [
     path('', views.dashboard, name='painel_home'),
@@ -30,7 +31,7 @@ urlpatterns = [
     path('documentos/editar/<int:id>/', views.editar_documento, name='editar_documento'),
     path('documentos/excluir/<int:id>/', views.excluir_documento, name='excluir_documento'),
     
-    # Categorias
+    # Categorias Documentos
     path('documentos/categorias/', views.listar_categorias_doc, name='listar_categorias_doc'),
     path('documentos/categorias/excluir/<int:id>/', views.excluir_categoria_doc, name='excluir_categoria_doc'),
     
@@ -64,7 +65,7 @@ urlpatterns = [
     path('livraria/livros/editar/<int:id>/', views.gerenciar_livro, name='editar_livro'),
     path('livraria/livros/excluir/<int:id>/', views.excluir_livro, name='excluir_livro'),
     
-    # Categorias
+    # Categorias Livraria
     path('livraria/categorias/', views.listar_categorias_liv, name='listar_categorias_liv'),
     path('livraria/categorias/excluir/<int:id>/', views.excluir_categoria_liv, name='excluir_categoria_liv'),
 
@@ -87,7 +88,6 @@ urlpatterns = [
     # --- SECRETARIA: EQUIPE E ESTRUTURA ---
     path('secretaria/equipe/', views.equipe_hub, name='equipe_hub'),
    
-    
     # Membros
     path('secretaria/membro/novo/', views.gerenciar_membro, name='novo_membro'),
     path('secretaria/membro/editar/<int:id>/', views.gerenciar_membro, name='editar_membro'),
@@ -137,14 +137,20 @@ urlpatterns = [
     path('usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
     path('usuarios/excluir/<int:id>/', views.excluir_usuario, name='excluir_usuario'),
     
-    # 🔴 NOVA ROTA: Editar a Página "Seja Membro"
+    # Editar a Página "Seja Membro"
     path('usuarios/pagina-seja-membro/', views.editar_pagina_membro, name='editar_pagina_membro'),
 
-    # Novas rotas de gerenciamento dos Blogs dos Departamentos
+    # --- SYSTEMA DE BLOGS DOS DEPARTAMENTOS ---
     path('blogs-departamentos/', views.blogs_hub, name='blogs_hub'),
     path('blogs-departamentos/post/novo/', views.gerenciar_post_blog, name='criar_post_blog'),
     path('blogs-departamentos/post/editar/<int:id>/', views.gerenciar_post_blog, name='editar_post_blog'),
     path('blogs-departamentos/post/excluir/<int:id>/', views.excluir_post_blog, name='excluir_post_blog'),
     path('blogs-departamentos/configurar/<int:depto_id>/', views.configurar_rede_social_blog, name='configurar_rede_social_blog'),
-
+    path('blogs-departamentos/criar/', departamentos.criar_departamento, name='painel_criar_departamento'),
+    
+    # 🏷️ NOVAS ROTAS: Gerenciamento do CRUD de Categorias do Blog
+    path('blogs-departamentos/categorias/', views.listar_categorias_blog, name='listar_categorias_blog'),
+    path('blogs-departamentos/categorias/nova/', views.gerenciar_categoria_blog, name='nova_categoria_blog'),
+    path('blogs-departamentos/categorias/editar/<int:id>/', views.gerenciar_categoria_blog, name='editar_categoria_blog'),
+    path('blogs-departamentos/categorias/excluir/<int:id>/', views.excluir_categoria_blog, name='excluir_categoria_blog'),
 ]

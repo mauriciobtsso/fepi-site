@@ -23,8 +23,24 @@ class BlogDepartamento(models.Model):
     def __str__(self):
         return f"{self.nome} ({self.subdominio}.fepiaui.org.br)"
 
+
+class CategoriaBlog(models.Model):
+    nome = models.CharField(max_length=50, verbose_name="Nome da Categoria")
+    slug = models.SlugField(max_length=60, unique=True)
+    cor = models.CharField(max_length=7, default="#7f8c8d", help_text="Cor da tag em HEX (ex: #3498db)")
+
+    class Meta:
+        verbose_name = "Categoria do Blog"
+        verbose_name_plural = "Categorias dos Blogs"
+        ordering = ['nome']
+
+    def __str__(self):
+        return self.nome
+
+
 class PostBlog(models.Model):
     departamento = models.ForeignKey(BlogDepartamento, on_delete=models.CASCADE, related_name='posts')
+    categoria = models.ForeignKey(CategoriaBlog, on_delete=models.SET_NULL, null=True, blank=True, related_name='posts', verbose_name="Categoria / Tag")
     titulo = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True)
     resumo = models.TextField(max_length=500, blank=True, help_text="Aparece na lista de postagens do blog")
