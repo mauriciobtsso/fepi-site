@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import transaction
-from usuarios.models import Perfil, PaginaSejaMembro # <-- ADICIONADO PaginaSejaMembro
-from painel.forms.usuarios import PaginaSejaMembroForm # <-- ADICIONADO o form que vamos criar a seguir
+from usuarios.models import Perfil, PaginaSejaMembro
+from painel.forms.usuarios import PaginaSejaMembroForm
 from .auth import is_admin
 
 @login_required(login_url='/login/')
@@ -16,7 +16,9 @@ def gerenciar_usuarios(request):
             user=su, 
             defaults={'nome_razao_social': 'Administrador do Sistema', 'tipo': 'PF', 'status': 'APROVADO'}
         )
-    perfis = Perfil.objects.all().order_by('-id')
+    
+    # 🔴 MUDANÇA: Exclui o utilizador com o username exato 'admin' da lista
+    perfis = Perfil.objects.exclude(user__username='admin').order_by('-id')
     
     if request.method == 'POST':
         perfil_id = request.POST.get('perfil_id')
@@ -61,16 +63,25 @@ def criar_usuario(request):
         telefone = request.POST.get('telefone')
         is_colunista = request.POST.get('is_colunista') == 'on'
         
+        # 🔴 MUDANÇA: Captura se a caixa de administrador foi marcada
+        is_admin_system = request.POST.get('is_admin') == 'on'
+        
         status = request.POST.get('status', 'APROVADO')
         is_active = True if status == 'APROVADO' else False
 
         try:
             if User.objects.filter(username=username).exists():
-                messages.error(request, "Este nome de usuário já está em uso.")
+                messages.error(request, "Este nome de utilizador já está em uso.")
                 return render(request, 'painel/usuarios/form_usuario.html', {'titulo': 'Novo Usuário'})
 
             with transaction.atomic():
                 user = User.objects.create_user(username=username, email=email, password=senha, is_active=is_active)
+                
+                # Aplica permissões de administrador se marcado
+                if is_admin_system:
+                    user.is_staff = True
+                    user.is_superuser = True
+                    user.save()
                 
                 perfil = user.perfil
                 perfil.nome_razao_social = nome
@@ -89,10 +100,10 @@ def criar_usuario(request):
                 perfil.is_colunista = is_colunista
                 perfil.save()
 
-            messages.success(request, f"Usuário {username} criado com sucesso!")
+            messages.success(request, f"Utilizador {username} criado com sucesso!")
             return redirect('gerenciar_usuarios')
         except Exception as e:
-            messages.error(request, f"Erro ao criar usuário: {str(e)}")
+            messages.error(request, f"Erro ao criar utilizador: {str(e)}")
             
     return render(request, 'painel/usuarios/form_usuario.html', {'titulo': 'Novo Usuário'})
 
@@ -100,6 +111,12 @@ def criar_usuario(request):
 @user_passes_test(is_admin, login_url='/painel/')
 def editar_usuario(request, id):
     perfil = get_object_or_404(Perfil, id=id)
+    
+    # Proteção adicional: ninguém pode editar o 'admin' principal pelo painel
+    if perfil.user.username == 'admin':
+        messages.error(request, "Acesso Negado: O utilizador principal do sistema não pode ser alterado por aqui.")
+        return redirect('gerenciar_usuarios')
+
     if request.method == 'POST':
         perfil.nome_razao_social = request.POST.get('nome_razao_social')
         perfil.tipo = request.POST.get('tipo')
@@ -123,11 +140,21 @@ def editar_usuario(request, id):
         if novo_status:
             perfil.status = novo_status
             perfil.user.is_active = (novo_status == 'APROVADO')
+            
+        # 🔴 MUDANÇA: Atualiza os privilégios de Administrador
+        is_admin_system = request.POST.get('is_admin') == 'on'
+        
+        # Garante que um utilizador não retira o seu próprio acesso de admin sem querer
+        if perfil.user == request.user and not is_admin_system:
+            messages.warning(request, "Você não pode remover o seu próprio acesso de administrador.")
+        else:
+            perfil.user.is_staff = is_admin_system
+            perfil.user.is_superuser = is_admin_system
         
         nova_senha = request.POST.get('nova_senha')
         if nova_senha:
             perfil.user.set_password(nova_senha)
-            messages.info(request, "A senha do usuário foi redefinida.")
+            messages.info(request, "A palavra-passe do utilizador foi redefinida.")
 
         email = request.POST.get('email')
         if email:
@@ -146,19 +173,21 @@ def editar_usuario(request, id):
 def excluir_usuario(request, id):
     perfil = get_object_or_404(Perfil, id=id)
     if perfil.user == request.user:
-        messages.error(request, "Segurança: Você não pode excluir sua própria conta por aqui.")
+        messages.error(request, "Segurança: Não pode excluir a sua própria conta por aqui.")
+        return redirect('gerenciar_usuarios')
+    
+    if perfil.user.username == 'admin':
+        messages.error(request, "Segurança: O administrador principal não pode ser excluído.")
         return redirect('gerenciar_usuarios')
         
     usuario = perfil.user
     usuario.delete()
-    messages.success(request, "Usuário excluído permanentemente.")
+    messages.success(request, "Utilizador excluído permanentemente.")
     return redirect('gerenciar_usuarios')
 
-# 🔴 NOVA VIEW: Editar Página Seja Membro
 @login_required(login_url='/login/')
 @user_passes_test(is_admin, login_url='/painel/')
 def editar_pagina_membro(request):
-    # Puxa a página (cria uma em branco se não existir)
     pagina, created = PaginaSejaMembro.objects.get_or_create(pk=1)
     
     if request.method == 'POST':
@@ -166,12 +195,10 @@ def editar_pagina_membro(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Página Seja Membro atualizada com sucesso!")
-            # Redireciona para o hub do site ou outra página desejada no painel
             return redirect('site_hub') 
     else:
         form = PaginaSejaMembroForm(instance=pagina)
         
-    # Reutilizamos o form_generico
     return render(request, 'painel/programacao/form_generico.html', {
         'form': form, 
         'titulo': 'Editar Página "Seja Membro"', 
