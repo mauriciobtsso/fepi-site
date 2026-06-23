@@ -51,20 +51,18 @@ IS_PRODUCTION = 'RAILWAY_ENVIRONMENT' in os.environ or 'RENDER' in os.environ
 
 if IS_PRODUCTION:
     # MODO PRODUÇÃO (ONLINE) - Ativa a página 404 elegante automaticamente
-    DEBUG = True
+    DEBUG = False
+    PARENT_HOST = 'fepiaui.org.br'
     
+    # ALLOWED_HOSTS limpo (usando apenas o ponto inicial para cobrir subdomínios)
     ALLOWED_HOSTS = [
         'fepiaui.org.br', 
         'www.fepiaui.org.br',
         '.fepiaui.org.br',
-        '*.fepiaui.org.br',
-        'dapse.fepiaui.org.br',
-        'dije.fepiaui.org.br',  
         'fepiaui.cewantuildefreitas.com.br', 
-        '*.cewantuildefreitas.com.br', 
+        '.cewantuildefreitas.com.br', 
         'fepi.cewantuildefreitas.com.br',
         'fepiaui.up.railway.app',  
-        '*.up.railway.app',
         '.up.railway.app'
     ]
 
@@ -92,6 +90,7 @@ if IS_PRODUCTION:
 else:
     # MODO DESENVOLVIMENTO (Seu computador local)
     DEBUG = True 
+    PARENT_HOST = 'localhost:8000'
     ALLOWED_HOSTS = ['*', 'fepi.cewantuildefreitas.com.br', 'fepiaui.cewantuildefreitas.com.br'] 
     
     if 'DATABASE_URL' in os.environ:
@@ -154,7 +153,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'blogs.middleware.SubdomainBlogMiddleware',
     'django_hosts.middleware.HostsResponseMiddleware',
 ]
 
@@ -180,7 +178,7 @@ WSGI_APPLICATION = 'fepi_site.wsgi.application'
 
 # 5. CONFIGURAÇÕES DO DJANGO HOSTS
 ROOT_HOSTCONF = 'fepi_site.hosts'
-DEFAULT_HOST = 'default'
+DEFAULT_HOST = 'www'
 
 
 # Password validation
