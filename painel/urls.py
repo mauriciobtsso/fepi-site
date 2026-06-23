@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 from painel.views import ia_views, radar_views
 from painel.views.site import config_email
-from .views import departamentos
+from .views import blogs
 
 urlpatterns = [
     path('', views.dashboard, name='painel_home'),
@@ -146,7 +146,7 @@ urlpatterns = [
     path('blogs-departamentos/post/editar/<int:id>/', views.gerenciar_post_blog, name='editar_post_blog'),
     path('blogs-departamentos/post/excluir/<int:id>/', views.excluir_post_blog, name='excluir_post_blog'),
     path('blogs-departamentos/configurar/<int:depto_id>/', views.configurar_rede_social_blog, name='configurar_rede_social_blog'),
-    path('blogs-departamentos/criar/', departamentos.criar_departamento, name='painel_criar_departamento'),
+    path('blogs-departamentos/criar/', blogs.criar_departamento, name='painel_criar_departamento'),
     
     # 🏷️ NOVAS ROTAS: Gerenciamento do CRUD de Categorias do Blog
     path('blogs-departamentos/categorias/', views.listar_categorias_blog, name='listar_categorias_blog'),
