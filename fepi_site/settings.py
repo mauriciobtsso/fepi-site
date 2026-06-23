@@ -103,6 +103,7 @@ else:
 
 # Application definition
 INSTALLED_APPS = [
+    'django_hosts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -134,6 +135,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', # WhiteNoise para CSS e ficheiros estáticos
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -142,7 +144,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'blogs.middleware.SubdomainBlogMiddleware',
+    #'blogs.middleware.SubdomainBlogMiddleware',
+    'django_hosts.middleware.HostsResponseMiddleware',
 ]
 
 ROOT_URLCONF = 'fepi_site.urls'
@@ -164,6 +167,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'fepi_site.wsgi.application'
+
+# 5. CONFIGURAÇÕES DO DJANGO HOSTS
+ROOT_HOSTCONF = 'fepi_site.hosts'
+DEFAULT_HOST = 'default'
 
 
 # Password validation
