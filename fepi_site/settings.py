@@ -51,7 +51,7 @@ IS_PRODUCTION = 'RAILWAY_ENVIRONMENT' in os.environ or 'RENDER' in os.environ
 
 if IS_PRODUCTION:
     # MODO PRODUÇÃO (ONLINE) - Ativa a página 404 elegante automaticamente
-    DEBUG = True
+    DEBUG = False
     
     ALLOWED_HOSTS = [
         'fepiaui.org.br', 
