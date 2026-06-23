@@ -1,62 +1,68 @@
 {% extends 'painel/base_painel.html' %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
     <div>
-        <h2 class="fw-bold text-dark">Olá, {{ request.user.first_name|default:request.user.username|title }}! 👋</h2>
-        <p class="text-muted mb-0">Bem-vindo ao painel de gestão da FEPI.</p>
+        <h3 class="fw-bold text-dark mb-1">Olá, {{ request.user.first_name|default:request.user.username|title }}! 👋</h3>
+        <p class="text-muted small mb-0">Bem-vindo ao centro de gestão da FEPI.</p>
     </div>
     
-    <div class="text-end text-muted small">
-        <i class="far fa-calendar-alt me-1"></i> Hoje é {% now "d" %} de {% now "F" %} de {% now "Y" %}
+    <div class="text-muted small bg-white px-3 py-2 rounded shadow-sm border mt-3 mt-md-0">
+        <i class="far fa-calendar-alt text-primary me-2"></i> Hoje é <strong>{% now "d" %} de {% now "F" %} de {% now "Y" %}</strong>
     </div>
 </div>
 
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm border-start border-4 border-primary h-100 py-2">
-            <div class="card-body">
+        <div class="card border-0 shadow-sm border-start border-4 border-primary h-100 position-relative overflow-hidden">
+            <div class="card-body py-3">
                 <div class="text-uppercase small fw-bold text-primary mb-1">Notícias</div>
                 <div class="h5 mb-0 fw-bold text-secondary">Blog Ativo</div>
+                <i class="fas fa-newspaper position-absolute" style="right: -10px; bottom: -15px; font-size: 4rem; opacity: 0.08; color: var(--bs-primary);"></i>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm border-start border-4 border-success h-100 py-2">
-            <div class="card-body">
+        <div class="card border-0 shadow-sm border-start border-4 border-success h-100 position-relative overflow-hidden">
+            <div class="card-body py-3">
                 <div class="text-uppercase small fw-bold text-success mb-1">Agenda</div>
                 <div class="h5 mb-0 fw-bold text-secondary">Eventos</div>
+                <i class="fas fa-calendar-check position-absolute" style="right: -10px; bottom: -15px; font-size: 4rem; opacity: 0.08; color: var(--bs-success);"></i>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm border-start border-4 border-warning h-100 py-2">
-            <div class="card-body">
+        <div class="card border-0 shadow-sm border-start border-4 border-warning h-100 position-relative overflow-hidden">
+            <div class="card-body py-3">
                 <div class="text-uppercase small fw-bold text-warning mb-1">Intranet</div>
                 <div class="h5 mb-0 fw-bold text-secondary">Documentos</div>
+                <i class="fas fa-folder-open position-absolute" style="right: -10px; bottom: -15px; font-size: 4rem; opacity: 0.08; color: var(--bs-warning);"></i>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm border-start border-4 border-danger h-100 py-2">
-            <div class="card-body">
+        <div class="card border-0 shadow-sm border-start border-4 border-danger h-100 position-relative overflow-hidden">
+            <div class="card-body py-3">
                 <div class="text-uppercase small fw-bold text-danger mb-1">Urgente</div>
                 <div class="h5 mb-0 fw-bold text-secondary">Avisos/Pop-up</div>
+                <i class="fas fa-bullhorn position-absolute" style="right: -10px; bottom: -15px; font-size: 4rem; opacity: 0.08; color: var(--bs-danger);"></i>
             </div>
         </div>
     </div>
 </div>
 
-<h5 class="mb-3 text-secondary">O que você deseja fazer?</h5>
+<h6 class="mb-3 text-secondary fw-bold mt-5"><i class="fas fa-bolt text-warning me-2"></i>Ações Rápidas</h6>
 <div class="row g-4 mb-5">
     
     <div class="col-md-3">
         <div class="card border-0 shadow-sm h-100 hover-card">
             <div class="card-body text-center p-4">
-                <div class="mb-3 text-primary"><i class="fas fa-newspaper fa-3x"></i></div>
-                <h6 class="fw-bold">Nova Notícia</h6>
-                <p class="text-muted small mb-3">Publicar novidades no blog.</p>
-                <a href="{% url 'criar_noticia' %}" class="btn btn-outline-primary w-100 btn-sm">Escrever</a>
+                <div class="mb-3 d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle" style="width: 60px; height: 60px;">
+                    <i class="fas fa-newspaper fa-xl"></i>
+                </div>
+                <h6 class="fw-bold mb-1">Nova Notícia</h6>
+                <p class="text-muted small mb-3">Publicar no portal.</p>
+                <a href="{% url 'criar_noticia' %}" class="btn btn-primary rounded-pill w-100 btn-sm fw-bold">Escrever</a>
             </div>
         </div>
     </div>
@@ -64,10 +70,12 @@
     <div class="col-md-3">
         <div class="card border-0 shadow-sm h-100 hover-card">
             <div class="card-body text-center p-4">
-                <div class="mb-3 text-success"><i class="fas fa-calendar-plus fa-3x"></i></div>
-                <h6 class="fw-bold">Novo Evento</h6>
-                <p class="text-muted small mb-3">Adicionar Curso ou Evento.</p>
-                <a href="{% url 'novo_evento' %}" class="btn btn-outline-success w-100 btn-sm">Criar Evento</a>
+                <div class="mb-3 d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle" style="width: 60px; height: 60px;">
+                    <i class="fas fa-calendar-plus fa-xl"></i>
+                </div>
+                <h6 class="fw-bold mb-1">Novo Evento</h6>
+                <p class="text-muted small mb-3">Adicionar à agenda.</p>
+                <a href="{% url 'novo_evento' %}" class="btn btn-success rounded-pill w-100 btn-sm fw-bold text-white">Criar Evento</a>
             </div>
         </div>
     </div>
@@ -75,10 +83,12 @@
     <div class="col-md-3">
         <div class="card border-0 shadow-sm h-100 hover-card">
             <div class="card-body text-center p-4">
-                <div class="mb-3 text-warning"><i class="fas fa-file-upload fa-3x"></i></div>
-                <h6 class="fw-bold">Subir Documento</h6>
-                <p class="text-muted small mb-3">Para Intranet (Docs).</p>
-                <a href="{% url 'criar_documento' %}" class="btn btn-outline-warning text-dark w-100 btn-sm">Upload</a>
+                <div class="mb-3 d-inline-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-circle" style="width: 60px; height: 60px;">
+                    <i class="fas fa-file-upload fa-xl"></i>
+                </div>
+                <h6 class="fw-bold mb-1">Subir Documento</h6>
+                <p class="text-muted small mb-3">Para a Intranet.</p>
+                <a href="{% url 'criar_documento' %}" class="btn btn-warning rounded-pill text-dark w-100 btn-sm fw-bold">Fazer Upload</a>
             </div>
         </div>
     </div>
@@ -86,47 +96,56 @@
     <div class="col-md-3">
         <div class="card border-0 shadow-sm h-100 hover-card">
             <div class="card-body text-center p-4">
-                <div class="mb-3 text-danger"><i class="fas fa-exclamation-triangle fa-3x"></i></div>
-                <h6 class="fw-bold">Alerta Urgente</h6>
-                <p class="text-muted small mb-3">Configurar Pop-up do site.</p>
-                <a href="{% url 'gerenciar_popup' %}" class="btn btn-outline-danger w-100 btn-sm">Configurar</a>
+                <div class="mb-3 d-inline-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-circle" style="width: 60px; height: 60px;">
+                    <i class="fas fa-exclamation-triangle fa-xl"></i>
+                </div>
+                <h6 class="fw-bold mb-1">Alerta Urgente</h6>
+                <p class="text-muted small mb-3">Configurar Pop-up.</p>
+                <a href="{% url 'gerenciar_popup' %}" class="btn btn-danger rounded-pill w-100 btn-sm fw-bold">Configurar</a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-white py-3 border-bottom">
-        <h6 class="mb-0 fw-bold"><i class="fas fa-history me-2"></i> Últimas Notícias Publicadas</h6>
+<div class="card border-0 shadow-sm overflow-hidden">
+    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center">
+        <h6 class="mb-0 fw-bold text-dark"><i class="fas fa-history text-muted me-2"></i> Últimas Notícias Publicadas</h6>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover mb-0 align-middle">
                 <thead class="bg-light">
                     <tr>
-                        <th class="ps-4">Título</th>
-                        <th>Data</th>
-                        <th>Autor</th>
-                        <th class="text-end pe-4">Ações</th>
+                        <th class="ps-4 text-uppercase small text-muted fw-bold border-0">Título</th>
+                        <th class="text-uppercase small text-muted fw-bold border-0">Data</th>
+                        <th class="text-uppercase small text-muted fw-bold border-0">Autor</th>
+                        <th class="text-end pe-4 text-uppercase small text-muted fw-bold border-0">Ações</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="border-top-0">
                     {% for noticia in ultimas_noticias %}
                     <tr>
-                        <td class="ps-4">
-                            <div class="fw-bold text-dark">{{ noticia.titulo|truncatechars:40 }}</div>
+                        <td class="ps-4 py-3">
+                            <div class="fw-bold text-dark">{{ noticia.titulo|truncatechars:50 }}</div>
                         </td>
-                        <td class="text-muted small">{{ noticia.data_publicacao|date:"d/m/Y" }}</td>
-                        <td><span class="badge bg-light text-dark border">{{ noticia.autor }}</span></td>
+                        <td class="text-muted small">
+                            <i class="far fa-calendar text-secondary me-1"></i> {{ noticia.data_publicacao|date:"d/m/Y" }}
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-3 py-1 fw-normal">
+                                <i class="fas fa-pen-nib me-1 small"></i> {{ noticia.autor }}
+                            </span>
+                        </td>
                         <td class="text-end pe-4">
-                            <a href="{% url 'editar_noticia' noticia.id %}" class="btn btn-sm btn-light border" title="Editar">
+                            <a href="{% url 'editar_noticia' noticia.id %}" class="btn btn-sm btn-light text-primary border rounded-circle shadow-sm" title="Editar Notícia" style="width: 32px; height: 32px; padding: 4px;">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-4">
+                        <td colspan="4" class="text-center text-muted py-5">
+                            <div class="mb-2"><i class="fas fa-inbox fa-2x text-light"></i></div>
                             Nenhuma notícia recente encontrada.
                         </td>
                     </tr>
@@ -138,7 +157,15 @@
 </div>
 
 <style>
-    .hover-card { transition: transform 0.2s, box-shadow 0.2s; }
-    .hover-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    /* Efeitos sutis para deixar o painel mais dinâmico */
+    .hover-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-card:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 12px 24px rgba(0,0,0,0.08) !important; 
+    }
+    
+    /* Suaviza as bordas da tabela e o visual do hover */
+    .table > :not(caption) > * > * { border-bottom-color: #f1f3f5; }
+    .table-hover tbody tr:hover { background-color: #f8f9fa; }
 </style>
 {% endblock %}

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -11,7 +12,7 @@
     <style>
         body { background-color: #f8f9fa; }
         
-        /* Sidebar (Menu Lateral) Melhorado */
+        /* Sidebar (Menu Lateral) Compacto e Harmônico */
         .sidebar {
             min-height: 100vh;
             background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%); /* Degradê Azul FEPI */
@@ -19,60 +20,94 @@
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
         }
         
-        
         /* Ajustes para a formatação do texto da IA (Markdown) */
         .ai-msg p { margin-bottom: 8px; }
         .ai-msg p:last-child { margin-bottom: 0; }
         .ai-msg ul, .ai-msg ol { padding-left: 20px; margin-bottom: 8px; }
-        .ai-msg h1, .ai-msg h2, .ai-msg h3 { font-size: 16px; margin-top: 10px; margin-bottom: 5px; color: #1e3c72; }
+        .ai-msg h1, .ai-msg h2, .ai-msg h3 { font-size: 14px; margin-top: 10px; margin-bottom: 5px; color: #1e3c72; }
 
-        /* ATUALIZADO: O botão de logout agora herda os mesmos estilos dos links */
+        /* Categorias do Menu (Sem quebra de linha) */
+        .sidebar .menu-category {
+            font-size: 0.72rem;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Links e Botão de Logout Compactos */
         .sidebar a, .sidebar button.btn-logout {
-            color: rgba(255, 255, 255, 0.8); /* Branco levemente transparente */
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
-            padding: 12px 15px;
+            padding: 8px 12px;
             display: block;
             width: 100%;
             text-align: left;
             background: transparent;
             border: none;
-            border-radius: 8px;
-            margin-bottom: 8px;
+            border-radius: 6px;
+            margin-bottom: 3px;
             font-weight: 500;
-            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar a i, .sidebar button.btn-logout i {
+            font-size: 0.9rem;
         }
         
         .sidebar a:hover, .sidebar a.active, .sidebar button.btn-logout:hover {
-            background: rgba(255, 255, 255, 0.2); /* Efeito vidro */
+            background: rgba(255, 255, 255, 0.15); /* Efeito vidro suave */
             color: #fff !important;
-            transform: translateX(5px);
-            font-weight: bold;
+            transform: translateX(3px);
         }
         
         .sidebar button.btn-logout.text-danger {
-            color: #ff6b6b !important; /* Vermelho mais suave para contrastar no azul escuro */
+            color: #ff8888 !important; /* Vermelho suave acessível */
         }
         
+        /* Cabeçalho da Sidebar com Logomarca Oficial */
         .sidebar .brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            padding: 25px 15px;
+            padding: 20px 10px;
             text-align: center;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 15px;
+        }
+        .sidebar .brand-logo {
+            width: 42px;
+            height: 42px;
+            margin: 0 auto 8px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1); /* Torna a imagem branca */
+        }
+        .sidebar .brand-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            white-space: nowrap;
         }
 
         /* Ajustes Mobile */
         @media (max-width: 768px) {
             .sidebar {
-                display: none; /* Esconde sidebar no celular por padrão */
+                display: none;
             }
             .sidebar.show {
                 display: block;
                 position: fixed;
                 z-index: 1000;
-                width: 70%;
+                width: 260px;
                 height: 100%;
                 top: 0;
                 left: 0;
@@ -87,13 +122,13 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #4CAF50; /* Verde FEPI */
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 24px;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             z-index: 1050;
@@ -104,10 +139,10 @@
         #fepi-ai-chat {
             display: none;
             position: fixed;
-            bottom: 90px;
+            bottom: 85px;
             right: 20px;
-            width: 350px;
-            height: 450px;
+            width: 340px;
+            height: 440px;
             background: white;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
@@ -117,10 +152,11 @@
         }
         
         #ai-chat-header {
-            background-color: #1e3c72; /* Combinando com o painel */
+            background-color: #1e3c72;
             color: white;
-            padding: 15px;
+            padding: 12px 15px;
             font-weight: bold;
+            font-size: 14px;
             display: flex;
             justify-content: space-between;
         }
@@ -130,54 +166,55 @@
             border: none;
             color: white;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
         }
         
         #ai-chat-body {
             flex: 1;
-            padding: 15px;
+            padding: 12px;
             overflow-y: auto;
             background-color: #f9f9f9;
-            font-size: 14px;
+            font-size: 13px;
         }
         
-        .ai-msg, .user-msg { margin-bottom: 10px; padding: 10px; border-radius: 8px; max-width: 85%; line-height: 1.4; }
+        .ai-msg, .user-msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.4; }
         .ai-msg { background-color: #e0f2f1; align-self: flex-start; color: #333;}
         .user-msg { background-color: #c8e6c9; margin-left: auto; color: #000; }
         
         #ai-chat-footer {
             display: flex;
-            padding: 10px;
+            padding: 8px;
             border-top: 1px solid #ddd;
             background: white;
         }
         
         #ai-chat-input {
             flex: 1;
-            padding: 8px;
+            padding: 6px 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 14px;
+            font-size: 13px;
         }
         
         #ai-send-btn {
             background-color: #1e3c72;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 6px 12px;
             margin-left: 5px;
             border-radius: 5px;
+            font-size: 13px;
             cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-dark bg-dark d-md-none p-3">
-        <button class="btn btn-outline-light" onclick="toggleSidebar()">
+    <nav class="navbar navbar-dark bg-dark d-md-none p-2">
+        <button class="btn btn-sm btn-outline-light" onclick="toggleSidebar()">
             <i class="fas fa-bars"></i> Menu
         </button>
-        <span class="text-white fw-bold">Painel FEPI</span>
+        <span class="text-white fw-bold small">Painel FEPI</span>
     </nav>
 
     <div class="container-fluid">
@@ -185,96 +222,99 @@
             
             <div class="col-md-3 col-lg-2 sidebar p-3" id="sidebarMenu">
                 <div class="brand">
-                    <i class="fas fa-dove"></i> FEPI Gestão
+                    <div class="brand-logo">
+                        <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI">
+                    </div>
+                    <div class="brand-text">FEPI Gestão</div>
                 </div>
                 
-                <p class="text-white-50 small text-uppercase fw-bold mb-2 ps-2">Principal</p>
+                <p class="text-white-50 menu-category small text-uppercase fw-bold mb-2 ps-2">Principal</p>
                 <a href="{% url 'painel_home' %}">
-                    <i class="fas fa-chart-line me-2" style="width: 20px;"></i> Dashboard
+                    <i class="fas fa-chart-line me-2" style="width: 18px;"></i>Dashboard
                 </a>
                 
-                <p class="text-white-50 small text-uppercase fw-bold mt-4 mb-2 ps-2">Comunicação</p>
+                <p class="text-white-50 menu-category small text-uppercase fw-bold mt-3 mb-2 ps-2">Comunicação</p>
                 <a href="{% url 'listar_noticias' %}">
-                    <i class="fas fa-newspaper me-2" style="width: 20px;"></i> Notícias
+                    <i class="fas fa-newspaper me-2" style="width: 18px;"></i>Notícias
                 </a>
                 
                 <a href="{% url 'radar_noticias' %}">
-                    <i class="fas fa-satellite-dish me-2" style="width: 20px;"></i> Radar Espírita
+                    <i class="fas fa-satellite-dish me-2" style="width: 18px;"></i>Radar Espírita
                 </a>
                 <a href="{% url 'listar_colunas' %}">
-                    <i class="fas fa-feather-alt me-2" style="width: 20px;"></i> Colunas / Artigos
+                    <i class="fas fa-feather-alt me-2" style="width: 18px;"></i>Colunas / Artigos
                 </a>
                 
                 <a href="{% url 'blogs_hub' %}">
-                    <i class="fas fa-blog me-2" style="width: 20px;"></i> Blogs - Departamentos
+                    <i class="fas fa-blog me-2" style="width: 18px;"></i>Blogs - Departamentos
                 </a>
                 
                 <a href="{% url 'gerenciar_popup' %}">
-                    <i class="fas fa-bullhorn me-2" style="width: 20px;"></i> Pop-up / Avisos
+                    <i class="fas fa-bullhorn me-2" style="width: 18px;"></i>Pop-up / Avisos
                 </a>
 
-                <p class="text-white-50 small text-uppercase fw-bold mt-4 mb-2 ps-2">Secretaria</p>
+                <p class="text-white-50 menu-category small text-uppercase fw-bold mt-3 mb-2 ps-2">Secretaria</p>
 
                 <a href="{% url 'listar_voluntarios' %}">
-                    <i class="fas fa-hands-helping me-2" style="width: 20px;"></i> Voluntários
+                    <i class="fas fa-hands-helping me-2" style="width: 18px;"></i>Voluntários
                 </a>
 
                 <a href="{% url 'listar_documentos' %}">
-                    <i class="fas fa-folder-open me-2" style="width: 20px;"></i> Intranet (Docs)
+                    <i class="fas fa-folder-open me-2" style="width: 18px;"></i>Intranet (Docs)
                 </a>
                 
                 <a href="{% url 'programacao_hub' %}">
-                    <i class="fas fa-calendar-alt me-2" style="width: 20px;"></i> Programação
+                    <i class="fas fa-calendar-alt me-2" style="width: 18px;"></i>Programação
                 </a>
 
                 <a href="{% url 'equipe_hub' %}">
-                    <i class="fas fa-sitemap me-2" style="width: 20px;"></i> Organograma
+                    <i class="fas fa-sitemap me-2" style="width: 18px;"></i>Organograma
                 </a>
 
                 <a href="{% url 'listar_centros' %}">
-                    <i class="fas fa-map-marker-alt me-2" style="width: 20px;"></i> Centros Espíritas
+                    <i class="fas fa-map-marker-alt me-2" style="width: 18px;"></i>Centros Espíritas
                 </a>
 
-                <p class="text-white-50 small text-uppercase fw-bold mt-4 mb-2 ps-2">Site & Redes</p>
+                <p class="text-white-50 menu-category small text-uppercase fw-bold mt-3 mb-2 ps-2">Site & Redes</p>
                 
                 <a href="{% url 'site_hub' %}">
-                    <i class="fas fa-globe me-2" style="width: 20px;"></i> Vitrine & YouTube
+                    <i class="fas fa-globe me-2" style="width: 18px;"></i>Vitrine & YouTube
                 </a>
 
                 <a href="{% url 'editar_institucional' %}">
-                    <i class="fas fa-university me-2" style="width: 20px;"></i> Institucional
+                    <i class="fas fa-university me-2" style="width: 18px;"></i>Institucional
                 </a>
 
                 <a href="{% url 'listar_doacoes' %}">
-                    <i class="fas fa-hand-holding-heart me-2" style="width: 20px;"></i> Doações / PIX
+                    <i class="fas fa-hand-holding-heart me-2" style="width: 18px;"></i>Doações / PIX
                 </a>
 
                 <a href="{% url 'recursos_hub' %}">
-                    <i class="fas fa-download me-2" style="width: 20px;"></i> Downloads & Links
+                    <i class="fas fa-download me-2" style="width: 18px;"></i>Downloads & Links
                 </a>
 
-                <p class="text-white-50 small text-uppercase fw-bold mt-4 mb-2 ps-2">Comercial</p>
+                <p class="text-white-50 menu-category small text-uppercase fw-bold mt-3 mb-2 ps-2">Comercial</p>
                 
                 <a href="{% url 'livraria_hub' %}">
-                    <i class="fas fa-book me-2" style="width: 20px;"></i> Livraria
+                    <i class="fas fa-book me-2" style="width: 18px;"></i>Livraria
                 </a>
 
                 {% if user.is_superuser %}
-                <p class="text-white-50 small text-uppercase fw-bold mt-4 mb-2 ps-2">Administração</p>
+                <p class="text-white-50 menu-category small text-uppercase fw-bold mt-3 mb-2 ps-2">Administração</p>
                 <a href="{% url 'gerenciar_usuarios' %}">
-                    <i class="fas fa-users-cog me-2" style="width: 20px;"></i> Gestão de Usuários
+                    <i class="fas fa-users-cog me-2" style="width: 18px;"></i>Gestão de Usuários
                 </a>
                 {% endif %}
 
-                <p class="text-white-50 small text-uppercase fw-bold mt-4 mb-2 ps-2">Sistema</p>
+                <p class="text-white-50 menu-category small text-uppercase fw-bold mt-3 mb-2 ps-2">Sistema</p>
                 <a href="{% url 'home' %}" target="_blank">
-                    <i class="fas fa-external-link-alt me-2" style="width: 20px;"></i> Ver Site
+                    <i class="fas fa-external-link-alt me-2" style="width: 18px;"></i>Ver Site
                 </a>
                 
                 <form action="{% url 'logout' %}" method="post" style="margin: 0; padding: 0;">
                     {% csrf_token %}
                     <button type="submit" class="btn-logout text-danger">
-                        <i class="fas fa-sign-out-alt me-2" style="width: 20px;"></i> Sair
+                        <i class="fas fa-sign-out-alt me-2" style="width: 18px;"></i>Sair
                     </button>
                 </form>
 

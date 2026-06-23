@@ -1,211 +1,226 @@
 {% extends 'painel/base_painel.html' %}
 
 {% block content %}
-<div class="container-fluid px-4 py-4">
-    <div class="row align-items-center mb-5">
-        <div class="col-xl-5 col-lg-6 mb-4 mb-lg-0">
-            <h1 class="h2 text-gray-800 fw-bold">Hub de Blogs e Departamentos</h1>
-            <p class="text-muted mb-0">Gerencie ambientes, configurações de rede social e todas as publicações.</p>
-        </div>
-        
-        <div class="col-xl-7 col-lg-6">
-            <div class="d-flex flex-column flex-md-row justify-content-lg-end gap-3">
-                <form method="GET" action="{% url 'blogs_hub' %}" class="d-flex w-100" style="max-width: 400px;">
-                    <div class="input-group">
-                        <input type="text" name="q" value="{{ query }}" class="form-control border-end-0 bg-white" placeholder="Buscar artigo ou departamento...">
-                        <button class="btn btn-white border border-start-0 text-muted bg-white" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        {% if query %}
-                            <a href="{% url 'blogs_hub' %}" class="btn btn-light border" title="Limpar busca"><i class="fas fa-times text-danger"></i></a>
-                        {% endif %}
-                    </div>
-                </form>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="mb-3 mb-lg-0">
+        <h4 class="fw-bold text-dark mb-1">
+            <i class="fas fa-project-diagram text-primary me-2"></i> Hub de Blogs
+        </h4>
+        <p class="text-muted small mb-0">Gerencie ambientes, redes sociais e publicações dos departamentos.</p>
+    </div>
+    
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'listar_categorias_blog' %}" class="btn btn-sm btn-light border rounded-pill px-3 fw-bold text-muted shadow-sm hover-lift" title="Gerenciar Categorias (Tags)">
+            <i class="fas fa-tags me-1"></i> Categorias
+        </a>
+        <a href="{% url 'painel_criar_departamento' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold shadow-sm hover-lift">
+            <i class="fas fa-folder-plus me-1"></i> Novo Blog
+        </a>
+        <a href="{% url 'criar_post_blog' %}" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold shadow-sm hover-lift" style="background-color: #1e3c72; border: none;">
+            <i class="fas fa-pen-nib me-2"></i> Escrever
+        </a>
+    </div>
+</div>
 
-                <div class="d-flex gap-2">
-                    <a href="{% url 'listar_categorias_blog' %}" class="btn btn-light border rounded-pill px-3 fw-bold text-nowrap" title="Gerenciar Categorias (Tags)">
-                        <i class="fas fa-tags me-1 text-muted"></i> Categorias
-                    </a>
-                    
-                    <a href="{% url 'painel_criar_departamento' %}" class="btn btn-outline-primary rounded-pill px-3 fw-bold text-nowrap">
-                        <i class="fas fa-folder-plus me-1"></i> Novo Blog
-                    </a>
-                    
-                    <a href="{% url 'criar_post_blog' %}" class="btn btn-primary rounded-pill px-4 fw-bold text-nowrap" style="background-color: #1e3c72; border: none;">
-                        <i class="fas fa-pen-nib me-2"></i> Escrever
-                    </a>
+<div class="card border-0 shadow-sm mb-4 bg-white">
+    <div class="card-body p-3">
+        <form method="GET" action="{% url 'blogs_hub' %}" class="row g-2 align-items-center">
+            <div class="col-md-10">
+                <div class="input-group input-group-merge input-group-sm">
+                    <span class="input-group-text bg-light border-end-0 text-muted">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" name="q" value="{{ query }}" class="form-control border-start-0 bg-light" placeholder="Buscar artigo ou departamento...">
+                    {% if query %}
+                        <a href="{% url 'blogs_hub' %}" class="btn btn-light border border-start-0 text-danger px-3" title="Limpar busca">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card shadow-sm border-0 mb-5">
-        <div class="card-header bg-white py-3 border-bottom-0">
-            <h5 class="m-0 font-weight-bold" style="color: #1e3c72;">
-                <i class="fas fa-sitemap me-2 text-primary"></i> Estrutura e Departamentos
-                {% if query %}<span class="badge bg-secondary ms-2 text-wrap fs-6">Resultados para "{{ query }}"</span>{% endif %}
-            </h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light text-muted small text-uppercase">
-                        <tr>
-                            <th class="border-0 px-4 py-3 text-nowrap">Departamento</th>
-                            <th class="border-0 px-4 py-3 text-nowrap">Endereço Web</th>
-                            <th class="border-0 px-4 py-3 text-center text-nowrap">Status</th>
-                            <th class="border-0 px-4 py-3 text-nowrap">Redes Sociais</th>
-                            <th class="border-0 px-4 py-3 text-end text-nowrap" style="width: 180px;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for depto in departamentos %}
-                        <tr>
-                            <td class="fw-bold text-dark px-4 py-3 text-nowrap">{{ depto.nome }}</td>
-                            <td class="px-4 py-3 text-nowrap">
-                                <a href="https://{{ depto.subdominio }}.fepiaui.org.br/" target="_blank" class="text-decoration-none fw-bold" style="color: var(--fepi-teal); font-size: 0.95rem;">
-                                    {{ depto.subdominio }}.fepiaui.org.br <i class="fas fa-external-link-alt ms-1 small"></i>
-                                </a>
-                            </td>
-                            <td class="px-4 py-3 text-center">
-                                {% if depto.ativo %}
-                                    <span class="badge bg-success bg-opacity-10 text-success border border-success">Ativo</span>
-                                {% else %}
-                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Inativo</span>
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-3 text-nowrap">
-                                {% if depto.instagram_url %}
-                                    <a href="{{ depto.instagram_url }}" target="_blank" class="text-danger text-decoration-none small fw-bold">
-                                        <i class="fab fa-instagram me-1"></i> Ver Perfil
-                                    </a>
-                                {% else %}
-                                    <span class="text-muted small">Não vinculado</span>
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-3 text-end">
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a href="{% url 'configurar_rede_social_blog' depto.id %}" class="btn btn-sm btn-light border rounded-pill px-3 text-dark fw-bold">
-                                        <i class="fas fa-cog text-muted me-1"></i> Configurar
-                                    </a>
-                                    <a href="{% url 'excluir_departamento_blog' depto.id %}" class="btn btn-sm btn-danger rounded-circle shadow-sm d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;" onclick="return confirm('Tem certeza que deseja excluir este departamento? Todos os posts serão removidos permanentemente.');" title="Excluir">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="fas fa-search fa-2x mb-3 text-light"></i><br>
-                                Nenhum departamento encontrado.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-dark btn-sm w-100 fw-bold">Filtrar</button>
             </div>
-        </div>
+        </form>
     </div>
+</div>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-white py-3 border-bottom-0">
-            <h5 class="m-0 font-weight-bold text-dark">
-                <i class="fas fa-newspaper me-2 text-success"></i> Artigos Publicados Recentes
-            </h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" style="table-layout: fixed; width: 100%; min-width: 900px;">
-                    <thead class="bg-light text-muted small text-uppercase">
-                        <tr>
-                            <th class="border-0 px-4 py-3" style="width: 40%;">Título do Artigo</th>
-                            <th class="border-0 px-4 py-3 text-nowrap" style="width: 15%;">Categoria</th>
-                            <th class="border-0 px-4 py-3 text-nowrap" style="width: 15%;">Departamento</th>
-                            <th class="border-0 px-4 py-3 text-nowrap" style="width: 10%;">Data</th>
-                            <th class="border-0 px-4 py-3 text-end text-nowrap" style="width: 15%;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for post in posts %}
-                        <tr>
-                            <td class="px-4 py-3">
-                                <div class="fw-bold text-dark text-truncate" style="max-width: 100%;" title="{{ post.titulo }}">
-                                    {{ post.titulo }}
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 text-nowrap">
-                                {% if post.categoria %}
-                                    <span class="badge" style="background-color: {{ post.categoria.cor }}; color: #fff;">{{ post.categoria.nome }}</span>
-                                {% else %}
-                                    <span class="badge bg-light text-muted border">Geral</span>
-                                {% endif %}
-                            </td>
-                            <td class="px-4 py-3">
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary border">{{ post.departamento.subdominio|upper }}</span>
-                            </td>
-                            <td class="px-4 py-3 small text-muted text-nowrap">
-                                {{ post.data_publicacao|date:"d/m/Y" }}
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a href="{% url 'editar_post_blog' post.id %}" class="btn btn-sm btn-warning text-dark rounded-circle shadow-sm d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="{% url 'excluir_post_blog' post.id %}" class="btn btn-sm btn-danger rounded-circle shadow-sm d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;" onclick="return confirm('Tem certeza que deseja excluir esta publicação?');" title="Excluir">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="fas fa-search fa-2x mb-3 text-light"></i><br>
-                                Nenhum artigo encontrado.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            {% if posts.has_other_pages %}
-            <div class="card-footer bg-white border-top-0 py-4 d-flex justify-content-center">
-                <nav aria-label="Navegação de artigos">
-                    <ul class="pagination pagination-sm mb-0">
-                        {% if posts.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link text-dark" href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Anterior</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link text-muted">Anterior</span></li>
-                        {% endif %}
-
-                        {% for num in posts.paginator.page_range %}
-                            {% if posts.number == num %}
-                                <li class="page-item active" aria-current="page">
-                                    <span class="page-link border-primary" style="background-color: #1e3c72;">{{ num }}</span>
-                                </li>
+<div class="card shadow-sm border-0 mb-5 overflow-hidden">
+    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center">
+        <h6 class="m-0 fw-bold text-dark">
+            <i class="fas fa-sitemap me-2 text-primary"></i> Estrutura e Departamentos
+            {% if query %}<span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 ms-2 fw-normal">Resultados da busca</span>{% endif %}
+        </h6>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+                <thead class="bg-light text-muted">
+                    <tr>
+                        <th class="border-0 ps-4 py-2 text-uppercase fw-bold" style="font-size: 0.75rem;">Departamento</th>
+                        <th class="border-0 px-3 py-2 text-uppercase fw-bold" style="font-size: 0.75rem;">Endereço Web</th>
+                        <th class="border-0 px-3 py-2 text-uppercase fw-bold text-center" style="font-size: 0.75rem;">Status</th>
+                        <th class="border-0 px-3 py-2 text-uppercase fw-bold" style="font-size: 0.75rem;">Redes Sociais</th>
+                        <th class="border-0 pe-4 py-2 text-uppercase fw-bold text-end" style="font-size: 0.75rem;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    {% for depto in departamentos %}
+                    <tr>
+                        <td class="ps-4 py-2 fw-bold text-dark">{{ depto.nome }}</td>
+                        <td class="px-3 py-2">
+                            <a href="https://{{ depto.subdominio }}.fepiaui.org.br/" target="_blank" class="text-decoration-none fw-bold text-info" style="font-size: 0.85rem;">
+                                {{ depto.subdominio }}.fepiaui.org.br <i class="fas fa-external-link-alt ms-1" style="font-size: 0.7rem;"></i>
+                            </a>
+                        </td>
+                        <td class="px-3 py-2 text-center">
+                            {% if depto.ativo %}
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill fw-normal px-2 py-1">Ativo</span>
                             {% else %}
-                                <li class="page-item">
-                                    <a class="page-link text-dark" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
-                                </li>
+                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill fw-normal px-2 py-1">Inativo</span>
                             {% endif %}
-                        {% endfor %}
-
-                        {% if posts.has_next %}
-                            <li class="page-item">
-                                <a class="page-link text-dark" href="?page={{ posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Próxima</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link text-muted">Próxima</span></li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            </div>
-            {% endif %}
+                        </td>
+                        <td class="px-3 py-2">
+                            {% if depto.instagram_url %}
+                                <a href="{{ depto.instagram_url }}" target="_blank" class="text-danger text-decoration-none fw-bold" style="font-size: 0.85rem;">
+                                    <i class="fab fa-instagram me-1"></i> Perfil
+                                </a>
+                            {% else %}
+                                <span class="text-muted" style="font-size: 0.8rem;"><i class="fas fa-link-slash me-1"></i> Não vinculado</span>
+                            {% endif %}
+                        </td>
+                        <td class="pe-4 py-2 text-end">
+                            <a href="{% url 'configurar_rede_social_blog' depto.id %}" class="btn btn-sm btn-light border rounded-pill px-2 text-dark" title="Configurar" style="font-size: 0.75rem;">
+                                <i class="fas fa-cog text-muted"></i>
+                            </a>
+                            <a href="{% url 'excluir_departamento_blog' depto.id %}" class="btn btn-sm btn-light border text-danger rounded-circle ms-1" style="width: 28px; height: 28px; padding: 2px;" onclick="return confirm('Tem certeza? Todos os posts serão excluídos.');" title="Excluir">
+                                <i class="fas fa-trash" style="font-size: 0.75rem;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2 text-light"></i><br>
+                            Nenhum departamento encontrado.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+
+<div class="card shadow-sm border-0 overflow-hidden">
+    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center">
+        <h6 class="m-0 fw-bold text-dark">
+            <i class="fas fa-newspaper me-2 text-success"></i> Artigos Publicados Recentes
+        </h6>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+                <thead class="bg-light text-muted">
+                    <tr>
+                        <th class="border-0 ps-4 py-2 text-uppercase fw-bold" style="font-size: 0.75rem; width: 40%;">Título do Artigo</th>
+                        <th class="border-0 px-3 py-2 text-uppercase fw-bold" style="font-size: 0.75rem;">Categoria</th>
+                        <th class="border-0 px-3 py-2 text-uppercase fw-bold" style="font-size: 0.75rem;">Departamento</th>
+                        <th class="border-0 px-3 py-2 text-uppercase fw-bold" style="font-size: 0.75rem;">Data</th>
+                        <th class="border-0 pe-4 py-2 text-uppercase fw-bold text-end" style="font-size: 0.75rem;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    {% for post in posts %}
+                    <tr>
+                        <td class="ps-4 py-2">
+                            <div class="fw-bold text-dark text-truncate" style="max-width: 300px;" title="{{ post.titulo }}">
+                                {{ post.titulo }}
+                            </div>
+                        </td>
+                        <td class="px-3 py-2">
+                            {% if post.categoria %}
+                                <span class="badge rounded-pill fw-normal" style="background-color: {{ post.categoria.cor }}; color: #fff;">{{ post.categoria.nome }}</span>
+                            {% else %}
+                                <span class="badge bg-light text-muted border rounded-pill fw-normal">Geral</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-3 py-2">
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill fw-normal">
+                                {{ post.departamento.subdominio|upper }}
+                            </span>
+                        </td>
+                        <td class="px-3 py-2 text-muted">
+                            <i class="far fa-calendar me-1"></i> {{ post.data_publicacao|date:"d/m/y" }}
+                        </td>
+                        <td class="pe-4 py-2 text-end">
+                            <a href="{% url 'editar_post_blog' post.id %}" class="btn btn-sm btn-light text-primary border rounded-circle shadow-sm me-1" title="Editar" style="width: 28px; height: 28px; padding: 3px;">
+                                <i class="fas fa-pen" style="font-size: 0.75rem;"></i>
+                            </a>
+                            <a href="{% url 'excluir_post_blog' post.id %}" class="btn btn-sm btn-light text-danger border rounded-circle shadow-sm" title="Excluir" style="width: 28px; height: 28px; padding: 3px;" onclick="return confirm('Tem certeza que deseja excluir esta publicação?');">
+                                <i class="fas fa-trash" style="font-size: 0.75rem;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2 text-light"></i><br>
+                            Nenhum artigo encontrado.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if posts.has_other_pages %}
+        <div class="card-footer bg-white border-top py-3 d-flex justify-content-center">
+            <nav aria-label="Navegação de artigos">
+                <ul class="pagination pagination-sm mb-0">
+                    {% if posts.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link text-dark" href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Anterior</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link text-muted border-light">Anterior</span></li>
+                    {% endif %}
+
+                    {% for num in posts.paginator.page_range %}
+                        {% if posts.number == num %}
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link border-primary" style="background-color: #1e3c72;">{{ num }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link text-dark" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if posts.has_next %}
+                        <li class="page-item">
+                            <a class="page-link text-dark" href="?page={{ posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Próxima</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link text-muted border-light">Próxima</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    /* Transições suaves e fundos */
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important; }
+    
+    .table > :not(caption) > * > * { border-bottom-color: #f1f3f5; }
+    .table-hover tbody tr:hover { background-color: #f8f9fa; }
+    
+    /* Input com ícone integrado */
+    .input-group-merge .form-control:focus { box-shadow: none; border-color: #dee2e6; }
+</style>
 {% endblock %}
