@@ -32,7 +32,8 @@ GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.1-8b-instant')
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
-    'https://*.up.railway.app', 
+    'https://*.up.railway.app',
+    'https://*.fepiaui.org.br', 
     'https://fepiaui.org.br', 
     'https://www.fepiaui.org.br',
     'https://fepiaui.cewantuildefreitas.com.br',
