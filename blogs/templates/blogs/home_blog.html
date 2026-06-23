@@ -193,7 +193,7 @@
             <div class="col-md-6 col-lg-4">
                 <article class="card h-100 fepi-post-card shadow-sm border-0">
                     {% if post.imagem_capa %}
-                        <a href="{% url 'ler_post' post.slug %}">
+                        <a href="{% url 'ler_post' slug=post.slug %}">
                             <img src="{{ post.imagem_capa.url }}" alt="{{ post.titulo }}" class="fepi-card-img-top">
                         </a>
                     {% endif %}
@@ -205,14 +205,14 @@
                             <span class="prefix-text">{{ departamento.subdominio|upper }}</span>
                             
                             {% if post.categoria %}
-                                <a href="{% url 'home_blog' departamento.subdominio %}?categoria={{ post.categoria.slug }}" class="badge ms-auto text-decoration-none" style="background-color: {{ post.categoria.cor }}; color: #fff;">
+                                <a href="{% url 'home_blog' %}?categoria={{ post.categoria.slug }}" class="badge ms-auto text-decoration-none" style="background-color: {{ post.categoria.cor }}; color: #fff;">
                                     {{ post.categoria.nome }}
                                 </a>
                             {% endif %}
                         </div>
 
                         <h2 class="post-card-title">
-                            <a href="{% url 'ler_post' post.slug %}">{{ post.titulo }}</a>
+                            <a href="{% url 'ler_post' slug=post.slug %}">{{ post.titulo }}</a>
                         </h2>
 
                         <p class="card-text post-card-excerpt">
@@ -239,7 +239,7 @@
                                 </div>
                             </div>
                             
-                            <a href="{% url 'ler_post' post.slug %}" class="ver-mais">
+                            <a href="{% url 'ler_post' slug=post.slug %}" class="ver-mais">
                                 Ver Mais <i class="fas fa-arrow-right ms-1"></i>
                             </a>
                         </div>

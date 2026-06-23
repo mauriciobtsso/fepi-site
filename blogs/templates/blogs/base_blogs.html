@@ -1,3 +1,4 @@
+{% load hosts %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -114,7 +115,7 @@
                         <a class="nav-link" href="{% url 'home_blog' %}">Início</a>
                     </li>
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
-                        <a class="btn btn-fepi-outline btn-sm" href="/">
+                        <a class="btn btn-fepi-outline btn-sm" href="{% host_url 'home' host='default' %}">
                             <i class="fas fa-arrow-left me-1"></i> Site FEPI
                         </a>
                     </li>
