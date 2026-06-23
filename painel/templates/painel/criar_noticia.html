@@ -42,6 +42,19 @@
 
 <div class="card border-0 shadow-sm">
     <div class="card-body p-4">
+        <!-- Exibição de Erros Gerais do Formulário -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong><i class="fas fa-exclamation-circle me-2"></i>Erro ao salvar a notícia:</strong>
+                <ul class="mb-0 mt-2">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+        
         <form method="post" enctype="multipart/form-data" id="form-noticia">
             {% csrf_token %}
             {{ form.media }}
@@ -50,27 +63,66 @@
                 <div class="col-12">
                     <label class="form-label fw-bold">{{ form.titulo.label }}</label>
                     {{ form.titulo }}
+                    {% if form.titulo.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.titulo.errors %}
+                                <i class="fas fa-times-circle me-1"></i>{{ error }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="col-12">
                     <label class="form-label fw-bold">{{ form.resumo.label }}</label>
                     {{ form.resumo }}
+                    {% if form.resumo.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.resumo.errors %}
+                                <i class="fas fa-times-circle me-1"></i>{{ error }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                     <div class="form-text text-muted">Uma breve introdução que aparecerá na página inicial.</div>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label fw-bold">{{ form.data_publicacao.label }}</label>
                     {{ form.data_publicacao }}
+                    {% if form.data_publicacao.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.data_publicacao.errors %}
+                                <i class="fas fa-times-circle me-1"></i>{{ error }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label fw-bold">{{ form.autor.label }}</label>
                     {{ form.autor }}
+                    {% if form.autor.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.autor.errors %}
+                                <i class="fas fa-times-circle me-1"></i>{{ error }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="col-12">
                     <label class="form-label fw-bold">{{ form.imagem.label }}</label>
                     {{ form.imagem }}
+                    
+                    {% if form.imagem.errors %}
+                        <div class="alert alert-danger mt-2" role="alert">
+                            <strong><i class="fas fa-exclamation-triangle me-2"></i>Erro ao fazer upload da imagem:</strong>
+                            <ul class="mb-0 mt-2">
+                                {% for error in form.imagem.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
                     
                     {% if form.instance.imagem %}
                         <div style="margin-top: 16px; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
@@ -92,6 +144,17 @@
                     <div class="form-text text-muted mb-3">
                         Clique abaixo para começar a escrever. Use o botão <strong>+</strong> à esquerda para adicionar fotos, títulos, listas ou vídeos!
                     </div>
+                    
+                    {% if form.conteudo_blocos.errors %}
+                        <div class="alert alert-danger mb-3" role="alert">
+                            <strong><i class="fas fa-exclamation-triangle me-2"></i>Erro no conteúdo:</strong>
+                            <ul class="mb-0 mt-2">
+                                {% for error in form.conteudo_blocos.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
                     
                     <div class="editor-container w-100">
                         {{ form.conteudo_blocos }}
