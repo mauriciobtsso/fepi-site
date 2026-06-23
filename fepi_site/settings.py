@@ -57,12 +57,14 @@ if IS_PRODUCTION:
         'fepiaui.org.br', 
         'www.fepiaui.org.br',
         '.fepiaui.org.br',
-        '*.fepiaui.org.br',  
+        '*.fepiaui.org.br',
+        'dapse.fepiaui.org.br',
+        'dije.fepiaui.org.br',  
         'fepiaui.cewantuildefreitas.com.br', 
         '*.cewantuildefreitas.com.br', 
         'fepi.cewantuildefreitas.com.br',
         'fepiaui.up.railway.app',  
-        '*.up.railway.app'  
+        '*.up.railway.app',
         '.up.railway.app'
     ]
 

@@ -158,10 +158,10 @@
         
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-                <form method="GET" action="{% url 'home_blog' departamento.subdominio %}" class="d-flex search-bar-public rounded-pill overflow-hidden">
+                <form method="GET" action="{% url 'home_blog' %}" class="d-flex search-bar-public rounded-pill overflow-hidden">
                     <input type="text" name="q" value="{{ query }}" class="form-control border-0 px-4 py-3 bg-light" placeholder="Pesquisar artigos em {{ departamento.subdominio|upper }}...">
                     {% if query %}
-                        <a href="{% url 'home_blog' departamento.subdominio %}" class="btn btn-light d-flex align-items-center px-3 text-muted" title="Limpar Busca">
+                        <a href="{% url 'home_blog' %}" class="btn btn-light d-flex align-items-center px-3 text-muted" title="Limpar Busca">
                             <i class="fas fa-times"></i>
                         </a>
                     {% endif %}
@@ -180,7 +180,7 @@
                 <span class="badge rounded-pill px-3 py-2" style="background-color: {{ categoria_atual.cor }}; color: #fff;">
                     <i class="fas fa-tag"></i> {{ categoria_atual.nome }}
                 </span>
-                <a href="{% url 'home_blog' departamento.subdominio %}" class="text-danger ms-2 text-decoration-none small" title="Remover filtro"><i class="fas fa-times"></i> Limpar</a>
+                <a href="{% url 'home_blog' %}" class="text-danger ms-2 text-decoration-none small" title="Remover filtro"><i class="fas fa-times"></i> Limpar</a>
             </div>
         {% endif %}
     </div>
@@ -193,7 +193,7 @@
             <div class="col-md-6 col-lg-4">
                 <article class="card h-100 fepi-post-card shadow-sm border-0">
                     {% if post.imagem_capa %}
-                        <a href="{% url 'ler_post' departamento.subdominio post.slug %}">
+                        <a href="{% url 'ler_post' post.slug %}">
                             <img src="{{ post.imagem_capa.url }}" alt="{{ post.titulo }}" class="fepi-card-img-top">
                         </a>
                     {% endif %}
@@ -212,7 +212,7 @@
                         </div>
 
                         <h2 class="post-card-title">
-                            <a href="{% url 'ler_post' departamento.subdominio post.slug %}">{{ post.titulo }}</a>
+                            <a href="{% url 'ler_post' post.slug %}">{{ post.titulo }}</a>
                         </h2>
 
                         <p class="card-text post-card-excerpt">
@@ -239,7 +239,7 @@
                                 </div>
                             </div>
                             
-                            <a href="{% url 'ler_post' departamento.subdominio post.slug %}" class="ver-mais">
+                            <a href="{% url 'ler_post' post.slug %}" class="ver-mais">
                                 Ver Mais <i class="fas fa-arrow-right ms-1"></i>
                             </a>
                         </div>
@@ -291,7 +291,7 @@
             <h3 class="fw-bold" style="color: var(--fepi-dark);">Nenhum artigo encontrado</h3>
             {% if query or categoria_atual %}
                 <p class="text-muted">Não encontramos resultados para o seu filtro atual.</p>
-                <a href="{% url 'home_blog' departamento.subdominio %}" class="btn btn-outline-secondary mt-3 rounded-pill px-4">Limpar Filtros</a>
+                <a href="{% url 'home_blog' %}" class="btn btn-outline-secondary mt-3 rounded-pill px-4">Limpar Filtros</a>
             {% else %}
                 <p class="text-muted">O {{ departamento.nome }} ainda não publicou nenhum artigo. Volte em breve!</p>
             {% endif %}
