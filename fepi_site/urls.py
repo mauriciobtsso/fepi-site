@@ -34,6 +34,14 @@ sitemaps = {
 }
 
 urlpatterns = [
+
+    # --- SEO (Google) ---
+    # 1. Sitemap.xml 
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+
+    # 2. Robots.txt 
+    path("robots.txt", TemplateView.as_view(template_name="core/robots.txt", content_type="text/plain")),
+
     path('admin/', admin.site.urls),
     path('painel/', include('painel.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
@@ -81,12 +89,6 @@ urlpatterns = [
     path('vozes-da-fepi/', views.listar_colunas_publicas, name='colunas'),
     path('vozes-da-fepi/artigo/<slug:slug>/', views.detalhe_coluna, name='detalhe_coluna'),
     
-    # --- SEO (Google) ---
-    # 1. Sitemap.xml 
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-
-    # 2. Robots.txt 
-    path("robots.txt", TemplateView.as_view(template_name="core/robots.txt", content_type="text/plain")),
 
     # --- RECUPERAÇÃO DE SENHA ---
     path('recuperar-senha/', 
