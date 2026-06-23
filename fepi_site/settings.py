@@ -33,7 +33,9 @@ GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.1-8b-instant')
 CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
     'https://*.up.railway.app',
-    'https://*.fepiaui.org.br', 
+    'https://*.fepiaui.org.br',
+    'https://.up.railway.app',
+    'https://.fepiaui.org.br', 
     'https://fepiaui.org.br', 
     'https://www.fepiaui.org.br',
     'https://fepiaui.cewantuildefreitas.com.br',
@@ -54,12 +56,14 @@ if IS_PRODUCTION:
     ALLOWED_HOSTS = [
         'fepiaui.org.br', 
         'www.fepiaui.org.br',
-        '*.fepiaui.org.br',  # <-- ADICIONADO: Permite subdomínios dinâmicos de departamentos
+        '.fepiaui.org.br',
+        '*.fepiaui.org.br',  
         'fepiaui.cewantuildefreitas.com.br', 
-        '*.cewantuildefreitas.com.br',  # <-- ADICIONADO: Permite subdomínios dinâmicos em desenvolvimento
+        '*.cewantuildefreitas.com.br', 
         'fepi.cewantuildefreitas.com.br',
-        'fepiaui.up.railway.app',  # <-- ADICIONADO: Garante o funcionamento seguro no Railway
-        '*.up.railway.app'  # <-- ADICIONADO: Permite subdomínios dinâmicos no Railway
+        'fepiaui.up.railway.app',  
+        '*.up.railway.app'  
+        '.up.railway.app'
     ]
 
     # Captura domínios públicos dinâmicos que os servidores possam injetar
