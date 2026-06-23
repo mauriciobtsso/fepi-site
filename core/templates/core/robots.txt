@@ -4,4 +4,4 @@ Disallow: /admin/
 Disallow: /intranet/
 Allow: /
 
-Sitemap: https://fepiaui.up.railway.app/sitemap.xml
+Sitemap: https://fepiaui.org.br/sitemap.xml

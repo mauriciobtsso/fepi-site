@@ -6,12 +6,10 @@ from django.contrib.sitemaps.views import sitemap
 from django.views.static import serve 
 from django.contrib.auth import views as auth_views
 from django.http import JsonResponse
-from core import views
-from django.contrib import admin
 import os
-from core.forms import CustomPasswordResetForm
 
-# --- IMPORT NECESSÁRIO PARA O ROBOTS.TXT ---
+from core import views
+from core.forms import CustomPasswordResetForm
 from django.views.generic.base import TemplateView
 
 # Views diretas
@@ -42,7 +40,6 @@ urlpatterns = [
     path('', home, name='home'),
     path('editorjs/', include('django_editorjs_fields.urls')),
     path('blogs/', include('blogs.urls')),
-    path('painel/', include('painel.urls')),
     
     # --- SISTEMA DE LOGIN E INTRANET ---
     path('login/', auth_views.LoginView.as_view(), name='login'),
@@ -96,8 +93,8 @@ urlpatterns = [
          auth_views.PasswordResetView.as_view(
              template_name='registration/password_reset_form.html',
              form_class=CustomPasswordResetForm,
-             html_email_template_name='registration/password_reset_email.html', # <-- FALTAVA ISSO
-             subject_template_name='registration/password_reset_subject.txt'    # <-- FALTAVA ISSO
+             html_email_template_name='registration/password_reset_email.html',
+             subject_template_name='registration/password_reset_subject.txt'
          ), 
          name='password_reset'),
          
@@ -112,7 +109,6 @@ urlpatterns = [
     path('recuperar-senha/concluido/', 
          auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), 
          name='password_reset_complete'),
-
 ]
 
 # --- CONFIGURAÇÃO PARA SERVIR ARQUIVOS DE MÍDIA NO RAILWAY ---

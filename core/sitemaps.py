@@ -1,6 +1,10 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
-from core.models import Noticia, EventoAgenda
+
+# 🔴 CORREÇÃO DA CORREÇÃO: 
+# A Notícia foi para 'noticias', mas o EventoAgenda continua no 'core'!
+from noticias.models import Noticia
+from core.models import EventoAgenda
 from livraria.models import Livro
 
 class StaticViewSitemap(Sitemap):
@@ -9,8 +13,6 @@ class StaticViewSitemap(Sitemap):
     changefreq = 'weekly'
 
     def items(self):
-        # AQUI ESTAVA O ERRO: Usei nomes que não existiam no urls.py.
-        # Agora estou usando os nomes exatos do seu arquivo urls.py:
         return [
             'home', 
             'institucional', 
@@ -19,11 +21,11 @@ class StaticViewSitemap(Sitemap):
             'lista_centros', 
             'doacoes_view',   # Era doacoes
             'downloads',      # Era recursos_publicos
-            'links_uteis',    # Adicionado
+            'links_uteis',    
             'atividades',     # Era agenda_publica
-            'doutrinarias',   # Adicionado
-            'calendario',     # Adicionado
-            'privacidade'     # Adicionado
+            'doutrinarias',   
+            'calendario',     
+            'privacidade'     
         ]
 
     def location(self, item):
@@ -41,8 +43,6 @@ class NoticiaSitemap(Sitemap):
         return obj.data_publicacao
 
     def location(self, obj):
-        # Tenta reverter a URL de detalhe. O nome 'detalhe_noticia' deve existir em noticias/urls.py
-        # Se der erro aqui, é porque o nome da rota na app noticias é outro.
         try:
             return reverse('detalhe_noticia', args=[obj.slug])
         except:

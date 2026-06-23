@@ -109,7 +109,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.sites',
-    'django.contrib.sitemaps',
+    'django.contrib.sitemaps', # <-- ATIVAÇÃO DO SITEMAP FRAMEWORK
     'django.contrib.staticfiles',
     'cloudinary_storage',
     'cloudinary',
