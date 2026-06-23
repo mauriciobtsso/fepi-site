@@ -53,9 +53,12 @@ if IS_PRODUCTION:
     ALLOWED_HOSTS = [
         'fepiaui.org.br', 
         'www.fepiaui.org.br',
+        '*.fepiaui.org.br',  # <-- ADICIONADO: Permite subdomínios dinâmicos de departamentos
         'fepiaui.cewantuildefreitas.com.br', 
+        '*.cewantuildefreitas.com.br',  # <-- ADICIONADO: Permite subdomínios dinâmicos em desenvolvimento
         'fepi.cewantuildefreitas.com.br',
-        'fepiaui.up.railway.app' # <-- ADICIONADO: Garante o funcionamento seguro no Railway
+        'fepiaui.up.railway.app',  # <-- ADICIONADO: Garante o funcionamento seguro no Railway
+        '*.up.railway.app'  # <-- ADICIONADO: Permite subdomínios dinâmicos no Railway
     ]
 
     # Captura domínios públicos dinâmicos que os servidores possam injetar

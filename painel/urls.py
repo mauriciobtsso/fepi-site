@@ -146,6 +146,7 @@ urlpatterns = [
     path('blogs-departamentos/post/editar/<int:id>/', views.gerenciar_post_blog, name='editar_post_blog'),
     path('blogs-departamentos/post/excluir/<int:id>/', views.excluir_post_blog, name='excluir_post_blog'),
     path('blogs-departamentos/configurar/<int:depto_id>/', views.configurar_rede_social_blog, name='configurar_rede_social_blog'),
+    path('blogs-departamentos/excluir/<int:id>/', blogs.excluir_departamento_blog, name='excluir_departamento_blog'),
     path('blogs-departamentos/criar/', blogs.criar_departamento, name='painel_criar_departamento'),
     
     # 🏷️ NOVAS ROTAS: Gerenciamento do CRUD de Categorias do Blog

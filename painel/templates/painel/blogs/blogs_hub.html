@@ -55,7 +55,7 @@
                             <th class="border-0 px-4 py-3 text-nowrap">Endereço Web</th>
                             <th class="border-0 px-4 py-3 text-center text-nowrap">Status</th>
                             <th class="border-0 px-4 py-3 text-nowrap">Redes Sociais</th>
-                            <th class="border-0 px-4 py-3 text-end text-nowrap">Ações</th>
+                            <th class="border-0 px-4 py-3 text-end text-nowrap" style="width: 180px;">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,7 +63,7 @@
                         <tr>
                             <td class="fw-bold text-dark px-4 py-3 text-nowrap">{{ depto.nome }}</td>
                             <td class="px-4 py-3 text-nowrap">
-                                <a href="{% url 'home_blog' depto.subdominio %}" target="_blank" class="text-decoration-none fw-bold" style="color: var(--fepi-teal); font-size: 0.95rem;">
+                                <a href="https://{{ depto.subdominio }}.fepiaui.org.br/" target="_blank" class="text-decoration-none fw-bold" style="color: var(--fepi-teal); font-size: 0.95rem;">
                                     {{ depto.subdominio }}.fepiaui.org.br <i class="fas fa-external-link-alt ms-1 small"></i>
                                 </a>
                             </td>
@@ -84,9 +84,14 @@
                                 {% endif %}
                             </td>
                             <td class="px-4 py-3 text-end">
-                                <a href="{% url 'configurar_rede_social_blog' depto.id %}" class="btn btn-sm btn-light border rounded-pill px-3 text-dark fw-bold">
-                                    <i class="fas fa-cog text-muted me-1"></i> Configurar
-                                </a>
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{% url 'configurar_rede_social_blog' depto.id %}" class="btn btn-sm btn-light border rounded-pill px-3 text-dark fw-bold">
+                                        <i class="fas fa-cog text-muted me-1"></i> Configurar
+                                    </a>
+                                    <a href="{% url 'excluir_departamento_blog' depto.id %}" class="btn btn-sm btn-danger rounded-circle shadow-sm d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;" onclick="return confirm('Tem certeza que deseja excluir este departamento? Todos os posts serão removidos permanentemente.');" title="Excluir">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         {% empty %}

@@ -153,3 +153,24 @@ def excluir_categoria_blog(request, id):
     categoria.delete()
     messages.success(request, "Categoria excluída com sucesso.")
     return redirect('listar_categorias_blog')
+    return redirect('listar_categorias_blog')
+
+@login_required(login_url='/login/')
+@user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
+def excluir_departamento_blog(request, id):
+    """
+    View para excluir um departamento de blog.
+    Ao excluir um departamento, todos os seus posts também serão removidos
+    (cascata de exclusão definida no modelo).
+    """
+    departamento = get_object_or_404(BlogDepartamento, id=id)
+    nome_departamento = departamento.nome
+    
+    # Excluir o departamento (e todos os posts associados em cascata)
+    departamento.delete()
+    
+    messages.success(
+        request, 
+        f"Departamento '{nome_departamento}' e todos os seus posts foram excluídos permanentemente."
+    )
+    return redirect('blogs_hub')
