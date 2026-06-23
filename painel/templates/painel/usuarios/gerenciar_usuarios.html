@@ -6,7 +6,6 @@
     <a href="{% url 'criar_usuario' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Novo Usuário</a>
 </div>
 
-<!-- Exibição de Mensagens de Sucesso/Erro -->
 {% if messages %}
     {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -26,7 +25,7 @@
                         <th>Tipo</th>
                         <th>Status</th>
                         <th>Colunista?</th>
-                        <th class="text-end">Ações</th>
+                        <th>Blog do Departamento</th> <th class="text-end">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,8 +58,16 @@
                                 <i class="fas fa-times-circle text-muted fs-5"></i>
                             {% endif %}
                         </td>
+                        <td>
+                            {% if perfil.departamento_blog %}
+                                <span class="badge" style="background-color: var(--fepi-teal);">
+                                    <i class="fas fa-blog me-1"></i> {{ perfil.departamento_blog.subdominio|upper }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted small">-</span>
+                            {% endif %}
+                        </td>
                         <td class="text-end text-nowrap">
-                            <!-- FORMULÁRIO RÁPIDO (Aprovar / Recusar / Colunista) -->
                             <form method="post" class="d-inline">
                                 {% csrf_token %}
                                 <input type="hidden" name="perfil_id" value="{{ perfil.id }}">
@@ -79,12 +86,10 @@
                                 </button>
                             </form>
 
-                            <!-- BOTÃO DE EDITAR -->
                             <a href="{% url 'editar_usuario' perfil.id %}" class="btn btn-sm btn-primary ms-1" title="Editar Dados">
                                 <i class="fas fa-edit"></i>
                             </a>
 
-                            <!-- BOTÃO DE EXCLUIR -->
                             <a href="{% url 'excluir_usuario' perfil.id %}" class="btn btn-sm btn-danger ms-1" title="Excluir Usuário" onclick="return confirm('ATENÇÃO: Tem certeza que deseja apagar permanentemente o usuário {{ perfil.user.username }}?');">
                                 <i class="fas fa-trash"></i>
                             </a>
@@ -92,7 +97,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">Nenhum usuário cadastrado ainda.</td>
+                        <td colspan="6" class="text-center py-4 text-muted">Nenhum usuário cadastrado ainda.</td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -58,7 +58,7 @@ class Perfil(models.Model):
     data_inicio_voluntariado = models.DateField("Data de Início no Voluntariado", blank=True, null=True)
     data_termino_voluntariado = models.DateField("Data de Término no Voluntariado", blank=True, null=True)
     
-    # --- VÍNCULOS INSTITUCIONAIS ---
+    # --- VÍNCULOS INSTITUCIONAIS E DE DEPARTAMENTOS ---
     centro_vinculado = models.ForeignKey(
         'centros.Centro', 
         on_delete=models.SET_NULL, 
@@ -66,6 +66,16 @@ class Perfil(models.Model):
         null=True, 
         related_name='responsaveis',
         verbose_name="Centro Espírita Vinculado"
+    )
+    
+    # 🔴 NOVO CAMPO: Define de qual blog o usuário é editor
+    departamento_blog = models.ForeignKey(
+        'blogs.BlogDepartamento',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='equipe_editores',
+        verbose_name="Editor do Blog (Departamento)"
     )
 
     class Meta:

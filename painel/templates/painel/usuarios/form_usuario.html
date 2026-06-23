@@ -120,26 +120,39 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <div class="form-check form-switch bg-light p-3 rounded border">
+            <div class="row border-top pt-4">
+                <h5 class="mb-3 text-primary"><i class="fa-solid fa-shield-halved me-2"></i> Permissões de Sistema e Vínculos</h5>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch bg-light p-3 rounded border h-100">
                         <input class="form-check-input ms-0 me-2" type="checkbox" name="is_colunista" id="is_colunista" {% if perfil.is_colunista %}checked{% endif %}>
-                        <label class="form-check-label fw-bold text-dark" for="is_colunista">Dar permissão de Colunista (Pode publicar notícias e textos no site)</label>
+                        <label class="form-check-label fw-bold text-dark" for="is_colunista">Dar permissão de Colunista Geral (Portal Principal)</label>
                     </div>
                 </div>
 
-                <div class="col-md-12 mb-3">
-                    <div class="card border-danger shadow-sm">
-                        <div class="card-body">
-                            <h6 class="text-danger fw-bold"><i class="fa-solid fa-shield-halved"></i> Permissões de Sistema</h6>
-                            <div class="form-check form-switch mt-2">
-                                <input class="form-check-input ms-0 me-2" type="checkbox" name="is_admin" id="is_admin" {% if perfil and perfil.user.is_superuser %}checked{% endif %}>
-                                <label class="form-check-label fw-bold text-danger" for="is_admin">
-                                    É Administrador do Sistema? 
-                                    <small class="text-muted fw-normal d-block mt-1">Ao marcar isto, o utilizador terá acesso total ao painel administrativo (intranet e configuração do site).</small>
-                                </label>
-                            </div>
-                        </div>
+                <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch bg-light p-3 rounded border border-danger h-100">
+                        <input class="form-check-input ms-0 me-2" type="checkbox" name="is_admin" id="is_admin" {% if perfil and perfil.user.is_superuser %}checked{% endif %}>
+                        <label class="form-check-label fw-bold text-danger" for="is_admin">
+                            É Administrador do Sistema? 
+                            <small class="text-muted fw-normal d-block mt-1">Ao marcar isto, o usuário terá acesso total ao painel administrativo (intranet e configuração do site).</small>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mt-2">
+                    <div class="p-3 rounded border" style="background-color: #f8f9fa;">
+                        <label class="form-label fw-bold text-dark mb-1"><i class="fas fa-blog me-1 text-primary"></i> Editor de Blog Departamental</label>
+                        <p class="small text-muted mb-2">Selecione um departamento caso este usuário seja um coordenador. Isso liberará o painel de redação exclusivo na intranet dele.</p>
+                        
+                        <select name="departamento_blog_id" class="form-select">
+                            <option value="">-- Nenhum vínculo (Leitor comum) --</option>
+                            {% for depto in departamentos_disponiveis %}
+                                <option value="{{ depto.id }}" {% if perfil.departamento_blog and perfil.departamento_blog.id == depto.id %}selected{% endif %}>
+                                    {{ depto.nome }} ({{ depto.subdominio|upper }})
+                                </option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
             </div>

@@ -215,3 +215,77 @@ def voluntariado_imprimir_termo(request):
         'conteudo_renderizado': conteudo_renderizado,
         'voluntario': voluntario
     })
+
+# ==========================================
+# GESTÃO DO BLOG DE DEPARTAMENTO (INTRANET)
+# ==========================================
+from blogs.models import PostBlog
+from .forms import IntranetPostBlogForm
+from django.utils.text import slugify
+
+@login_required(login_url='/login/')
+def meu_blog_hub(request):
+    """ Exibe a lista de postagens apenas do departamento do usuário """
+    perfil = getattr(request.user, 'perfil', None)
+    
+    # Trava de Segurança: Se não tiver departamento, joga pra fora.
+    if not perfil or not perfil.departamento_blog:
+        messages.error(request, "Sua conta não possui vínculo com nenhum Blog de Departamento.")
+        return redirect('area_federado')
+
+    departamento = perfil.departamento_blog
+    posts = PostBlog.objects.filter(departamento=departamento).order_by('-data_publicacao')
+    
+    return render(request, 'intranet/meu_blog_hub.html', {
+        'departamento': departamento, 
+        'posts': posts
+    })
+
+@login_required(login_url='/login/')
+def redigir_post_blog(request, id=None):
+    """ View segura para criar/editar postagens, atrelando ao departamento automaticamente """
+    perfil = getattr(request.user, 'perfil', None)
+    if not perfil or not perfil.departamento_blog:
+        return redirect('area_federado')
+
+    departamento = perfil.departamento_blog
+    # Se for edição, exige que o post pertença ao departamento do usuário
+    instancia = get_object_or_404(PostBlog, id=id, departamento=departamento) if id else None
+
+    if request.method == 'POST':
+        form = IntranetPostBlogForm(request.POST, request.FILES, instance=instancia)
+        if form.is_valid():
+            post = form.save(commit=False)
+            
+            # MAGIA DA SEGURANÇA: Injeta o departamento de forma invisível
+            post.departamento = departamento
+            if not post.slug:
+                post.slug = slugify(post.titulo)
+            if not post.autor and request.user:
+                post.autor = request.user
+                
+            post.save()
+            messages.success(request, "Publicação do blog salva com sucesso!")
+            return redirect('meu_blog_hub')
+    else:
+        form = IntranetPostBlogForm(instance=instancia)
+
+    titulo = "Editar Postagem" if id else "Nova Publicação"
+    return render(request, 'intranet/redigir_post_blog.html', {
+        'form': form, 
+        'titulo': titulo, 
+        'departamento': departamento
+    })
+
+@login_required(login_url='/login/')
+def excluir_post_blog(request, id):
+    """ Exclui apenas se o post for do departamento da pessoa """
+    perfil = getattr(request.user, 'perfil', None)
+    if not perfil or not perfil.departamento_blog:
+        return redirect('area_federado')
+
+    post = get_object_or_404(PostBlog, id=id, departamento=perfil.departamento_blog)
+    post.delete()
+    messages.success(request, "Publicação excluída permanentemente.")
+    return redirect('meu_blog_hub')
+

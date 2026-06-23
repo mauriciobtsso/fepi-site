@@ -1,0 +1,69 @@
+{% extends 'intranet/base_intranet.html' %}
+
+{% block title %}Hub de Redação - {{ departamento.nome }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1"><i class="fas fa-blog text-primary me-2"></i> Blog do {{ departamento.subdominio|upper }}</h2>
+        <p class="text-muted small">Gerencie as publicações exclusivas do seu departamento.</p>
+    </div>
+    <a href="{% url 'novo_post_blog_intranet' %}" class="btn btn-primary shadow-sm rounded-pill px-4">
+        <i class="fas fa-plus me-1"></i> Escrever Post
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Título do Artigo</th>
+                        <th>Categoria</th>
+                        <th>Status</th>
+                        <th>Data</th>
+                        <th class="text-end pe-4">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                    <tr>
+                        <td class="ps-4">
+                            <strong class="text-dark">{{ post.titulo }}</strong>
+                            <div class="small text-muted">Autor: {{ post.autor.get_full_name|default:post.autor.username }}</div>
+                        </td>
+                        <td>
+                            {% if post.categoria %}
+                                <span class="badge" style="background-color: {{ post.categoria.cor }};">{{ post.categoria.nome }}</span>
+                            {% else %}
+                                <span class="badge bg-light text-muted border">Sem Tag</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.publicado %}
+                                <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> No Ar</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark"><i class="fas fa-edit me-1"></i> Rascunho</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-nowrap">{{ post.data_publicacao|date:"d/m/Y \à\s H:i" }}</td>
+                        <td class="text-end pe-4 text-nowrap">
+                            <a href="{% url 'editar_post_blog_intranet' post.id %}" class="btn btn-sm btn-outline-primary rounded-circle me-1" title="Editar"><i class="fas fa-edit"></i></a>
+                            <a href="{% url 'excluir_post_blog_intranet' post.id %}" class="btn btn-sm btn-outline-danger rounded-circle" onclick="return confirm('Excluir esta publicação definitivamente?');" title="Excluir"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="fas fa-file-alt fa-3x mb-3 text-light"></i>
+                            <p>Nenhuma publicação foi feita pela equipe ainda.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

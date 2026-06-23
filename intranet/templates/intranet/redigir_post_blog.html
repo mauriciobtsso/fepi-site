@@ -1,0 +1,200 @@
+{% extends 'intranet/base_intranet.html' %}
+
+{% block title %}{{ titulo }} - {{ departamento.subdominio|upper }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* =========================================
+       TIPOGRAFIA E ALINHAMENTO MODERNO
+       ========================================= */
+    .redacao-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        background-color: #fff;
+    }
+    .redacao-header {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1.5rem 2rem;
+        background-color: #fafbfc;
+        border-radius: 8px 8px 0 0;
+    }
+    .redacao-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+        display: block; /* Garante que ocupe a linha inteira, empurrando o resto para baixo */
+    }
+
+    .form-control, .form-select {
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.95rem;
+        color: #333;
+        box-shadow: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #1e3c72;
+        box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+    }
+    .form-text {
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 0.4rem;
+    }
+
+    /* =========================================
+       DOMANDO O EDITOR.JS (Sem vazar!)
+       ========================================= */
+    .editor-wrapper {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        background-color: #fff;
+        padding: 20px;
+        min-height: 500px;
+        /* Isso tranca o editor dentro da caixa, impedindo elementos de flutuarem para fora */
+        clear: both; 
+        overflow: hidden; 
+    }
+    
+    .codex-editor {
+        position: relative;
+        z-index: 10 !important;
+    }
+    
+    /* Centraliza a escrita */
+    .ce-block__content, 
+    .ce-toolbar__content {
+        max-width: 800px !important;
+        margin: 0 auto;
+    }
+    .ce-toolbar {
+        z-index: 15 !important;
+    }
+    .image-tool__image-picture {
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+    }
+
+    /* =========================================
+       SWITCH DE PUBLICAÇÃO CONSERTADO
+       ========================================= */
+    .publish-box {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 0.8rem 1.2rem;
+    }
+    /* Aumenta a chave sem quebrar o layout do Bootstrap */
+    .form-check-input {
+        width: 3em !important;
+        height: 1.5em !important;
+        margin-top: 0;
+        cursor: pointer;
+    }
+    .form-check-label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #333;
+        cursor: pointer;
+        padding-top: 0.15rem; /* Alinha o texto com o botão maior */
+    }
+
+    .navbar-custom { z-index: 1030 !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'meu_blog_hub' %}" class="btn btn-sm btn-light border text-muted px-3">
+        <i class="fas fa-arrow-left me-1"></i> Voltar para os Artigos
+    </a>
+</div>
+
+<div class="redacao-card mb-5">
+    <div class="redacao-header d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-1 fw-bold text-dark">{{ titulo }}</h4>
+            <p class="text-muted small mb-0"><i class="fas fa-blog me-1"></i> Sala de Redação: {{ departamento.nome }}</p>
+        </div>
+    </div>
+    
+    <div class="redacao-body">
+        {% if form.errors %}
+        <div class="alert alert-danger shadow-sm border-0 rounded-3 mb-4 py-2 px-3 small">
+            <strong><i class="fas fa-exclamation-triangle me-1"></i> Erro:</strong> Verifique os campos em destaque abaixo.
+        </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+            
+            <div class="row mb-4">
+                <div class="col-md-8 mb-3 mb-md-0">
+                    <label class="form-label">Título da Matéria <span class="text-danger">*</span></label>
+                    {{ form.titulo }}
+                    {% if form.titulo.errors %}<div class="text-danger small mt-1">{{ form.titulo.errors }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Categoria</label>
+                    {{ form.categoria }}
+                    <div class="form-text">Facilita a busca para o leitor.</div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <label class="form-label">Data de Publicação</label>
+                    {{ form.data_publicacao }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Autor Externo (Opcional)</label>
+                    {{ form.nome_autor_externo }}
+                    <div class="form-text">Preencha se o autor não tiver conta no portal.</div>
+                </div>
+            </div>
+
+            <div class="mb-4 bg-light p-3 border rounded" style="border-color: #e9ecef !important;">
+                <label class="form-label">Imagem de Capa (Opcional)</label>
+                {{ form.imagem_capa }}
+                <div class="form-text">Ilustra o topo da postagem e o card de compartilhamento nas redes sociais.</div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label mb-2">Conteúdo Completo <span class="text-danger">*</span></label>
+                <div class="editor-wrapper shadow-sm">
+                    {{ form.conteudo }}
+                </div>
+                {% if form.conteudo.errors %}<div class="text-danger small mt-1">{{ form.conteudo.errors }}</div>{% endif %}
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center border-top pt-4 mt-2">
+                
+                <div class="publish-box mb-3 mb-md-0">
+                    <div class="form-check form-switch m-0 d-flex align-items-center">
+                        {{ form.publicado }}
+                        <label class="form-check-label ms-2" for="{{ form.publicado.id_for_label }}">
+                            Publicar e deixar visível
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary px-4 py-2" style="background-color: #1e3c72; border: none; font-weight: 500;">
+                    <i class="fas fa-save me-2"></i> Salvar Matéria
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

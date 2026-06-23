@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import transaction
+
 from usuarios.models import Perfil, PaginaSejaMembro
 from painel.forms.usuarios import PaginaSejaMembroForm
+from blogs.models import BlogDepartamento # <-- ADICIONADO AQUI
 from .auth import is_admin
 
 @login_required(login_url='/login/')
@@ -17,8 +19,8 @@ def gerenciar_usuarios(request):
             defaults={'nome_razao_social': 'Administrador do Sistema', 'tipo': 'PF', 'status': 'APROVADO'}
         )
     
-    # 🔴 MUDANÇA: Exclui o utilizador com o username exato 'admin' da lista
-    perfis = Perfil.objects.exclude(user__username='admin').order_by('-id')
+    # Exclui o utilizador com o username exato 'admin' da lista
+    perfis = Perfil.objects.exclude(user__username='admin').select_related('departamento_blog').order_by('-id')
     
     if request.method == 'POST':
         perfil_id = request.POST.get('perfil_id')
@@ -52,6 +54,9 @@ def gerenciar_usuarios(request):
 @login_required(login_url='/login/')
 @user_passes_test(is_admin, login_url='/painel/')
 def criar_usuario(request):
+    # Busca departamentos ativos para popular o select no template
+    departamentos_disponiveis = BlogDepartamento.objects.filter(ativo=True).order_by('nome')
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -63,8 +68,11 @@ def criar_usuario(request):
         telefone = request.POST.get('telefone')
         is_colunista = request.POST.get('is_colunista') == 'on'
         
-        # 🔴 MUDANÇA: Captura se a caixa de administrador foi marcada
+        # Captura se a caixa de administrador foi marcada
         is_admin_system = request.POST.get('is_admin') == 'on'
+        
+        # Captura o vínculo do departamento
+        departamento_blog_id = request.POST.get('departamento_blog_id')
         
         status = request.POST.get('status', 'APROVADO')
         is_active = True if status == 'APROVADO' else False
@@ -72,7 +80,10 @@ def criar_usuario(request):
         try:
             if User.objects.filter(username=username).exists():
                 messages.error(request, "Este nome de utilizador já está em uso.")
-                return render(request, 'painel/usuarios/form_usuario.html', {'titulo': 'Novo Usuário'})
+                return render(request, 'painel/usuarios/form_usuario.html', {
+                    'titulo': 'Novo Usuário',
+                    'departamentos_disponiveis': departamentos_disponiveis
+                })
 
             with transaction.atomic():
                 user = User.objects.create_user(username=username, email=email, password=senha, is_active=is_active)
@@ -98,6 +109,10 @@ def criar_usuario(request):
                 perfil.estado = request.POST.get('estado')
                 perfil.status = status
                 perfil.is_colunista = is_colunista
+                
+                # Associa o departamento (se selecionado, pega o ID, senão fica nulo)
+                perfil.departamento_blog_id = departamento_blog_id if departamento_blog_id else None
+                
                 perfil.save()
 
             messages.success(request, f"Utilizador {username} criado com sucesso!")
@@ -105,12 +120,16 @@ def criar_usuario(request):
         except Exception as e:
             messages.error(request, f"Erro ao criar utilizador: {str(e)}")
             
-    return render(request, 'painel/usuarios/form_usuario.html', {'titulo': 'Novo Usuário'})
+    return render(request, 'painel/usuarios/form_usuario.html', {
+        'titulo': 'Novo Usuário',
+        'departamentos_disponiveis': departamentos_disponiveis
+    })
 
 @login_required(login_url='/login/')
 @user_passes_test(is_admin, login_url='/painel/')
 def editar_usuario(request, id):
     perfil = get_object_or_404(Perfil, id=id)
+    departamentos_disponiveis = BlogDepartamento.objects.filter(ativo=True).order_by('nome')
     
     # Proteção adicional: ninguém pode editar o 'admin' principal pelo painel
     if perfil.user.username == 'admin':
@@ -136,12 +155,16 @@ def editar_usuario(request, id):
         perfil.cidade = request.POST.get('cidade')
         perfil.estado = request.POST.get('estado')
         
+        # 🔴 SALVA O DEPARTAMENTO
+        departamento_blog_id = request.POST.get('departamento_blog_id')
+        perfil.departamento_blog_id = departamento_blog_id if departamento_blog_id else None
+        
         novo_status = request.POST.get('status')
         if novo_status:
             perfil.status = novo_status
             perfil.user.is_active = (novo_status == 'APROVADO')
             
-        # 🔴 MUDANÇA: Atualiza os privilégios de Administrador
+        # Atualiza os privilégios de Administrador
         is_admin_system = request.POST.get('is_admin') == 'on'
         
         # Garante que um utilizador não retira o seu próprio acesso de admin sem querer
@@ -166,7 +189,11 @@ def editar_usuario(request, id):
         messages.success(request, f"Dados de {perfil.user.username} atualizados com sucesso!")
         return redirect('gerenciar_usuarios')
         
-    return render(request, 'painel/usuarios/form_usuario.html', {'perfil': perfil, 'titulo': f'Editar Usuário: {perfil.user.username}'})
+    return render(request, 'painel/usuarios/form_usuario.html', {
+        'perfil': perfil, 
+        'titulo': f'Editar Usuário: {perfil.user.username}',
+        'departamentos_disponiveis': departamentos_disponiveis
+    })
 
 @login_required(login_url='/login/')
 @user_passes_test(is_admin, login_url='/painel/')
