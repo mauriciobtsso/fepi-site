@@ -3,29 +3,29 @@
 {% load cloudinary_tags %}
 
 {% block title %}{{ noticia.titulo }} | FEPI{% endblock %}
+{% block description %}{{ noticia.resumo|default:noticia.conteudo|striptags|truncatechars:150 }}{% endblock %}
 
-{% block meta_tags %}
-    <meta name="description" content="{{ noticia.resumo|default:noticia.conteudo|striptags|truncatechars:150 }}">
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="{{ noticia.titulo }}">
-    <meta property="og:description" content="{{ noticia.resumo|default:noticia.conteudo|striptags|truncatechars:150 }}">
-    <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ noticia.titulo }}{% endblock %}
+{% block og_description %}{{ noticia.resumo|default:noticia.conteudo|striptags|truncatechars:150 }}{% endblock %}
+{% block og_image_tag %}
     {% if noticia.imagem %}
         <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ noticia.imagem.url }}">
-        <meta property="og:image:alt" content="Imagem destacada da notícia: {{ noticia.titulo }}">
+        <meta property="og:image:alt" content="Imagem de: {{ noticia.titulo }}">
     {% else %}
         <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}">
-        <meta property="og:image:alt" content="Logomarca da FEPI">
     {% endif %}
+{% endblock %}
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ noticia.titulo }}">
-    <meta name="twitter:description" content="{{ noticia.resumo|default:noticia.conteudo|striptags|truncatechars:150 }}">
+{% block twitter_title %}{{ noticia.titulo }}{% endblock %}
+{% block twitter_description %}{{ noticia.resumo|default:noticia.conteudo|striptags|truncatechars:150 }}{% endblock %}
+{% block twitter_image_tag %}
     {% if noticia.imagem %}
         <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ noticia.imagem.url }}">
     {% endif %}
+{% endblock %}
 
+{% block extra_schema %}
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",

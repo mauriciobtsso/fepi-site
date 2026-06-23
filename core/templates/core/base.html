@@ -23,15 +23,28 @@
 
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:title" content="{% block og_title %}Federação Espírita do Piauí{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Acompanhe notícias, eventos e a doutrina espírita no Piauí.{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}{% endblock %}">
+    
+    {% block og_image_tag %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}">
     <meta property="og:image:alt" content="Logomarca da FEPI">
+    {% endblock %}
+    
     <meta property="og:site_name" content="FEPI">
     <meta property="og:locale" content="pt_BR">
 
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Federação Espírita do Piauí{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Acompanhe notícias, eventos e a doutrina espírita no Piauí.{% endblock %}">
+    
+    {% block twitter_image_tag %}
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}">
+    {% endblock %}
+
+    {% block extra_schema %}
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -53,6 +66,7 @@
       }
     }
     </script>
+    {% endblock %}
 
     <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}">
     
