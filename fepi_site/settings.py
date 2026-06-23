@@ -297,4 +297,26 @@ LOGOUT_REDIRECT_URL = 'home'
 # tenha links quebrados de imagens dentro dos seus arquivos CSS.
 WHITENOISE_MANIFEST_STRICT = False
 
+# --- CONFIGURAÇÃO DE LOGS PARA DEBUG NO RAILWAY ---
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'ERROR',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
+
 SITE_ID = 1
