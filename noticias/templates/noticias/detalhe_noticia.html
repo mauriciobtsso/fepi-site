@@ -2,18 +2,19 @@
 {% load static %}
 {% load cloudinary_tags %}
 
-{% block title %}{{ noticia.titulo }} | FEPI{% endblock %}
+{% block title %}FEPI | {{ noticia.titulo }}{% endblock %}
+
 {% block description %}{{ noticia.resumo|default:noticia.conteudo|striptags|truncatechars:150 }}{% endblock %}
 
-{% block og_type %}article{% endblock %}
 {% block og_title %}{{ noticia.titulo }}{% endblock %}
+
 {% block og_description %}{{ noticia.resumo|default:noticia.conteudo|striptags|truncatechars:150 }}{% endblock %}
-{% block og_image_tag %}
+
+{% block og_image %}
     {% if noticia.imagem %}
-        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ noticia.imagem.url }}">
-        <meta property="og:image:alt" content="Imagem de: {{ noticia.titulo }}">
+        {{ noticia.imagem.url }}
     {% else %}
-        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}">
+        {{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}
     {% endif %}
 {% endblock %}
 

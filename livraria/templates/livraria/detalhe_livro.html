@@ -2,16 +2,17 @@
 {% load static %}
 {% load cloudinary_tags %}
 
-{% block title %}{{ livro.titulo }} | Livraria FEPI{% endblock %}
+{% block title %} Livraria Ramiro Gama | {{ livro.titulo }}{% endblock %}
 
 {% block description %}Adquira o livro "{{ livro.titulo }}" de {{ livro.autor }} na Livraria Ramiro Gama (FEPI). {{ livro.descricao|striptags|truncatechars:100 }}{% endblock %}
 
 {% block og_title %}{{ livro.titulo }} - {{ livro.autor }}{% endblock %}
+
 {% block og_description %}Confira este livro na Livraria da Federação Espírita do Piauí.{% endblock %}
 
 {% block og_image %}
     {% if livro.capa %}
-        {{ request.scheme }}://{{ request.get_host }}{{ livro.capa.url }}
+        {{ livro.capa.url }}
     {% else %}
         {{ request.scheme }}://{{ request.get_host }}{% static 'img/logo_livraria.png' %}
     {% endif %}
