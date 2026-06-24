@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from livraria.models import Livro, Categoria as CategoriaLivro, LivrariaConfig
 from painel.forms import LivroForm, CategoriaLivroForm, LivrariaConfigForm
 from .auth import check_acesso_painel
+from django.db.models import Q
+from django.core.paginator import Paginator
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
@@ -13,8 +15,32 @@ def livraria_hub(request):
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
 def listar_livros(request):
-    livros = Livro.objects.select_related('categoria').all().order_by('titulo')
-    return render(request, 'painel/livraria/listar_livros.html', {'livros': livros})
+    query = request.GET.get('q', '')
+    categoria_id = request.GET.get('categoria', '')
+    
+    livros_list = Livro.objects.select_related('categoria').all().order_by('titulo')
+    
+    if query:
+        livros_list = livros_list.filter(
+            Q(titulo__icontains=query) | 
+            Q(autor__icontains=query)
+        )
+    if categoria_id:
+        livros_list = livros_list.filter(categoria_id=categoria_id)
+        
+    # Paginação
+    paginator = Paginator(livros_list, 15)
+    page_number = request.GET.get('page')
+    livros = paginator.get_page(page_number)
+    
+    categorias = CategoriaLivro.objects.all().order_by('nome')
+    
+    return render(request, 'painel/livraria/listar_livros.html', {
+        'livros': livros,
+        'query': query,
+        'categoria_id': categoria_id,
+        'categorias': categorias
+    })
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')

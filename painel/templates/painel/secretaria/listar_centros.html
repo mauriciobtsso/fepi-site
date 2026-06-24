@@ -1,30 +1,124 @@
 {% extends 'painel/base_painel.html' %}
 {% block content %}
-<div class="d-flex justify-content-between mb-4">
-    <h3><i class="fas fa-map-marker-alt me-2"></i> Centros Espíritas</h3>
-    <a href="{% url 'novo_centro' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Novo Centro</a>
-</div>
-<div class="card shadow-sm border-0">
-    <div class="card-body p-0">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="bg-light"><tr><th>Nome / Tipo</th><th>Cidade</th><th>Contato</th><th class="text-end pe-4">Ações</th></tr></thead>
-            <tbody>
-                {% for c in centros %}
-                <tr>
-                    <td class="ps-4">
-                        <span class="fw-bold">{{ c.nome }}</span><br>
-                        <span class="badge bg-secondary">{{ c.get_tipo_display }}</span>
-                    </td>
-                    <td>{{ c.cidade }} - {{ c.estado }}</td>
-                    <td><small>{{ c.endereco }}<br>{{ c.telefone|default:"-" }}</small></td>
-                    <td class="text-end pe-4">
-                        <a href="{% url 'editar_centro' c.id %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
-                        <a href="{% url 'excluir_centro' c.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')"><i class="fas fa-trash"></i></a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="mb-3 mb-lg-0">
+        <h4 class="fw-bold text-dark mb-1">
+            <i class="fas fa-map-marker-alt text-primary me-2"></i> Centros Espíritas
+        </h4>
+        <p class="text-muted small mb-0">Gestão da rede de centros federados e locais de atendimento.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'novo_centro' %}" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold shadow-sm hover-lift" style="background-color: #1e3c72; border: none;">
+            <i class="fas fa-plus me-2"></i> Novo Centro
+        </a>
     </div>
 </div>
+
+<div class="card border-0 shadow-sm mb-4 bg-white">
+    <div class="card-body p-3">
+        <form method="GET" action="{% url 'listar_centros' %}" class="row g-2 align-items-center">
+            <div class="col-md-6">
+                <div class="input-group input-group-merge input-group-sm">
+                    <span class="input-group-text bg-light border-end-0 text-muted">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" name="q" value="{{ query }}" class="form-control border-start-0 bg-light" placeholder="Buscar pelo nome do centro...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select name="cidade" class="form-select form-select-sm bg-light border-0 text-muted fw-bold">
+                    <option value="">Todas as Cidades</option>
+                    {% for cid in cidades %}
+                        <option value="{{ cid }}" {% if cidade_filtro == cid %}selected{% endif %}>{{ cid }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-dark btn-sm w-100 fw-bold hover-lift">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-5 overflow-hidden">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+                <thead class="bg-light text-muted">
+                    <tr>
+                        <th class="border-0 ps-4 py-3 text-uppercase fw-bold" style="font-size: 0.75rem;">Nome / Tipo</th>
+                        <th class="border-0 px-3 py-3 text-uppercase fw-bold" style="font-size: 0.75rem;">Cidade</th>
+                        <th class="border-0 px-3 py-3 text-uppercase fw-bold" style="font-size: 0.75rem;">Contato</th>
+                        <th class="border-0 pe-4 py-3 text-uppercase fw-bold text-end" style="font-size: 0.75rem;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    {% for c in centros %}
+                    <tr>
+                        <td class="ps-4 py-3">
+                            <div class="fw-bold text-dark">{{ c.nome }}</div>
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-2" style="font-size: 0.7rem;">{{ c.get_tipo_display }}</span>
+                        </td>
+                        <td class="px-3 py-3 text-muted">
+                            <i class="fas fa-map-marker-alt me-1"></i>{{ c.cidade }} / {{ c.estado }}
+                        </td>
+                        <td class="px-3 py-3 text-muted small" style="max-width: 250px;">
+                            {{ c.endereco|truncatechars:40 }}<br>
+                            <i class="fas fa-phone-alt me-1"></i> {{ c.telefone|default:"-" }}
+                        </td>
+                        <td class="pe-4 py-3 text-end text-nowrap">
+                            <a href="{% url 'editar_centro' c.id %}" class="btn btn-sm btn-light text-primary border rounded-circle shadow-sm me-1 hover-lift" style="width: 32px; height: 32px; padding: 5px;">
+                                <i class="fas fa-pen" style="font-size: 0.75rem;"></i>
+                            </a>
+                            <a href="{% url 'excluir_centro' c.id %}" class="btn btn-sm btn-light text-danger border rounded-circle shadow-sm hover-lift" onclick="return confirm('Excluir?')" style="width: 32px; height: 32px; padding: 5px;">
+                                <i class="fas fa-trash" style="font-size: 0.75rem;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">Nenhum centro encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if centros.has_other_pages %}
+        <div class="card-footer bg-white border-top py-3 d-flex justify-content-center">
+            <nav aria-label="Navegação">
+                <ul class="pagination pagination-sm mb-0">
+                    {% if centros.has_previous %}
+                        <li class="page-item"><a class="page-link text-dark" href="?page={{ centros.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if cidade_filtro %}&cidade={{ cidade_filtro }}{% endif %}">Anterior</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link text-muted">Anterior</span></li>
+                    {% endif %}
+
+                    {% for num in centros.paginator.page_range %}
+                        {% if centros.number == num %}
+                            <li class="page-item active"><span class="page-link" style="background-color: #1e3c72; border-color: #1e3c72;">{{ num }}</span></li>
+                        {% elif num > centros.number|add:'-3' and num < centros.number|add:'3' %}
+                            <li class="page-item"><a class="page-link text-dark" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if cidade_filtro %}&cidade={{ cidade_filtro }}{% endif %}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if centros.has_next %}
+                        <li class="page-item"><a class="page-link text-dark" href="?page={{ centros.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if cidade_filtro %}&cidade={{ cidade_filtro }}{% endif %}">Próxima</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link text-muted">Próxima</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important; }
+    .table > :not(caption) > * > * { border-bottom-color: #f1f3f5; }
+    .table-hover tbody tr:hover { background-color: #f8f9fa; }
+</style>
 {% endblock %}

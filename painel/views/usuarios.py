@@ -4,20 +4,62 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.db.models import Q
+from django.core.paginator import Paginator
 
 from usuarios.models import Perfil, PaginaSejaMembro
 from painel.forms.usuarios import PaginaSejaMembroForm
-from blogs.models import BlogDepartamento # <-- ADICIONADO AQUI
+from blogs.models import BlogDepartamento
 from .auth import is_admin
 
 @login_required(login_url='/login/')
 @user_passes_test(is_admin, login_url='/painel/')
 def gerenciar_usuarios(request):
-    for su in User.objects.filter(is_superuser=True):
-        Perfil.objects.get_or_create(
-            user=su, 
-            defaults={'nome_razao_social': 'Administrador do Sistema', 'tipo': 'PF', 'status': 'APROVADO'}
+    # Processamento de ações via POST (Aprovar, Recusar, etc)
+    if request.method == 'POST':
+        perfil_id = request.POST.get('perfil_id')
+        acao = request.POST.get('acao')
+        perfil = get_object_or_404(Perfil, id=perfil_id)
+        
+        if acao == 'aprovar':
+            perfil.status = 'APROVADO'
+            perfil.save()
+            perfil.user.is_active = True
+            perfil.user.save()
+            messages.success(request, f"Cadastro de {perfil.user.username} APROVADO.")
+        elif acao == 'recusar':
+            perfil.status = 'RECUSADO'
+            perfil.save()
+            perfil.user.is_active = False
+            perfil.user.save()
+            messages.error(request, f"Cadastro de {perfil.user.username} RECUSADO.")
+        elif acao == 'toggle_colunista':
+            perfil.is_colunista = not perfil.is_colunista
+            perfil.save()
+            messages.info(request, f"{perfil.user.username} atualizado.")
+        
+        return redirect('gerenciar_usuarios')
+
+    # Busca e Filtros
+    query = request.GET.get('q', '')
+    perfis_list = Perfil.objects.exclude(user__username='admin').select_related('departamento_blog', 'user').order_by('-id')
+    
+    if query:
+        perfis_list = perfis_list.filter(
+            Q(user__username__icontains=query) | 
+            Q(nome_razao_social__icontains=query) |
+            Q(user__email__icontains=query)
         )
+    
+    # Paginação
+    paginator = Paginator(perfis_list, 15)
+    page_number = request.GET.get('page')
+    perfis = paginator.get_page(page_number)
+    
+    return render(request, 'painel/usuarios/gerenciar_usuarios.html', {
+        'perfis': perfis,
+        'query': query
+    })
     
     # Exclui o utilizador com o username exato 'admin' da lista
     perfis = Perfil.objects.exclude(user__username='admin').select_related('departamento_blog').order_by('-id')

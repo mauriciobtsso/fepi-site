@@ -1,6 +1,8 @@
 # painel/views/recursos.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Q
+from django.core.paginator import Paginator
 from recursos.models import SecaoLink, LinkItem
 from painel.forms import SecaoLinkForm, LinkItemForm
 from .auth import check_acesso_painel
@@ -8,9 +10,31 @@ from .auth import check_acesso_painel
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
 def recursos_hub(request):
+    query = request.GET.get('q', '')
+    secao_id = request.GET.get('secao', '')
+    
+    # Busca base de itens
+    itens_list = LinkItem.objects.select_related('secao').all().order_by('secao__ordem', 'titulo')
+    
+    # Filtros
+    if query:
+        itens_list = itens_list.filter(Q(titulo__icontains=query) | Q(url__icontains=query))
+    if secao_id:
+        itens_list = itens_list.filter(secao_id=secao_id)
+        
+    # Paginação
+    paginator = Paginator(itens_list, 15)
+    page_number = request.GET.get('page')
+    itens = paginator.get_page(page_number)
+    
     secoes = SecaoLink.objects.all().order_by('ordem')
-    itens = LinkItem.objects.all().select_related('secao').order_by('secao__ordem', 'titulo')
-    return render(request, 'painel/site/recursos_hub.html', {'secoes': secoes, 'itens': itens})
+    
+    return render(request, 'painel/site/recursos_hub.html', {
+        'secoes': secoes,
+        'itens': itens,
+        'query': query,
+        'secao_id': secao_id
+    })
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')

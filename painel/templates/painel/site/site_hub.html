@@ -1,69 +1,80 @@
 {% extends 'painel/base_painel.html' %}
 {% block content %}
-<div class="row">
-    <div class="col-12 mb-4">
-        <h2><i class="fas fa-globe me-2"></i> Gestão do Site e Redes</h2>
-        <p class="text-muted">Configure o vídeo da Home, a vitrine de fotos, informações de contato e a página de associação.</p>
-    </div>
 
-    <div class="col-md-3 mb-4">
-        <div class="card h-100 shadow-sm border-0 text-center p-4">
-            <div class="card-body">
-                <i class="fab fa-youtube fa-4x text-danger mb-3"></i>
-                <h4>Destaque YouTube</h4>
-                <p class="text-muted small">Defina se o vídeo da Home é automático ou um vídeo específico.</p>
-                <a href="{% url 'config_youtube' %}" class="btn btn-danger w-100 mt-2">Configurar YouTube</a>
-            </div>
-        </div>
+<!-- Cabeçalho do Hub -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="mb-3 mb-lg-0">
+        <h4 class="fw-bold text-dark mb-1">
+            <i class="fas fa-globe text-primary me-2"></i> Gestão do Site e Redes
+        </h4>
+        <p class="text-muted small mb-0">Configure o vídeo da Home, vitrines, contatos e associações.</p>
     </div>
-
-    <div class="col-md-3 mb-4">
-        <div class="card h-100 shadow-sm border-0 text-center p-4">
-            <div class="card-body">
-                <i class="fab fa-instagram fa-4x mb-3" style="background: -webkit-linear-gradient(#405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                <h4>Vitrine Instagram</h4>
-                <p class="text-muted small">Gerencie as fotos que aparecem no rodapé/vitrine do site.</p>
-                <a href="{% url 'listar_instagram' %}" class="btn btn-outline-dark w-100 mt-2">Gerenciar Vitrine</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3 mb-4">
-        <div class="card h-100 shadow-sm border-0 text-center p-4">
-            <div class="card-body">
-                <i class="fas fa-address-book fa-4x text-primary mb-3"></i>
-                <h4>Dados de Contato</h4>
-                <p class="text-muted small">Atualize endereço, telefone, e-mail e horário da livraria.</p>
-                <a href="{% url 'editar_contato' %}" class="btn btn-primary w-100 mt-2">Editar Contato</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3 mb-4">
-        <div class="card h-100 shadow-sm border-0 text-center p-4">
-            <div class="card-body">
-                <i class="fa-solid fa-users fa-4x text-success mb-3"></i>
-                <h4>Página Seja Membro</h4>
-                <p class="text-muted small">Edite o texto da história, missão e os motivos para se associar.</p>
-                <a href="{% url 'editar_pagina_membro' %}" class="btn btn-success w-100 mt-2">
-                    <i class="fa-solid fa-pen me-1"></i> Editar Página
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3 mb-4">
-        <div class="card h-100 shadow-sm border-0 text-center p-4">
-            <div class="card-body">
-                <i class="fa-solid fa-envelope-open-text fa-4x text-info mb-3"></i>
-                <h4>E-mail do Site</h4>
-                <p class="text-muted small">Configure a conta Gmail que processa o envio e quem recebe as mensagens.</p>
-                <a href="{% url 'config_email' %}" class="btn btn-info text-white w-100 mt-2">
-                    <i class="fa-solid fa-gear me-1"></i> Configurar E-mail
-                </a>
-            </div>
-        </div>
-    </div>
-
 </div>
+
+<div class="row">
+    <!-- Card YouTube -->
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-3 hover-lift">
+            <div class="card-body">
+                <i class="fab fa-youtube fa-3x text-danger mb-3"></i>
+                <h6 class="fw-bold text-dark">Destaque YouTube</h6>
+                <p class="text-muted small mb-4">Vídeo da Home e configurações de player.</p>
+                <a href="{% url 'config_youtube' %}" class="btn btn-sm btn-danger w-100 rounded-pill fw-bold">Configurar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Instagram -->
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-3 hover-lift">
+            <div class="card-body">
+                <i class="fab fa-instagram fa-3x mb-3 text-primary"></i>
+                <h6 class="fw-bold text-dark">Vitrine Instagram</h6>
+                <p class="text-muted small mb-4">Fotos do rodapé e integração social.</p>
+                <a href="{% url 'listar_instagram' %}" class="btn btn-sm btn-outline-dark w-100 rounded-pill fw-bold">Gerenciar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Contatos -->
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-3 hover-lift">
+            <div class="card-body">
+                <i class="fas fa-address-book fa-3x text-info mb-3"></i>
+                <h6 class="fw-bold text-dark">Dados de Contato</h6>
+                <p class="text-muted small mb-4">Endereço, telefone e horários.</p>
+                <a href="{% url 'editar_contato' %}" class="btn btn-sm btn-info text-white w-100 rounded-pill fw-bold">Editar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Seja Membro -->
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-3 hover-lift">
+            <div class="card-body">
+                <i class="fas fa-users fa-3x text-success mb-3"></i>
+                <h6 class="fw-bold text-dark">Página Seja Membro</h6>
+                <p class="text-muted small mb-4">Missão, história e associação.</p>
+                <a href="{% url 'editar_pagina_membro' %}" class="btn btn-sm btn-success w-100 rounded-pill fw-bold">Editar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card E-mail -->
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-3 hover-lift">
+            <div class="card-body">
+                <i class="fas fa-envelope-open-text fa-3x text-warning mb-3"></i>
+                <h6 class="fw-bold text-dark">E-mail do Site</h6>
+                <p class="text-muted small mb-4">Configuração SMTP e remetentes.</p>
+                <a href="{% url 'config_email' %}" class="btn btn-sm btn-warning text-white w-100 rounded-pill fw-bold">Configurar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: default; }
+    .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
+</style>
 {% endblock %}
