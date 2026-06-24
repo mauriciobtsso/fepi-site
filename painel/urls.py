@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 from painel.views import ia_views, radar_views
 from painel.views.site import config_email
-from .views import blogs
+from .views import blogs, noticias
 
 urlpatterns = [
     path('', views.dashboard, name='painel_home'),
@@ -18,6 +18,7 @@ urlpatterns = [
     path('noticias/deletar/<int:noticia_id>/', views.deletar_noticia, name='deletar_noticia'),
     path('popup/', views.gerenciar_popup, name='gerenciar_popup'),
     path('noticias/radar/', radar_views.radar_noticias, name='radar_noticias'),
+    path('noticias/upload-editorjs/', noticias.upload_imagem_editorjs_custom, name='upload_editorjs_custom'),
 
     # Colunas
     path('colunas/', views.listar_colunas, name='listar_colunas'),

@@ -265,8 +265,20 @@ EDITORJS_FIELDS_CONFIG = {
         "Header": {"class": "Header", "config": {"levels": [2, 3, 4]}},
         "List": {"class": "List", "config": {"defaultStyle": "unordered"}},
         "Paragraph": {"class": "Paragraph"},
-        "Image": {"class": "ImageTool"}
-    }
+        "Image": {
+            "class": "ImageTool",
+            "config": {
+                "endpoints": {
+                    "byFile": "/painel/noticias/upload-editorjs/"
+                },
+                "types": "image/jpeg, image/jpg, image/png, image/gif, image/webp"
+            },
+            # ADICIONE ESTA LINHA:
+            "tunes": ["delete"]
+        }
+    },
+    # Garante que a ferramenta 'delete' está disponível globalmente
+    "tunes": ["delete"] 
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

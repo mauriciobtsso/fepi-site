@@ -6,6 +6,18 @@
        1. CSS PARA FORÇAR A LARGURA TOTAL DO EDITOR.JS
        ========================================================== */
     
+    .editor-container {
+        padding-left: 50px !important; 
+        padding-right: 20px !important;
+        padding-top: 20px !important;
+        padding-bottom: 40px !important;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background: #fff;
+        min-height: 400px;
+        position: relative; /* Importante para o toolbar flutuante */
+    }
+
     /* Quebra a trava nativa de 650px de largura */
     div.ce-block__content, 
     div.ce-toolbar__content {
@@ -17,22 +29,36 @@
         left: -40px !important;
         right: auto !important;
     }
-    
-    /* Dá um respiro à esquerda para o botão '+' não colar na borda */
-    .editor-container {
-        padding-left: 50px !important; 
-        padding-right: 20px !important;
-        padding-top: 20px !important;
-        padding-bottom: 40px !important;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        background: #fff;
-        min-height: 400px;
+
+    /* ESSENCIAL: Garante que os menus de exclusão não sejam cortados */
+    .ce-toolbar {
+        overflow: visible !important;
     }
 
-    /* Melhora a caixa cinza de fundo da imagem (quando se faz upload) */
+    /* Garante que o menu (onde fica o botão Excluir) fique sempre por cima */
+    .ce-popover {
+        z-index: 9999 !important;
+    }
+    
+    /* Melhora a caixa cinza de fundo da imagem */
     .image-tool__image-picture {
         border-radius: 8px !important;
+    }
+
+/* A barra de ferramentas da ImageTool precisa ficar acima de tudo */
+    .image-tool__caption, 
+    .image-tool__image {
+        position: relative;
+    }
+    
+    /* Garante que o menu de exclusão da imagem não fique escondido */
+    .ce-toolbar__content {
+        z-index: 100;
+    }
+
+    /* Força o z-index da imagem para não cobrir a toolbar */
+    .image-tool__image-picture {
+        z-index: 1 !important;
     }
 </style>
 
