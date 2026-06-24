@@ -1,42 +1,71 @@
 {% extends 'painel/base_painel.html' %}
+
 {% block content %}
-<div class="row">
-    <div class="col-12 mb-4">
-        <h2><i class="fas fa-calendar-alt me-2"></i> Gestão de Programação</h2>
-        <p class="text-muted">Escolha qual área da agenda deseja gerenciar.</p>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-5 border-bottom pb-3">
+    <div>
+        <h4 class="fw-bold text-dark mb-1">
+            <i class="fas fa-calendar-alt text-primary me-2"></i> Gestão de Programação
+        </h4>
+        <p class="text-muted small mb-0">Central de controlo da agenda, palestras, cursos e rotina doutrinária da casa.</p>
     </div>
+</div>
 
+<div class="row g-4 mb-5">
+    
     <div class="col-md-4">
-        <div class="card h-100 shadow-sm border-0 text-center p-4">
-            <div class="card-body">
-                <i class="fas fa-sync fa-3x text-primary mb-3"></i>
-                <h4>Atividades Semanais</h4>
-                <p class="text-muted small">Rotina fixa da casa (Reuniões Públicas, Grupos de Estudo, etc).</p>
-                <a href="{% url 'listar_atividades' %}" class="btn btn-primary w-100">Gerenciar Atividades</a>
+        <div class="card h-100 border-0 shadow-sm hover-lift">
+            <div class="card-body text-center p-4 d-flex flex-column">
+                <div class="mb-4 mx-auto d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle" style="width: 80px; height: 80px;">
+                    <i class="fas fa-sync fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-2 text-dark">Atividades Semanais</h5>
+                <p class="text-muted small mb-4 flex-grow-1">Rotina fixa da instituição (Reuniões Públicas, Grupos de Estudo, Passes, Atendimento, etc).</p>
+                <a href="{% url 'listar_atividades' %}" class="btn btn-primary rounded-pill w-100 fw-bold shadow-sm" style="background-color: #1e3c72; border: none;">
+                    Gerenciar Atividades
+                </a>
             </div>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card h-100 shadow-sm border-0 text-center p-4">
-            <div class="card-body">
-                <i class="fas fa-microphone fa-3x text-success mb-3"></i>
-                <h4>Palestras Públicas</h4>
-                <p class="text-muted small">Agenda de oradores e temas das palestras doutrinárias.</p>
-                <a href="{% url 'listar_palestras' %}" class="btn btn-success w-100">Gerenciar Palestras</a>
+        <div class="card h-100 border-0 shadow-sm hover-lift">
+            <div class="card-body text-center p-4 d-flex flex-column">
+                <div class="mb-4 mx-auto d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle" style="width: 80px; height: 80px;">
+                    <i class="fas fa-microphone fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-2 text-dark">Palestras Públicas</h5>
+                <p class="text-muted small mb-4 flex-grow-1">Agenda detalhada de oradores, temas, datas e horários das palestras públicas doutrinárias.</p>
+                <a href="{% url 'listar_palestras' %}" class="btn btn-success rounded-pill w-100 fw-bold text-white shadow-sm">
+                    Gerenciar Palestras
+                </a>
             </div>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card h-100 shadow-sm border-0 text-center p-4">
-            <div class="card-body">
-                <i class="fas fa-star fa-3x text-warning mb-3"></i>
-                <h4>Cursos & Eventos</h4>
-                <p class="text-muted small">Eventos especiais, seminários e cursos com cartaz e inscrição.</p>
-                <a href="{% url 'listar_eventos' %}" class="btn btn-warning text-dark w-100">Gerenciar Eventos</a>
+        <div class="card h-100 border-0 shadow-sm hover-lift">
+            <div class="card-body text-center p-4 d-flex flex-column">
+                <div class="mb-4 mx-auto d-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-circle" style="width: 80px; height: 80px;">
+                    <i class="fas fa-star fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-2 text-dark">Cursos & Eventos</h5>
+                <p class="text-muted small mb-4 flex-grow-1">Eventos especiais, seminários, congressos e cursos doutrinários com cartaz e gestão de inscrições.</p>
+                <a href="{% url 'listar_eventos' %}" class="btn btn-warning rounded-pill w-100 fw-bold text-dark shadow-sm">
+                    Gerenciar Eventos
+                </a>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Efeito de elevação suave e sombra mais pronunciada no Hover */
+    .hover-lift { 
+        transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    }
+    .hover-lift:hover { 
+        transform: translateY(-8px); 
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important; 
+    }
+</style>
 {% endblock %}

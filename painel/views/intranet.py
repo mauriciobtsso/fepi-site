@@ -1,6 +1,8 @@
 # painel/views/intranet.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Q
+from django.core.paginator import Paginator
 from intranet.models import DocumentoRestrito, CategoriaDocumento
 from painel.forms import DocumentoForm, CategoriaDocForm
 from .auth import check_acesso_painel
@@ -8,8 +10,35 @@ from .auth import check_acesso_painel
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
 def listar_documentos(request):
-    documentos = DocumentoRestrito.objects.all()
-    return render(request, 'painel/listar_documentos.html', {'documentos': documentos})
+    # Captura os parâmetros de busca
+    query = request.GET.get('q', '')
+    categoria_id = request.GET.get('categoria', '')
+    
+    # Busca base: todos os documentos (ordenados pelo ID decrescente - mais recentes primeiro)
+    documentos_list = DocumentoRestrito.objects.all().order_by('-id')
+    
+    # Filtro por texto
+    if query:
+        documentos_list = documentos_list.filter(titulo__icontains=query)
+        
+    # Filtro por categoria
+    if categoria_id:
+        documentos_list = documentos_list.filter(categoria_id=categoria_id)
+        
+    # Paginação (15 por página)
+    paginator = Paginator(documentos_list, 15)
+    page_number = request.GET.get('page')
+    documentos = paginator.get_page(page_number)
+    
+    # Categorias para o menu dropdown do filtro
+    categorias = CategoriaDocumento.objects.all().order_by('nome')
+    
+    return render(request, 'painel/listar_documentos.html', {
+        'documentos': documentos,
+        'query': query,
+        'categoria_id': categoria_id,
+        'categorias': categorias
+    })
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')

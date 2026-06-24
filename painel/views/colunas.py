@@ -1,9 +1,10 @@
-# painel/views/colunas.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils.text import slugify
 from django.utils import timezone
+from django.db.models import Q
+from django.core.paginator import Paginator
 from core.models import Coluna
 from painel.forms import ColunaForm
 from .auth import check_acesso_painel
@@ -11,8 +12,25 @@ from .auth import check_acesso_painel
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
 def listar_colunas(request):
-    colunas = Coluna.objects.all().order_by('-data_publicacao')
-    return render(request, 'painel/colunas/listar_colunas.html', {'colunas': colunas})
+    query = request.GET.get('q', '')
+    colunas_list = Coluna.objects.all().order_by('-data_publicacao')
+    
+    # Lógica de Busca (pesquisa no título ou no autor)
+    if query:
+        colunas_list = colunas_list.filter(
+            Q(titulo__icontains=query) |
+            Q(nome_exibicao__icontains=query)
+        )
+        
+    # Lógica de Paginação (15 itens por página)
+    paginator = Paginator(colunas_list, 15)
+    page_number = request.GET.get('page')
+    colunas = paginator.get_page(page_number)
+
+    return render(request, 'painel/colunas/listar_colunas.html', {
+        'colunas': colunas,
+        'query': query
+    })
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')

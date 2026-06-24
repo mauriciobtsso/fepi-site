@@ -1,125 +1,177 @@
 {% extends 'painel/base_painel.html' %}
 {% block content %}
 
-<div class="row mb-4">
-    <div class="col-12">
-        <h2><i class="fas fa-sitemap me-2"></i> Estrutura Organizacional</h2>
-        <p class="text-muted">Gerencie quem faz parte da diretoria e dos departamentos.</p>
+<!-- Cabeçalho -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="mb-3 mb-lg-0">
+        <h4 class="fw-bold text-dark mb-1">
+            <i class="fas fa-sitemap text-primary me-2"></i> Estrutura Organizacional
+        </h4>
+        <p class="text-muted small mb-0">Gerencie a diretoria, departamentos e cargos da instituição.</p>
     </div>
 </div>
 
-<ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-    <li class="nav-item">
-        <button class="nav-link active fw-bold" id="membros-tab" data-bs-toggle="tab" data-bs-target="#membros" type="button">
-            <i class="fas fa-users me-2"></i> Membros da Diretoria
+<!-- Navegação em Tabs (Estilo Pill Moderno) -->
+<ul class="nav nav-pills bg-white p-1 rounded-pill shadow-sm mb-4 border d-inline-flex flex-nowrap overflow-auto" id="myTab" role="tablist" style="max-width: 100%;">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active rounded-pill fw-bold px-4 small" id="membros-tab" data-bs-toggle="tab" data-bs-target="#membros" type="button" role="tab" aria-controls="membros" aria-selected="true">
+            <i class="fas fa-users me-1"></i> Membros
         </button>
     </li>
-    <li class="nav-item">
-        <button class="nav-link fw-bold" id="deptos-tab" data-bs-toggle="tab" data-bs-target="#deptos" type="button">
-            <i class="fas fa-building me-2"></i> Departamentos
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill fw-bold px-4 small text-muted" id="deptos-tab" data-bs-toggle="tab" data-bs-target="#deptos" type="button" role="tab" aria-controls="deptos" aria-selected="false">
+            <i class="fas fa-building me-1"></i> Departamentos
         </button>
     </li>
-    <li class="nav-item">
-        <button class="nav-link fw-bold" id="cargos-tab" data-bs-toggle="tab" data-bs-target="#cargos" type="button">
-            <i class="fas fa-id-badge me-2"></i> Lista de Cargos
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill fw-bold px-4 small text-muted" id="cargos-tab" data-bs-toggle="tab" data-bs-target="#cargos" type="button" role="tab" aria-controls="cargos" aria-selected="false">
+            <i class="fas fa-id-badge me-1"></i> Cargos
         </button>
     </li>
 </ul>
 
 <div class="tab-content" id="myTabContent">
     
-    <div class="tab-pane fade show active" id="membros">
+    <!-- TAB: MEMBROS -->
+    <div class="tab-pane fade show active" id="membros" role="tabpanel" aria-labelledby="membros-tab">
         <div class="d-flex justify-content-end mb-3">
-            <a href="{% url 'novo_membro' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Novo Membro</a>
+            <a href="{% url 'novo_membro' %}" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold shadow-sm hover-lift" style="background-color: #1e3c72; border: none;">
+                <i class="fas fa-plus me-2"></i> Novo Membro
+            </a>
         </div>
-        <div class="card border-0 shadow-sm">
+        
+        <div class="card shadow-sm border-0 mb-4 overflow-hidden">
             <div class="card-body p-0">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light"><tr><th>Membro</th><th>Cargo / Depto</th><th>Contato</th><th class="text-end pe-4">Ações</th></tr></thead>
-                    <tbody>
-                        {% for m in membros %}
-                        <tr>
-                            <td class="ps-4">
-                                <div class="d-flex align-items-center">
-                                    {% if m.foto %}
-                                        <img src="{{ m.foto.url }}" class="rounded-circle me-3" style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #eee;">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="bg-light text-muted">
+                            <tr>
+                                <th class="border-0 ps-4 py-3 text-uppercase fw-bold" style="font-size: 0.75rem;">Membro</th>
+                                <th class="border-0 px-3 py-3 text-uppercase fw-bold" style="font-size: 0.75rem;">Cargo / Departamento</th>
+                                <th class="border-0 px-3 py-3 text-uppercase fw-bold" style="font-size: 0.75rem;">Contato</th>
+                                <th class="border-0 pe-4 py-3 text-uppercase fw-bold text-end" style="font-size: 0.75rem;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="border-top-0">
+                            {% for m in membros %}
+                            <tr>
+                                <td class="ps-4 py-3">
+                                    <div class="d-flex align-items-center">
+                                        {% if m.foto %}
+                                            <img src="{{ m.foto.url }}" class="rounded-circle shadow-sm me-3" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #fff;">
+                                        {% else %}
+                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center shadow-sm me-3" style="width: 40px; height: 40px; border: 2px solid #fff;">
+                                                <i class="fas fa-user text-secondary small"></i>
+                                            </div>
+                                        {% endif %}
+                                        <span class="fw-bold text-dark">{{ m.nome }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-3 py-3">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-2 py-1 fw-bold">{{ m.cargo.nome }}</span><br>
+                                    <small class="text-muted">{{ m.tipo.nome }}</small>
+                                </td>
+                                <td class="px-3 py-3 text-muted">
+                                    {% if m.email or m.telefone %}
+                                        {{ m.email|default:"" }}<br>{{ m.telefone|default:"" }}
                                     {% else %}
-                                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; border: 2px solid #eee;">
-                                            <i class="fas fa-user text-muted"></i>
-                                        </div>
+                                        -
                                     {% endif %}
-                                    <span class="fw-bold">{{ m.nome }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge bg-primary">{{ m.cargo.nome }}</span><br>
-                                <small class="text-muted">{{ m.tipo.nome }}</small>
-                            </td>
-                            <td><small>{{ m.email }}<br>{{ m.telefone }}</small></td>
-                            <td class="text-end pe-4">
-                                <a href="{% url 'editar_membro' m.id %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
-                                <a href="{% url 'excluir_membro' m.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')"><i class="fas fa-trash"></i></a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr><td colspan="4" class="text-center py-4">Nenhum membro cadastrado.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                </td>
+                                <td class="pe-4 py-3 text-end text-nowrap">
+                                    <a href="{% url 'editar_membro' m.id %}" class="btn btn-sm btn-light text-primary border rounded-circle shadow-sm me-1 hover-lift" style="width: 32px; height: 32px; padding: 5px;"><i class="fas fa-pen" style="font-size: 0.8rem;"></i></a>
+                                    <a href="{% url 'excluir_membro' m.id %}" class="btn btn-sm btn-light text-danger border rounded-circle shadow-sm hover-lift" onclick="return confirm('Excluir?')" style="width: 32px; height: 32px; padding: 5px;"><i class="fas fa-trash" style="font-size: 0.8rem;"></i></a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center py-4 text-muted">Nenhum membro cadastrado.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="tab-pane fade" id="deptos">
+    <!-- TAB: DEPARTAMENTOS -->
+    <div class="tab-pane fade" id="deptos" role="tabpanel" aria-labelledby="deptos-tab">
         <div class="d-flex justify-content-end mb-3">
-            <a href="{% url 'novo_departamento' %}" class="btn btn-success"><i class="fas fa-plus"></i> Novo Departamento</a>
+            <a href="{% url 'novo_departamento' %}" class="btn btn-sm btn-success rounded-pill px-4 fw-bold shadow-sm hover-lift border-0">
+                <i class="fas fa-plus me-2"></i> Novo Departamento
+            </a>
         </div>
-        <div class="card border-0 shadow-sm">
+        <div class="card shadow-sm border-0 mb-4 overflow-hidden">
             <div class="card-body p-0">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light"><tr><th>Ordem</th><th>Nome do Departamento</th><th>Descrição</th><th class="text-end pe-4">Ações</th></tr></thead>
-                    <tbody>
-                        {% for d in departamentos %}
-                        <tr>
-                            <td class="ps-4">{{ d.ordem }}</td>
-                            <td class="fw-bold">{{ d.nome }}</td>
-                            <td class="text-muted small">{{ d.descricao }}</td>
-                            <td class="text-end pe-4">
-                                <a href="{% url 'editar_departamento' d.id %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
-                                <a href="{% url 'excluir_departamento' d.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')"><i class="fas fa-trash"></i></a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="bg-light text-muted">
+                            <tr>
+                                <th class="border-0 ps-4 py-3 text-uppercase fw-bold" style="font-size: 0.75rem;">Ordem</th>
+                                <th class="border-0 px-3 py-3 text-uppercase fw-bold" style="font-size: 0.75rem;">Nome</th>
+                                <th class="border-0 px-3 py-3 text-uppercase fw-bold" style="font-size: 0.75rem;">Descrição</th>
+                                <th class="border-0 pe-4 py-3 text-uppercase fw-bold text-end" style="font-size: 0.75rem;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="border-top-0">
+                            {% for d in departamentos %}
+                            <tr>
+                                <td class="ps-4 py-3">{{ d.ordem }}</td>
+                                <td class="px-3 py-3 fw-bold text-dark">{{ d.nome }}</td>
+                                <td class="px-3 py-3 text-muted">{{ d.descricao }}</td>
+                                <td class="pe-4 py-3 text-end text-nowrap">
+                                    <a href="{% url 'editar_departamento' d.id %}" class="btn btn-sm btn-light text-primary border rounded-circle shadow-sm me-1 hover-lift" style="width: 32px; height: 32px; padding: 5px;"><i class="fas fa-pen" style="font-size: 0.8rem;"></i></a>
+                                    <a href="{% url 'excluir_departamento' d.id %}" class="btn btn-sm btn-light text-danger border rounded-circle shadow-sm hover-lift" onclick="return confirm('Excluir?')" style="width: 32px; height: 32px; padding: 5px;"><i class="fas fa-trash" style="font-size: 0.8rem;"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="tab-pane fade" id="cargos">
-        <div class="alert alert-info small"><i class="fas fa-info-circle"></i> Cadastre cargos genéricos (ex: "Diretor", "Secretário") para reutilizar em vários departamentos.</div>
+    <!-- TAB: CARGOS -->
+    <div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
+        <div class="alert bg-info bg-opacity-10 text-info border-0 shadow-sm rounded-3 mb-3 small">
+            <i class="fas fa-info-circle"></i> Cadastre cargos genéricos (ex: "Diretor", "Secretário") para reutilizar em vários departamentos.
+        </div>
         <div class="d-flex justify-content-end mb-3">
-            <a href="{% url 'novo_cargo' %}" class="btn btn-secondary"><i class="fas fa-plus"></i> Novo Cargo</a>
+            <a href="{% url 'novo_cargo' %}" class="btn btn-sm btn-dark rounded-pill px-4 fw-bold shadow-sm hover-lift border-0">
+                <i class="fas fa-plus me-2"></i> Novo Cargo
+            </a>
         </div>
-        <div class="card border-0 shadow-sm">
+        <div class="card shadow-sm border-0 mb-4 overflow-hidden">
             <div class="card-body p-0">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light"><tr><th>Nome do Cargo</th><th class="text-end pe-4">Ações</th></tr></thead>
-                    <tbody>
-                        {% for c in cargos %}
-                        <tr>
-                            <td class="ps-4">{{ c.nome }}</td>
-                            <td class="text-end pe-4">
-                                <a href="{% url 'editar_cargo' c.id %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
-                                <a href="{% url 'excluir_cargo' c.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir?')"><i class="fas fa-trash"></i></a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="bg-light text-muted">
+                            <tr>
+                                <th class="border-0 ps-4 py-3 text-uppercase fw-bold" style="font-size: 0.75rem;">Nome do Cargo</th>
+                                <th class="border-0 pe-4 py-3 text-uppercase fw-bold text-end" style="font-size: 0.75rem;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="border-top-0">
+                            {% for c in cargos %}
+                            <tr>
+                                <td class="ps-4 py-3 fw-bold text-dark">{{ c.nome }}</td>
+                                <td class="pe-4 py-3 text-end text-nowrap">
+                                    <a href="{% url 'editar_cargo' c.id %}" class="btn btn-sm btn-light text-primary border rounded-circle shadow-sm me-1 hover-lift" style="width: 32px; height: 32px; padding: 5px;"><i class="fas fa-pen" style="font-size: 0.8rem;"></i></a>
+                                    <a href="{% url 'excluir_cargo' c.id %}" class="btn btn-sm btn-light text-danger border rounded-circle shadow-sm hover-lift" onclick="return confirm('Excluir?')" style="width: 32px; height: 32px; padding: 5px;"><i class="fas fa-trash" style="font-size: 0.8rem;"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-
 </div>
+
+<style>
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important; }
+    .nav-pills .nav-link.active { background-color: #1e3c72; color: #fff; }
+</style>
 {% endblock %}
