@@ -73,7 +73,12 @@ def chat_assistente_ia(request):
             chave_gemini = getattr(settings, 'GEMINI_API_KEY', None)
             if chave_gemini:
                 try:
-                    client_google = google_genai.Client(api_key=chave_gemini)
+                    # TIMEOUT ESTRATÉGICO: 45 segundos. 
+                    # Dá bastante tempo ao Gemini, mas "desiste" antes que o Gunicorn mate o processo.
+                    client_google = google_genai.Client(
+                        api_key=chave_gemini,
+                        http_options={'timeout': 45.0} 
+                    )
 
                     response = client_google.models.generate_content(
                         model='gemini-3.5-flash',
@@ -83,8 +88,8 @@ def chat_assistente_ia(request):
                     return JsonResponse({'resposta': response.text})
                     
                 except Exception as e_google:
-                    print(f"[IA FEPI] Gemini instável ({str(e_google)}). Acionando plano B (Groq)...")
-                    pass
+                    print(f"[IA FEPI] Gemini falhou ou excedeu 45s ({str(e_google)}). Acionando plano B (Groq)...")
+                    pass # Passa silenciosamente para o bloco do Groq abaixo
 
             # ------------------------------------------------------------
             # TENTATIVA 2 (FALLBACK): GROQ LLAMA 3.1 (Estabilidade máxima)
