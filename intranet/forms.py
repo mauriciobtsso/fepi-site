@@ -3,7 +3,6 @@ from django import forms
 from core.models import Coluna
 from usuarios.models import Perfil
 from blogs.models import PostBlog
-from django_editorjs_fields import EditorJsWidget
 
 class ColunaIntranetForm(forms.ModelForm):
     class Meta:
@@ -40,15 +39,19 @@ class IntranetVoluntarioForm(forms.ModelForm):
 
 # --- NOVO: FORMULÁRIO DO BLOG DE DEPARTAMENTO ---
 class IntranetPostBlogForm(forms.ModelForm):
+    # Definimos explicitamente como CharField para garantir que o Django não invente
+    conteudo = forms.CharField(
+        widget=forms.HiddenInput(attrs={'id': 'id_conteudo'}),
+        required=False
+    )
+
     class Meta:
         model = PostBlog
-        # Omitimos 'departamento', 'autor' e 'slug' por segurança
         fields = ['categoria', 'titulo', 'conteudo', 'imagem_capa', 'nome_autor_externo', 'data_publicacao', 'publicado']
         
         widgets = {
             'categoria': forms.Select(attrs={'class': 'form-select'}),
             'titulo': forms.TextInput(attrs={'class': 'form-control form-control-lg', 'placeholder': 'Título da Postagem'}),
-            'conteudo': EditorJsWidget(), 
             'imagem_capa': forms.FileInput(attrs={'class': 'form-control'}),
             'nome_autor_externo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: João (Trabalhador do Setor)'}),
             'data_publicacao': forms.DateTimeInput(
@@ -57,7 +60,7 @@ class IntranetPostBlogForm(forms.ModelForm):
             ),
             'publicado': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'width: 20px; height: 20px;'}),
         }
-
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.pk and self.instance.data_publicacao:

@@ -1,7 +1,6 @@
 # blogs/models.py
 from django.db import models
 from django.contrib.auth.models import User
-from django_editorjs_fields import EditorJsJSONField
 
 class BlogDepartamento(models.Model):
     nome = models.CharField(max_length=100, verbose_name="Nome do Departamento", help_text="Ex: Departamento de Infância e Juventude (DIJE)")
@@ -45,11 +44,9 @@ class PostBlog(models.Model):
     slug = models.SlugField(max_length=220, unique=True)
     resumo = models.TextField(max_length=500, blank=True, help_text="Aparece na lista de postagens do blog")
     
-    # Declaramos o campo sem a lista de plugins aqui para evitar o erro de inicialização.
-    # A configuração do EditorJS deve ser feita via widget no forms.py ou settings.py
-    conteudo = EditorJsJSONField(
-        verbose_name="Conteúdo do Artigo"
-    )
+    # MUDANÇA AQUI: Trocamos o campo da biblioteca pelo TextField padrão do Django.
+    # O conteúdo (JSON) continuará armazenado normalmente como texto.
+    conteudo = models.TextField(verbose_name="Conteúdo do Artigo")
     
     imagem_capa = models.ImageField(upload_to='blogs/capas/', blank=True, null=True)
     autor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
