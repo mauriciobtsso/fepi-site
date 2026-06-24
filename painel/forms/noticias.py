@@ -3,6 +3,13 @@ from django import forms
 from noticias.models import Noticia
 
 class NoticiaForm(forms.ModelForm):
+    # 🔴 O GOLPE DE MESTRE: Sobrescrevemos o campo inteiro fora do Meta!
+    # Isso impede o Django de consultar a biblioteca problemática para gerar o campo.
+    conteudo_blocos = forms.CharField(
+        widget=forms.HiddenInput(attrs={'id': 'id_conteudo_blocos'}),
+        required=False
+    )
+
     class Meta:
         model = Noticia
         fields = ['titulo', 'resumo', 'conteudo_blocos', 'imagem', 'data_publicacao', 'autor']
@@ -16,10 +23,9 @@ class NoticiaForm(forms.ModelForm):
                 attrs={'class': 'form-control', 'type': 'datetime-local'},
                 format='%Y-%m-%dT%H:%M'
             ),
+            # Removi o 'conteudo_blocos' daqui, pois já tratamos dele lá em cima!
         }
         
-        # REMOVIDO o 'conteudo_blocos' daqui para evitar o bug da biblioteca.
-        # O Django usará o verbose_name do models.py automaticamente!
         labels = {
             'titulo': 'Título',
             'resumo': 'Resumo (Aparece na lista)',

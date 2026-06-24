@@ -1,9 +1,15 @@
 # painel/forms/blogs.py
 from django import forms
-from django_editorjs_fields import EditorJsWidget
 from blogs.models import PostBlog, BlogDepartamento, CategoriaBlog
 
 class PostBlogForm(forms.ModelForm):
+    # Sobrescrevemos o campo para garantir que seja um input oculto simples
+    conteudo = forms.CharField(
+        widget=forms.HiddenInput(attrs={'id': 'id_conteudo'}), 
+        required=False,
+        label="Conteúdo do Artigo"
+    )
+
     class Meta:
         model = PostBlog
         fields = ['departamento', 'categoria', 'titulo', 'conteudo', 'imagem_capa', 'nome_autor_externo', 'data_publicacao', 'publicado']
@@ -12,9 +18,7 @@ class PostBlogForm(forms.ModelForm):
             'departamento': forms.Select(attrs={'class': 'form-select'}),
             'categoria': forms.Select(attrs={'class': 'form-select'}),
             'titulo': forms.TextInput(attrs={'class': 'form-control'}),
-            # Tentamos a inicialização padrão; se o erro persistir, 
-            # o EditorJsWidget tentará ler a config do settings.py
-            'conteudo': EditorJsWidget(), 
+            # Removido o 'conteudo': EditorJsWidget() daqui!
             'imagem_capa': forms.FileInput(attrs={'class': 'form-control'}),
             'nome_autor_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'data_publicacao': forms.DateTimeInput(

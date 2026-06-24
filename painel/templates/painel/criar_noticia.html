@@ -2,63 +2,24 @@
 
 {% block content %}
 <style>
-    /* ==========================================================
-       1. CSS PARA FORÇAR A LARGURA TOTAL DO EDITOR.JS
-       ========================================================== */
-    
+    /* Design limpo para o container do Editor */
     .editor-container {
-        padding-left: 50px !important; 
-        padding-right: 20px !important;
-        padding-top: 20px !important;
-        padding-bottom: 40px !important;
         border: 1px solid #dee2e6;
         border-radius: 8px;
         background: #fff;
+        padding: 20px 50px 40px 50px;
         min-height: 400px;
-        position: relative; /* Importante para o toolbar flutuante */
-    }
-
-    /* Quebra a trava nativa de 650px de largura */
-    div.ce-block__content, 
-    div.ce-toolbar__content {
-        max-width: 100% !important; 
+        cursor: text; /* Mostra o cursor de texto ao passar o rato */
     }
     
-    /* Joga o botão de '+' e opções (:::) para a esquerda */
-    div.ce-toolbar__actions {
-        left: -40px !important;
-        right: auto !important;
-    }
-
-    /* ESSENCIAL: Garante que os menus de exclusão não sejam cortados */
-    .ce-toolbar {
-        overflow: visible !important;
-    }
-
-    /* Garante que o menu (onde fica o botão Excluir) fique sempre por cima */
-    .ce-popover {
-        z-index: 9999 !important;
+    /* Quebra a trava de largura do Editor.js */
+    .ce-block__content, .ce-toolbar__content {
+        max-width: 100% !important;
     }
     
-    /* Melhora a caixa cinza de fundo da imagem */
+    /* Melhora a caixa da imagem */
     .image-tool__image-picture {
         border-radius: 8px !important;
-    }
-
-/* A barra de ferramentas da ImageTool precisa ficar acima de tudo */
-    .image-tool__caption, 
-    .image-tool__image {
-        position: relative;
-    }
-    
-    /* Garante que o menu de exclusão da imagem não fique escondido */
-    .ce-toolbar__content {
-        z-index: 100;
-    }
-
-    /* Força o z-index da imagem para não cobrir a toolbar */
-    .image-tool__image-picture {
-        z-index: 1 !important;
     }
 </style>
 
@@ -68,132 +29,54 @@
 
 <div class="card border-0 shadow-sm">
     <div class="card-body p-4">
-        <!-- Exibição de Erros Gerais do Formulário -->
         {% if form.non_field_errors %}
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong><i class="fas fa-exclamation-circle me-2"></i>Erro ao salvar a notícia:</strong>
-                <ul class="mb-0 mt-2">
-                    {% for error in form.non_field_errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
         {% endif %}
         
         <form method="post" enctype="multipart/form-data" id="form-noticia">
             {% csrf_token %}
-            {{ form.media }}
-
+            
             <div class="row g-3">
                 <div class="col-12">
                     <label class="form-label fw-bold">{{ form.titulo.label }}</label>
                     {{ form.titulo }}
-                    {% if form.titulo.errors %}
-                        <div class="invalid-feedback d-block">
-                            {% for error in form.titulo.errors %}
-                                <i class="fas fa-times-circle me-1"></i>{{ error }}<br>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
                 </div>
-
                 <div class="col-12">
                     <label class="form-label fw-bold">{{ form.resumo.label }}</label>
                     {{ form.resumo }}
-                    {% if form.resumo.errors %}
-                        <div class="invalid-feedback d-block">
-                            {% for error in form.resumo.errors %}
-                                <i class="fas fa-times-circle me-1"></i>{{ error }}<br>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    <div class="form-text text-muted">Uma breve introdução que aparecerá na página inicial.</div>
                 </div>
-
                 <div class="col-md-6">
                     <label class="form-label fw-bold">{{ form.data_publicacao.label }}</label>
                     {{ form.data_publicacao }}
-                    {% if form.data_publicacao.errors %}
-                        <div class="invalid-feedback d-block">
-                            {% for error in form.data_publicacao.errors %}
-                                <i class="fas fa-times-circle me-1"></i>{{ error }}<br>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
                 </div>
-
                 <div class="col-md-6">
                     <label class="form-label fw-bold">{{ form.autor.label }}</label>
                     {{ form.autor }}
-                    {% if form.autor.errors %}
-                        <div class="invalid-feedback d-block">
-                            {% for error in form.autor.errors %}
-                                <i class="fas fa-times-circle me-1"></i>{{ error }}<br>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
                 </div>
-
+                
                 <div class="col-12">
                     <label class="form-label fw-bold">{{ form.imagem.label }}</label>
                     {{ form.imagem }}
-                    
-                    {% if form.imagem.errors %}
-                        <div class="alert alert-danger mt-2" role="alert">
-                            <strong><i class="fas fa-exclamation-triangle me-2"></i>Erro ao fazer upload da imagem:</strong>
-                            <ul class="mb-0 mt-2">
-                                {% for error in form.imagem.errors %}
-                                    <li>{{ error }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
-                    
-                    {% if form.instance.imagem %}
-                        <div style="margin-top: 16px; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
-                            <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #666; font-weight: 500;">Imagem Atual:</p>
-                            <img src="{{ form.instance.imagem.url }}" alt="Prévia da imagem" style="max-width: 100%; max-height: 300px; border-radius: 6px; display: block;">
-                        </div>
-                    {% endif %}
-                    
-                    <div id="preview-container" style="margin-top: 16px; display: none; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
-                        <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #666; font-weight: 500;">Prévia da Nova Imagem:</p>
-                        <img id="preview-image" alt="Prévia" style="max-width: 100%; max-height: 300px; border-radius: 6px; display: block;">
-                    </div>
                 </div>
 
                 <div class="col-12 mt-4">
                     <label class="form-label fw-bold" style="font-size: 1.1rem; color: var(--azul-escuro);">
-                        <i class="fa-solid fa-layer-group me-2"></i> {{ form.conteudo_blocos.label }}
+                        <i class="fa-solid fa-layer-group me-2"></i> Conteúdo
                     </label>
                     <div class="form-text text-muted mb-3">
-                        Clique abaixo para começar a escrever. Use o botão <strong>+</strong> à esquerda para adicionar fotos, títulos, listas ou vídeos!
+                        Clique na caixa branca abaixo e pressione a tecla <strong>TAB</strong> (ou use o botão <strong>+</strong>) para adicionar fotos, títulos, listas ou vídeos!
                     </div>
                     
-                    {% if form.conteudo_blocos.errors %}
-                        <div class="alert alert-danger mb-3" role="alert">
-                            <strong><i class="fas fa-exclamation-triangle me-2"></i>Erro no conteúdo:</strong>
-                            <ul class="mb-0 mt-2">
-                                {% for error in form.conteudo_blocos.errors %}
-                                    <li>{{ error }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
+                    {{ form.conteudo_blocos }}
                     
-                    <div class="editor-container w-100">
-                        {{ form.conteudo_blocos }}
-                    </div>
+                    <div id="editorjs" class="editor-container w-100"></div>
                 </div>
             </div>
 
             <hr class="my-4">
 
             <div class="d-flex gap-2 justify-content-end">
-                <a href="{% url 'listar_noticias' %}" class="btn btn-outline-secondary px-4">
-                    Cancelar
-                </a>
+                <a href="{% url 'listar_noticias' %}" class="btn btn-outline-secondary px-4">Cancelar</a>
                 <button type="submit" class="btn btn-success px-5">
                     <i class="fas fa-save me-2"></i> Publicar Notícia
                 </button>
@@ -202,90 +85,86 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+
 <script>
-    // ==========================================================
-    // 1. PREVIEW DE IMAGEM DA CAPA
-    // ==========================================================
-    document.addEventListener('DOMContentLoaded', function() {
-        const imageInput = document.querySelector('input[type="file"][name="imagem"]');
-        const previewContainer = document.getElementById('preview-container');
-        const previewImage = document.getElementById('preview-image');
-        
-        if (imageInput) {
-            imageInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        previewImage.src = event.target.result;
-                        previewContainer.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    previewContainer.style.display = 'none';
-                }
-            });
-        }
-    });
-
-    // ==========================================================
-    // 2. TRADUTOR "OLHEIRO" (MUTATION OBSERVER) PARA O EDITOR.JS
-    // ==========================================================
     document.addEventListener("DOMContentLoaded", function() {
-        // Dicionário de Tradução
-        const dict = {
-            "Text": "Texto",
-            "Heading": "Título",
-            "List": "Lista",
-            "Image": "Imagem",
-            "Quote": "Citação",
-            "Embed": "Vídeo (YouTube)",
-            "Delimiter": "Linha Divisória",
-            "Table": "Tabela",
-            "Link": "Link",
-            "Bold": "Negrito",
-            "Italic": "Itálico",
-            "Move up": "Mover para cima",
-            "Move down": "Mover para baixo",
-            "Delete": "Excluir Bloco",
-            "Click to tune": "Ajustes do Bloco",
-            "Type text or paste a link": "Digite o texto ou cole um link",
-            "Filter": "Pesquisar..."
-        };
-
-        // Função que percorre a tela procurando palavras em inglês e traduz
-        const translateDOM = () => {
-            // Títulos do menu principal (+)
-            document.querySelectorAll('.ce-popover-item__title').forEach(el => {
-                const text = el.textContent.trim();
-                if (dict[text]) el.textContent = dict[text];
-            });
-
-            // Tooltips (balõezinhos que aparecem ao passar o rato)
-            document.querySelectorAll('[title]').forEach(el => {
-                if (dict[el.title]) el.title = dict[el.title];
-            });
-
-            // Campo de inserir Link
-            const linkInput = document.querySelector('.ce-inline-toolbar__input');
-            if (linkInput && linkInput.placeholder === 'Type text or paste a link') {
-                linkInput.placeholder = dict[linkInput.placeholder];
-            }
-            
-            // Campo de pesquisar blocos
-            const searchInput = document.querySelector('.ce-popover__search');
-            if (searchInput && searchInput.placeholder === 'Filter') {
-                searchInput.placeholder = dict[searchInput.placeholder];
-            }
-        };
-
-        // Configura o "Olheiro" para vigiar o corpo da página. 
-        // Sempre que o EditorJS abrir um menu novo, ele dispara a tradução na hora!
-        const observer = new MutationObserver(translateDOM);
-        observer.observe(document.body, { childList: true, subtree: true });
+        // Pega os dados do campo oculto do Django
+        const hiddenInput = document.getElementById('id_conteudo_blocos');
+        let initialData = {};
         
-        // Dispara uma primeira vez logo após carregar a página
-        setTimeout(translateDOM, 500);
+        try {
+            if (hiddenInput && hiddenInput.value && hiddenInput.value !== 'null' && hiddenInput.value !== '') {
+                initialData = JSON.parse(hiddenInput.value);
+            }
+        } catch (e) {
+            console.error("Erro ao carregar dados existentes:", e);
+        }
+
+        // Inicia a caixa de texto nova!
+        const editor = new EditorJS({
+            holder: 'editorjs',
+            data: initialData,
+            
+            // Tradução nativa
+            i18n: {
+                messages: {
+                    ui: {
+                        "blockTunes": {
+                            "toggler": { "Click to tune": "Ajustes", "or drag to move": "ou arraste" }
+                        },
+                        "inlineToolbar": {
+                            "converter": { "Convert to": "Converter para" }
+                        },
+                        "toolbar": {
+                            "toolbox": { "Add": "Adicionar bloco" }
+                        }
+                    },
+                    toolNames: {
+                        "Text": "Texto", "Heading": "Título", "List": "Lista", 
+                        "Image": "Imagem", "Quote": "Citação"
+                    },
+                    blockTunes: {
+                        "delete": { "Delete": "Excluir Bloco" },
+                        "moveUp": { "Move up": "Mover para cima" },
+                        "moveDown": { "Move down": "Mover para baixo" }
+                    }
+                }
+            },
+            
+            // Ferramentas Atualizadas
+            tools: {
+                header: Header,
+                list: EditorjsList, // 🔴 A CORREÇÃO ESTÁ AQUI! (Era List, agora é EditorjsList)
+                quote: Quote,
+                image: {
+                    class: ImageTool,
+                    config: {
+                        endpoints: {
+                            byFile: '/painel/noticias/upload-editorjs/'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Quando clicar em "Publicar", copia o texto visível para o input invisível
+        document.getElementById('form-noticia').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formElement = this;
+            
+            editor.save().then((outputData) => {
+                hiddenInput.value = JSON.stringify(outputData);
+                formElement.submit(); 
+            }).catch((error) => {
+                console.error('Erro ao salvar Editor:', error);
+                alert("Ocorreu um erro ao processar o texto. Tente novamente.");
+            });
+        });
     });
 </script>
 {% endblock %}
