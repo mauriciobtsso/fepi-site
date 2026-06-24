@@ -3,7 +3,7 @@ from django.utils import timezone
 from itertools import chain
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.core.mail import send_mail, get_connection
+from core.utils import enviar_email_sistema
 from .models import ConfiguracaoEmail
 from django.conf import settings
 from django.core.cache import cache
@@ -169,41 +169,36 @@ def fale_conosco(request):
             assunto_display = dict(form.fields['topico'].choices).get(topico, topico)
 
             subject = f"[{topico.upper()}] Novo Contato do Site - {nome}"
-            body = (
-                f"Mensagem de: {nome}\n"
-                f"Email: {email_usuario}\n"
-                f"Assunto: {assunto_display}\n\n"
-                f"--- Mensagem ---\n{mensagem}"
+            
+            # Convertendo as quebras de linha para HTML caso a Brevo leia como Rich Text
+            body_html = (
+                f"<strong>Mensagem de:</strong> {nome}<br>"
+                f"<strong>Email:</strong> {email_usuario}<br>"
+                f"<strong>Assunto:</strong> {assunto_display}<br><br>"
+                f"<strong>--- Mensagem ---</strong><br>"
+                f"{mensagem.replace(chr(10), '<br>')}"
             )
 
-            # ---------------------------------------------------------
-            # LÓGICA DINÂMICA DE E-MAIL (Buscando do Banco de Dados)
-            # ---------------------------------------------------------
+            # Define quem vai receber a mensagem (Diretoria FEPI)
             config_email = ConfiguracaoEmail.objects.first()
-            
-            if config_email and config_email.senha_app:
-                connection = get_connection(
-                    host='smtp.gmail.com',
-                    port=587,
-                    username=config_email.email_remetente,
-                    password=config_email.senha_app,
-                    use_tls=True
-                )
+            if config_email and config_email.email_destino:
                 destino = config_email.email_destino
-                remetente = config_email.email_remetente
             else:
-                connection = get_connection()
-                destino = settings.EMAIL_RECEIVER
-                remetente = settings.DEFAULT_FROM_EMAIL
+                destino = getattr(settings, 'EMAIL_RECEIVER', 'fepi.site@gmail.com')
 
             try:
-                send_mail(
-                    subject, body, remetente, [destino], 
-                    connection=connection, fail_silently=False
+                # ---------------------------------------------------------
+                # LÓGICA DINÂMICA DE E-MAIL (Usando nossa API da Brevo)
+                # ---------------------------------------------------------
+                enviar_email_sistema(
+                    assunto=subject,
+                    corpo=body_html,
+                    destinatarios=[destino]
                 )
+                
                 return render(request, 'core/fale_conosco.html', {'contato': contato, 'sucesso': True})
             except Exception as e:
-                print(f"ERRO DE EMAIL: {e}")
+                print(f"ERRO DE EMAIL API: {e}")
                 return render(request, 'core/fale_conosco.html', {'contato': contato, 'form': form, 'erro': True})
     else:
         form = ContatoForm()

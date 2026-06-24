@@ -1,8 +1,10 @@
+#core/utils.py
 import logging
 import threading
 from django.template import loader
 from django.conf import settings
 from core.models import ConfiguracaoEmail
+import os
 
 # Tenta importar o SDK para não quebrar o sistema caso falte a biblioteca
 try:
@@ -17,12 +19,14 @@ def _executar_envio_async(assunto, html_content, text_content, destinatarios):
     """Executa o envio real pela API HTTP em segundo plano na porta 443."""
     config_email = ConfiguracaoEmail.objects.first()
     
+    # 1. Tenta pegar do painel Admin
     if config_email and config_email.senha_app:
         api_key = config_email.senha_app
         remetente_email = config_email.email_remetente
     else:
-        api_key = getattr(settings, 'BREVO_API_KEY', '')
-        remetente_email = getattr(settings, 'EMAIL_HOST_USER', '')
+        # 2. Busca DIRETO das variáveis de ambiente (Railway / .env) com fallback para settings
+        api_key = os.getenv('BREVO_API_KEY') or getattr(settings, 'BREVO_API_KEY', '')
+        remetente_email = os.getenv('EMAIL_HOST_USER') or getattr(settings, 'EMAIL_HOST_USER', 'fepi.site@gmail.com')
 
     if SDK_AVAILABLE and api_key:
         try:
@@ -47,6 +51,10 @@ def _executar_envio_async(assunto, html_content, text_content, destinatarios):
         except Exception as e:
             logger.error(f"❌ Falha no disparo transacional Brevo ({destinatarios}). Erro: {str(e)}")
     else:
+        print("================ DIAGNÓSTICO DE E-MAIL ================")
+        print(f"1. Pacote SDK Instalado? {SDK_AVAILABLE}")
+        print(f"2. Chave da API Encontrada? {bool(api_key)}")
+        print("=======================================================")
         logger.error("❌ SDK da Brevo ou API Key não disponíveis para o disparo.")
 
 
