@@ -1,0 +1,57 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Proteção de Dados (LGPD) - FEPI{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <h1 class="mb-4">Proteção de Dados (LGPD)</h1>
+
+            <p>
+                A Federação Espírita Piauiense (FEPI) está comprometida com a proteção dos
+                dados pessoais e com a observância da Lei nº 13.709/2018 (Lei Geral de
+                Proteção de Dados Pessoais – LGPD).
+            </p>
+
+            <h2>Nosso compromisso</h2>
+
+            <p>
+                Os dados pessoais tratados pela FEPI são utilizados exclusivamente para
+                finalidades legítimas relacionadas às atividades administrativas,
+                educacionais, doutrinárias, federativas e institucionais.
+            </p>
+
+            <h2>Direitos do titular</h2>
+
+            <p>Nos termos da LGPD, o titular poderá solicitar:</p>
+
+            <ul>
+                <li>Confirmação da existência de tratamento;</li>
+                <li>Acesso aos dados pessoais;</li>
+                <li>Correção de dados incompletos ou incorretos;</li>
+                <li>Revogação do consentimento;</li>
+                <li>Informações sobre compartilhamento de dados;</li>
+                <li>Exclusão dos dados quando legalmente cabível.</li>
+            </ul>
+
+            <h2>Documentos relacionados</h2>
+
+            <ul>
+                <li><a href="{% url 'privacidade' %}">Política de Privacidade</a></li>
+                <li><a href="{% url 'politica_cookies' %}">Política de Cookies</a></li>
+                <li><a href="{% url 'termos_uso' %}">Termos de Uso</a></li>
+            </ul>
+
+            <h2>Contato</h2>
+
+            <p>
+                Solicitações relacionadas à proteção de dados pessoais poderão ser encaminhadas
+                pelos canais oficiais de atendimento da FEPI.
+            </p>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

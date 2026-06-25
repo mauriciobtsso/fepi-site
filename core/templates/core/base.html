@@ -475,6 +475,7 @@
                 <li><a href="{% url 'lista_centros' %}">Encontre um Centro</a></li>
                 <li><a href="{% url 'atividades' %}">Horários Semanais</a></li>
                 <li><a href="{% url 'doacoes_view' %}">Quero Doar</a></li>
+		<li><a href="{% url 'privacidade' %}">Política de Privacidade</a></li>
                 <li><a href="{% url 'area_federado' %}">Área do Associado</a></li>
                 <li><a href="/painel" target="_blank">Área Administrativa</a></li> 
             </ul>
@@ -569,6 +570,21 @@
     document.addEventListener('DOMContentLoaded', function() {
         if (window.VLibras) new window.VLibras.Widget('https://vlibras.gov.br/app');
     });
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ReligiousOrganization",
+  "name": "Federação Espírita Piauiense",
+  "url": "https://fepiaui.org.br",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Teresina",
+    "addressRegion": "PI",
+    "addressCountry": "BR"
+  }
+}
 </script>
 
 </body>

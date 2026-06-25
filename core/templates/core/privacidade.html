@@ -1,45 +1,210 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Política de Privacidade | FEPI{% endblock %}
+{% block title %}FEPI | Política de Privacidade{% endblock %}
 
 {% block content %}
-<div class="pagina-conteudo">
-    <h1>Política de Privacidade e Termos de Uso</h1>
-    <p><em>Última atualização: {% now "d/m/Y" %}</em></p>
+<style>
+    /* =========================================================
+       ESTILOS DA PÁGINA DE PRIVACIDADE (LEITURA JURÍDICA/TEXTO)
+       ========================================================= */
+    .politica-lgpd {
+        max-width: 900px;
+        margin: 40px auto;
+        line-height: 1.8;
+        background-color: #ffffff;
+        padding: 40px 50px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03); /* Leve sombra para parecer um documento */
+        color: #333;
+    }
 
-    <br>
+    .politica-lgpd h1 {
+        margin-bottom: 5px;
+        color: #1e3c72; /* Cor institucional da FEPI */
+        font-weight: 800;
+    }
 
-    <h3>1. Introdução</h3>
-    <p>A <strong>Federação Espírita Piauiense (FEPI)</strong> compromete-se com a transparência e a proteção dos dados pessoais dos seus usuários. Esta política descreve como coletamos e utilizamos as informações no nosso portal.</p>
+    .politica-lgpd .ultima-atualizacao {
+        color: #7f8c8d;
+        font-style: italic;
+        margin-bottom: 30px;
+        font-size: 0.95rem;
+    }
 
-    <h3>2. Coleta de Dados</h3>
-    <p>Coletamos informações mínimas necessárias para a interação com o site:</p>
+    .politica-lgpd h2 {
+        margin-top: 45px;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 1.5rem; /* Força um tamanho legível caso o global seja pequeno */
+        color: #2c3e50;
+        font-weight: 700;
+    }
+
+    .politica-lgpd p {
+        margin-bottom: 18px;
+        font-size: 1.05rem;
+    }
+
+    .politica-lgpd ul {
+        margin: 15px 0 25px 25px;
+    }
+
+    .politica-lgpd li {
+        margin-bottom: 10px; /* Dá respiro entre os itens da lista */
+        font-size: 1.05rem;
+    }
+
+    /* Ajuste para telas de celular */
+    @media (max-width: 768px) {
+        .politica-lgpd {
+            padding: 25px 20px;
+            margin: 20px auto;
+        }
+    }
+</style>
+
+<div class="pagina-conteudo politica-lgpd">
+
+    <h1>Política de Privacidade</h1>
+    <p class="ultima-atualizacao">Última atualização: {% now "d/m/Y" %}</p>
+
+    <p>
+        A Federação Espírita Piauiense (FEPI) valoriza a privacidade, a segurança e a proteção dos dados pessoais dos frequentadores, trabalhadores, voluntários, dirigentes, participantes de eventos, evangelizadores, evangelizandos, colaboradores e visitantes de seus ambientes digitais.
+    </p>
+
+    <p>
+        Esta Política de Privacidade descreve como a FEPI realiza a coleta, utilização, armazenamento, proteção e tratamento de dados pessoais, observando os princípios e disposições da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados Pessoais – LGPD).
+    </p>
+
+    <h2>Quem Somos</h2>
+    <p>
+        A Federação Espírita Piauiense (FEPI) é uma instituição religiosa sem fins lucrativos dedicada à unificação, apoio, estudo, divulgação e prática da Doutrina Espírita no Estado do Piauí.
+    </p>
+
+    <h2>Dados Pessoais Coletados</h2>
+    <p>
+        Dependendo da funcionalidade utilizada no portal, poderão ser coletados os seguintes dados pessoais:
+    </p>
+
     <ul>
-        <li><strong>Formulário de Contato:</strong> Nome, e-mail e telefone fornecidos voluntariamente para resposta a dúvidas.</li>
-        <li><strong>Logs de Acesso:</strong> O servidor pode registrar o IP de acesso para fins de segurança e estatística, sem identificar o usuário diretamente.</li>
+        <li>Nome completo;</li>
+        <li>Endereço de e-mail;</li>
+        <li>Número de telefone e WhatsApp;</li>
+        <li>Cidade e Estado de residência;</li>
+        <li>Dados informados em formulários de contato;</li>
+        <li>Dados necessários para inscrições em cursos, seminários, palestras e eventos;</li>
+        <li>Dados relacionados ao cadastro de usuários e acesso à área restrita do portal;</li>
+        <li>Dados fornecidos voluntariamente para participação em atividades federativas, departamentos e projetos institucionais;</li>
+        <li>Informações fornecidas em processos de voluntariado e colaboração com a FEPI.</li>
     </ul>
 
-    <h3>3. Uso das Informações</h3>
-    <p>Os dados coletados são utilizados exclusivamente para:</p>
+    <p>
+        A FEPI coleta apenas os dados estritamente necessários para a realização de suas atividades institucionais e para o atendimento das solicitações realizadas pelos usuários.
+    </p>
+
+    <h2>Finalidades do Tratamento</h2>
+    <p>Os dados pessoais poderão ser utilizados para:</p>
+
     <ul>
-        <li>Responder às mensagens enviadas pelo "Fale Conosco".</li>
-        <li>Melhorar a experiência de navegação no portal.</li>
-        <li>Fins administrativos internos da Federação.</li>
+        <li>Responder mensagens enviadas pelos canais de contato;</li>
+        <li>Gerenciar inscrições em cursos, seminários, encontros e eventos;</li>
+        <li>Emitir certificados e registros de participação quando aplicável;</li>
+        <li>Administrar áreas restritas do portal;</li>
+        <li>Realizar comunicações institucionais relacionadas às atividades da FEPI;</li>
+        <li>Organizar atividades administrativas, doutrinárias e federativas;</li>
+        <li>Gerenciar programas de voluntariado e colaboração institucional;</li>
+        <li>Cumprir obrigações legais e regulatórias.</li>
     </ul>
-    <p><strong>Não compartilhamos seus dados com terceiros</strong> para fins comerciais ou de marketing.</p>
 
-    <h3>4. Cookies</h3>
-    <p>Este site utiliza cookies técnicos essenciais para o funcionamento do sistema (como manter a sessão ativa) e cookies de análise (Google Analytics) para entender como o site é utilizado, sempre de forma anônima.</p>
+    <h2>Bases Legais do Tratamento</h2>
+    <p>
+        O tratamento dos dados pessoais poderá ocorrer com fundamento:
+    </p>
 
-    <h3>5. Direitos do Titular (LGPD)</h3>
-    <p>Em conformidade com a Lei Geral de Proteção de Dados (LGPD), você tem o direito de solicitar a visualização, correção ou exclusão dos seus dados pessoais armazenados por nós. Para isso, entre em contato através dos canais oficiais.</p>
+    <ul>
+        <li>No consentimento do titular;</li>
+        <li>No cumprimento de obrigação legal ou regulatória;</li>
+        <li>Na execução de atividades legítimas vinculadas às finalidades institucionais da FEPI;</li>
+        <li>No legítimo interesse da instituição, observados os direitos e garantias dos titulares.</li>
+    </ul>
 
-    <h3>6. Contato</h3>
-    <p>Para dúvidas sobre esta política, entre em contato:</p>
+    <h2>Compartilhamento de Dados</h2>
+    <p>
+        A FEPI não comercializa, aluga ou disponibiliza dados pessoais para fins comerciais ou publicitários.
+    </p>
+
+    <p>
+        O compartilhamento de informações poderá ocorrer apenas quando necessário para:
+    </p>
+
+    <ul>
+        <li>Cumprimento de exigências legais;</li>
+        <li>Atendimento de determinações de autoridades competentes;</li>
+        <li>Prestação de serviços tecnológicos indispensáveis ao funcionamento do portal e de seus sistemas.</li>
+    </ul>
+
+    <h2>Cookies e Tecnologias de Navegação</h2>
+    <p>
+        O portal poderá utilizar cookies e tecnologias semelhantes para garantir o funcionamento adequado do sistema, autenticação de usuários, segurança da navegação e geração de estatísticas de acesso.
+    </p>
+
+    <p>
+        Algumas funcionalidades poderão deixar de operar corretamente caso os cookies sejam desabilitados pelo usuário.
+    </p>
+
+    <h2>Segurança das Informações</h2>
+    <p>
+        A FEPI adota medidas técnicas e administrativas adequadas para proteger os dados pessoais contra acessos não autorizados, perda, destruição, alteração, divulgação ou qualquer forma de tratamento inadequado.
+    </p>
+
+    <p>
+        O acesso às informações é restrito às pessoas autorizadas e que necessitem dos dados para o desempenho de suas funções institucionais.
+    </p>
+
+    <h2>Direitos do Titular dos Dados</h2>
+    <p>
+        Nos termos da LGPD, o titular dos dados poderá solicitar:
+    </p>
+
+    <ul>
+        <li>Confirmação da existência de tratamento;</li>
+        <li>Acesso aos seus dados pessoais;</li>
+        <li>Correção de dados incompletos, inexatos ou desatualizados;</li>
+        <li>Revogação do consentimento, quando aplicável;</li>
+        <li>Informações sobre eventual compartilhamento de dados;</li>
+        <li>Eliminação dos dados pessoais, quando legalmente cabível.</li>
+    </ul>
+
+    <h2>Dados de Crianças e Adolescentes</h2>
+    <p>
+        Quando houver tratamento de dados pessoais de crianças e adolescentes, a FEPI observará as disposições da legislação aplicável, adotando as medidas necessárias para garantir a proteção integral e o melhor interesse do menor.
+    </p>
+
+    <h2>Prazo de Retenção</h2>
+    <p>
+        Os dados pessoais serão mantidos apenas pelo período necessário para o cumprimento das finalidades para as quais foram coletados, observadas as obrigações legais, regulatórias e administrativas aplicáveis.
+    </p>
+
+    <h2>Alterações desta Política</h2>
+    <p>
+        Esta Política de Privacidade poderá ser atualizada periodicamente para refletir alterações legais, regulatórias, tecnológicas ou operacionais.
+    </p>
+
+    <p>
+        A versão mais recente estará sempre disponível neste portal.
+    </p>
+
+    <h2>Contato</h2>
+    <p>
+        Dúvidas, solicitações ou demandas relacionadas à proteção de dados pessoais poderão ser encaminhadas pelos canais oficiais da FEPI.
+    </p>
+
     <ul>
         <li><strong>E-mail:</strong> fepiaui@fepiaui.org.br</li>
-        <li><strong>Endereço:</strong> {{ contato.endereco|default:"Rua Olavo Bilac, 1394 - Teresina/PI" }}</li>
+        <li><strong>Endereço:</strong> {{ contato.endereco|default:"Rua Olavo Bilac, 1394 - Centro/Sul, Teresina - PI, 64001-280" }}</li>
     </ul>
+
 </div>
 {% endblock %}
