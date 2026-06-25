@@ -134,6 +134,43 @@
 }
 
 /* ======================================================
+   PAGINAÇÃO
+====================================================== */
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+}
+.page-item .page-link {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--azul-escuro, #1e3c72);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.page-item .page-link:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+.page-item.active .page-link {
+  background: var(--azul-escuro, #1e3c72);
+  color: #fff;
+  border-color: var(--azul-escuro, #1e3c72);
+}
+.page-item.disabled .page-link {
+  color: #9ca3af;
+  pointer-events: none;
+  background: #f9fafb;
+}
+
+/* ======================================================
    MOBILE
 ====================================================== */
 @media (max-width: 720px){
@@ -157,6 +194,10 @@
   
   .form-control {
     font-size: 16px !important;
+  }
+  
+  .pagination-wrapper {
+    flex-wrap: wrap;
   }
 }
 </style>
@@ -249,6 +290,44 @@
           </a>
         {% endfor %}
       </div>
+      
+      <!-- Controles de Paginação -->
+      {% if noticias.has_other_pages %}
+        <ul class="pagination-wrapper">
+          {% if noticias.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ noticias.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">&laquo; Anterior</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <span class="page-link">&laquo; Anterior</span>
+            </li>
+          {% endif %}
+
+          {% for i in noticias.paginator.page_range %}
+            {% if noticias.number == i %}
+              <li class="page-item active">
+                <span class="page-link">{{ i }}</span>
+              </li>
+            {% elif i > noticias.number|add:'-3' and i < noticias.number|add:'3' %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}">{{ i }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if noticias.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ noticias.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Próxima &raquo;</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <span class="page-link">Próxima &raquo;</span>
+            </li>
+          {% endif %}
+        </ul>
+      {% endif %}
+      
     {% else %}
       <div style="text-align:center; padding:60px; color:#888; border:1px dashed #ddd; border-radius:14px;">
         <p style="margin:0;">Nenhuma notícia publicada.</p>
