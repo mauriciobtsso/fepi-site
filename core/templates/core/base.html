@@ -6,7 +6,7 @@
     <meta name="google-site-verification" content="7IKXJMbHYrmqiVLckbf72F6iLC_3hy-qT1jKyXqVB0E" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>{% block title %}Federação Espírita do Piauí{% endblock %}</title>
+    <title>{% block title %}Federação Espírita Piauiense{% endblock %}</title>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-EW3NGGQK1Z"></script>
     <script>
@@ -18,14 +18,14 @@
     </script>
     
     <meta name="description" content="{% block description %}Portal oficial da Federação Espírita Piauiense. Unindo corações, esclarecendo mentes e consolando almas.{% endblock %}">
-    <meta name="author" content="FEPI - Federação Espírita do Piauí">
+    <meta name="author" content="FEPI - Federação Espírita Piauiense">
     <meta name="robots" content="index, follow">
 
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    <meta property="og:title" content="{% block og_title %}Federação Espírita do Piauí{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}Federação Espírita Piauiense{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Acompanhe notícias, eventos e a doutrina espírita no Piauí.{% endblock %}">
     
     {% block og_image_tag %}
@@ -37,7 +37,7 @@
     <meta property="og:locale" content="pt_BR">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}Federação Espírita do Piauí{% endblock %}">
+    <meta name="twitter:title" content="{% block twitter_title %}Federação Espírita Piauiense{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}Acompanhe notícias, eventos e a doutrina espírita no Piauí.{% endblock %}">
     
     {% block twitter_image_tag %}
@@ -49,7 +49,7 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "Federação Espírita do Piauí - FEPI",
+      "name": "Federação Espírita Piauiense - FEPI",
       "url": "{{ request.scheme }}://{{ request.get_host }}",
       "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}",
       "sameAs": [
