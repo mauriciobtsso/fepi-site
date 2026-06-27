@@ -22,9 +22,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-#up2mw6n4z7=cl@*$c$y@
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
-# --- INTEGRAÇÃO IA (GROQ / LLAMA 3) ---
+# --- INTEGRAÇÃO IA (GROQ) ---
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
-GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.1-8b-instant')
+# Atualizado para o modelo de 20B (o Llama 3.1 8B foi descontinuado)
+GROQ_MODEL = os.environ.get('GROQ_MODEL', 'gpt-oss-20b')
 
 # --------------------------------------------------------
 # 🚀 SEGURANÇA GLOBAL - CSRF E HOSTS

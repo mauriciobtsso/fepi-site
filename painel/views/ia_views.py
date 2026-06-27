@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 def chat_assistente_ia(request):
     """
     Endpoint com sistema de fallback automático: tenta Gemini primeiro pelo tom,
-    se falhar aciona o Groq (Llama 3.1) como plano B estável.
+    se falhar aciona o Groq (GPT OSS 20B) como plano B estável.
     Contém Injeção de Contexto da FEPI e Regras Estruturais de Conteúdo.
     """
     if request.method == 'POST':
@@ -92,14 +92,16 @@ def chat_assistente_ia(request):
                     pass # Passa silenciosamente para o bloco do Groq abaixo
 
             # ------------------------------------------------------------
-            # TENTATIVA 2 (FALLBACK): GROQ LLAMA 3.1 (Estabilidade máxima)
+            # TENTATIVA 2 (FALLBACK): GROQ GPT OSS 20B (Estabilidade máxima)
             # ------------------------------------------------------------
             chave_groq = getattr(settings, 'GROQ_API_KEY', None)
             if not chave_groq:
                 return JsonResponse({'erro': 'O serviço de inteligência artificial está temporariamente indisponível.'}, status=500)
 
             client_groq = Groq(api_key=chave_groq)
-            modelo_groq = getattr(settings, 'GROQ_MODEL', 'llama-3.1-8b-instant')
+            
+            # ATUALIZAÇÃO FEITA AQUI: Alterado de 'llama-3.1-8b-instant' para 'gpt-oss-20b'
+            modelo_groq = getattr(settings, 'GROQ_MODEL', 'gpt-oss-20b')
 
             chat_completion = client_groq.chat.completions.create(
                 messages=[
