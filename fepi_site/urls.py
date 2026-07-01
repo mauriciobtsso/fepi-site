@@ -72,6 +72,12 @@ urlpatterns = [
     path('centros/', lista_centros, name='lista_centros'),
     path('api/centros-proximidade/', api_centros_proximidade, name='api_centros_proximidade'),
     path('painel/voluntarios/', include('voluntarios.urls')),
+
+    # Redirecionamentos 301 (Antigo -> Novo)
+    path('site/atividades/', lambda request: redirect('/atividades/', permanent=True)),
+    path('site/institucional/historia/', lambda request: redirect('/institucional/', permanent=True)),
+    path('site/centros-capital/', lambda request: redirect('/centros/', permanent=True)),
+    path('site/<path:resto>/', lambda request, resto: redirect('/', permanent=True)),
     
     # Livraria Detalhe
     path('livraria/<slug:slug>/', detalhe_livro, name='detalhe_livro'),
