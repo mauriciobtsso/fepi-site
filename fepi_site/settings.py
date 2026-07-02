@@ -25,7 +25,7 @@ GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 # --- INTEGRAÇÃO IA (GROQ) ---
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
 # Atualizado para o modelo de 20B (o Llama 3.1 8B foi descontinuado)
-GROQ_MODEL = os.environ.get('GROQ_MODEL', 'gpt-oss-20b')
+GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
 
 # --------------------------------------------------------
 # 🚀 SEGURANÇA GLOBAL - CSRF E HOSTS

@@ -1,4 +1,5 @@
 import json
+import re
 from django import template
 from django.utils.safestring import mark_safe
 
@@ -33,3 +34,55 @@ def to_editorjs(value):
         return value.data
 
     return None
+
+
+@register.filter(name='embed_media')
+def embed_media(text):
+    """
+    Processa textos e converte marcações ou links diretos do Instagram e YouTube
+    em iframes responsivos e limpos, ideais para o fluxo de trabalho dos voluntários.
+    """
+    if not text:
+        return ""
+
+    # ==========================================
+    # 1. PROCESSAMENTO DO INSTAGRAM
+    # ==========================================
+    # Expressão regular inteligente: captura o ID do reel/post e ignora qualquer parâmetro após a "?"
+    ig_pattern = r'(?:\[ig:\s*)?(https?://(?:www\.)?instagram\.com/(?:p|reel)/([a-zA-Z0-9_-]+))[/?]?[^\s\]]*\]?'
+
+    def replace_ig(match):
+        video_id = match.group(2)
+        embed_url = f"https://www.instagram.com/reel/{video_id}/embed/"
+        
+        return (
+            f'<div style="display: flex; justify-content: center; margin: 20px 0;">'
+            f'<iframe src="{embed_url}" width="400" height="480" frameborder="0" '
+            f'scrolling="no" allowtransparency="true" '
+            f'style="border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></iframe>'
+            f'</div>'
+        )
+
+    text = re.sub(ig_pattern, replace_ig, text)
+
+    # ==========================================
+    # 2. PROCESSAMENTO DO YOUTUBE
+    # ==========================================
+    # Suporta links com marcação [yt: URL] e limpa parâmetros adicionais de playlist/rastreamento
+    yt_pattern = r'(?:\[yt:\s*)?(https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]+))[^\s\]]*\]?'
+    
+    def replace_yt(match):
+        video_id = match.group(2)
+        embed_url = f"https://www.youtube.com/embed/{video_id}"
+        
+        return (
+            f'<div style="display: flex; justify-content: center; margin: 20px 0;">'
+            f'<iframe width="560" height="315" src="{embed_url}" frameborder="0" '
+            f'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" '
+            f'allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></iframe>'
+            f'</div>'
+        )
+
+    text = re.sub(yt_pattern, replace_yt, text)
+
+    return mark_safe(text)

@@ -1,6 +1,7 @@
 {% extends 'core/base.html' %}
 {% load static %}
 {% load cloudinary_tags %}
+{% load editorjs_tags %}
 
 {% block title %}FEPI | {{ noticia.titulo }}{% endblock %}
 
@@ -119,11 +120,13 @@
                     {% for block in blocos %}
                         
                         {% if block.type == 'paragraph' %}
-                            <p>{{ block.data.text|safe }}</p>
+                            <!-- Aplicando embed_media no parágrafo -->
+                            <p>{{ block.data.text|embed_media|safe }}</p>
                             
                         {% elif block.type == 'header' %}
+                            <!-- Aplicando embed_media também nos títulos -->
                             <h{{ block.data.level }} style="color: var(--azul-escuro); font-weight: 800; margin-top: 2rem;">
-                                {{ block.data.text|safe }}
+                                {{ block.data.text|embed_media|safe }}
                             </h{{ block.data.level }}>
                             
                         {% elif block.type == 'image' %}
@@ -161,7 +164,8 @@
                                 <ul style="margin-left: 20px; margin-bottom: 1.5rem;">
                             {% endif %}
                                 {% for item in block.data.items %}
-                                    <li style="margin-bottom: 8px;">{{ item|safe }}</li>
+                                    <!-- Aplicando embed_media nas listas -->
+                                    <li style="margin-bottom: 8px;">{{ item|embed_media|safe }}</li>
                                 {% endfor %}
                             {% if block.data.style == 'ordered' %}
                                 </ol>
@@ -178,7 +182,8 @@
                     {% endfor %}
                     
                 {% else %}
-                    {{ noticia.conteudo|safe }}
+                    <!-- Aplicando embed_media no conteúdo legado do CKEditor -->
+                    {{ noticia.conteudo|embed_media|safe }}
                 {% endif %}
                 
             {% endwith %}
