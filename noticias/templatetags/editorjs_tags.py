@@ -40,15 +40,19 @@ def to_editorjs(value):
 def embed_media(text):
     """
     Processa textos e converte marcações ou links diretos do Instagram e YouTube
-    em iframes responsivos e limpos, ideais para o fluxo de trabalho dos voluntários.
+    em iframes responsivos. Agora com proteção para garantir entrada de string.
     """
-    if not text:
+    # Garantir que o texto seja uma string, caso contrário, retorna vazio
+    if text is None:
         return ""
+    
+    # Se o valor for um objeto que não é string, converte para string
+    if not isinstance(text, str):
+        text = str(text)
 
     # ==========================================
     # 1. PROCESSAMENTO DO INSTAGRAM
     # ==========================================
-    # Expressão regular inteligente: captura o ID do reel/post e ignora qualquer parâmetro após a "?"
     ig_pattern = r'(?:\[ig:\s*)?(https?://(?:www\.)?instagram\.com/(?:p|reel)/([a-zA-Z0-9_-]+))[/?]?[^\s\]]*\]?'
 
     def replace_ig(match):
@@ -68,7 +72,6 @@ def embed_media(text):
     # ==========================================
     # 2. PROCESSAMENTO DO YOUTUBE
     # ==========================================
-    # Suporta links com marcação [yt: URL] e limpa parâmetros adicionais de playlist/rastreamento
     yt_pattern = r'(?:\[yt:\s*)?(https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]+))[^\s\]]*\]?'
     
     def replace_yt(match):
