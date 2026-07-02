@@ -164,8 +164,12 @@
                                 <ul style="margin-left: 20px; margin-bottom: 1.5rem;">
                             {% endif %}
                                 {% for item in block.data.items %}
-                                    <!-- Aplicando embed_media nas listas -->
-                                    <li style="margin-bottom: 8px;">{{ item|embed_media|safe }}</li>
+                                    <!-- Suporta itens como string (legado) ou como dict {'content': '...', 'meta': {}, 'items': []} (Editor.js v2+) -->
+                                    {% if item.content %}
+                                        <li style="margin-bottom: 8px;">{{ item.content|embed_media|safe }}</li>
+                                    {% else %}
+                                        <li style="margin-bottom: 8px;">{{ item|embed_media|safe }}</li>
+                                    {% endif %}
                                 {% endfor %}
                             {% if block.data.style == 'ordered' %}
                                 </ol>
