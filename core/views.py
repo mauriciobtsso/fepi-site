@@ -170,31 +170,32 @@ def fale_conosco(request):
 
             subject = f"[{topico.upper()}] Novo Contato do Site - {nome}"
             
-            # Convertendo as quebras de linha para HTML caso a Brevo leia como Rich Text
-            body_html = (
-                f"<strong>Mensagem de:</strong> {nome}<br>"
-                f"<strong>Email:</strong> {email_usuario}<br>"
-                f"<strong>Assunto:</strong> {assunto_display}<br><br>"
-                f"<strong>--- Mensagem ---</strong><br>"
-                f"{mensagem.replace(chr(10), '<br>')}"
-            )
-
             # Define quem vai receber a mensagem (Diretoria FEPI)
             config_email = ConfiguracaoEmail.objects.first()
             if config_email and config_email.email_destino:
                 destino = config_email.email_destino
             else:
-                destino = getattr(settings, 'EMAIL_RECEIVER', 'fepi.site@gmail.com')
+                destino = getattr(settings, 'EMAIL_RECEIVER', 'contato@fepiaui.org.br')
+
+            # Prepara os dados para o Template HTML do e-mail
+            contexto_email = {
+                'nome': nome,
+                'email_usuario': email_usuario,
+                'assunto_display': assunto_display,
+                'mensagem': mensagem
+            }
 
             try:
                 # ---------------------------------------------------------
-                # LÓGICA DINÂMICA DE E-MAIL (Usando nossa API da Brevo)
+                # LÓGICA DINÂMICA DE E-MAIL (Usando template HTML + Brevo)
                 # ---------------------------------------------------------
                 enviar_email_sistema(
                     assunto=subject,
-                    corpo=body_html,
+                    corpo="Este e-mail contém HTML. Por favor, visualize em um cliente compatível.", # Fallback para texto puro
                     destinatarios=[destino],
-                    reply_to=email_usuario # <-- AQUI ESTÁ A MÁGICA!
+                    template_name='emails/contato_recebido.html', # Aponta para a nova pasta
+                    context=contexto_email,
+                    reply_to=email_usuario
                 )
                 
                 return render(request, 'core/fale_conosco.html', {'contato': contato, 'sucesso': True})
