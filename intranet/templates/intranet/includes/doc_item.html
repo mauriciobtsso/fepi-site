@@ -23,13 +23,14 @@
 
     <div class="doc-actions">
         {% if doc.arquivo %}
-            <a href="{{ doc.arquivo.url }}" target="_blank" class="btn-action-mini btn-dl">
+            <!-- CORREÇÃO: Adicionada a flag 'download' e alterado o target para forçar o salvamento seguro -->
+            <a href="{{ doc.arquivo.url }}" target="_blank" rel="noopener noreferrer" download class="btn-action-mini btn-dl">
                 <i class="fa-solid fa-download"></i> Download
             </a>
         {% endif %}
 
         {% if doc.link %}
-            <a href="{{ doc.link }}" target="_blank" class="btn-action-mini btn-lnk">
+            <a href="{{ doc.link }}" target="_blank" rel="noopener noreferrer" class="btn-action-mini btn-lnk">
                 <i class="fa-solid fa-up-right-from-square"></i> Abrir Link
             </a>
         {% endif %}
