@@ -1,6 +1,6 @@
 from django.db import models
-# IMPORTANTE: Importamos o storage específico para documentos brutos (não-imagens)
-from cloudinary_storage.storage import RawMediaCloudinaryStorage
+# Storage exclusivo da Intranet: raw e com URL assinada, sem alterar as imagens globais.
+from .storage import SignedRawMediaCloudinaryStorage
 
 class CategoriaDocumento(models.Model):
     nome = models.CharField("Nome da Categoria", max_length=100)
@@ -20,7 +20,7 @@ class DocumentoRestrito(models.Model):
     # O max_length=500 garante que nomes de arquivos longos não quebrem o banco.
     arquivo = models.FileField(
         upload_to='intranet_docs/', 
-        storage=RawMediaCloudinaryStorage(), 
+        storage=SignedRawMediaCloudinaryStorage(),
         blank=True, 
         null=True, 
         max_length=500
