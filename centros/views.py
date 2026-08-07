@@ -86,6 +86,22 @@ def lista_centros(request):
         centros_interior = centros.filter(tipo='INTERIOR').order_by('cidade', 'nome')
         especializadas = centros.filter(tipo='ESPECIALIZADA').order_by('nome')
 
+    # =========================================================
+    # LÓGICA DE SEO DINÂMICO (Local Search Intent)
+    # =========================================================
+    if user_lat and user_lon:
+        seo_title = "Centros Espíritas Próximos a Mim | Endereços e Horários - FEPI"
+        seo_description = "Encontre os centros espíritas mais próximos da sua localização atual. Confira rotas, endereços e telefones das casas afiliadas à FEPI."
+    elif cidade_req and bairro_req:
+        seo_title = f"Centros Espíritas no bairro {bairro_req} em {cidade_req} | FEPI"
+        seo_description = f"Encontre centros espíritas no bairro {bairro_req} em {cidade_req}. Confira endereços, contatos e horários de palestras e reuniões públicas."
+    elif cidade_req:
+        seo_title = f"Centros Espíritas em {cidade_req} | Endereços e Horários - FEPI"
+        seo_description = f"Guia completo de centros espíritas em {cidade_req}. Encontre a casa espírita mais próxima de você, com endereços, horários e contatos oficiais."
+    else:
+        seo_title = "Guia de Centros Espíritas no Piauí | Endereços e Horários - FEPI"
+        seo_description = "Encontre o centro espírita mais próximo de você. Confira a lista completa de casas afiliadas à FEPI, dias de reuniões públicas, endereços e contatos."
+
     contexto = {
         'centros': centros, # Lista completa para o mapa renderizar
         'capital': centros_capital,
@@ -106,6 +122,10 @@ def lista_centros(request):
         'user_lon': user_lon,
         'raio_km': raio_km,
         'geolocation_ativa': bool(user_lat and user_lon),
+
+        # Variáveis de SEO
+        'seo_title': seo_title,
+        'seo_description': seo_description,
     }
     return render(request, 'centros/lista_centros.html', contexto)
 

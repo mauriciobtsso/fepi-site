@@ -3,6 +3,45 @@
 
 {% block title %}FEPI | Cursos e Eventos{% endblock %}
 
+{% block extra_schema %}
+{{ block.super }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    {% for curso in futuros %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "item": {
+        "@type": "Event",
+        "name": "{{ curso.titulo|escapejs }}",
+        "startDate": "{{ curso.data_evento|date:'c' }}",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "location": {
+          "@type": "Place",
+          "name": "{{ curso.local|default:'Federação Espírita Piauiense'|escapejs }}",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Teresina",
+            "addressRegion": "PI"
+          }
+        },
+        "organizer": {
+          "@type": "Organization",
+          "name": "Federação Espírita Piauiense",
+          "url": "{{ request.scheme }}://{{ request.get_host }}"
+        }
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endblock %}
+
 {% block extra_css %}
 <style>
     /* ======================================================

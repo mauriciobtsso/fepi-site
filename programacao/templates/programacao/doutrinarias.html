@@ -3,6 +3,56 @@
 
 {% block title %}FEPI | Palestras Públicas{% endblock %}
 
+{% block extra_schema %}
+{{ block.super }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    {% for grupo in palestras_agrupadas %}
+        {% if not grupo.grouper %}
+            {% for palestra in grupo.list %}
+            {
+              "@type": "ListItem",
+              "position": {{ forloop.counter }},
+              "item": {
+                "@type": "Event",
+                "name": "{{ palestra.tema|escapejs }}",
+                "startDate": "{{ palestra.data_hora|date:'c' }}",
+                "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+                "eventStatus": "https://schema.org/EventScheduled",
+                "location": {
+                  "@type": "Place",
+                  "name": "Federação Espírita Piauiense",
+                  "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "Rua Olavo Bilac, 1394, Centro",
+                    "addressLocality": "Teresina",
+                    "addressRegion": "PI",
+                    "postalCode": "64001-280",
+                    "addressCountry": "BR"
+                  }
+                },
+                "performer": {
+                  "@type": "Person",
+                  "name": "{{ palestra.palestrante|escapejs }}"
+                },
+                "organizer": {
+                  "@type": "Organization",
+                  "name": "Federação Espírita Piauiense",
+                  "url": "{{ request.scheme }}://{{ request.get_host }}"
+                }
+              }
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endblock %}
+
 {% block extra_css %}
 <style>
     /* CSS Base */
