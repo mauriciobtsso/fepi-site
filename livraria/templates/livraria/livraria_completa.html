@@ -106,13 +106,14 @@
         <tr style="vertical-align: top;">
             <td style="width: 150px; padding-right: 25px;">
                 {% if config.logo %}
+                    <!-- OTIMIZAÇÃO APLICADA AQUI -->
                     <img src="{{ config.logo.url|cloudinary_transform:'h_200,c_fit,f_auto,q_auto' }}" 
                          alt="Logo Livraria" 
-                         style="height: 120px; width:auto; object-fit: contain;">
+                         style="height: 120px; width:auto; object-fit: contain;" loading="lazy">
                 {% else %}
                     <img src="{% static 'img/logo_livraria.png' %}"
                          alt="Logo Livraria Ramiro Gama"
-                         style="height: 120px; width:auto;">
+                         style="height: 120px; width:auto;" loading="lazy">
                 {% endif %}
             </td>
             
@@ -171,6 +172,7 @@
         <a href="{% url 'detalhe_livro' livro.slug %}" class="card-livro">
             <div class="capa-wrapper">
                 {% if livro.capa %}
+                    <!-- OTIMIZAÇÃO APLICADA AQUI -->
                     <img src="{{ livro.capa.url|cloudinary_transform:'w_360,h_500,c_fit,f_auto,q_auto' }}" class="capa-livro" alt="{{ livro.titulo }}" loading="lazy">
                 {% else %}
                     <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:2.5rem;">📚</div>

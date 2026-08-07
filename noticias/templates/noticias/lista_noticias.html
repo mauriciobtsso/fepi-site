@@ -263,6 +263,7 @@
 
             <div class="news-row__thumb">
               {% if noticia.imagem %}
+                <!-- OTIMIZAÇÃO APLICADA AQUI -->
                 <img src="{{ noticia.imagem.url|cloudinary_transform:'w_440,h_260,c_fill,f_auto,q_auto' }}" alt="{{ noticia.titulo }}" loading="lazy">
               {% else %}
                 <div class="news-placeholder">📰</div>
