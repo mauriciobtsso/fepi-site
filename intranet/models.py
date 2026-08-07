@@ -2,7 +2,8 @@ from django.db import models
 
 # 1. Nova tabela para gerenciar Categorias Dinamicamente
 class CategoriaDocumento(models.Model):
-    nome = models.CharField("Nome da Categoria", max_length=100)
+    # CORREÇÃO: Limite de 100 aumentado para 255 para comportar nomes maiores de secretarias/departamentos
+    nome = models.CharField("Nome da Categoria", max_length=255)
     
     class Meta:
         verbose_name = "Categoria de Documento"
@@ -13,7 +14,8 @@ class CategoriaDocumento(models.Model):
 
 # 2. Modelo de Documentos atualizado
 class DocumentoRestrito(models.Model):
-    titulo = models.CharField("Título do Documento", max_length=200)
+    # CORREÇÃO: Limite de 200 aumentado para 500 para suportar nomes extensos de arquivos de licitação e PDFs longos
+    titulo = models.CharField("Título do Documento", max_length=500)
     descricao = models.TextField("Descrição/Observação", blank=True, null=True)
     
     arquivo = models.FileField(upload_to='intranet_docs/', blank=True, null=True)
