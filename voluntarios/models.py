@@ -1,6 +1,6 @@
 from django.db import models
 from ckeditor.fields import RichTextField
-from cloudinary_storage.storage import RawMediaCloudinaryStorage
+from intranet.storage import SignedRawMediaCloudinaryStorage
 from usuarios.models import Perfil # Trazendo o Cadastro Único
 
 class DocumentoVoluntario(models.Model):
@@ -22,7 +22,7 @@ class DocumentoVoluntario(models.Model):
     
     arquivo = models.FileField(
         upload_to='voluntarios/historico/', 
-        storage=RawMediaCloudinaryStorage()
+        storage=SignedRawMediaCloudinaryStorage()
     )
     
     data_referencia = models.DateField("Data do Documento (Emissão)")
