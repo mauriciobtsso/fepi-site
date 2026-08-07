@@ -1,7 +1,8 @@
 from django.db import models
+# IMPORTANTE: Importamos o storage específico para documentos brutos (não-imagens)
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
 
 class CategoriaDocumento(models.Model):
-    # Retornamos ao padrão para evitar conflitos de coluna inexistente
     nome = models.CharField("Nome da Categoria", max_length=100)
     
     class Meta:
@@ -12,12 +13,19 @@ class CategoriaDocumento(models.Model):
         return self.nome
 
 class DocumentoRestrito(models.Model):
-    # Título original mantido para estabilidade do banco
     titulo = models.CharField("Título do Documento", max_length=200)
     descricao = models.TextField("Descrição/Observação", blank=True, null=True)
     
-    # A MÁGICA ESTÁ AQUI: max_length=500 permite nomes de arquivos gigantes no banco!
-    arquivo = models.FileField(upload_to='intranet_docs/', blank=True, null=True, max_length=500)
+    # A MÁGICA AQUI: O parâmetro 'storage' força o Cloudinary a aceitar PDFs, DOCs, etc., sem corromper.
+    # O max_length=500 garante que nomes de arquivos longos não quebrem o banco.
+    arquivo = models.FileField(
+        upload_to='intranet_docs/', 
+        storage=RawMediaCloudinaryStorage(), 
+        blank=True, 
+        null=True, 
+        max_length=500
+    )
+    
     link = models.URLField("Link Externo (Google Drive, etc)", blank=True, null=True)
     
     categoria = models.ForeignKey(
