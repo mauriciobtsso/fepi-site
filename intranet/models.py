@@ -1,9 +1,8 @@
 from django.db import models
 
-# 1. Nova tabela para gerenciar Categorias Dinamicamente
 class CategoriaDocumento(models.Model):
-    # CORREÇÃO: Limite de 100 aumentado para 255 para comportar nomes maiores de secretarias/departamentos
-    nome = models.CharField("Nome da Categoria", max_length=255)
+    # Retornamos ao padrão para evitar conflitos de coluna inexistente
+    nome = models.CharField("Nome da Categoria", max_length=100)
     
     class Meta:
         verbose_name = "Categoria de Documento"
@@ -12,17 +11,15 @@ class CategoriaDocumento(models.Model):
     def __str__(self):
         return self.nome
 
-# 2. Modelo de Documentos atualizado
 class DocumentoRestrito(models.Model):
-    # CORREÇÃO: Limite de 200 aumentado para 500 para suportar nomes extensos de arquivos de licitação e PDFs longos
-    titulo = models.CharField("Título do Documento", max_length=500)
+    # Título original mantido para estabilidade do banco
+    titulo = models.CharField("Título do Documento", max_length=200)
     descricao = models.TextField("Descrição/Observação", blank=True, null=True)
     
-    arquivo = models.FileField(upload_to='intranet_docs/', blank=True, null=True)
+    # A MÁGICA ESTÁ AQUI: max_length=500 permite nomes de arquivos gigantes no banco!
+    arquivo = models.FileField(upload_to='intranet_docs/', blank=True, null=True, max_length=500)
     link = models.URLField("Link Externo (Google Drive, etc)", blank=True, null=True)
     
-    # Aqui está a mágica: Ligamos à tabela de cima (ForeignKey)
-    # on_delete=models.PROTECT impede apagar uma categoria se ela tiver documentos
     categoria = models.ForeignKey(
         CategoriaDocumento, 
         on_delete=models.PROTECT, 
@@ -39,3 +36,9 @@ class DocumentoRestrito(models.Model):
 
     def __str__(self):
         return f"[{self.categoria.nome}] {self.titulo}"
+        
+    def save(self, *args, **kwargs):
+        # Truncamento de segurança: Se o título for maior que 200, corta ele antes de salvar
+        if self.titulo and len(self.titulo) > 200:
+            self.titulo = self.titulo[:197] + "..."
+        super().save(*args, **kwargs)
