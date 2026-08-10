@@ -22,24 +22,22 @@ class CloudinaryDocumentStorageTests(SimpleTestCase):
         self.assertEqual(intranet_storage.RESOURCE_TYPE, "raw")
         self.assertEqual(volunteer_storage.RESOURCE_TYPE, "raw")
 
-    @patch("intranet.storage.cloudinary_url")
-    def test_urls_are_signed_raw_delivery_urls(self, cloudinary_url):
-        cloudinary_url.side_effect = [
-            ("https://res.cloudinary.test/raw/upload/s--intranet--/sample.pdf", {}),
-            ("https://res.cloudinary.test/raw/upload/s--volunteer--/sample.pdf", {}),
+    @patch("intranet.storage.private_download_url")
+    def test_urls_are_authenticated_download_urls(self, private_download_url):
+        private_download_url.side_effect = [
+            "https://api.cloudinary.test/v1_1/demo/raw/download?public_id=intranet&signature=s1",
+            "https://api.cloudinary.test/v1_1/demo/raw/download?public_id=volunteer&signature=s2",
         ]
 
         intranet_storage = DocumentoRestrito._meta.get_field("arquivo").storage
         volunteer_storage = DocumentoVoluntario._meta.get_field("arquivo").storage
 
-        self.assertIn("s--intranet--", intranet_storage.url("intranet_docs/sample.pdf"))
-        self.assertIn("s--volunteer--", volunteer_storage.url("voluntarios/historico/sample.pdf"))
-        self.assertEqual(cloudinary_url.call_args_list[0].kwargs["resource_type"], "raw")
-        self.assertEqual(cloudinary_url.call_args_list[0].kwargs["type"], "upload")
-        self.assertTrue(cloudinary_url.call_args_list[0].kwargs["sign_url"])
-        self.assertEqual(cloudinary_url.call_args_list[1].kwargs["resource_type"], "raw")
-        self.assertEqual(cloudinary_url.call_args_list[1].kwargs["type"], "upload")
-        self.assertTrue(cloudinary_url.call_args_list[1].kwargs["sign_url"])
+        self.assertIn("signature=s1", intranet_storage.url("intranet_docs/sample.pdf"))
+        self.assertIn("signature=s2", volunteer_storage.url("voluntarios/historico/sample.pdf"))
+        self.assertEqual(private_download_url.call_args_list[0].args[0], "media/intranet_docs/sample.pdf")
+        self.assertEqual(private_download_url.call_args_list[0].kwargs["resource_type"], "raw")
+        self.assertEqual(private_download_url.call_args_list[0].kwargs["type"], "upload")
+        self.assertTrue(private_download_url.call_args_list[0].kwargs["attachment"])
 
     def test_image_models_keep_the_default_image_storage(self):
         image_fields = (
