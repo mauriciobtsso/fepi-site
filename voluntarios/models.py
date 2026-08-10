@@ -38,7 +38,7 @@ class DocumentoVoluntario(models.Model):
 
 class ModeloTermoVoluntario(models.Model):
     """Armazena o texto dinâmico do Termo de Adesão"""
-    conteudo = RichTextField("Corpo do Termo", help_text="Use as tags disponíveis para puxar os dados do voluntário.")
+    conteudo = RichTextField("Corpo do Termo", help_text="Use as tags disponíveis para puxar os dados do voluntário (ex: {{ voluntario.nome }}, {{ dia }}, {{ mes_nome }}, {{ ano }}).")
     data_atualizacao = models.DateTimeField(auto_now=True)
 
     class Meta:

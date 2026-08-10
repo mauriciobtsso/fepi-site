@@ -67,3 +67,13 @@ class CloudinaryDocumentStorageTests(SimpleTestCase):
         self.assertIn('href="{{ doc.arquivo.url }}" download', volunteer_item)
         self.assertNotIn("cloudinary_transform", intranet_item)
         self.assertNotIn("cloudinary_transform", volunteer_item)
+
+    def test_term_generation_includes_date_tags(self):
+        project_root = Path(__file__).resolve().parents[1]
+        views_content = (project_root / "voluntarios" / "views.py").read_text(encoding="utf-8")
+        
+        self.assertIn("context_dict['dia'] = hoje.strftime", views_content)
+        self.assertIn("context_dict['mes_nome'] = meses[hoje.month]", views_content)
+        self.assertIn("context_dict['ano'] = hoje.strftime", views_content)
+        self.assertIn("'Janeiro'", views_content)
+        self.assertIn("'Dezembro'", views_content)

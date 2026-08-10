@@ -153,6 +153,17 @@ def imprimir_termo(request, pk):
     termino = voluntario.data_termino_voluntariado.strftime("%d/%m/%Y") if voluntario.data_termino_voluntariado else "____/____/____"
     context_dict['prazo_display'] = f"de {inicio} a {termino}"
 
+    # 3. Tags de Data Automática (Emissão)
+    from django.utils import timezone
+    hoje = timezone.now()
+    meses = {
+        1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril', 5: 'Maio', 6: 'Junho',
+        7: 'Julho', 8: 'Agosto', 9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
+    }
+    context_dict['dia'] = hoje.strftime("%d")
+    context_dict['mes_nome'] = meses[hoje.month]
+    context_dict['ano'] = hoje.strftime("%Y")
+
     modelo = ModeloTermoVoluntario.objects.filter(id=1).first()
     
     if modelo and modelo.conteudo:
