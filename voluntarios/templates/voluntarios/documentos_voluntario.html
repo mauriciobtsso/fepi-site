@@ -75,7 +75,7 @@
                                     <td class="align-middle">{{ doc.get_tipo_display }}</td>
                                     <td class="align-middle">{{ doc.data_referencia|date:"d/m/Y" }}</td>
                                     <td class="text-center align-middle">
-                                        <a href="{{ doc.arquivo.url }}" target="_blank" class="btn btn-sm btn-info shadow-sm">
+                                        <a href="{{ doc.arquivo.url }}" download target="_blank" class="btn btn-sm btn-info shadow-sm">
                                             <i class="fas fa-eye"></i> Ver
                                         </a>
                                         <a href="{% url 'excluir_documento_voluntario' doc.pk %}" class="btn btn-sm btn-danger shadow-sm" onclick="return confirm('Tem certeza que deseja excluir este anexo?');">

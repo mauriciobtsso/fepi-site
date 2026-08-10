@@ -23,7 +23,7 @@
 
     <div class="doc-actions">
         {% if doc.arquivo %}
-            {# DocumentoRestrito usa RawMediaCloudinaryStorage: a URL é raw e não recebe transformações de imagem. #}
+            {# DocumentoRestrito usa SignedRawMediaCloudinaryStorage: a URL é raw, assinada e não recebe transformações de imagem. #}
             <a href="{{ doc.arquivo.url }}" download class="btn-action-mini btn-dl">
                 <i class="fa-solid fa-download"></i> Download
             </a>
