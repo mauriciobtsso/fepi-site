@@ -294,11 +294,10 @@
             <div class="socio-texto ckeditor-content">
                 {{ config.texto_socio|safe }}
             </div>
-            {% if config.link_socio %}
-                <a href="{{ config.link_socio }}" class="btn-socio-link" target="_blank">
-                    Quero ser Sócio Contribuinte <i class="fas fa-arrow-right"></i>
-                </a>
-            {% endif %}
+            <!-- Link corrigido para rota relativa e removido o target blank -->
+            <a href="/seja-membro" class="btn-socio-link">
+                Quero ser Sócio Contribuinte <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
     {% endif %}
 </div>
