@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from ckeditor.fields import RichTextField
 from django.utils.text import slugify
+from django.contrib.auth.models import User
 
 # 1. Tabela de Configuração da Livraria (Logo e Redes)
 class LivrariaConfig(models.Model):
@@ -96,3 +97,37 @@ class Livro(models.Model):
 def ensure_singleton_exists(sender, **kwargs):
     if not LivrariaConfig.objects.exists():
         LivrariaConfig.objects.create()
+
+
+class ProdutoLivraria(models.Model):
+    codigo_barras = models.CharField(max_length=50, unique=True, db_index=True)
+    descricao = models.CharField(max_length=255)
+    preco_venda = models.DecimalField(max_digits=10, decimal_places=2)
+    quantidade_estoque = models.IntegerField(default=0)
+    editora = models.CharField(max_length=100, blank=True, null=True)
+    
+    ultima_atualizacao = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Produto da Livraria'
+        verbose_name_plural = 'Produtos da Livraria'
+
+    def __str__(self):
+        return f"{self.codigo_barras} - {self.descricao}"
+
+class HistoricoUploadProdutos(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    data_upload = models.DateTimeField(auto_now_add=True)
+    sucesso = models.BooleanField(default=True)
+    mensagem = models.TextField(blank=True) # Ex: "Upload realizado com sucesso" ou erro do Pandas
+
+    class Meta:
+        verbose_name = 'Histórico de Upload'
+        verbose_name_plural = 'Histórico de Uploads'
+        ordering = ['-data_upload'] # Ordena sempre do mais recente para o mais antigo
+
+    def __str__(self):
+        status = "Sucesso" if self.sucesso else "Erro"
+        return f"{self.data_upload.strftime('%d/%m/%Y %H:%M')} - {status}"
+
+

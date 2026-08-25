@@ -6,7 +6,7 @@ from .noticias import criar_noticia, listar_noticias, editar_noticia, deletar_no
 from .site import site_hub, gerenciar_popup, config_youtube, listar_instagram, gerenciar_post_insta, excluir_post_insta, editar_contato, editar_institucional
 from .intranet import listar_documentos, criar_documento, editar_documento, excluir_documento, listar_categorias_doc, excluir_categoria_doc
 from .programacao import programacao_hub, listar_atividades, gerenciar_atividade, excluir_atividade, listar_palestras, gerenciar_palestra, excluir_palestra, listar_eventos, gerenciar_evento, excluir_evento
-from .livraria import livraria_hub, listar_livros, gerenciar_livro, excluir_livro, listar_categorias_liv, excluir_categoria_liv, config_livraria
+from .livraria import livraria_hub, listar_livros, gerenciar_livro, excluir_livro, listar_categorias_liv, excluir_categoria_liv, config_livraria, upload_planilha_produtos
 from .equipe import equipe_hub, gerenciar_membro, excluir_membro, gerenciar_departamento, excluir_departamento, gerenciar_cargo, excluir_cargo
 from .centros import listar_centros, gerenciar_centro, excluir_centro
 from .doacoes import listar_doacoes, gerenciar_doacao, excluir_doacao, config_pagina_doacao

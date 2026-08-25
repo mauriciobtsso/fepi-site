@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 from painel.views import ia_views, radar_views
 from painel.views.site import config_email
-from .views import blogs, noticias
+from .views import blogs, noticias, upload_planilha_produtos
 
 urlpatterns = [
     path('', views.dashboard, name='painel_home'),
@@ -72,6 +72,11 @@ urlpatterns = [
 
     # Configuração
     path('livraria/config/', views.config_livraria, name='config_livraria'),
+
+    # ----------------------------------------------------------------------
+    # ROTA DE IMPORTAÇÃO DA PLANILHA (ADICIONE ESTA LINHA)
+    path('livraria/importar-produtos/', upload_planilha_produtos, name='upload_planilha_produtos'),
+    # ----------------------------------------------------------------------
 
     # --- SITE E REDES ---
     path('site/', views.site_hub, name='site_hub'),

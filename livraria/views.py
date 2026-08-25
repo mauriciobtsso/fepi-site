@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Livro, Categoria, LivrariaConfig
+from django.http import JsonResponse
 from core.models import InformacaoContato
+from .models import ProdutoLivraria
 from django.db.models import Q
 from django.utils.text import slugify
 import re
@@ -64,3 +66,33 @@ def livraria_completa(request):
         'config': config # Agora o template usa 'config.logo' e 'config.instagram_url'
     }
     return render(request, 'livraria/livraria_completa.html', contexto)
+
+def consulta_rapida_page(request):
+    """Renderiza a página pública de consulta da livraria"""
+    return render(request, 'livraria/consulta_rapida.html')
+
+def api_buscar_produtos(request):
+    """API instantânea para buscar produtos sem recarregar a página"""
+    query = request.GET.get('q', '').strip()
+    if not query:
+        return JsonResponse({'error': 'Digite um código de barras ou nome do produto.'}, status=400)
+    
+    # Busca exata no código ou busca flexível no nome (limite de 15 para não pesar a tela)
+    produtos = ProdutoLivraria.objects.filter(
+        Q(codigo_barras=query) | Q(descricao__icontains=query)
+    ).order_by('descricao')[:15]
+    
+    if not produtos.exists():
+        return JsonResponse({'error': 'Nenhum produto encontrado em nossa base de dados.'}, status=404)
+        
+    dados = []
+    for p in produtos:
+        dados.append({
+            'codigo_barras': p.codigo_barras,
+            'descricao': p.descricao,
+            'preco_venda': float(p.preco_venda),
+            'quantidade_estoque': p.quantidade_estoque,
+            'editora': p.editora
+        })
+    return JsonResponse({'produtos': dados})
+

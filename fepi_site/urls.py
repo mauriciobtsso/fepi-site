@@ -21,7 +21,7 @@ from usuarios import views as usuarios_views
 # --- IMPORTS DOS SITEMAPS ---
 from core.sitemaps import StaticViewSitemap, NoticiaSitemap, LivroSitemap, EventoSitemap
 
-from livraria.views import detalhe_livro, livraria_completa
+from livraria.views import detalhe_livro, livraria_completa, consulta_rapida_page, api_buscar_produtos
 from centros.views import lista_centros, api_centros_proximidade
 from programacao.views import atividades, doutrinarias, calendario, lista_cursos, detalhe_curso
 
@@ -32,6 +32,7 @@ sitemaps = {
     'livros': LivroSitemap,
     'eventos': EventoSitemap,
 }
+
 
 urlpatterns = [
 
@@ -79,8 +80,11 @@ urlpatterns = [
     path('site/centros-capital/', lambda request: redirect('/centros/', permanent=True)),
     path('site/<path:resto>/', lambda request, resto: redirect('/', permanent=True)),
     
-    # Livraria Detalhe
+    # --- CORREÇÃO AQUI: Rotas específicas ANTES da rota com slug ---
+    path('livraria/consulta/', consulta_rapida_page, name='consulta_rapida'),
+    path('livraria/api/busca/', api_buscar_produtos, name='api_buscar_produtos'),
     path('livraria/<slug:slug>/', detalhe_livro, name='detalhe_livro'),
+    # ----------------------------------------------------------------
     
     # Notícias
     path('noticias/', include('noticias.urls')),
@@ -95,7 +99,6 @@ urlpatterns = [
     path('vozes-da-fepi/', views.listar_colunas_publicas, name='colunas'),
     path('vozes-da-fepi/artigo/<slug:slug>/', views.detalhe_coluna, name='detalhe_coluna'),
     
-
     # --- RECUPERAÇÃO DE SENHA ---
     path('recuperar-senha/', 
          auth_views.PasswordResetView.as_view(

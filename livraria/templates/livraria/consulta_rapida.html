@@ -1,0 +1,461 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<!-- Carregando FontAwesome apenas para esta página, garantindo que os ícones funcionem -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* Estilos Exclusivos da Página de Consulta (Não afeta o resto do site) */
+    .consulta-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .consulta-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+    .consulta-header h2 {
+        color: #0b192c; /* Azul escuro FEPI */
+        font-weight: 800;
+        margin-bottom: 10px;
+        font-size: 28px;
+    }
+    .consulta-header p {
+        color: #6c757d;
+        font-size: 16px;
+    }
+
+    /* Barra de Busca */
+    .search-wrapper {
+        display: flex;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 50px;
+        padding: 6px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+    .search-wrapper:focus-within {
+        border-color: #38bdf8;
+        box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+    }
+    .search-wrapper input {
+        flex: 1;
+        border: none;
+        padding: 15px 25px;
+        font-size: 16px;
+        outline: none;
+        background: transparent;
+        color: #334155;
+    }
+    .btn-buscar {
+        background-color: #0b192c;
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 50px;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .btn-buscar:hover { background-color: #1e3a5f; }
+    
+    .btn-camera {
+        background-color: #38bdf8; /* Ciano FEPI */
+        color: white;
+        border: none;
+        padding: 14px 22px;
+        border-radius: 50px;
+        margin-left: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .btn-camera:hover { background-color: #0ea5e9; }
+
+    /* Câmera */
+    .camera-container {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 30px;
+        display: none;
+    }
+    .btn-fechar-camera {
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        padding: 12px;
+        width: 100%;
+        border-radius: 10px;
+        font-weight: bold;
+        margin-top: 15px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    /* Cartão do Produto */
+    .produto-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        padding: 30px;
+        margin-bottom: 20px;
+        border-top: 6px solid #0b192c;
+    }
+    .produto-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+    }
+    .produto-titulo {
+        font-size: 24px;
+        color: #0f172a;
+        margin: 0 15px 0 0;
+        font-weight: 800;
+    }
+    .badge-estoque {
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 700;
+        color: white;
+        white-space: nowrap;
+    }
+    .estoque-ok { background-color: #10b981; }
+    .estoque-zero { background-color: #ef4444; }
+    
+    .produto-meta {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+    .produto-meta strong { color: #334155; }
+    
+    .valor-capa {
+        background-color: #f0f9ff;
+        border: 1px dashed #bae6fd;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 30px;
+        color: #0f172a;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .valor-capa span {
+        font-size: 32px;
+        font-weight: 800;
+        color: #0284c7;
+        display: block;
+        margin-top: 5px;
+    }
+
+    /* Simulador de Desconto */
+    .simulador-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 25px;
+    }
+    .simulador-titulo {
+        margin-top: 0;
+        color: #475569;
+        font-size: 16px;
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+    .simulador-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-end;
+    }
+    .input-grupo {
+        display: flex;
+        flex: 1;
+        min-width: 140px;
+        flex-direction: column;
+    }
+    .input-grupo label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+    .input-campo {
+        display: flex;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+    }
+    .input-campo span {
+        background: #f1f5f9;
+        padding: 12px 15px;
+        color: #475569;
+        font-weight: 700;
+        border-right: 1px solid #cbd5e1;
+        border-left: 1px solid #cbd5e1;
+    }
+    .input-campo input {
+        border: none;
+        padding: 12px;
+        width: 100%;
+        outline: none;
+        font-size: 16px;
+        color: #0f172a;
+        font-weight: 600;
+    }
+    .valor-final-box {
+        flex: 1;
+        min-width: 160px;
+        text-align: right;
+    }
+    .valor-final-box label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #64748b;
+        display: block;
+        margin-bottom: 8px;
+    }
+    .valor-final-box h3 {
+        margin: 0;
+        color: #10b981;
+        font-size: 32px;
+        font-weight: 800;
+    }
+
+    /* Utilitários */
+    .loading-spinner {
+        border: 4px solid #e2e8f0;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border-left-color: #38bdf8;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 15px auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .text-center { text-align: center; }
+    .d-none { display: none !important; }
+    .alerta { padding: 20px; border-radius: 12px; text-align: center; font-weight: bold; font-size: 16px;}
+    .alerta-erro { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;}
+
+    /* Mobile */
+    @media (max-width: 650px) {
+        .search-wrapper { flex-direction: column; border-radius: 16px; padding: 10px; border: 1px solid #e2e8f0;}
+        .search-wrapper input { width: 100%; text-align: center; margin-bottom: 10px;}
+        .btn-buscar, .btn-camera { width: 100%; margin: 0 0 10px 0; border-radius: 10px;}
+        .produto-header { flex-direction: column; }
+        .badge-estoque { margin-top: 10px; display: inline-block; }
+        .valor-final-box { text-align: center; margin-top: 10px; width: 100%; background: #fff; padding: 15px; border-radius: 10px; border: 1px dashed #10b981;}
+    }
+</style>
+
+<div class="consulta-container">
+    <div class="consulta-header">
+        <h2><i class="fas fa-barcode"></i> Consulta da Livraria</h2>
+        <p>Use um leitor físico, digite o nome ou use a câmera do celular.</p>
+    </div>
+    
+    <!-- Barra de Busca -->
+    <div class="search-wrapper">
+        <input type="text" id="searchInput" placeholder="Escaneie o código ou digite o nome..." autofocus autocomplete="off">
+        <button class="btn-buscar" id="searchBtn" type="button"><i class="fas fa-search"></i> Buscar</button>
+        <button class="btn-camera" id="cameraBtn" type="button" title="Escanear com a Câmera"><i class="fas fa-camera"></i></button>
+    </div>
+
+    <!-- Container da Câmera (Oculto por padrão) -->
+    <div id="reader-container" class="camera-container">
+        <div id="reader" style="width: 100%;"></div>
+        <button class="btn-fechar-camera" id="closeCameraBtn"><i class="fas fa-times"></i> Fechar Câmera</button>
+    </div>
+
+    <!-- Indicador de Carregamento -->
+    <div id="loading" class="text-center d-none">
+        <div class="loading-spinner"></div>
+        <p style="color: #64748b; font-weight: bold;">Buscando produto na base...</p>
+    </div>
+
+    <!-- Área de Resultados -->
+    <div id="resultsArea"></div>
+</div>
+
+<!-- Biblioteca Gratuita (Open Source) para Leitura de QR/Código de Barras -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const cameraBtn = document.getElementById('cameraBtn');
+    const closeCameraBtn = document.getElementById('closeCameraBtn');
+    const readerContainer = document.getElementById('reader-container');
+    const resultsArea = document.getElementById('resultsArea');
+    const loading = document.getElementById('loading');
+    
+    let html5QrcodeScanner = null;
+
+    // Mantém o foco no input para leitores físicos (USB/Laser)
+    document.addEventListener('click', function(e) {
+        if(e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON' && readerContainer.style.display !== 'block') {
+            searchInput.focus();
+        }
+    });
+
+    // 1. Função que chama nossa API
+    function realizarBusca(query) {
+        if(!query) return;
+        
+        resultsArea.innerHTML = '';
+        loading.classList.remove('d-none');
+        
+        fetch(`/livraria/api/busca/?q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                loading.classList.add('d-none');
+                if(data.error) {
+                    resultsArea.innerHTML = `<div class="alerta alerta-erro"><i class="fas fa-exclamation-triangle"></i> ${data.error}</div>`;
+                } else {
+                    let html = '';
+                    data.produtos.forEach(p => {
+                        html += renderCardProduto(p);
+                    });
+                    resultsArea.innerHTML = html;
+                }
+                searchInput.value = ''; 
+                searchInput.focus();
+            })
+            .catch(err => {
+                loading.classList.add('d-none');
+                resultsArea.innerHTML = `<div class="alerta alerta-erro"><i class="fas fa-times-circle"></i> Erro de comunicação com o servidor.</div>`;
+            });
+    }
+
+    // 2. Renderiza o Card de Produto
+    function renderCardProduto(p) {
+        const badgeClass = p.quantidade_estoque > 0 ? 'estoque-ok' : 'estoque-zero';
+        const estoqueStatus = p.quantidade_estoque > 0 ? `${p.quantidade_estoque} em estoque` : 'Sem estoque';
+        const precoFormatado = p.preco_venda.toFixed(2).replace('.', ',');
+        
+        return `
+        <div class="produto-card">
+            <div class="produto-header">
+                <h4 class="produto-titulo">${p.descricao}</h4>
+                <span class="badge-estoque ${badgeClass}">${estoqueStatus}</span>
+            </div>
+            <p class="produto-meta">
+                <i class="fas fa-barcode"></i> Cód: <strong>${p.codigo_barras}</strong> &nbsp;|&nbsp; 
+                <i class="fas fa-building"></i> Editora/Marca: <strong>${p.editora || 'Não informada'}</strong>
+            </p>
+            
+            <div class="valor-capa">
+                Valor de Capa 
+                <span>R$ ${precoFormatado}</span>
+            </div>
+            
+            <div class="simulador-box">
+                <h6 class="simulador-titulo"><i class="fas fa-calculator"></i> Simular Desconto para o Cliente</h6>
+                <div class="simulador-grid">
+                    <div class="input-grupo">
+                        <label>Desconto (%)</label>
+                        <div class="input-campo">
+                            <input type="number" class="desc-perc" data-base="${p.preco_venda}" min="0" max="100" placeholder="Ex: 10">
+                            <span>%</span>
+                        </div>
+                    </div>
+                    <div class="input-grupo">
+                        <label>Desconto (R$)</label>
+                        <div class="input-campo">
+                            <span>R$</span>
+                            <input type="number" class="desc-val" data-base="${p.preco_venda}" min="0" step="0.01" placeholder="Ex: 5,00">
+                        </div>
+                    </div>
+                    <div class="valor-final-box">
+                        <label>Valor Final com Desconto</label>
+                        <h3 class="preco-final">R$ ${precoFormatado}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
+    // 3. Scanner via Câmera (Mobile)
+    function onScanSuccess(decodedText, decodedResult) {
+        if(html5QrcodeScanner) html5QrcodeScanner.clear();
+        readerContainer.style.display = 'none';
+        searchInput.value = decodedText;
+        realizarBusca(decodedText);
+    }
+
+    cameraBtn.addEventListener('click', () => {
+        readerContainer.style.display = 'block';
+        html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: {width: 250, height: 150} }, false);
+        html5QrcodeScanner.render(onScanSuccess);
+    });
+
+    closeCameraBtn.addEventListener('click', () => {
+        if(html5QrcodeScanner) html5QrcodeScanner.clear();
+        readerContainer.style.display = 'none';
+        searchInput.focus();
+    });
+
+    // 4. Gatilhos de Busca
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            realizarBusca(this.value.trim());
+        }
+    });
+    
+    searchBtn.addEventListener('click', () => realizarBusca(searchInput.value.trim()));
+
+    // 5. Calculadora em Tempo Real
+    resultsArea.addEventListener('input', function(e) {
+        const target = e.target;
+        
+        if(target.classList.contains('desc-perc') || target.classList.contains('desc-val')) {
+            const card = target.closest('.produto-card');
+            const base = parseFloat(target.getAttribute('data-base'));
+            const inputPerc = card.querySelector('.desc-perc');
+            const inputVal = card.querySelector('.desc-val');
+            const outputFinal = card.querySelector('.preco-final');
+            
+            let descontoR = 0;
+            let descontoP = 0;
+
+            if(target.classList.contains('desc-perc')) {
+                descontoP = parseFloat(target.value) || 0;
+                if(descontoP > 100) descontoP = 100;
+                if(descontoP < 0) descontoP = 0;
+                
+                descontoR = base * (descontoP / 100);
+                if(target.value !== '') inputVal.value = descontoR.toFixed(2);
+                else inputVal.value = '';
+            } 
+            else {
+                descontoR = parseFloat(target.value) || 0;
+                if(descontoR > base) descontoR = base;
+                if(descontoR < 0) descontoR = 0;
+                
+                descontoP = (descontoR / base) * 100;
+                if(target.value !== '') inputPerc.value = descontoP.toFixed(2);
+                else inputPerc.value = '';
+            }
+
+            const precoFinal = base - descontoR;
+            outputFinal.innerText = `R$ ${precoFinal.toFixed(2).replace('.', ',')}`;
+        }
+    });
+});
+</script>
+{% endblock %}

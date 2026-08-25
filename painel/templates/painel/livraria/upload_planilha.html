@@ -1,0 +1,80 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Coluna da Esquerda: Formulário de Upload -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0 fs-5"><i class="fas fa-file-excel"></i> Atualizar Estoque e Valores</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted">Faça o upload do arquivo <strong>Produtos.xlsx</strong> atualizado para sincronizar o sistema de buscas da livraria.</p>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" enctype="multipart/form-data" class="mt-4">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="planilha" class="form-label fw-bold">Arquivo Excel (.xlsx)</label>
+                            <input class="form-control form-control-lg" type="file" id="planilha" name="planilha" accept=".xlsx" required>
+                            <small class="form-text text-muted">Apenas as colunas A, C, E, N e O serão processadas. A primeira linha deve ser o cabeçalho.</small>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success py-2 fw-bold text-uppercase shadow-sm">
+                                <i class="fas fa-cloud-upload-alt me-2"></i> Processar Planilha
+                            </button>
+                            <a href="{% url 'livraria_hub' %}" class="btn btn-outline-secondary py-2">Voltar para o Hub</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna da Direita: Histórico -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm border-0 h-100 bg-light">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0 fs-6"><i class="fas fa-history"></i> Últimos 4 Uploads</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% if historico %}
+                            {% for h in historico %}
+                                <div class="list-group-item bg-transparent py-3">
+                                    <div class="d-flex w-100 justify-content-between align-items-center mb-1">
+                                        <h6 class="mb-0 fw-bold">
+                                            {% if h.sucesso %}
+                                                <i class="fas fa-check-circle text-success me-1"></i> Sucesso
+                                            {% else %}
+                                                <i class="fas fa-times-circle text-danger me-1"></i> Falha
+                                            {% endif %}
+                                        </h6>
+                                        <small class="text-muted"><i class="far fa-clock"></i> {{ h.data_upload|date:"d/m/Y H:i" }}</small>
+                                    </div>
+                                    <p class="mb-1 small text-dark"><strong>Usuário:</strong> {{ h.usuario.first_name|default:h.usuario.username }}</p>
+                                    <small class="text-muted d-block">{{ h.mensagem }}</small>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="list-group-item bg-transparent text-center text-muted py-5">
+                                <i class="fas fa-inbox fa-3x mb-3 opacity-25"></i>
+                                <p class="mb-0">Nenhum histórico registrado ainda.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
