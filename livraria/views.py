@@ -69,7 +69,7 @@ def livraria_completa(request):
 
 def consulta_rapida_page(request):
     """Renderiza a página pública de consulta da livraria"""
-    return render(request, 'livraria/consulta_rapida.html')
+    return render(request, 'livraria/consulta_estoque.html')
 
 def api_buscar_produtos(request):
     """API instantânea para buscar produtos sem recarregar a página"""
@@ -90,9 +90,8 @@ def api_buscar_produtos(request):
         dados.append({
             'codigo_barras': p.codigo_barras,
             'descricao': p.descricao,
-            'preco_venda': float(p.preco_venda),
+            'preco_venda': float(p.preco_venda) if p.preco_venda else 0.0,
             'quantidade_estoque': p.quantidade_estoque,
-            'editora': p.editora
+            'editora': p.editora if p.editora else 'Não informada'
         })
     return JsonResponse({'produtos': dados})
-

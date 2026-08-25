@@ -1,0 +1,257 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- CSS Customizado para garantir o visual FEPI em qualquer tela -->
+<style>
+    .fepi-text { color: #003366 !important; }
+    .fepi-bg { background-color: #003366 !important; }
+    .fepi-btn { background-color: #003366; color: white; font-weight: 600; border: none; transition: 0.3s; }
+    .fepi-btn:hover { background-color: #001f40; color: white; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+    .fepi-search-card { border-radius: 15px; border-top: 5px solid #003366; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+    .fepi-result-card { border-radius: 12px; border-left: 5px solid #003366; box-shadow: 0 6px 15px rgba(0,0,0,0.08); transition: 0.3s; }
+    .fepi-result-card:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.12); }
+    .fepi-input:focus { border-color: #003366; box-shadow: 0 0 0 0.25rem rgba(0, 51, 102, 0.25); }
+</style>
+
+<div class="container py-4 py-md-5">
+    <!-- Cabeçalho -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-12 col-md-8 text-center">
+            <h2 class="fw-bold fepi-text mb-2"><i class="fas fa-book-open me-2"></i>Consulta de Acervo</h2>
+            <p class="text-muted">Livraria da Federação Espírita Piauiense</p>
+        </div>
+    </div>
+
+    <!-- Área de Busca (Blindada e Responsiva) -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-12 col-md-8 col-lg-7">
+            <div class="card fepi-search-card border-0">
+                <div class="card-body p-3 p-md-4">
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <!-- Input ocupa todo o espaço possível -->
+                        <div class="input-group input-group-lg flex-grow-1">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+                            <input type="text" id="buscaInput" class="form-control fepi-input border-start-0 ps-0 bg-light" placeholder="Nome do livro ou código..." autofocus autocomplete="off">
+                        </div>
+                        <!-- Botão Câmera (Fica ao lado no PC, e embaixo ocupando 100% no celular) -->
+                        <button id="btnCamera" class="btn fepi-btn btn-lg px-4 d-flex align-items-center justify-content-center gap-2">
+                            <i class="fas fa-camera"></i> <span>Câmera</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container da Câmera (Oculto por padrão) -->
+    <div id="cameraContainer" class="row justify-content-center d-none mb-5">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                <div class="card-header bg-dark text-white text-center py-2">
+                    <small><i class="fas fa-barcode me-2"></i>Aponte para o código de barras</small>
+                </div>
+                <div class="card-body p-0 bg-light">
+                    <div id="reader" style="width: 100%;"></div>
+                </div>
+                <div class="card-footer bg-white border-0 p-3">
+                    <button id="btnFecharCamera" class="btn btn-outline-danger w-100 fw-bold">
+                        <i class="fas fa-times me-2"></i>Cancelar Leitura
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alertas de Erro -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-7">
+            <div id="mensagemErro" class="alert alert-warning text-center shadow-sm fw-semibold d-none" role="alert"></div>
+        </div>
+    </div>
+
+    <!-- Container de Resultados Dinâmicos -->
+    <div id="resultadosContainer" class="row justify-content-center">
+        <!-- JS vai injetar os resultados aqui -->
+    </div>
+</div>
+
+<!-- Template do Card de Resultado (Invisível, clonado pelo JS) -->
+<template id="cardTemplate">
+    <div class="col-12 col-md-8 col-lg-7 mb-4">
+        <div class="card fepi-result-card bg-white h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h4 class="card-title fw-bold text-dark mb-0 produto-nome pe-3">Nome do Livro</h4>
+                    <span class="badge fs-6 px-3 py-2 badge-estoque rounded-pill">0</span>
+                </div>
+                
+                <p class="text-muted small mb-4">
+                    <i class="fas fa-building me-1"></i> Editora: <span class="produto-editora fw-semibold"></span> <br>
+                    <i class="fas fa-barcode me-1"></i> Cód: <span class="produto-codigo"></span>
+                </p>
+                
+                <h2 class="fw-bold fepi-text mb-4">R$ <span class="produto-preco">0,00</span></h2>
+
+                <div class="bg-light p-3 rounded-3 border">
+                    <h6 class="fw-bold text-muted mb-3"><i class="fas fa-calculator me-2"></i>Simulador de Desconto</h6>
+                    <div class="row align-items-center">
+                        <div class="col-12 col-sm-5 mb-3 mb-sm-0">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fas fa-percent text-muted"></i></span>
+                                <input type="number" class="form-control fepi-input input-desconto fw-bold text-center" min="0" max="100" value="0" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-7 text-sm-end">
+                            <p class="mb-1 text-danger fw-semibold small">Desconto: - R$ <span class="valor-desconto">0,00</span></p>
+                            <h4 class="mb-0 fw-bold text-success">Total: R$ <span class="valor-final">0,00</span></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Biblioteca do Leitor -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const buscaInput = document.getElementById('buscaInput');
+        const cameraContainer = document.getElementById('cameraContainer');
+        const msgErro = document.getElementById('mensagemErro');
+        const resultadosContainer = document.getElementById('resultadosContainer');
+        const cardTemplate = document.getElementById('cardTemplate');
+        
+        let html5QrCode;
+
+        // Configuração da Câmera focada em código de barras
+        const qrConfig = { 
+            fps: 15, 
+            qrbox: { width: 280, height: 120 },
+            aspectRatio: 1.0,
+            formatsToSupport: [ Html5QrcodeSupportedFormats.EAN_13, Html5QrcodeSupportedFormats.EAN_8, Html5QrcodeSupportedFormats.CODE_128 ]
+        };
+
+        document.getElementById('btnCamera').addEventListener('click', () => {
+            cameraContainer.classList.remove('d-none');
+            msgErro.classList.add('d-none');
+            resultadosContainer.innerHTML = ''; // Limpa resultados anteriores
+            
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("reader");
+            }
+
+            html5QrCode.start(
+                { facingMode: "environment" },
+                qrConfig,
+                (decodedText) => {
+                    pararCamera();
+                    buscaInput.value = decodedText;
+                    buscarProduto(decodedText);
+                },
+                (errorMessage) => { /* ignora erros de scan em tempo real */ }
+            ).catch(err => {
+                mostrarErro("Erro ao acessar a câmera. Autorize o navegador a usar a câmera do celular.");
+                cameraContainer.classList.add('d-none');
+            });
+        });
+
+        document.getElementById('btnFecharCamera').addEventListener('click', pararCamera);
+
+        function pararCamera() {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => {
+                    cameraContainer.classList.add('d-none');
+                    html5QrCode.clear();
+                }).catch(err => console.error(err));
+            } else {
+                cameraContainer.classList.add('d-none');
+            }
+        }
+
+        // Suporte ao leitor USB físico ou teclado
+        buscaInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if(this.value.trim() !== '') {
+                    buscarProduto(this.value.trim());
+                }
+            }
+        });
+
+        function buscarProduto(termo) {
+            if (!termo.trim()) return;
+
+            resultadosContainer.innerHTML = '<div class="col-12 text-center my-5"><div class="spinner-border text-primary" role="status"></div><h5 class="mt-3 text-muted">Consultando acervo...</h5></div>';
+            msgErro.classList.add('d-none');
+            
+            fetch(`/livraria/api/busca/?q=${encodeURIComponent(termo)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.error || 'Produto não encontrado.') });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    resultadosContainer.innerHTML = ''; 
+                    if (data.produtos && data.produtos.length > 0) {
+                        data.produtos.forEach(produto => renderizarCard(produto));
+                    } else {
+                        throw new Error('Nenhum produto retornado.');
+                    }
+                    buscaInput.value = '';
+                    buscaInput.focus();
+                })
+                .catch(error => {
+                    resultadosContainer.innerHTML = '';
+                    mostrarErro(error.message);
+                    buscaInput.value = '';
+                    buscaInput.focus();
+                });
+        }
+
+        function renderizarCard(produto) {
+            const clone = cardTemplate.content.cloneNode(true);
+            const precoOriginal = parseFloat(produto.preco_venda);
+
+            clone.querySelector('.produto-nome').textContent = produto.descricao;
+            clone.querySelector('.produto-editora').textContent = produto.editora || "Não informada";
+            clone.querySelector('.produto-codigo').textContent = produto.codigo_barras;
+            
+            const badgeEstoque = clone.querySelector('.badge-estoque');
+            const estoque = parseInt(produto.quantidade_estoque);
+            badgeEstoque.textContent = estoque > 0 ? `Em Estoque: ${estoque}` : "Esgotado";
+            badgeEstoque.classList.add(estoque > 0 ? 'bg-success' : 'bg-danger');
+            
+            const formatoMoeda = {minimumFractionDigits: 2, maximumFractionDigits: 2};
+            clone.querySelector('.produto-preco').textContent = precoOriginal.toLocaleString('pt-BR', formatoMoeda);
+            clone.querySelector('.valor-final').textContent = precoOriginal.toLocaleString('pt-BR', formatoMoeda);
+
+            // Motor de Cálculo em Tempo Real
+            const inputDesconto = clone.querySelector('.input-desconto');
+            const spanDesconto = clone.querySelector('.valor-desconto');
+            const spanFinal = clone.querySelector('.valor-final');
+
+            inputDesconto.addEventListener('input', function() {
+                let percentual = parseFloat(this.value) || 0;
+                if (percentual < 0) percentual = 0;
+                if (percentual > 100) percentual = 100;
+
+                let valorDesconto = (precoOriginal * percentual) / 100;
+                let valorFinal = precoOriginal - valorDesconto;
+                
+                spanDesconto.textContent = valorDesconto.toLocaleString('pt-BR', formatoMoeda);
+                spanFinal.textContent = valorFinal.toLocaleString('pt-BR', formatoMoeda);
+            });
+
+            resultadosContainer.appendChild(clone);
+        }
+
+        function mostrarErro(mensagem) {
+            msgErro.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i> ${mensagem}`;
+            msgErro.classList.remove('d-none');
+        }
+    });
+</script>
+{% endblock %}
