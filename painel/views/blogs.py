@@ -6,9 +6,50 @@ from django.utils.text import slugify
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-from blogs.models import PostBlog, BlogDepartamento, CategoriaBlog
+from blogs.models import PostBlog, BlogDepartamento, CategoriaBlog, BlogMembro
 from painel.forms.blogs import PostBlogForm, ConfigBlogForm, BlogDepartamentoCreateForm, CategoriaBlogForm
-from .auth import check_acesso_painel
+from .auth import check_acesso_painel, is_admin
+
+
+def blogs_permitidos(user):
+    """Blogs que o usuário pode administrar; superusuário mantém acesso global."""
+    if user.is_superuser:
+        return BlogDepartamento.objects.all()
+    legado = getattr(getattr(user, 'perfil', None), 'departamento_blog_id', None)
+    qs = BlogDepartamento.objects.filter(membros__usuario=user, membros__ativo=True)
+    if legado:
+        qs = qs | BlogDepartamento.objects.filter(pk=legado)
+    return qs.distinct()
+
+
+def membro_do_blog(user, blog):
+    if user.is_superuser:
+        return None
+    return BlogMembro.objects.filter(usuario=user, blog=blog, ativo=True).first()
+
+
+def pode_acessar_blog(user, blog):
+    return user.is_superuser or membro_do_blog(user, blog) is not None
+
+
+def pode_configurar_blog(user, blog):
+    membro = membro_do_blog(user, blog)
+    return user.is_superuser or (membro and membro.papel == BlogMembro.PAPEL_GESTOR)
+
+
+def pode_excluir_blog(user, blog):
+    return user.is_superuser
+
+
+def aplicar_escopo_formulario(form, user):
+    if not user.is_superuser:
+        form.fields['departamento'].queryset = blogs_permitidos(user).filter(ativo=True)
+        membro_blogs = BlogMembro.objects.filter(usuario=user, ativo=True).values_list('blog_id', flat=True)
+        if not form.instance.pk:
+            form.fields['publicado'].initial = False
+        if not form.instance.pk or form.instance.departamento_id in membro_blogs:
+            form.fields['publicado'].disabled = True
+    return form
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
@@ -17,7 +58,7 @@ def blogs_hub(request):
     query = request.GET.get('q', '')
 
     # 2. Busca e Filtra os Departamentos
-    departamentos = BlogDepartamento.objects.filter(ativo=True).order_by('nome')
+    departamentos = blogs_permitidos(request.user).filter(ativo=True).order_by('nome')
     if query:
         departamentos = departamentos.filter(
             Q(nome__icontains=query) | 
@@ -25,7 +66,7 @@ def blogs_hub(request):
         )
 
     # 3. Busca e Filtra os Artigos
-    posts_list = PostBlog.objects.select_related('departamento', 'categoria').all().order_by('-data_publicacao')
+    posts_list = PostBlog.objects.select_related('departamento', 'categoria').filter(departamento__in=blogs_permitidos(request.user)).order_by('-data_publicacao')
     if query:
         posts_list = posts_list.filter(
             Q(titulo__icontains=query) | 
@@ -47,7 +88,7 @@ def blogs_hub(request):
 
 
 @login_required(login_url='/login/')
-@user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
+@user_passes_test(is_admin, login_url='/usuarios/minha-conta/')
 def criar_departamento(request):
     """ View para criar novos ambientes de blog diretamente pelo painel """
     if request.method == 'POST':
@@ -71,8 +112,10 @@ def criar_departamento(request):
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
 def gerenciar_post_blog(request, id=None):
     instancia = get_object_or_404(PostBlog, id=id) if id else None
+    if instancia and not pode_acessar_blog(request.user, instancia.departamento):
+        return redirect('blogs_hub')
     if request.method == 'POST':
-        form = PostBlogForm(request.POST, request.FILES, instance=instancia)
+        form = aplicar_escopo_formulario(PostBlogForm(request.POST, request.FILES, instance=instancia), request.user)
         if form.is_valid():
             post = form.save(commit=False)
             if not post.slug:
@@ -83,7 +126,7 @@ def gerenciar_post_blog(request, id=None):
             messages.success(request, "Publicação do blog salva com sucesso!")
             return redirect('blogs_hub')
     else:
-        form = PostBlogForm(instance=instancia)
+        form = aplicar_escopo_formulario(PostBlogForm(instance=instancia), request.user)
         
     titulo = "Editar Postagem do Blog" if id else "Nova Publicação para o Blog"
     return render(request, 'painel/blogs/form_post.html', {'form': form, 'titulo': titulo})
@@ -92,7 +135,7 @@ def gerenciar_post_blog(request, id=None):
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
 def excluir_post_blog(request, id):
-    post = get_object_or_404(PostBlog, id=id)
+    post = get_object_or_404(PostBlog, id=id, departamento__in=blogs_permitidos(request.user))
     post.delete()
     messages.success(request, "Postagem excluída permanentemente.")
     return redirect('blogs_hub')
@@ -102,6 +145,8 @@ def excluir_post_blog(request, id):
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
 def configurar_rede_social_blog(request, depto_id):
     depto = get_object_or_404(BlogDepartamento, id=depto_id)
+    if not pode_configurar_blog(request.user, depto):
+        return redirect('blogs_hub')
     if request.method == 'POST':
         form = ConfigBlogForm(request.POST, request.FILES, instance=depto)
         if form.is_valid():
@@ -164,6 +209,8 @@ def excluir_departamento_blog(request, id):
     (cascata de exclusão definida no modelo).
     """
     departamento = get_object_or_404(BlogDepartamento, id=id)
+    if not pode_excluir_blog(request.user, departamento):
+        return redirect('blogs_hub')
     nome_departamento = departamento.nome
     
     # Excluir o departamento (e todos os posts associados em cascata)

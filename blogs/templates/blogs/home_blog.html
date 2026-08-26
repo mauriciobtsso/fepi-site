@@ -4,10 +4,23 @@
 <style>
     /* Estilo do Banner de Boas Vindas */
     .hero-section {
-        background-color: #ffffff;
+        background: linear-gradient(135deg, #ffffff 0%, var(--fepi-teal-light) 100%);
         padding: 4rem 0 3rem 0;
+        position: relative;
+        overflow: hidden;
         border-bottom: 1px solid #eaeaea;
         margin-bottom: 3rem;
+    }
+    .hero-section::before {
+        background: var(--blog-secondary);
+        border-radius: 50%;
+        content: "";
+        height: 240px;
+        opacity: .12;
+        position: absolute;
+        right: -70px;
+        top: -110px;
+        width: 240px;
     }
     .hero-title {
         font-weight: 800;
@@ -151,10 +164,14 @@
 {% endblock %}
 
 {% block content %}
-<section class="hero-section text-center">
-    <div class="container">
-        <h1 class="hero-title">Blog do <span>{{ departamento.nome }}</span></h1>
-        <p class="lead text-muted mt-3 mb-5">Reflexões e atualizações da Federação Espírita Piauiense.</p>
+<section class="hero-section text-center" style="--blog-primary: {{ departamento.cor_primaria }}; --blog-secondary: {{ departamento.cor_secundaria }};{% if departamento.imagem_capa %} background-image: linear-gradient(rgba(255,255,255,.92), rgba(224,242,241,.94)), url('{{ departamento.imagem_capa.url }}'); background-size: cover; background-position: center;{% endif %}">
+    <div class="container position-relative">
+        {% if departamento.logo %}
+            <img src="{{ departamento.logo.url }}" alt="Logo do {{ departamento.nome }}" style="height:72px; width:auto; object-fit:contain; margin-bottom:1rem;">
+        {% endif %}
+        <div class="small fw-bold text-uppercase mb-2" style="color: var(--blog-primary); letter-spacing:.12em;">Blog {{ departamento.subdominio|upper }}</div>
+        <h1 class="hero-title">{{ departamento.nome }}</h1>
+        <p class="lead text-muted mt-3 mb-5">{{ departamento.frase_destaque|default:departamento.descricao|default:'Reflexões, estudos e atualizações da Federação Espírita Piauiense.' }}</p>
         
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">

@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>{% block title %}Blog - {{ departamento.nome }}{% endblock %}</title>
-    
+    <meta name="description" content="{{ departamento.frase_destaque|default:departamento.descricao|default:'Conteúdos e atualizações da Federação Espírita Piauiense.'|truncatechars:155 }}">
+    {% if request %}<link rel="canonical" href="{{ request.build_absolute_uri }}">{% endif %}
+    <meta property="og:title" content="{% block og_title %}{{ departamento.nome }} | FEPI{% endblock %}">
+    <meta property="og:description" content="{{ departamento.frase_destaque|default:departamento.descricao|default:'Conteúdos e atualizações da Federação Espírita Piauiense.'|truncatechars:155 }}">
+    {% if departamento.imagem_capa %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ departamento.imagem_capa.url }}">{% endif %}
     {% block extra_meta %}{% endblock %}
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,11 +20,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* DEFINIÇÃO DA PALETA DE CORES DA FEPI (Baseada na imagem) */
+        /* Tokens globais; cada blog pode personalizar primary/secondary com contraste controlado. */
         :root {
-            --fepi-teal: #008080; /* Tom de Verde-Água/Ciano principal */
+            --blog-primary: {{ departamento.cor_primaria|default:'#008080' }};
+            --blog-secondary: {{ departamento.cor_secundaria|default:'#d6ad55' }};
+            --fepi-teal: var(--blog-primary); /* Identidade principal do blog */
             --fepi-teal-light: #e0f2f1; /* Tom muito claro para fundos */
-            --fepi-dark: #2c3e50; /* Azul escuro para textos e rodapé */
+            --fepi-dark: #17324d; /* Azul escuro institucional para textos */
             --fepi-gray: #7f8c8d; /* Cinza para metadados */
             --fepi-bg: #f4f7f6; /* Fundo suave da página */
         }
@@ -37,8 +43,8 @@
         /* Menu Navbar Elegante */
         .navbar {
             background-color: #ffffff;
-            border-bottom: 1px solid #eaeaea;
-            padding: 1rem 0;
+            border-bottom: 3px solid var(--blog-primary);
+            padding: .85rem 0;
         }
         .navbar-brand {
             font-weight: 800;
@@ -47,7 +53,19 @@
             letter-spacing: -0.5px;
         }
         .navbar-brand span {
-            color: var(--fepi-teal);
+            color: var(--blog-primary);
+        }
+        .blog-brand-mark {
+            align-items:center;
+            background:var(--blog-primary);
+            border-radius:10px;
+            color:#fff;
+            display:inline-flex;
+            font-size:.72rem;
+            height:30px;
+            justify-content:center;
+            margin-right:.45rem;
+            width:30px;
         }
         .nav-link {
             font-weight: 600;
@@ -75,14 +93,14 @@
 
         /* Rodapé FEPI */
         .blog-footer {
-            background-color: var(--fepi-dark);
+            background: linear-gradient(135deg, var(--fepi-dark), #102338);
             color: #ecf0f1;
             padding: 3rem 0;
             margin-top: auto;
             font-size: 0.95rem;
         }
         .blog-footer a {
-            color: var(--fepi-teal);
+            color: var(--blog-secondary);
             text-decoration: none;
         }
         .blog-footer a:hover {
@@ -91,7 +109,7 @@
         
         /* Utilitário para cor FEPI Teal */
         .fepi-teal-text {
-            color: var(--fepi-teal) !important;
+            color: var(--blog-primary) !important;
         }
         
         /* Espaço para CSS das páginas filhas */
@@ -101,7 +119,8 @@
 <body>
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home_blog' %}">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home_blog' %}">
+                <span class="blog-brand-mark"><i class="fas fa-feather-alt" aria-hidden="true"></i></span>
                 FEPI <span>| {{ departamento.subdominio|upper }}</span>
             </a>
             

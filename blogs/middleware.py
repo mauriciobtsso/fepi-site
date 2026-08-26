@@ -1,28 +1,24 @@
-# blogs/middleware.py
+from django.conf import settings
+
 
 class SubdomainBlogMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        # Pega o host da requisição (ex: dije.fepiaui.org.br ou localhost:8000)
-        host = request.get_host().split(':')[0] 
-        
-        # Lista de domínios principais onde o interceptador NÃO deve atuar
-        dominios_ignorados = ['127.0.0.1', 'localhost', 'fepiaui.org.br', 'www.fepiaui.org.br', 'seu-app.railway.app']
-        
-        # Rotas de sistema que não devem sofrer alteração
+        host = request.get_host().split(':')[0].lower().rstrip('.')
+        base_domain = getattr(settings, 'PARENT_HOST', 'fepiaui.org.br').split(':')[0].lower()
+        is_official_subdomain = (
+            host.endswith(f'.{base_domain}')
+            and host.count('.') == base_domain.count('.') + 1
+        )
         rotas_ignoradas = ('/admin/', '/painel/', '/media/', '/static/')
-        
-        if host not in dominios_ignorados and not request.path_info.startswith(rotas_ignoradas):
-            # Extrai o subdomínio (ex: 'dije' de 'dije.fepiaui.org.br')
-            subdominio = host.split('.')[0]
-            
-            # Evita loop infinito caso a URL interna já tenha sido processada
+
+        # Só reescreve subdomínios oficiais de um nível, como dapse.fepiaui.org.br.
+        # Hosts do Render, Railway, localhost e domínios desconhecidos seguem o fluxo normal.
+        if is_official_subdomain and not request.path_info.startswith(rotas_ignoradas):
+            subdominio = host[:-(len(base_domain) + 1)]
             if not request.path_info.startswith('/blogs/'):
-                # Reescreve o caminho internamente para o Django processar
-                # Exemplo: O usuário acessa "/" no subdomínio, o Django lê como "/blogs/dije/"
                 request.path_info = f'/blogs/{subdominio}{request.path_info}'
 
-        response = self.get_response(request)
-        return response
+        return self.get_response(request)

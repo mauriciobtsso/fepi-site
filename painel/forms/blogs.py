@@ -37,12 +37,16 @@ class PostBlogForm(forms.ModelForm):
 class ConfigBlogForm(forms.ModelForm):
     class Meta:
         model = BlogDepartamento
-        fields = ['nome', 'cor_primaria', 'logo', 'descricao', 'instagram_url', 'instagram_widget_code']
+        fields = ['nome', 'tema', 'cor_primaria', 'cor_secundaria', 'logo', 'imagem_capa', 'frase_destaque', 'descricao', 'instagram_url', 'instagram_widget_code']
         
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
-            'cor_primaria': forms.TextInput(attrs={'class': 'form-control', 'type': 'color'}),
+            'tema': forms.Select(attrs={'class': 'form-select'}),
+            'cor_primaria': forms.TextInput(attrs={'class': 'form-control form-control-color', 'type': 'color'}),
+            'cor_secundaria': forms.TextInput(attrs={'class': 'form-control form-control-color', 'type': 'color'}),
             'logo': forms.FileInput(attrs={'class': 'form-control'}),
+            'imagem_capa': forms.FileInput(attrs={'class': 'form-control'}),
+            'frase_destaque': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Estudo, serviço e fraternidade'}),
             'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'instagram_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://instagram.com/...'}),
             'instagram_widget_code': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Cole aqui o código embed...'}),
@@ -52,13 +56,17 @@ class ConfigBlogForm(forms.ModelForm):
 class BlogDepartamentoCreateForm(forms.ModelForm):
     class Meta:
         model = BlogDepartamento
-        fields = ['nome', 'subdominio', 'cor_primaria', 'logo', 'descricao', 'instagram_url', 'instagram_widget_code', 'ativo']
+        fields = ['nome', 'subdominio', 'tema', 'cor_primaria', 'cor_secundaria', 'logo', 'imagem_capa', 'frase_destaque', 'descricao', 'instagram_url', 'instagram_widget_code', 'ativo']
         
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Departamento de Infância e Juventude (DIJE)'}),
             'subdominio': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: dije (Apenas letras minúsculas e sem espaço)'}),
+            'tema': forms.Select(attrs={'class': 'form-select'}),
             'cor_primaria': forms.TextInput(attrs={'class': 'form-control form-control-color', 'type': 'color'}),
+            'cor_secundaria': forms.TextInput(attrs={'class': 'form-control form-control-color', 'type': 'color'}),
             'logo': forms.FileInput(attrs={'class': 'form-control'}),
+            'imagem_capa': forms.FileInput(attrs={'class': 'form-control'}),
+            'frase_destaque': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Estudo, serviço e fraternidade'}),
             'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'instagram_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://instagram.com/...'}),
             'instagram_widget_code': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Cole aqui o código embed...'}),

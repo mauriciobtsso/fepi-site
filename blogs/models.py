@@ -6,6 +6,18 @@ class BlogDepartamento(models.Model):
     nome = models.CharField(max_length=100, verbose_name="Nome do Departamento", help_text="Ex: Departamento de Infância e Juventude (DIJE)")
     subdominio = models.CharField(max_length=50, unique=True, help_text="Ex: 'dije' (o link ficará dije.fepiaui.org.br)")
     cor_primaria = models.CharField(max_length=7, default="#008080", help_text="Cor principal em HEX (para personalizar o template)")
+    TEMA_EDITORIAL = 'editorial'
+    TEMA_INSTITUCIONAL = 'institucional'
+    TEMA_AGENDA = 'agenda'
+    TEMAS = (
+        (TEMA_EDITORIAL, 'Editorial'),
+        (TEMA_INSTITUCIONAL, 'Institucional'),
+        (TEMA_AGENDA, 'Agenda e notícias'),
+    )
+    tema = models.CharField(max_length=20, choices=TEMAS, default=TEMA_EDITORIAL)
+    cor_secundaria = models.CharField(max_length=7, default="#d6ad55", help_text="Cor secundária em HEX")
+    imagem_capa = models.ImageField(upload_to='blogs/banners/', blank=True, null=True)
+    frase_destaque = models.CharField(max_length=180, blank=True, help_text="Frase exibida no destaque do blog")
     logo = models.ImageField(upload_to='blogs/logos/', blank=True, null=True)
     descricao = models.TextField(blank=True, help_text="Pequeno texto sobre o departamento")
     
@@ -61,3 +73,31 @@ class PostBlog(models.Model):
 
     def __str__(self):
         return f"[{self.departamento.subdominio}] {self.titulo}"
+
+
+class BlogMembro(models.Model):
+    PAPEL_EDITOR = 'editor'
+    PAPEL_REVISOR = 'revisor'
+    PAPEL_GESTOR = 'gestor'
+    PAPEIS = (
+        (PAPEL_EDITOR, 'Editor'),
+        (PAPEL_REVISOR, 'Revisor'),
+        (PAPEL_GESTOR, 'Gestor'),
+    )
+
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='membros_de_blogs')
+    blog = models.ForeignKey(BlogDepartamento, on_delete=models.CASCADE, related_name='membros')
+    papel = models.CharField(max_length=20, choices=PAPEIS, default=PAPEL_EDITOR)
+    ativo = models.BooleanField(default=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Membro de Blog'
+        verbose_name_plural = 'Membros de Blogs'
+        constraints = [
+            models.UniqueConstraint(fields=['usuario', 'blog'], name='unique_usuario_blog')
+        ]
+        ordering = ['blog__nome', 'usuario__username']
+
+    def __str__(self):
+        return f'{self.usuario.get_full_name() or self.usuario.username} — {self.blog.nome} ({self.get_papel_display()})'
