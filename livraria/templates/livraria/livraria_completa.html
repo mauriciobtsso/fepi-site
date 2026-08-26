@@ -3,199 +3,142 @@
 {% load cloudinary_tags %}
 
 {% block title %}FEPI | Livraria Ramiro Gama{% endblock %}
+{% block description %}Conheça o catálogo da Livraria Ramiro Gama, com obras espíritas selecionadas pela Federação Espírita do Piauí.{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* --- CONFIGURAÇÃO DA BUSCA CENTRALIZADA --- */
-    .search-wrapper { 
-        display: flex; 
-        justify-content: center; /* Centraliza horizontalmente */
-        width: 100%; 
-    }
-    
-    .search-form { 
-        display: flex; 
-        width: 100%; 
-        max-width: 600px; 
-        margin: 0 auto; /* Força o centro do elemento */
-    }
-    
-    .search-input { 
-        flex-grow: 1; 
-        padding: 12px 20px; 
-        border: 1px solid #ddd; 
-        border-radius: 30px 0 0 30px; 
-        outline: none; 
-        transition: border-color 0.2s;
-    }
-    
-    .search-input:focus { border-color: var(--dourado); }
-    
-    .search-btn { 
-        background-color: var(--azul-escuro); 
-        color: white; 
-        border: none; 
-        padding: 0 25px; 
-        border-radius: 0 30px 30px 0; 
-        cursor: pointer; 
-        transition: background-color 0.2s;
-    }
-    
-    .search-btn:hover { background-color: var(--azul-medio); }
-
-    /* --- CATEGORIAS (TAGS) --- */
-    .categorias-wrapper { 
-        display: flex; 
-        flex-wrap: wrap; 
-        justify-content: center; 
-        gap: 10px; 
-    }
-
-    .btn-categoria { 
-        padding: 8px 16px; 
-        border-radius: 20px; 
-        background-color: #f0f0f0; 
-        color: #555; 
-        text-decoration: none; 
-        font-size: 0.9rem; 
-        transition: all 0.3s ease; 
-        border: 1px solid transparent; 
-    }
-    .btn-categoria:hover { background-color: #e0e0e0; color: var(--azul-escuro); }
-    .btn-categoria.active { background-color: var(--azul-escuro); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-
-    /* --- GRID DE LIVROS --- */
-    .catalogo-grid { 
-        display: grid; 
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-        gap: 25px; 
-    }
-
-    .card-livro { 
-        background: white; 
-        border-radius: 8px; 
-        overflow: hidden; 
-        border: 1px solid #eee; 
-        display: flex; 
-        flex-direction: column; 
-        text-decoration: none; 
-        height: 100%; 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-        transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; 
-    }
-    .card-livro:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-color: var(--dourado); }
-    .card-livro.indisponivel { filter: grayscale(.85); opacity: .78; }
-    .card-livro.indisponivel:hover { filter: grayscale(.65); opacity: .9; }
-    .status-indisponivel { display: inline-block; color: #66727a; background: #eef1f2; border: 1px solid #d7dfe2; font-size: .72rem; font-weight: 700; padding: 4px 9px; border-radius: 999px; align-self: center; margin-top: .45rem; }
-
-    .capa-wrapper { width: 100%; height: 230px; background-color: #fff; overflow: hidden; border-bottom: 1px solid #f0f0f0; }
-    .capa-livro { width: 100%; height: 100%; object-fit: contain; background-color: #fff; padding: 5px; transition: transform 0.3s; }
-    .card-livro:hover .capa-livro { transform: scale(1.05); }
-
-    .info-livro { padding: 12px; text-align: center; flex: 1; display: flex; flex-direction: column; }
-    .titulo { font-weight: 600; color: var(--azul-escuro); font-size: 0.9rem; line-height: 1.3; margin-bottom: 4px; }
-    .autor { color: #777; font-size: 0.8rem; margin-bottom: 12px; flex-grow: 1; }
-    .preco-badge { background-color: var(--azul-claro); color: var(--azul-escuro); font-weight: 700; font-size: 0.85rem; padding: 6px 12px; border-radius: 5px; align-self: center; margin-top: auto; }
-
-    .nenhum-livro { grid-column: 1 / -1; text-align: center; padding: 60px 20px; }
-    .nenhum-livro a { color: var(--azul-medio); font-weight: bold; }
+    .livraria-page { --livraria-navy:#003b70; --livraria-teal:#5bbfc1; --livraria-ink:#213548; --livraria-muted:#718096; padding-bottom:4.5rem; }
+    .livraria-hero { background:linear-gradient(135deg, #f4fbfb 0%, #edf5fa 100%); border:1px solid #e3eef2; border-radius:20px; margin:2rem auto 1.5rem; max-width:1180px; overflow:hidden; position:relative; }
+    .livraria-hero::after { background:var(--livraria-teal); border-radius:50%; content:""; height:220px; opacity:.12; position:absolute; right:-55px; top:-95px; width:220px; }
+    .hero-inner { align-items:center; display:flex; gap:2rem; padding:2.1rem 2.5rem; position:relative; z-index:1; }
+    .hero-logo { align-items:center; background:#fff; border:1px solid #e4edf0; border-radius:16px; box-shadow:0 8px 22px rgba(0,59,112,.08); display:flex; flex:0 0 108px; height:108px; justify-content:center; padding:10px; }
+    .hero-logo img { height:100%; object-fit:contain; width:100%; }
+    .hero-kicker { color:#157477; font-size:.72rem; font-weight:800; letter-spacing:.1em; margin-bottom:.35rem; text-transform:uppercase; }
+    .hero-title { color:var(--livraria-navy); font-family:Georgia, 'Times New Roman', serif; font-size:clamp(1.75rem, 3vw, 2.5rem); font-weight:700; line-height:1.12; margin:0; }
+    .hero-text { color:#536675; font-size:.95rem; line-height:1.6; margin:.6rem 0 0; max-width:650px; }
+    .hero-social { color:var(--livraria-navy); display:inline-flex; font-size:.82rem; font-weight:700; gap:.4rem; margin-top:.8rem; text-decoration:none; }
+    .hero-social i { color:#c39b45; }
+    .catalog-toolbar { align-items:end; display:flex; gap:1rem; justify-content:space-between; margin:0 auto 1.2rem; max-width:1180px; }
+    .toolbar-label { color:var(--livraria-ink); font-size:.92rem; font-weight:800; margin-bottom:.45rem; }
+    .toolbar-label span { color:var(--livraria-muted); font-size:.78rem; font-weight:500; margin-left:.35rem; }
+    .search-form { display:flex; max-width:570px; width:100%; }
+    .search-input { background:#fff; border:1px solid #d7e2e7; border-right:0; border-radius:10px 0 0 10px; color:var(--livraria-ink); font-size:.88rem; min-height:42px; outline:0; padding:.65rem .9rem; width:100%; }
+    .search-input:focus { border-color:var(--livraria-teal); box-shadow:0 0 0 3px rgba(91,191,193,.14); }
+    .search-btn { background:var(--livraria-navy); border:0; border-radius:0 10px 10px 0; color:#fff; cursor:pointer; min-width:50px; }
+    .search-btn:hover { background:#00518f; }
+    .category-panel { background:#fff; border:1px solid #e5edf0; border-radius:14px; box-shadow:0 5px 16px rgba(27,55,78,.04); margin:0 auto 2rem; max-width:1180px; padding:1rem 1.1rem; }
+    .category-heading { color:#657583; font-size:.7rem; font-weight:800; letter-spacing:.08em; margin-bottom:.65rem; text-transform:uppercase; }
+    .categories { display:flex; flex-wrap:wrap; gap:.5rem; }
+    .category-link { background:#f4f7f8; border:1px solid transparent; border-radius:999px; color:#536675; font-size:.78rem; font-weight:700; padding:.45rem .78rem; text-decoration:none; transition:.18s ease; }
+    .category-link:hover { background:#eaf8f8; border-color:#a9dfe0; color:var(--livraria-navy); }
+    .category-link.active { background:var(--livraria-navy); box-shadow:0 4px 10px rgba(0,59,112,.15); color:#fff; }
+    .catalog-header { align-items:center; display:flex; justify-content:space-between; margin:0 auto 1rem; max-width:1180px; }
+    .catalog-title { color:var(--livraria-navy); font-family:Georgia, 'Times New Roman', serif; font-size:1.45rem; margin:0; }
+    .catalog-count { color:var(--livraria-muted); font-size:.8rem; }
+    .catalog-grid { display:grid; gap:1.25rem; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); margin:0 auto; max-width:1180px; }
+    .book-card { background:#fff; border:1px solid #e5edf0; border-radius:14px; box-shadow:0 5px 16px rgba(27,55,78,.05); color:inherit; display:flex; flex-direction:column; min-width:0; overflow:hidden; text-decoration:none; transition:border-color .2s, box-shadow .2s, transform .2s; }
+    .book-card:hover { border-color:#9bd7d9; box-shadow:0 12px 26px rgba(27,55,78,.11); color:inherit; transform:translateY(-4px); }
+    .book-card.indisponivel { filter:grayscale(.78); opacity:.8; }
+    .book-card.indisponivel:hover { filter:grayscale(.48); opacity:.92; }
+    .cover-area { align-items:center; background:linear-gradient(145deg, #f7fbfb, #eef4f6); display:flex; height:245px; justify-content:center; overflow:hidden; position:relative; }
+    .cover-area::after { border:1px solid rgba(255,255,255,.7); border-radius:10px; content:""; inset:8px; pointer-events:none; position:absolute; }
+    .book-cover { height:100%; object-fit:contain; padding:11px; position:relative; transition:transform .25s; width:100%; z-index:1; }
+    .book-card:hover .book-cover { transform:scale(1.035); }
+    .no-cover { color:#a9b8c0; font-size:2rem; position:relative; z-index:1; }
+    .book-info { display:flex; flex:1; flex-direction:column; padding:1rem; }
+    .book-category { color:#157477; font-size:.65rem; font-weight:800; letter-spacing:.06em; margin-bottom:.42rem; min-height:1em; text-transform:uppercase; }
+    .book-title { color:var(--livraria-navy); display:-webkit-box; font-size:.93rem; font-weight:800; line-height:1.35; margin:0 0 .3rem; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .book-author { color:#768692; display:-webkit-box; font-size:.77rem; line-height:1.35; margin-bottom:.8rem; min-height:2.1em; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .book-bottom { align-items:center; border-top:1px solid #eef2f4; display:flex; gap:.45rem; justify-content:space-between; margin-top:auto; padding-top:.75rem; }
+    .book-price { color:var(--livraria-navy); font-size:.94rem; font-weight:800; }
+    .availability { border-radius:999px; font-size:.65rem; font-weight:800; padding:.34rem .5rem; white-space:nowrap; }
+    .availability.available { background:#e6f7ee; color:#247548; }
+    .availability.unavailable { background:#eef1f2; color:#66727a; }
+    .empty-state { background:#fff; border:1px dashed #cddce1; border-radius:14px; grid-column:1 / -1; padding:3.5rem 1.5rem; text-align:center; }
+    .empty-state i { color:#a9cacc; font-size:2rem; margin-bottom:.8rem; }
+    .empty-state p { color:#667985; font-size:.9rem; margin:0 0 .8rem; }
+    .empty-state a { color:var(--livraria-navy); font-size:.82rem; font-weight:800; text-decoration:none; }
+    @media (max-width:700px) { .hero-inner { align-items:flex-start; flex-direction:column; gap:1rem; padding:1.5rem; } .hero-logo { flex-basis:78px; height:78px; width:78px; } .catalog-toolbar { align-items:stretch; flex-direction:column; gap:.7rem; } .search-form { max-width:none; } .catalog-grid { gap:.8rem; grid-template-columns:repeat(2, minmax(0, 1fr)); } .cover-area { height:205px; } .book-info { padding:.78rem; } .book-bottom { align-items:flex-start; flex-direction:column; } .availability { align-self:flex-start; } }
+    @media (max-width:380px) { .catalog-grid { grid-template-columns:1fr; } .cover-area { height:240px; } }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-
-<table style="width:100%; margin: 35px 0 30px 0; border-collapse:collapse;">
-        <tr style="vertical-align: top;">
-            <td style="width: 150px; padding-right: 25px;">
+<main class="livraria-page">
+    <section class="livraria-hero" aria-labelledby="livraria-title">
+        <div class="hero-inner">
+            <div class="hero-logo">
                 {% if config.logo %}
-                    <!-- OTIMIZAÇÃO APLICADA AQUI -->
-                    <img src="{{ config.logo.url|cloudinary_transform:'h_200,c_fit,f_auto,q_auto' }}" 
-                         alt="Logo Livraria" 
-                         style="height: 120px; width:auto; object-fit: contain;" loading="lazy">
+                    <img src="{{ config.logo.url|cloudinary_transform:'h_220,c_fit,f_auto,q_auto' }}" alt="Logo da Livraria Ramiro Gama" loading="lazy">
                 {% else %}
-                    <img src="{% static 'img/logo_livraria.png' %}"
-                         alt="Logo Livraria Ramiro Gama"
-                         style="height: 120px; width:auto;" loading="lazy">
+                    <img src="{% static 'img/logo_livraria.png' %}" alt="Logo da Livraria Ramiro Gama" loading="lazy">
                 {% endif %}
-            </td>
-            
-            <td>
-                <h1 style="color: var(--azul-escuro); font-size: 2rem; margin:0;">
-                    Livraria Ramiro Gama
-                </h1>
-                <p style="color:#666; margin:4px 0 0 0;">
-                    Catálogo de obras espíritas disponíveis para pronta entrega.
-                </p>
-                
-                <div style="margin-top:10px;">
-                    {% if config.instagram_url %}
-                        <a href="{{ config.instagram_url }}" target="_blank"
-                           style="color: var(--azul-medio); font-weight:500; font-size:0.9rem; text-decoration:none;">
-                            <i class="fa-brands fa-instagram" style="color:var(--dourado);"></i>
-                            Siga-nos no Instagram →
-                        </a>
-                    {% else %}
-                        <span style="color:#999; font-size:0.9rem;">
-                            <i class="fa-brands fa-instagram"></i> @livrariaramirogama
-                        </span>
-                    {% endif %}
-                </div>
-            </td>
-        </tr>
-    </table>
-    <div class="filtros-container" style="margin-bottom: 15px !important;">
-        <div class="search-wrapper">
+            </div>
+            <div>
+                <div class="hero-kicker">Livraria da FEPI</div>
+                <h1 class="hero-title" id="livraria-title">Livraria Ramiro Gama</h1>
+                <p class="hero-text">Obras espíritas para estudo, reflexão e consolo. Encontre livros selecionados e consulte os detalhes de cada título.</p>
+                {% if config.instagram_url %}
+                    <a class="hero-social" href="{{ config.instagram_url }}" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i> Acompanhe a livraria no Instagram</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="catalog-toolbar" aria-label="Busca no catálogo">
+        <div>
+            <div class="toolbar-label">Encontre uma obra <span>{{ livros|length }} título{{ livros|length|pluralize:"s" }} no catálogo</span></div>
             <form method="get" action="{% url 'livraria' %}" class="search-form">
-                <input type="text" name="q" class="search-input"
-                       placeholder="Buscar título, autor..."
-                       value="{{ busca_ativa|default:'' }}">
-                <button type="submit" class="search-btn">
-                    <i class="fa-solid fa-search"></i>
-                </button>
+                <input type="search" name="q" class="search-input" placeholder="Buscar por título ou autor" value="{{ busca_ativa|default:'' }}" aria-label="Buscar por título ou autor">
+                {% if cat_ativa %}<input type="hidden" name="cat" value="{{ cat_ativa }}">{% endif %}
+                <button type="submit" class="search-btn" aria-label="Pesquisar"><i class="fa-solid fa-search"></i></button>
             </form>
         </div>
-    </div>
+    </section>
 
-    <div class="categorias-wrapper" style="margin-bottom: 60px !important;">
-        <a href="{% url 'livraria' %}" 
-           class="btn-categoria {% if not cat_ativa %}active{% endif %}">
-           Todos
-        </a>
-        {% for categoria in categorias %}
-        <a href="?cat={{ categoria.id }}" 
-           class="btn-categoria {% if cat_ativa == categoria.id %}active{% endif %}">
-           {{ categoria.nome }}
-        </a>
-        {% endfor %}
-    </div>
+    <section class="category-panel" aria-label="Filtrar por categoria">
+        <div class="category-heading">Explore por categoria</div>
+        <nav class="categories">
+            <a href="{% url 'livraria' %}{% if busca_ativa %}?q={{ busca_ativa|urlencode }}{% endif %}" class="category-link {% if not cat_ativa %}active{% endif %}">Todos</a>
+            {% for categoria in categorias %}
+                <a href="?cat={{ categoria.id }}{% if busca_ativa %}&q={{ busca_ativa|urlencode }}{% endif %}" class="category-link {% if cat_ativa == categoria.id %}active{% endif %}">{{ categoria.nome }}</a>
+            {% endfor %}
+        </nav>
+    </section>
 
-    <div class="catalogo-grid">
-        {% for livro in livros %}
-        <a href="{% url 'detalhe_livro' livro.slug %}" class="card-livro {% if not livro.disponivel %}indisponivel{% endif %}">
-            <div class="capa-wrapper">
-                {% if livro.capa %}
-                    <!-- OTIMIZAÇÃO APLICADA AQUI -->
-                    <img src="{{ livro.capa.url|cloudinary_transform:'w_360,h_500,c_fit,f_auto,q_auto' }}" class="capa-livro" alt="{{ livro.titulo }}" loading="lazy">
-                {% else %}
-                    <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:2.5rem;">📚</div>
-                {% endif %}
-            </div>
-
-            <div class="info-livro">
-                <div class="titulo" title="{{ livro.titulo }}">{{ livro.titulo|truncatechars:35 }}</div>
-                <div class="autor">{{ livro.autor|truncatechars:25 }}</div>
-                <div class="preco-badge">R$ {{ livro.preco|floatformat:2 }}</div>
-                {% if not livro.disponivel %}<div class="status-indisponivel">Indisponível</div>{% endif %}
-            </div>
-        </a>
-        {% empty %}
-        <div class="nenhum-livro">
-            <p>Nenhum livro encontrado para esta categoria ou pesquisa.</p>
-            <a href="{% url 'livraria' %}">Limpar filtros</a>
+    <section aria-labelledby="catalog-title">
+        <div class="catalog-header">
+            <h2 class="catalog-title" id="catalog-title">Catálogo de obras</h2>
+            {% if busca_ativa or cat_ativa %}<a class="catalog-count" href="{% url 'livraria' %}">Limpar filtros</a>{% endif %}
         </div>
-        {% endfor %}
-    </div>
-
-</div>
+        <div class="catalog-grid">
+            {% for livro in livros %}
+                <a href="{% url 'detalhe_livro' livro.slug %}" class="book-card {% if not livro.disponivel %}indisponivel{% endif %}" aria-label="Ver detalhes de {{ livro.titulo }}">
+                    <div class="cover-area">
+                        {% if livro.capa %}
+                            <img src="{{ livro.capa.url|cloudinary_transform:'w_420,h_580,c_fit,f_auto,q_auto' }}" class="book-cover" alt="Capa do livro {{ livro.titulo }}" loading="lazy">
+                        {% else %}
+                            <i class="fa-solid fa-book-open no-cover" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
+                    <div class="book-info">
+                        <div class="book-category">{% if livro.categoria %}{{ livro.categoria.nome }}{% else %}Obra espírita{% endif %}</div>
+                        <h3 class="book-title" title="{{ livro.titulo }}">{{ livro.titulo }}</h3>
+                        <div class="book-author">{{ livro.autor|default:'Autor não informado' }}</div>
+                        <div class="book-bottom">
+                            <span class="book-price">R$ {{ livro.preco|floatformat:2 }}</span>
+                            {% if livro.disponivel %}<span class="availability available">Disponível</span>{% else %}<span class="availability unavailable">Indisponível</span>{% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <div class="empty-state">
+                    <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                    <p>Nenhuma obra foi encontrada com os filtros selecionados.</p>
+                    <a href="{% url 'livraria' %}">Limpar filtros e ver todo o catálogo</a>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</main>
 {% endblock %}
