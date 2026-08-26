@@ -97,7 +97,11 @@ def gerenciar_livro(request, id=None):
     else:
         form = LivroForm(instance=instancia)
     titulo = "Editar Livro" if id else "Novo Livro"
-    return render(request, 'painel/programacao/form_generico.html', {'form': form, 'titulo': titulo})
+    return render(request, 'painel/livraria/form_livro.html', {
+        'form': form,
+        'titulo': titulo,
+        'instancia': instancia,
+    })
 
 @login_required(login_url='/login/')
 @user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')

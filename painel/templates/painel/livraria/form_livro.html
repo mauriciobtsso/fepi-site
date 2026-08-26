@@ -1,0 +1,117 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<div class="container livro-form-page">
+    <div class="page-heading">
+        <div>
+            <div class="eyebrow"><i class="fas fa-book-open me-1"></i> Livraria</div>
+            <h1>{% if instancia %}Editar livro{% else %}Cadastrar livro{% endif %}</h1>
+            <p>Preencha os dados editoriais e defina como o livro será exibido na vitrine.</p>
+        </div>
+        <a href="{% url 'listar_livros' %}" class="btn btn-light btn-sm border rounded-pill px-3">
+            <i class="fas fa-arrow-left me-1"></i> Voltar para livros
+        </a>
+    </div>
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" class="book-form">
+        {% csrf_token %}
+        {{ form.media }}
+
+        <div class="form-grid">
+            <section class="form-card">
+                <div class="section-heading">
+                    <span class="section-icon"><i class="fas fa-circle-info"></i></span>
+                    <div><h2>Informações básicas</h2><p>Dados usados para identificar e apresentar a obra.</p></div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-4 field-wrap">{{ form.codigo.label_tag }}{{ form.codigo }}{% include 'painel/livraria/_field_errors.html' with field=form.codigo %}</div>
+                    <div class="col-md-8 field-wrap">{{ form.titulo.label_tag }}{{ form.titulo }}{% include 'painel/livraria/_field_errors.html' with field=form.titulo %}</div>
+                    <div class="col-md-6 field-wrap">{{ form.autor.label_tag }}{{ form.autor }}{% include 'painel/livraria/_field_errors.html' with field=form.autor %}</div>
+                    <div class="col-md-6 field-wrap">{{ form.categoria.label_tag }}{{ form.categoria }}{% include 'painel/livraria/_field_errors.html' with field=form.categoria %}</div>
+                </div>
+            </section>
+
+            <section class="form-card">
+                <div class="section-heading">
+                    <span class="section-icon"><i class="fas fa-tags"></i></span>
+                    <div><h2>Preço e estoque</h2><p>Valores sincronizados pela planilha ou ajustados manualmente.</p></div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6 field-wrap">{{ form.preco.label_tag }}{{ form.preco }}{% include 'painel/livraria/_field_errors.html' with field=form.preco %}</div>
+                    <div class="col-md-6 field-wrap">{{ form.quantidade_estoque.label_tag }}{{ form.quantidade_estoque }}{% include 'painel/livraria/_field_errors.html' with field=form.quantidade_estoque %}</div>
+                </div>
+                <div class="sync-note"><i class="fas fa-arrows-rotate me-1"></i> O preço e a quantidade podem ser atualizados no próximo upload da planilha.</div>
+            </section>
+
+            <section class="form-card media-card">
+                <div class="section-heading">
+                    <span class="section-icon"><i class="fas fa-image"></i></span>
+                    <div><h2>Capa e sinopse</h2><p>Conteúdo editorial que não é sobrescrito pela planilha.</p></div>
+                </div>
+                <div class="field-wrap">{{ form.capa.label_tag }}{{ form.capa }}{% if form.capa.value %}<div class="current-cover"><span>Capa atual</span><img src="{{ form.capa.value.url }}" alt="Capa atual de {{ form.titulo.value }}"></div>{% endif %}{% include 'painel/livraria/_field_errors.html' with field=form.capa %}</div>
+                <div class="field-wrap description-field">{{ form.descricao.label_tag }}{{ form.descricao }}{% include 'painel/livraria/_field_errors.html' with field=form.descricao %}</div>
+            </section>
+
+            <section class="form-card status-card">
+                <div class="section-heading">
+                    <span class="section-icon"><i class="fas fa-toggle-on"></i></span>
+                    <div><h2>Status do livro</h2><p>Controle separadamente a publicação e a disponibilidade.</p></div>
+                </div>
+                <div class="status-options">
+                    <label class="status-option"><span>{{ form.ativo_na_vitrine }}<strong>Ativo na vitrine</strong></span><small>Exibe o livro na página /livraria/.</small></label>
+                    <label class="status-option"><span>{{ form.disponivel }}<strong>Disponível para venda</strong></span><small>Permite contato de compra quando houver estoque.</small></label>
+                    <label class="status-option"><span>{{ form.destaque_home }}<strong>Destaque na home</strong></span><small>Inclui o livro entre os destaques do site.</small></label>
+                </div>
+                <div class="status-help"><i class="fas fa-shield-heart me-1"></i> Estoque zerado é marcado automaticamente como indisponível durante a importação.</div>
+            </section>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'listar_livros' %}" class="btn btn-light border px-4">Cancelar</a>
+            <button type="submit" class="btn btn-primary px-4 fw-bold"><i class="fas fa-check me-2"></i>Salvar livro</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .livro-form-page { max-width: 1050px; padding-bottom: 35px; }
+    .page-heading { display:flex; justify-content:space-between; align-items:flex-end; gap:18px; margin: 18px 0 20px; padding-bottom:16px; border-bottom:1px solid #e9eef2; }
+    .eyebrow { color:#1e3c72; font-size:.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:3px; }
+    .page-heading h1 { color:#172b4d; font-size:1.55rem; font-weight:800; margin:0; }
+    .page-heading p { color:#718096; font-size:.86rem; margin:.25rem 0 0; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .form-card { background:#fff; border:1px solid #e7edf2; border-radius:12px; box-shadow:0 4px 16px rgba(23,43,77,.05); padding:18px; }
+    .media-card { grid-column:1 / -1; }
+    .section-heading { display:flex; align-items:flex-start; gap:10px; padding-bottom:13px; margin-bottom:14px; border-bottom:1px solid #eef2f5; }
+    .section-icon { width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; flex:0 0 30px; color:#1e3c72; background:#eef5fb; border-radius:8px; font-size:.82rem; }
+    .section-heading h2 { color:#243b5a; font-size:.94rem; font-weight:800; margin:0; }
+    .section-heading p { color:#8996a5; font-size:.74rem; margin:2px 0 0; }
+    .field-wrap label { color:#52616f; display:block; font-size:.72rem; font-weight:800; letter-spacing:.02em; margin-bottom:5px; }
+    .field-wrap input:not([type="checkbox"]), .field-wrap select, .field-wrap textarea { border:1px solid #dbe3e9; border-radius:7px; color:#263746; font-size:.84rem; padding:.47rem .65rem; width:100%; transition:border-color .15s, box-shadow .15s; }
+    .field-wrap input:focus, .field-wrap select:focus, .field-wrap textarea:focus { border-color:#5fbfc2; box-shadow:0 0 0 .18rem rgba(95,191,194,.13); outline:0; }
+    .field-wrap textarea { min-height:150px; }
+    .description-field { margin-top:15px; }
+    .django-ckeditor-widget { width:100% !important; }
+    .django-ckeditor-widget iframe { max-width:100%; }
+    .sync-note, .status-help { background:#f4fafb; border:1px solid #dceff0; border-radius:7px; color:#55747b; font-size:.74rem; margin-top:13px; padding:9px 11px; }
+    .current-cover { align-items:center; background:#f8fafb; border:1px solid #e5ebef; border-radius:7px; display:flex; gap:12px; margin-top:9px; padding:7px 10px; width:max-content; }
+    .current-cover span { color:#718096; font-size:.7rem; font-weight:700; }
+    .current-cover img { border-radius:4px; height:72px; object-fit:cover; width:50px; }
+    .status-options { display:grid; gap:9px; }
+    .status-option { background:#fafcfd; border:1px solid #e6edf1; border-radius:8px; cursor:pointer; display:block; padding:9px 11px; }
+    .status-option:hover { border-color:#9bd7d9; background:#f5fbfb; }
+    .status-option span { align-items:center; color:#263746; display:flex; gap:8px; font-size:.8rem; }
+    .status-option input { accent-color:#1e3c72; height:16px; width:16px; }
+    .status-option strong { font-size:.8rem; }
+    .status-option small { color:#8996a5; display:block; font-size:.7rem; margin-left:24px; margin-top:2px; }
+    .form-actions { display:flex; justify-content:flex-end; gap:9px; margin-top:17px; }
+    .form-actions .btn { border-radius:7px; font-size:.82rem; }
+    .form-actions .btn-primary { background:#1e3c72; border-color:#1e3c72; }
+    .field-error { color:#c0392b; font-size:.72rem; font-weight:700; margin-top:4px; }
+    @media (max-width: 760px) { .page-heading { align-items:flex-start; flex-direction:column; } .form-grid { grid-template-columns:1fr; } .media-card { grid-column:auto; } }
+</style>
+{% endblock %}
