@@ -1,257 +1,232 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block content %}
-<!-- CSS Customizado para garantir o visual FEPI em qualquer tela -->
+{% block title %}FEPI | Consulta de Acervo{% endblock %}
+
+{% block extra_css %}
 <style>
-    .fepi-text { color: #003366 !important; }
-    .fepi-bg { background-color: #003366 !important; }
-    .fepi-btn { background-color: #003366; color: white; font-weight: 600; border: none; transition: 0.3s; }
-    .fepi-btn:hover { background-color: #001f40; color: white; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-    .fepi-search-card { border-radius: 15px; border-top: 5px solid #003366; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-    .fepi-result-card { border-radius: 12px; border-left: 5px solid #003366; box-shadow: 0 6px 15px rgba(0,0,0,0.08); transition: 0.3s; }
-    .fepi-result-card:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.12); }
-    .fepi-input:focus { border-color: #003366; box-shadow: 0 0 0 0.25rem rgba(0, 51, 102, 0.25); }
+    .consulta-page { background: #f7fafb; padding: 3.5rem 0 4.5rem; min-height: 520px; }
+    .consulta-shell { max-width: 960px; margin: 0 auto; }
+    .consulta-intro { text-align: center; margin-bottom: 2rem; }
+    .consulta-eyebrow { color: var(--dourado); font-size: .78rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .6rem; }
+    .consulta-intro h1 { font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: .45rem; }
+    .consulta-intro p { color: #52616b; font-size: 1.05rem; }
+    .consulta-search-card, .consulta-camera-card, .consulta-result-card { background: #fff; border: 1px solid #e2eaee; border-radius: 18px; box-shadow: 0 12px 30px rgba(0, 51, 102, .08); }
+    .consulta-search-card { padding: 1.25rem; border-top: 4px solid var(--azul-escuro); }
+    .consulta-search-row { display: flex; align-items: stretch; gap: .75rem; }
+    .consulta-input-wrap { display: flex; align-items: center; flex: 1; min-width: 0; border: 1px solid #cbd7dd; border-radius: 12px; background: #fff; transition: .2s; }
+    .consulta-input-wrap:focus-within { border-color: var(--azul-escuro); box-shadow: 0 0 0 4px rgba(0, 51, 102, .12); }
+    .consulta-input-wrap i { color: #71808a; margin-left: 1rem; }
+    .consulta-input { width: 100%; min-height: 52px; border: 0; outline: 0; padding: .75rem 1rem .75rem .65rem; color: #183246; background: transparent; font: inherit; }
+    .consulta-input::placeholder { color: #84929a; }
+    .consulta-btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 52px; border: 0; border-radius: 12px; padding: .75rem 1.25rem; background: var(--azul-escuro); color: #fff; font: inherit; font-weight: 700; cursor: pointer; transition: .2s; white-space: nowrap; }
+    .consulta-btn:hover { background: var(--azul-medio); transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0, 51, 102, .2); }
+    .consulta-help { color: #71808a; font-size: .85rem; margin: .8rem .25rem 0; }
+    .consulta-help i { color: var(--dourado); margin-right: .35rem; }
+    .consulta-camera-card { overflow: hidden; margin-top: 1.25rem; }
+    .consulta-camera-title { padding: .9rem 1.15rem; color: #fff; background: var(--azul-escuro); font-weight: 700; }
+    .consulta-reader { min-height: 210px; padding: 1rem; background: #f1f6f8; }
+    .consulta-camera-footer { padding: 1rem; border-top: 1px solid #e5ecef; }
+    .consulta-cancel { width: 100%; border: 1px solid #b84646; border-radius: 10px; padding: .7rem 1rem; color: #a33a3a; background: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+    .consulta-cancel:hover { color: #fff; background: #b84646; }
+    .consulta-alert { margin-top: 1.25rem; padding: .9rem 1rem; border-radius: 12px; color: #754f00; background: #fff7dd; border: 1px solid #efd58a; text-align: center; font-weight: 600; }
+    .consulta-results { display: grid; gap: 1.25rem; margin-top: 1.5rem; }
+    .consulta-result-card { border-left: 5px solid var(--azul-escuro); padding: 1.5rem; }
+    .consulta-result-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .consulta-result-title { color: var(--azul-escuro); font-family: 'Lora', serif; font-size: 1.35rem; font-weight: 700; margin: 0; }
+    .consulta-stock { display: inline-flex; border-radius: 999px; padding: .35rem .75rem; color: #fff; background: #21815a; font-size: .78rem; font-weight: 800; white-space: nowrap; }
+    .consulta-stock.empty { background: #ad4545; }
+    .consulta-meta { color: #62727c; font-size: .9rem; line-height: 1.8; margin: .8rem 0 1.1rem; }
+    .consulta-meta i { width: 1.1rem; color: var(--azul-medio); }
+    .consulta-price { color: var(--azul-escuro); font-size: 1.8rem; font-weight: 800; margin-bottom: 1.25rem; }
+    .consulta-discount { padding: 1rem; border: 1px solid #dfe8ec; border-radius: 12px; background: #f7fafb; }
+    .consulta-discount h3 { color: #52616b; font-family: 'Inter', sans-serif; font-size: .9rem; margin: 0 0 .75rem; }
+    .consulta-discount-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .consulta-discount-controls { display: flex; align-items: center; gap: .5rem; }
+    .consulta-discount-type { min-height: 42px; padding: .6rem .7rem; border: 1px solid #cbd7dd; border-radius: 8px; color: #183246; background: #fff; font: inherit; font-weight: 700; }
+    .consulta-discount-input { width: 150px; min-height: 42px; padding: .65rem .75rem; border: 1px solid #cbd7dd; border-radius: 8px; text-align: center; font: inherit; font-weight: 700; }
+    .consulta-discount-input:focus { outline: 0; border-color: var(--azul-escuro); box-shadow: 0 0 0 3px rgba(0, 51, 102, .12); }
+    .consulta-discount-values { text-align: right; }
+    .consulta-discount-values p { color: #ad4545; font-size: .85rem; font-weight: 700; margin: 0 0 .2rem; }
+    .consulta-total { color: #21815a; font-size: 1.2rem; font-weight: 800; }
+    .consulta-loading { color: #62727c; padding: 2rem; text-align: center; }
+    .consulta-spinner { display: inline-block; width: 1.5rem; height: 1.5rem; border: 3px solid #c8d8df; border-top-color: var(--azul-escuro); border-radius: 50%; animation: consulta-spin .8s linear infinite; vertical-align: middle; }
+    @keyframes consulta-spin { to { transform: rotate(360deg); } }
+    @media (max-width: 640px) {
+        .consulta-page { padding: 2.5rem 0 3.5rem; }
+        .consulta-search-card { padding: 1rem; }
+        .consulta-search-row, .consulta-discount-row { flex-direction: column; }
+        .consulta-input-wrap, .consulta-btn, .consulta-discount-input, .consulta-discount-controls, .consulta-discount-type { width: 100%; }
+        .consulta-discount-controls { display: grid; grid-template-columns: 1fr 1.4fr; }
+        .consulta-btn { min-height: 48px; }
+        .consulta-result-head { flex-direction: column; }
+        .consulta-stock { align-self: flex-start; }
+        .consulta-discount-values { width: 100%; text-align: left; }
+    }
 </style>
+{% endblock %}
 
-<div class="container py-4 py-md-5">
-    <!-- Cabeçalho -->
-    <div class="row justify-content-center mb-4">
-        <div class="col-12 col-md-8 text-center">
-            <h2 class="fw-bold fepi-text mb-2"><i class="fas fa-book-open me-2"></i>Consulta de Acervo</h2>
-            <p class="text-muted">Livraria da Federação Espírita Piauiense</p>
-        </div>
-    </div>
-
-    <!-- Área de Busca (Blindada e Responsiva) -->
-    <div class="row justify-content-center mb-5">
-        <div class="col-12 col-md-8 col-lg-7">
-            <div class="card fepi-search-card border-0">
-                <div class="card-body p-3 p-md-4">
-                    <div class="d-flex flex-column flex-sm-row gap-2">
-                        <!-- Input ocupa todo o espaço possível -->
-                        <div class="input-group input-group-lg flex-grow-1">
-                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
-                            <input type="text" id="buscaInput" class="form-control fepi-input border-start-0 ps-0 bg-light" placeholder="Nome do livro ou código..." autofocus autocomplete="off">
-                        </div>
-                        <!-- Botão Câmera (Fica ao lado no PC, e embaixo ocupando 100% no celular) -->
-                        <button id="btnCamera" class="btn fepi-btn btn-lg px-4 d-flex align-items-center justify-content-center gap-2">
-                            <i class="fas fa-camera"></i> <span>Câmera</span>
-                        </button>
-                    </div>
-                </div>
+{% block content %}
+<section class="consulta-page">
+    <div class="container">
+        <div class="consulta-shell">
+            <div class="consulta-intro">
+                <div class="consulta-eyebrow">Livraria Ramiro Gama</div>
+                <h1><i class="fa-solid fa-book-open"></i> Consulta de Acervo</h1>
+                <p>Consulte livros e produtos disponíveis na Livraria da Federação Espírita Piauiense.</p>
             </div>
-        </div>
-    </div>
 
-    <!-- Container da Câmera (Oculto por padrão) -->
-    <div id="cameraContainer" class="row justify-content-center d-none mb-5">
-        <div class="col-12 col-md-8 col-lg-6">
-            <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
-                <div class="card-header bg-dark text-white text-center py-2">
-                    <small><i class="fas fa-barcode me-2"></i>Aponte para o código de barras</small>
+            <div class="consulta-search-card">
+                <div class="consulta-search-row">
+                    <label class="consulta-input-wrap" for="buscaInput">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="buscaInput" class="consulta-input" placeholder="Nome do livro ou código de barras" autofocus autocomplete="off">
+                    </label>
+                    <button id="btnCamera" class="consulta-btn" type="button"><i class="fa-solid fa-camera"></i><span>Ler código</span></button>
                 </div>
-                <div class="card-body p-0 bg-light">
-                    <div id="reader" style="width: 100%;"></div>
-                </div>
-                <div class="card-footer bg-white border-0 p-3">
-                    <button id="btnFecharCamera" class="btn btn-outline-danger w-100 fw-bold">
-                        <i class="fas fa-times me-2"></i>Cancelar Leitura
-                    </button>
-                </div>
+                <p class="consulta-help"><i class="fa-solid fa-circle-info"></i>Digite o nome ou código e pressione Enter. Você também pode usar a câmera do celular.</p>
             </div>
+
+            <div id="cameraContainer" class="consulta-camera-card" hidden>
+                <div class="consulta-camera-title"><i class="fa-solid fa-barcode"></i> Aponte para o código de barras</div>
+                <div id="reader" class="consulta-reader"></div>
+                <div class="consulta-camera-footer"><button id="btnFecharCamera" class="consulta-cancel" type="button"><i class="fa-solid fa-xmark"></i> Cancelar leitura</button></div>
+            </div>
+
+            <div id="mensagemErro" class="consulta-alert" role="alert" hidden></div>
+            <div id="resultadosContainer" class="consulta-results"></div>
         </div>
     </div>
+</section>
 
-    <!-- Alertas de Erro -->
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-7">
-            <div id="mensagemErro" class="alert alert-warning text-center shadow-sm fw-semibold d-none" role="alert"></div>
-        </div>
-    </div>
-
-    <!-- Container de Resultados Dinâmicos -->
-    <div id="resultadosContainer" class="row justify-content-center">
-        <!-- JS vai injetar os resultados aqui -->
-    </div>
-</div>
-
-<!-- Template do Card de Resultado (Invisível, clonado pelo JS) -->
 <template id="cardTemplate">
-    <div class="col-12 col-md-8 col-lg-7 mb-4">
-        <div class="card fepi-result-card bg-white h-100">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                    <h4 class="card-title fw-bold text-dark mb-0 produto-nome pe-3">Nome do Livro</h4>
-                    <span class="badge fs-6 px-3 py-2 badge-estoque rounded-pill">0</span>
+    <article class="consulta-result-card">
+        <div class="consulta-result-head">
+            <h2 class="consulta-result-title produto-nome">Nome do livro</h2>
+            <span class="consulta-stock badge-estoque">0</span>
+        </div>
+        <div class="consulta-meta">
+            <div><i class="fa-solid fa-building"></i> Editora: <span class="produto-editora"></span></div>
+            <div><i class="fa-solid fa-barcode"></i> Código: <span class="produto-codigo"></span></div>
+        </div>
+        <div class="consulta-price">R$ <span class="produto-preco">0,00</span></div>
+        <div class="consulta-discount">
+            <h3><i class="fa-solid fa-calculator"></i> Simulador de desconto</h3>
+            <div class="consulta-discount-row">
+                <div class="consulta-discount-controls">
+                    <select class="consulta-discount-type tipo-desconto" aria-label="Tipo de desconto">
+                        <option value="percentual">%</option>
+                        <option value="valor">R$</option>
+                    </select>
+                    <input type="number" class="consulta-discount-input input-desconto" min="0" step="0.01" value="0" aria-label="Valor do desconto">
                 </div>
-                
-                <p class="text-muted small mb-4">
-                    <i class="fas fa-building me-1"></i> Editora: <span class="produto-editora fw-semibold"></span> <br>
-                    <i class="fas fa-barcode me-1"></i> Cód: <span class="produto-codigo"></span>
-                </p>
-                
-                <h2 class="fw-bold fepi-text mb-4">R$ <span class="produto-preco">0,00</span></h2>
-
-                <div class="bg-light p-3 rounded-3 border">
-                    <h6 class="fw-bold text-muted mb-3"><i class="fas fa-calculator me-2"></i>Simulador de Desconto</h6>
-                    <div class="row align-items-center">
-                        <div class="col-12 col-sm-5 mb-3 mb-sm-0">
-                            <div class="input-group">
-                                <span class="input-group-text bg-white"><i class="fas fa-percent text-muted"></i></span>
-                                <input type="number" class="form-control fepi-input input-desconto fw-bold text-center" min="0" max="100" value="0" placeholder="0">
-                            </div>
-                        </div>
-                        <div class="col-12 col-sm-7 text-sm-end">
-                            <p class="mb-1 text-danger fw-semibold small">Desconto: - R$ <span class="valor-desconto">0,00</span></p>
-                            <h4 class="mb-0 fw-bold text-success">Total: R$ <span class="valor-final">0,00</span></h4>
-                        </div>
-                    </div>
+                <div class="consulta-discount-values">
+                    <p>Desconto: − R$ <span class="valor-desconto">0,00</span></p>
+                    <div class="consulta-total">Total: R$ <span class="valor-final">0,00</span></div>
                 </div>
             </div>
         </div>
-    </div>
+    </article>
 </template>
 
-<!-- Biblioteca do Leitor -->
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const buscaInput = document.getElementById('buscaInput');
         const cameraContainer = document.getElementById('cameraContainer');
         const msgErro = document.getElementById('mensagemErro');
         const resultadosContainer = document.getElementById('resultadosContainer');
         const cardTemplate = document.getElementById('cardTemplate');
-        
         let html5QrCode;
 
-        // Configuração da Câmera focada em código de barras
-        const qrConfig = { 
-            fps: 15, 
+        const qrConfig = {
+            fps: 15,
             qrbox: { width: 280, height: 120 },
             aspectRatio: 1.0,
-            formatsToSupport: [ Html5QrcodeSupportedFormats.EAN_13, Html5QrcodeSupportedFormats.EAN_8, Html5QrcodeSupportedFormats.CODE_128 ]
+            formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13, Html5QrcodeSupportedFormats.EAN_8, Html5QrcodeSupportedFormats.CODE_128]
         };
 
-        document.getElementById('btnCamera').addEventListener('click', () => {
-            cameraContainer.classList.remove('d-none');
-            msgErro.classList.add('d-none');
-            resultadosContainer.innerHTML = ''; // Limpa resultados anteriores
-            
-            if (!html5QrCode) {
-                html5QrCode = new Html5Qrcode("reader");
-            }
-
-            html5QrCode.start(
-                { facingMode: "environment" },
-                qrConfig,
-                (decodedText) => {
-                    pararCamera();
-                    buscaInput.value = decodedText;
-                    buscarProduto(decodedText);
-                },
-                (errorMessage) => { /* ignora erros de scan em tempo real */ }
-            ).catch(err => {
-                mostrarErro("Erro ao acessar a câmera. Autorize o navegador a usar a câmera do celular.");
-                cameraContainer.classList.add('d-none');
+        document.getElementById('btnCamera').addEventListener('click', function () {
+            cameraContainer.hidden = false;
+            msgErro.hidden = true;
+            resultadosContainer.innerHTML = '';
+            if (!html5QrCode) html5QrCode = new Html5Qrcode('reader');
+            html5QrCode.start({ facingMode: 'environment' }, qrConfig, function (decodedText) {
+                pararCamera();
+                buscaInput.value = decodedText;
+                buscarProduto(decodedText);
+            }, function () {}).catch(function () {
+                mostrarErro('Não foi possível acessar a câmera. Autorize o uso da câmera no navegador.');
+                cameraContainer.hidden = true;
             });
         });
 
         document.getElementById('btnFecharCamera').addEventListener('click', pararCamera);
-
         function pararCamera() {
             if (html5QrCode && html5QrCode.isScanning) {
-                html5QrCode.stop().then(() => {
-                    cameraContainer.classList.add('d-none');
-                    html5QrCode.clear();
-                }).catch(err => console.error(err));
-            } else {
-                cameraContainer.classList.add('d-none');
-            }
+                html5QrCode.stop().then(function () { cameraContainer.hidden = true; html5QrCode.clear(); }).catch(function () { cameraContainer.hidden = true; });
+            } else cameraContainer.hidden = true;
         }
 
-        // Suporte ao leitor USB físico ou teclado
-        buscaInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                if(this.value.trim() !== '') {
-                    buscarProduto(this.value.trim());
-                }
+        buscaInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (this.value.trim()) buscarProduto(this.value.trim());
             }
         });
 
         function buscarProduto(termo) {
-            if (!termo.trim()) return;
-
-            resultadosContainer.innerHTML = '<div class="col-12 text-center my-5"><div class="spinner-border text-primary" role="status"></div><h5 class="mt-3 text-muted">Consultando acervo...</h5></div>';
-            msgErro.classList.add('d-none');
-            
-            fetch(`/livraria/api/busca/?q=${encodeURIComponent(termo)}`)
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => { throw new Error(err.error || 'Produto não encontrado.') });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    resultadosContainer.innerHTML = ''; 
-                    if (data.produtos && data.produtos.length > 0) {
-                        data.produtos.forEach(produto => renderizarCard(produto));
-                    } else {
-                        throw new Error('Nenhum produto retornado.');
-                    }
-                    buscaInput.value = '';
-                    buscaInput.focus();
-                })
-                .catch(error => {
+            resultadosContainer.innerHTML = '<div class="consulta-loading"><span class="consulta-spinner"></span><p>Consultando acervo...</p></div>';
+            msgErro.hidden = true;
+            fetch('/livraria/api/busca/?q=' + encodeURIComponent(termo))
+                .then(function (response) { return response.json().then(function (data) { if (!response.ok) throw new Error(data.error || 'Produto não encontrado.'); return data; }); })
+                .then(function (data) {
                     resultadosContainer.innerHTML = '';
-                    mostrarErro(error.message);
+                    if (!data.produtos || !data.produtos.length) throw new Error('Nenhum produto retornado.');
+                    data.produtos.forEach(renderizarCard);
                     buscaInput.value = '';
                     buscaInput.focus();
-                });
+                })
+                .catch(function (error) { resultadosContainer.innerHTML = ''; mostrarErro(error.message); buscaInput.value = ''; buscaInput.focus(); });
         }
 
         function renderizarCard(produto) {
             const clone = cardTemplate.content.cloneNode(true);
-            const precoOriginal = parseFloat(produto.preco_venda);
-
+            const precoOriginal = parseFloat(produto.preco_venda) || 0;
+            const estoque = parseInt(produto.quantidade_estoque) || 0;
+            const moeda = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
             clone.querySelector('.produto-nome').textContent = produto.descricao;
-            clone.querySelector('.produto-editora').textContent = produto.editora || "Não informada";
-            clone.querySelector('.produto-codigo').textContent = produto.codigo_barras;
-            
-            const badgeEstoque = clone.querySelector('.badge-estoque');
-            const estoque = parseInt(produto.quantidade_estoque);
-            badgeEstoque.textContent = estoque > 0 ? `Em Estoque: ${estoque}` : "Esgotado";
-            badgeEstoque.classList.add(estoque > 0 ? 'bg-success' : 'bg-danger');
-            
-            const formatoMoeda = {minimumFractionDigits: 2, maximumFractionDigits: 2};
-            clone.querySelector('.produto-preco').textContent = precoOriginal.toLocaleString('pt-BR', formatoMoeda);
-            clone.querySelector('.valor-final').textContent = precoOriginal.toLocaleString('pt-BR', formatoMoeda);
-
-            // Motor de Cálculo em Tempo Real
-            const inputDesconto = clone.querySelector('.input-desconto');
-            const spanDesconto = clone.querySelector('.valor-desconto');
-            const spanFinal = clone.querySelector('.valor-final');
-
-            inputDesconto.addEventListener('input', function() {
-                let percentual = parseFloat(this.value) || 0;
-                if (percentual < 0) percentual = 0;
-                if (percentual > 100) percentual = 100;
-
-                let valorDesconto = (precoOriginal * percentual) / 100;
-                let valorFinal = precoOriginal - valorDesconto;
-                
-                spanDesconto.textContent = valorDesconto.toLocaleString('pt-BR', formatoMoeda);
-                spanFinal.textContent = valorFinal.toLocaleString('pt-BR', formatoMoeda);
+            clone.querySelector('.produto-editora').textContent = produto.editora || 'Não informada';
+            clone.querySelector('.produto-codigo').textContent = produto.codigo_barras || 'Não informado';
+            const badge = clone.querySelector('.badge-estoque');
+            badge.textContent = estoque > 0 ? 'Em estoque: ' + estoque : 'Esgotado';
+            if (!estoque) badge.classList.add('empty');
+            clone.querySelector('.produto-preco').textContent = precoOriginal.toLocaleString('pt-BR', moeda);
+            clone.querySelector('.valor-final').textContent = precoOriginal.toLocaleString('pt-BR', moeda);
+            const input = clone.querySelector('.input-desconto');
+            const tipo = clone.querySelector('.tipo-desconto');
+            const desconto = clone.querySelector('.valor-desconto');
+            const total = clone.querySelector('.valor-final');
+            function atualizarDesconto() {
+                const valorInformado = Math.max(0, parseFloat(input.value) || 0);
+                const valorDesconto = tipo.value === 'percentual'
+                    ? Math.min(precoOriginal, precoOriginal * Math.min(100, valorInformado) / 100)
+                    : Math.min(precoOriginal, valorInformado);
+                desconto.textContent = valorDesconto.toLocaleString('pt-BR', moeda);
+                total.textContent = (precoOriginal - valorDesconto).toLocaleString('pt-BR', moeda);
+            }
+            input.addEventListener('input', atualizarDesconto);
+            tipo.addEventListener('change', function () {
+                input.value = '0';
+                input.max = tipo.value === 'percentual' ? '100' : precoOriginal.toFixed(2);
+                input.step = tipo.value === 'percentual' ? '1' : '0.01';
+                input.setAttribute('aria-label', tipo.value === 'percentual' ? 'Percentual de desconto' : 'Valor do desconto em reais');
+                atualizarDesconto();
             });
-
             resultadosContainer.appendChild(clone);
         }
 
-        function mostrarErro(mensagem) {
-            msgErro.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i> ${mensagem}`;
-            msgErro.classList.remove('d-none');
-        }
+        function mostrarErro(mensagem) { msgErro.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + mensagem; msgErro.hidden = false; }
     });
 </script>
 {% endblock %}
