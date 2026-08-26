@@ -24,8 +24,9 @@
     .search-form { display:flex; max-width:570px; width:100%; }
     .search-input { background:#fff; border:1px solid #d7e2e7; border-right:0; border-radius:10px 0 0 10px; color:var(--livraria-ink); font-size:.88rem; min-height:42px; outline:0; padding:.65rem .9rem; width:100%; }
     .search-input:focus { border-color:var(--livraria-teal); box-shadow:0 0 0 3px rgba(91,191,193,.14); }
-    .search-btn { background:var(--livraria-navy); border:0; border-radius:0 10px 10px 0; color:#fff; cursor:pointer; min-width:50px; }
-    .search-btn:hover { background:#00518f; }
+    .search-btn { align-items:center; appearance:none; background:var(--livraria-navy) !important; border:0; border-radius:0 10px 10px 0; color:#fff !important; cursor:pointer; display:inline-flex !important; justify-content:center; min-height:42px; min-width:50px; opacity:1 !important; visibility:visible !important; }
+    .search-btn i { color:#fff !important; display:inline-block !important; font-size:.9rem; opacity:1 !important; visibility:visible !important; }
+    .search-btn:hover { background:#00518f !important; }
     .category-panel { background:#fff; border:1px solid #e5edf0; border-radius:14px; box-shadow:0 5px 16px rgba(27,55,78,.04); margin:0 auto 2rem; max-width:1180px; padding:1rem 1.1rem; }
     .category-heading { color:#657583; font-size:.7rem; font-weight:800; letter-spacing:.08em; margin-bottom:.65rem; text-transform:uppercase; }
     .categories { display:flex; flex-wrap:wrap; gap:.5rem; }
@@ -58,6 +59,12 @@
     .empty-state i { color:#a9cacc; font-size:2rem; margin-bottom:.8rem; }
     .empty-state p { color:#667985; font-size:.9rem; margin:0 0 .8rem; }
     .empty-state a { color:var(--livraria-navy); font-size:.82rem; font-weight:800; text-decoration:none; }
+    .pagination-wrap { align-items:center; display:flex; justify-content:center; margin:2rem auto 0; max-width:1180px; }
+    .pagination { align-items:center; display:flex; gap:.35rem; list-style:none; margin:0; padding:0; }
+    .page-link { align-items:center; background:#fff; border:1px solid #dce7eb; border-radius:8px; color:var(--livraria-navy); display:inline-flex; font-size:.78rem; font-weight:800; height:34px; justify-content:center; min-width:34px; padding:0 .6rem; text-decoration:none; }
+    .page-link:hover { background:#eef8f8; border-color:#9bd7d9; color:var(--livraria-navy); }
+    .page-item.active .page-link { background:var(--livraria-navy); border-color:var(--livraria-navy); color:#fff; }
+    .page-item.disabled .page-link { color:#aab8bf; cursor:default; opacity:.7; }
     @media (max-width:700px) { .hero-inner { align-items:flex-start; flex-direction:column; gap:1rem; padding:1.5rem; } .hero-logo { flex-basis:78px; height:78px; width:78px; } .catalog-toolbar { align-items:stretch; flex-direction:column; gap:.7rem; } .search-form { max-width:none; } .catalog-grid { gap:.8rem; grid-template-columns:repeat(2, minmax(0, 1fr)); } .cover-area { height:205px; } .book-info { padding:.78rem; } .book-bottom { align-items:flex-start; flex-direction:column; } .availability { align-self:flex-start; } }
     @media (max-width:380px) { .catalog-grid { grid-template-columns:1fr; } .cover-area { height:240px; } }
 </style>
@@ -87,7 +94,7 @@
 
     <section class="catalog-toolbar" aria-label="Busca no catálogo">
         <div>
-            <div class="toolbar-label">Encontre uma obra <span>{{ livros|length }} título{{ livros|length|pluralize:"s" }} no catálogo</span></div>
+            <div class="toolbar-label">Encontre uma obra <span>{{ total_livros }} título{{ total_livros|pluralize:"s" }} no catálogo</span></div>
             <form method="get" action="{% url 'livraria' %}" class="search-form">
                 <input type="search" name="q" class="search-input" placeholder="Buscar por título ou autor" value="{{ busca_ativa|default:'' }}" aria-label="Buscar por título ou autor">
                 {% if cat_ativa %}<input type="hidden" name="cat" value="{{ cat_ativa }}">{% endif %}
@@ -139,6 +146,29 @@
                 </div>
             {% endfor %}
         </div>
+        {% if pagina.has_other_pages %}
+            <nav class="pagination-wrap" aria-label="Paginação do catálogo">
+                <ul class="pagination">
+                    {% if pagina.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ pagina.previous_page_number }}{% if busca_ativa %}&q={{ busca_ativa|urlencode }}{% endif %}{% if cat_ativa %}&cat={{ cat_ativa }}{% endif %}" aria-label="Página anterior">&lsaquo;</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link" aria-hidden="true">&lsaquo;</span></li>
+                    {% endif %}
+                    {% for numero in pagina.paginator.page_range %}
+                        {% if numero == pagina.number %}
+                            <li class="page-item active"><span class="page-link" aria-current="page">{{ numero }}</span></li>
+                        {% elif numero >= pagina.number|add:'-2' and numero <= pagina.number|add:'2' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ numero }}{% if busca_ativa %}&q={{ busca_ativa|urlencode }}{% endif %}{% if cat_ativa %}&cat={{ cat_ativa }}{% endif %}">{{ numero }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if pagina.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ pagina.next_page_number }}{% if busca_ativa %}&q={{ busca_ativa|urlencode }}{% endif %}{% if cat_ativa %}&cat={{ cat_ativa }}{% endif %}" aria-label="Próxima página">&rsaquo;</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link" aria-hidden="true">&rsaquo;</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
     </section>
 </main>
 {% endblock %}

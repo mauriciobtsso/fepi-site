@@ -1,9 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Livro, Categoria, LivrariaConfig
 from django.http import JsonResponse
+from django.db.models import Q, Case, When, IntegerField
+from django.core.paginator import Paginator
+from django.utils import timezone
+import random
 from core.models import InformacaoContato
 from .models import ProdutoLivraria
-from django.db.models import Q
 from django.utils.text import slugify
 import re
 
@@ -45,26 +48,38 @@ def livraria_completa(request):
     categoria_id = request.GET.get('cat') 
     
     # A vitrine mostra apenas livros ativados; a consulta de acervo usa ProdutoLivraria e permanece independente.
-    livros = Livro.objects.filter(ativo_na_vitrine=True).order_by('titulo')
+    livros = Livro.objects.filter(ativo_na_vitrine=True)
 
     # Filtros
     if query:
         livros = livros.filter(Q(titulo__icontains=query) | Q(autor__icontains=query))
-    
     if categoria_id:
         livros = livros.filter(categoria__id=categoria_id)
 
+    # A ordem é aleatória, mas estável durante o dia: assim a primeira página
+    # é renovada periodicamente sem trocar os itens a cada clique na paginação.
+    ids = list(livros.values_list('pk', flat=True))
+    seed = f"{query or ''}|{categoria_id or ''}|{timezone.localdate()}"
+    random.Random(seed).shuffle(ids)
+    if ids:
+        ordem = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(ids)], output_field=IntegerField())
+        livros = livros.order_by(ordem)
+    else:
+        livros = livros.order_by('titulo')
+
+    paginator = Paginator(livros, 12)
+    pagina = paginator.get_page(request.GET.get('page'))
     categorias = Categoria.objects.all()
-    
-    # Busca configurações (para exibir Logo e Instagram no topo da página)
     config = LivrariaConfig.objects.first()
 
     contexto = {
-        'livros': livros,
+        'livros': pagina,
+        'pagina': pagina,
         'categorias': categorias,
         'busca_ativa': query,
         'cat_ativa': int(categoria_id) if categoria_id else None,
-        'config': config # Agora o template usa 'config.logo' e 'config.instagram_url'
+        'config': config,
+        'total_livros': paginator.count,
     }
     return render(request, 'livraria/livraria_completa.html', contexto)
 
