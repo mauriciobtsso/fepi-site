@@ -13,9 +13,11 @@
         <a href="{% url 'listar_categorias_blog' %}" class="btn btn-sm btn-light border rounded-pill px-3 fw-bold text-muted shadow-sm hover-lift" title="Gerenciar Categorias (Tags)">
             <i class="fas fa-tags me-1"></i> Categorias
         </a>
+        {% if user.is_superuser %}
         <a href="{% url 'painel_criar_departamento' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold shadow-sm hover-lift">
             <i class="fas fa-folder-plus me-1"></i> Novo Blog
         </a>
+        {% endif %}
         <a href="{% url 'criar_post_blog' %}" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold shadow-sm hover-lift" style="background-color: #1e3c72; border: none;">
             <i class="fas fa-pen-nib me-2"></i> Escrever
         </a>
@@ -90,12 +92,15 @@
                             {% endif %}
                         </td>
                         <td class="pe-4 py-2 text-end">
+                            <a href="{% url 'gerenciar_membros_blog' depto.id %}" class="btn btn-sm btn-light border rounded-pill px-2 text-primary" title="Gerenciar membros" style="font-size: 0.75rem;">
+                                <i class="fas fa-users"></i>
+                            </a>
                             <a href="{% url 'configurar_rede_social_blog' depto.id %}" class="btn btn-sm btn-light border rounded-pill px-2 text-dark" title="Configurar" style="font-size: 0.75rem;">
                                 <i class="fas fa-cog text-muted"></i>
                             </a>
-                            <a href="{% url 'excluir_departamento_blog' depto.id %}" class="btn btn-sm btn-light border text-danger rounded-circle ms-1" style="width: 28px; height: 28px; padding: 2px;" onclick="return confirm('Tem certeza? Todos os posts serão excluídos.');" title="Excluir">
+                            {% if user.is_superuser %}<a href="{% url 'excluir_departamento_blog' depto.id %}" class="btn btn-sm btn-light border text-danger rounded-circle ms-1" style="width: 28px; height: 28px; padding: 2px;" onclick="return confirm('Tem certeza? Todos os posts serão excluídos.');" title="Excluir">
                                 <i class="fas fa-trash" style="font-size: 0.75rem;"></i>
-                            </a>
+                            </a>{% endif %}
                         </td>
                     </tr>
                     {% empty %}

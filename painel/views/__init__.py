@@ -18,7 +18,9 @@ from .blogs import (
     gerenciar_post_blog, 
     excluir_post_blog, 
     configurar_rede_social_blog,
-    # Adicione estas 3 linhas abaixo:
+    gerenciar_membros_blog,
+    excluir_membro_blog,
+    # Categorias do blog:
     listar_categorias_blog,
     gerenciar_categoria_blog,
     excluir_categoria_blog

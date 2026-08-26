@@ -1,6 +1,6 @@
 # painel/forms/blogs.py
 from django import forms
-from blogs.models import PostBlog, BlogDepartamento, CategoriaBlog
+from blogs.models import PostBlog, BlogDepartamento, CategoriaBlog, BlogMembro
 
 class PostBlogForm(forms.ModelForm):
     # Sobrescrevemos o campo para garantir que seja um input oculto simples
@@ -81,4 +81,15 @@ class CategoriaBlogForm(forms.ModelForm):
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Eventos, Estudos, Comunicados'}),
             'cor': forms.TextInput(attrs={'class': 'form-control form-control-color', 'type': 'color'}),
+        }
+
+
+class BlogMembroForm(forms.ModelForm):
+    class Meta:
+        model = BlogMembro
+        fields = ['usuario', 'papel', 'ativo']
+        widgets = {
+            'usuario': forms.Select(attrs={'class': 'form-select'}),
+            'papel': forms.Select(attrs={'class': 'form-select'}),
+            'ativo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }

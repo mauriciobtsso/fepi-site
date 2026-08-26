@@ -1,0 +1,67 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block title %}Membros | {{ blog.nome }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <div class="text-uppercase small fw-bold text-primary mb-1">Equipe editorial</div>
+        <h1 class="h3 mb-1">Membros do {{ blog.nome }}</h1>
+        <p class="text-muted mb-0">Defina quem pode produzir e revisar conteúdo neste blog.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'blogs_hub' %}" class="btn btn-light border"><i class="fas fa-arrow-left me-1"></i> Voltar</a>
+        <a href="https://{{ blog.subdominio }}.fepiaui.org.br/" target="_blank" rel="noopener" class="btn btn-outline-primary"><i class="fas fa-external-link-alt me-1"></i> Ver blog</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <h2 class="h5 mb-1"><i class="fas fa-user-plus text-primary me-2"></i>Adicionar integrante</h2>
+                <p class="small text-muted mb-4">O usuário poderá acessar somente este blog conforme o papel escolhido.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div class="form-text small">{{ field.help_text }}</div>{% endif %}
+                        {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    {% endfor %}
+                    <button class="btn btn-primary w-100" type="submit"><i class="fas fa-link me-1"></i> Vincular ao blog</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="h5 mb-0"><i class="fas fa-users text-primary me-2"></i>Equipe vinculada</h2>
+                    <span class="badge rounded-pill bg-light text-dark border">{{ membros|length }} integrante{{ membros|length|pluralize }}</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead><tr><th>Usuário</th><th>Papel</th><th>Status</th><th class="text-end">Ação</th></tr></thead>
+                        <tbody>
+                        {% for membro in membros %}
+                        <tr>
+                            <td><strong>{{ membro.usuario.get_full_name|default:membro.usuario.username }}</strong><div class="small text-muted">@{{ membro.usuario.username }}</div></td>
+                            <td><span class="badge bg-primary-subtle text-primary-emphasis">{{ membro.get_papel_display }}</span></td>
+                            <td>{% if membro.ativo %}<span class="text-success small"><i class="fas fa-check-circle me-1"></i>Ativo</span>{% else %}<span class="text-muted small">Inativo</span>{% endif %}</td>
+                            <td class="text-end"><form method="post" action="{% url 'excluir_membro_blog' membro.id %}" onsubmit="return confirm('Remover este integrante do blog?');"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"><button class="btn btn-sm btn-outline-danger" type="submit" title="Remover"><i class="fas fa-unlink"></i></button></form></td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center text-muted py-5"><i class="fas fa-user-friends fa-2x mb-2 d-block"></i>Nenhum integrante vinculado a este blog.</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

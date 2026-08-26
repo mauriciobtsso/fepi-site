@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from blogs.models import PostBlog, BlogDepartamento, CategoriaBlog, BlogMembro
-from painel.forms.blogs import PostBlogForm, ConfigBlogForm, BlogDepartamentoCreateForm, CategoriaBlogForm
+from painel.forms.blogs import PostBlogForm, ConfigBlogForm, BlogDepartamentoCreateForm, CategoriaBlogForm, BlogMembroForm
 from .auth import check_acesso_painel, is_admin
 
 
@@ -160,6 +160,44 @@ def configurar_rede_social_blog(request, depto_id):
         'form': form, 
         'titulo': f'Configurar Blog & Instagram: {depto.nome}'
     })
+
+@login_required(login_url='/login/')
+@user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
+def gerenciar_membros_blog(request, depto_id):
+    blog = get_object_or_404(BlogDepartamento, id=depto_id)
+    if not pode_configurar_blog(request.user, blog):
+        return redirect('blogs_hub')
+    membros = blog.membros.select_related('usuario').order_by('usuario__first_name', 'usuario__username')
+    if request.method == 'POST':
+        form = BlogMembroForm(request.POST)
+        if form.is_valid():
+            membro = form.save(commit=False)
+            membro.blog = blog
+            membro.save()
+            messages.success(request, f'{membro.usuario.get_full_name() or membro.usuario.username} vinculado ao blog.')
+            return redirect('gerenciar_membros_blog', depto_id=blog.id)
+    else:
+        form = BlogMembroForm()
+    return render(request, 'painel/blogs/gerenciar_membros.html', {
+        'blog': blog,
+        'membros': membros,
+        'form': form,
+    })
+
+
+@login_required(login_url='/login/')
+@user_passes_test(check_acesso_painel, login_url='/usuarios/minha-conta/')
+def excluir_membro_blog(request, id):
+    membro = get_object_or_404(BlogMembro, id=id)
+    if not pode_configurar_blog(request.user, membro.blog):
+        return redirect('blogs_hub')
+    if request.method == 'POST':
+        blog_id = membro.blog_id
+        membro.delete()
+        messages.success(request, 'Vínculo removido do blog.')
+        return redirect('gerenciar_membros_blog', depto_id=blog_id)
+    return redirect('gerenciar_membros_blog', depto_id=membro.blog_id)
+
 
 # =========================================================
 # GERENCIAMENTO DE CATEGORIAS (TAGS) DOS BLOGS
