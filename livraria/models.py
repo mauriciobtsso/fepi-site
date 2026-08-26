@@ -55,8 +55,8 @@ class Categoria(models.Model):
 
 # 3. Modelo do Livro
 class Livro(models.Model):
-    codigo = models.CharField(max_length=20, verbose_name="Código / ISBN", default="0000")
-    titulo = models.CharField(max_length=100, verbose_name="Título")
+    codigo = models.CharField(max_length=50, verbose_name="Código / ISBN", default="0000", db_index=True)
+    titulo = models.CharField(max_length=255, verbose_name="Título")
     
     # NOVO: Slug para link amigável (ex: /livro/nosso-lar)
     slug = models.SlugField(max_length=255, unique=True, blank=True, null=True, verbose_name="Link Amigável")
@@ -69,12 +69,16 @@ class Livro(models.Model):
     # Campo alterado para permitir formatação (RichText)
     descricao = RichTextField(blank=True, null=True, verbose_name="Descrição")
     
-    preco = models.DecimalField(max_digits=6, decimal_places=2, default=0.00, verbose_name="Preço")
+    preco = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Preço")
     
-    # Destaque na Home
+    # Dados operacionais sincronizados pela planilha de estoque
+    quantidade_estoque = models.IntegerField(default=0, verbose_name="Quantidade em estoque")
+    ultima_sincronizacao = models.DateTimeField(blank=True, null=True, verbose_name="Última sincronização")
+    
+    # Controles independentes da vitrine e da disponibilidade
     destaque_home = models.BooleanField(default=False, verbose_name="Destaque Rotativo na Home")
-    
-    disponivel = models.BooleanField(default=True, verbose_name="Disponível em Estoque")
+    ativo_na_vitrine = models.BooleanField(default=True, verbose_name="Ativo na vitrine")
+    disponivel = models.BooleanField(default=False, verbose_name="Disponível para venda")
     capa = models.ImageField(upload_to='capas/', blank=True, null=True, verbose_name="Capa do Livro")
     
     def save(self, *args, **kwargs):

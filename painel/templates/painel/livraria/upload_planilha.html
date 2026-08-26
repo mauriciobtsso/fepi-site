@@ -10,7 +10,8 @@
                     <h4 class="mb-0 fs-5"><i class="fas fa-file-excel"></i> Atualizar Estoque e Valores</h4>
                 </div>
                 <div class="card-body p-4">
-                    <p class="text-muted">Faça o upload do arquivo <strong>Produtos.xlsx</strong> atualizado para sincronizar o sistema de buscas da livraria.</p>
+                    <p class="text-muted">Faça o upload do arquivo <strong>Produtos.xlsx</strong> para atualizar estoque e preços e criar automaticamente os livros ainda não cadastrados.</p>
+                    <div class="alert alert-info small"><i class="fas fa-circle-info me-1"></i> Livros novos entram inativos e preservam capa, autor, categoria e sinopse dos livros já existentes. Estoque zerado marca o livro como indisponível.</div>
                     
                     {% if messages %}
                         {% for message in messages %}

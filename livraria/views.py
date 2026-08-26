@@ -44,7 +44,8 @@ def livraria_completa(request):
     query = request.GET.get('q')
     categoria_id = request.GET.get('cat') 
     
-    livros = Livro.objects.all().order_by('titulo')
+    # A vitrine mostra apenas livros ativados; a consulta de acervo usa ProdutoLivraria e permanece independente.
+    livros = Livro.objects.filter(ativo_na_vitrine=True).order_by('titulo')
 
     # Filtros
     if query:

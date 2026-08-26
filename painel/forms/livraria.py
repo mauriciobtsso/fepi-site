@@ -6,14 +6,16 @@ from livraria.models import Livro, Categoria, LivrariaConfig
 class LivroForm(forms.ModelForm):
     class Meta:
         model = Livro
-        fields = ['codigo', 'titulo', 'autor', 'categoria', 'preco', 'capa', 'destaque_home', 'disponivel', 'descricao']
+        fields = ['codigo', 'titulo', 'autor', 'categoria', 'preco', 'quantidade_estoque', 'capa', 'ativo_na_vitrine', 'destaque_home', 'disponivel', 'descricao']
         widgets = {
             'codigo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'ISBN ou Ref interna'}),
             'titulo': forms.TextInput(attrs={'class': 'form-control'}),
             'autor': forms.TextInput(attrs={'class': 'form-control'}),
             'categoria': forms.Select(attrs={'class': 'form-select'}),
             'preco': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'quantidade_estoque': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
             'capa': forms.FileInput(attrs={'class': 'form-control'}),
+            'ativo_na_vitrine': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'width: 20px; height: 20px;'}),
             'destaque_home': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'width: 20px; height: 20px;'}),
             'disponivel': forms.CheckboxInput(attrs={'class': 'form-check-input', 'style': 'width: 20px; height: 20px;'}),
             'descricao': CKEditorWidget(),

@@ -74,11 +74,12 @@ def home(request):
             item.data_hora = item.data_evento
         eventos_agenda.append(item)
 
-    lista_livros = list(Livro.objects.filter(destaque_home=True).order_by('?')[:12])
+    livros_vitrine = Livro.objects.filter(ativo_na_vitrine=True)
+    lista_livros = list(livros_vitrine.filter(destaque_home=True).order_by('?')[:12])
     if len(lista_livros) < 12:
         faltam = 12 - len(lista_livros)
         extras = list(
-            Livro.objects.exclude(id__in=[l.id for l in lista_livros])
+            livros_vitrine.exclude(id__in=[l.id for l in lista_livros])
             .order_by('-titulo')[:faltam]
         )
         lista_livros = lista_livros + extras

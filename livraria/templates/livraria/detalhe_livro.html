@@ -118,6 +118,7 @@
         box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
     }
     .btn-whatsapp:hover { background-color: #128C7E; transform: translateY(-2px); }
+    .status-livro-indisponivel { display: inline-block; margin: 0 auto 1rem; padding: .55rem .9rem; border-radius: 999px; background: #eef1f2; color: #66727a; font-weight: 700; font-size: .85rem; text-align: center; }
 
     .btn-voltar {
         display: inline-block; color: #666; text-decoration: none; 
@@ -182,7 +183,7 @@
                 <div class="compra-area">
                     <span class="preco-big">R$ {{ livro.preco }}</span>
                     
-                    {% if whatsapp_num %}
+                    {% if livro.disponivel and livro.quantidade_estoque > 0 and whatsapp_num %}
                         <a href="https://wa.me/{{ whatsapp_num }}?text={{ whatsapp_msg|urlencode }}" target="_blank" class="btn-whatsapp">
                             <i class="fa-brands fa-whatsapp" style="font-size:1.3rem;"></i>
                             Comprar via WhatsApp
@@ -191,7 +192,8 @@
                             Atendimento da Livraria Ramiro Gama
                         </p>
                     {% else %}
-                        <button class="btn-whatsapp" style="background-color:#ccc; cursor:not-allowed;">Indisponível</button>
+                        <div class="status-livro-indisponivel">Indisponível no momento</div>
+                        <button class="btn-whatsapp" style="background-color:#cbd1d4; color:#52616b; cursor:not-allowed;" disabled>Indisponível</button>
                     {% endif %}
                 </div>
             </div>

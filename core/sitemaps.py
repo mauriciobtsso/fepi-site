@@ -54,7 +54,7 @@ class LivroSitemap(Sitemap):
     priority = 0.7
 
     def items(self):
-        return Livro.objects.all()
+        return Livro.objects.filter(ativo_na_vitrine=True)
 
     def location(self, obj):
         return reverse('detalhe_livro', args=[obj.slug])
