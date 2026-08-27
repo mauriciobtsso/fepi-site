@@ -376,6 +376,101 @@ class FinanceiroPainelTests(TestCase):
         self.assertEqual(cobranca.status, StatusCobranca.PAGO)
         self.assertEqual(cobranca.pagamentos.get().valor, Decimal("25.00"))
 
+    def test_relatorio_financeiro_calcula_fluxo_e_inadimplencia(self):
+        adesao = AdesaoMensalidade.objects.create(
+            federado=self.federado_sem_acesso,
+            plano=self.plano,
+            forma_pagamento=FormaPagamento.BOLETO,
+            valor_contratado=Decimal("25.00"),
+            dia_vencimento=15,
+            gateway=Gateway.NENHUM,
+        )
+        CobrancaMensalidade.objects.create(
+            adesao=adesao,
+            competencia=date(2026, 7, 1),
+            vencimento=date(2026, 7, 15),
+            valor=Decimal("25.00"),
+            status=StatusCobranca.PENDENTE,
+            forma_pagamento=FormaPagamento.BOLETO,
+            gateway=Gateway.NENHUM,
+        )
+        CobrancaMensalidade.objects.create(
+            adesao=adesao,
+            competencia=date(2026, 8, 1),
+            vencimento=date(2026, 8, 15),
+            valor=Decimal("25.00"),
+            status=StatusCobranca.PAGO,
+            forma_pagamento=FormaPagamento.BOLETO,
+            gateway=Gateway.NENHUM,
+        )
+        CobrancaMensalidade.objects.create(
+            adesao=adesao,
+            competencia=date(2026, 9, 1),
+            vencimento=date(2026, 9, 15),
+            valor=Decimal("25.00"),
+            status=StatusCobranca.PENDENTE,
+            forma_pagamento=FormaPagamento.BOLETO,
+            gateway=Gateway.NENHUM,
+        )
+
+        response = self.client.get(reverse("relatorio_financeiro"), {
+            "inicio": "2026-01-01",
+            "fim": "2026-12-31",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["total_previsto"], Decimal("75.00"))
+        self.assertEqual(response.context["total_recebido"], Decimal("25.00"))
+        self.assertEqual(response.context["total_aberto"], Decimal("50.00"))
+        self.assertEqual(response.context["total_vencido"], Decimal("25.00"))
+        self.assertEqual(response.context["qtd_inadimplentes"], 1)
+        self.assertEqual(response.context["qtd_cobrancas_vencidas"], 1)
+        self.assertEqual(response.context["taxa_inadimplencia"], 50.0)
+        self.assertContains(response, "Relatório financeiro")
+        self.assertContains(response, "federado-sem-area")
+
+    def test_relatorio_financeiro_filtra_somente_cobrancas_vencidas(self):
+        adesao = AdesaoMensalidade.objects.create(
+            federado=self.federado_sem_acesso,
+            plano=self.plano,
+            forma_pagamento=FormaPagamento.BOLETO,
+            valor_contratado=Decimal("25.00"),
+            dia_vencimento=15,
+            gateway=Gateway.NENHUM,
+        )
+        CobrancaMensalidade.objects.create(
+            adesao=adesao,
+            competencia=date(2026, 8, 1),
+            vencimento=date(2026, 8, 15),
+            valor=Decimal("25.00"),
+            status=StatusCobranca.PENDENTE,
+            forma_pagamento=FormaPagamento.BOLETO,
+            gateway=Gateway.NENHUM,
+        )
+        CobrancaMensalidade.objects.create(
+            adesao=adesao,
+            competencia=date(2026, 9, 1),
+            vencimento=date(2026, 9, 15),
+            valor=Decimal("25.00"),
+            status=StatusCobranca.PENDENTE,
+            forma_pagamento=FormaPagamento.BOLETO,
+            gateway=Gateway.NENHUM,
+        )
+        response = self.client.get(reverse("relatorio_financeiro"), {
+            "inicio": "2026-01-01",
+            "fim": "2026-12-31",
+            "situacao": "vencido",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["qtd_cobrancas"], 1)
+        self.assertEqual(response.context["total_previsto"], Decimal("25.00"))
+
+    def test_relatorio_financeiro_exige_administrador(self):
+        self.client.logout()
+        usuario = get_user_model().objects.create_user(username="usuario-relatorio")
+        self.client.force_login(usuario)
+        response = self.client.get(reverse("relatorio_financeiro"))
+        self.assertIn(response.status_code, (302, 403))
+
     def test_historico_financeiro_lista_movimentacoes(self):
         auditoria = AuditoriaFinanceira.objects.create(
             usuario=self.admin,

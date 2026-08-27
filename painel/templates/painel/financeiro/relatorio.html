@@ -1,0 +1,166 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block title %}Relatório financeiro | Painel FEPI{% endblock %}
+
+{% block content %}
+<style>
+    .report-hero {
+        background: linear-gradient(135deg, #173b65 0%, #225b78 58%, #238b83 100%);
+        color: #fff;
+        border-radius: 22px;
+        padding: 28px;
+        box-shadow: 0 18px 35px rgba(23, 59, 101, .18);
+    }
+    .report-eyebrow { color: rgba(255,255,255,.72); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .report-hero h1 { font-size: clamp(1.55rem, 3vw, 2.2rem); font-weight: 800; margin: .4rem 0 .45rem; }
+    .report-hero p { max-width: 720px; color: rgba(255,255,255,.8); margin: 0; }
+    .filter-card, .report-card { background: #fff; border: 1px solid #e7edf1; border-radius: 18px; box-shadow: 0 8px 24px rgba(32,57,74,.05); }
+    .filter-card { padding: 16px; }
+    .filter-label { color: #627383; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .report-card { overflow: hidden; height: 100%; }
+    .report-card-head { align-items: center; border-bottom: 1px solid #edf1f4; display: flex; gap: 12px; justify-content: space-between; padding: 18px 20px; }
+    .report-card-head h2 { color: #173b65; font-size: 1rem; font-weight: 800; margin: 0; }
+    .report-card-head p { color: #748292; font-size: .8rem; margin: 4px 0 0; }
+    .report-card-body { padding: 20px; }
+    .kpi { border: 1px solid #e7edf1; border-radius: 16px; background: #fff; padding: 18px; height: 100%; }
+    .kpi-label { color: #718191; font-size: .72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+    .kpi-value { color: #173b65; font-size: clamp(1.25rem, 3vw, 1.75rem); font-weight: 850; line-height: 1.15; margin-top: 12px; }
+    .kpi-subtitle { color: #84919c; font-size: .77rem; margin-top: 6px; }
+    .kpi-icon { align-items: center; background: #e8f4f3; border-radius: 12px; color: #16847e; display: inline-flex; height: 38px; justify-content: center; width: 38px; }
+    .kpi-danger .kpi-icon { background: #fde8e8; color: #ad4545; }
+    .kpi-warning .kpi-icon { background: #fff4d5; color: #9a6911; }
+    .kpi-success .kpi-icon { background: #e2f4ef; color: #14766c; }
+    .legend { color: #718191; font-size: .75rem; }
+    .legend-dot { border-radius: 50%; display: inline-block; height: 9px; margin-right: 4px; width: 9px; }
+    .dot-blue { background: #3974b8; }
+    .dot-green { background: #16847e; }
+    .dot-yellow { background: #d8a62a; }
+    .flow-item { border-bottom: 1px solid #f0f3f5; padding: 13px 0; }
+    .flow-item:last-child { border-bottom: 0; padding-bottom: 0; }
+    .flow-label { color: #334155; font-size: .82rem; font-weight: 800; min-width: 58px; }
+    .flow-line { align-items: center; display: flex; gap: 10px; margin-top: 5px; }
+    .flow-name { color: #7a8793; font-size: .7rem; min-width: 64px; }
+    .flow-track { background: #eef2f5; border-radius: 99px; flex: 1; height: 8px; overflow: hidden; }
+    .flow-fill { border-radius: inherit; height: 100%; min-width: 0; }
+    .fill-blue { background: #3974b8; }
+    .fill-green { background: #16847e; }
+    .fill-yellow { background: #d8a62a; }
+    .flow-value { color: #526170; font-size: .72rem; font-weight: 700; min-width: 88px; text-align: right; }
+    .soft-badge { border-radius: 999px; display: inline-flex; font-size: .7rem; font-weight: 800; padding: .4rem .62rem; }
+    .badge-danger { background: #fde8e8; color: #a23a3a; }
+    .badge-warning { background: #fff4d5; color: #9a6911; }
+    .table { margin-bottom: 0; }
+    .table thead th { border-bottom-width: 1px; color: #748292; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+    .table tbody td { color: #334155; font-size: .84rem; vertical-align: middle; }
+    .empty-state { color: #748292; padding: 32px 16px; text-align: center; }
+    .report-note { background: #f8fbfc; border: 1px dashed #c9dde1; border-radius: 14px; color: #4e6674; font-size: .82rem; padding: 13px 16px; }
+    @media (max-width: 767.98px) {
+        .report-hero { border-radius: 17px; padding: 22px 18px; }
+        .report-hero .btn { margin-top: 12px; width: 100%; }
+        .filter-card { padding: 13px; }
+        .report-card-head, .report-card-body { padding: 16px; }
+        .flow-value { min-width: 74px; }
+        .table-responsive { border-radius: 0 0 18px 18px; }
+    }
+</style>
+
+<div class="container-fluid px-0">
+    <div class="report-hero mb-4">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+            <div>
+                <div class="report-eyebrow"><i class="fa-solid fa-chart-line me-1"></i> Visão administrativa</div>
+                <h1>Relatório financeiro</h1>
+                <p>Visualize o fluxo de mensalidades, os valores recebidos e as cobranças que precisam de acompanhamento.</p>
+            </div>
+            <a href="{% url 'financeiro_hub' %}" class="btn btn-light fw-semibold"><i class="fa-solid fa-arrow-left me-2"></i>Voltar ao financeiro</a>
+        </div>
+    </div>
+
+    <form method="get" class="filter-card mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-3">
+                <label class="filter-label mb-2" for="inicio">Competência inicial</label>
+                <input type="date" class="form-control" id="inicio" name="inicio" value="{{ inicio|date:'Y-m-d' }}">
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="filter-label mb-2" for="fim">Competência final</label>
+                <input type="date" class="form-control" id="fim" name="fim" value="{{ fim|date:'Y-m-d' }}">
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="filter-label mb-2" for="situacao">Situação</label>
+                <select class="form-select" id="situacao" name="situacao">
+                    <option value="todos" {% if situacao == 'todos' %}selected{% endif %}>Todas as situações</option>
+                    <option value="aberto" {% if situacao == 'aberto' %}selected{% endif %}>Em aberto</option>
+                    <option value="pago" {% if situacao == 'pago' %}selected{% endif %}>Pagas</option>
+                    <option value="vencido" {% if situacao == 'vencido' %}selected{% endif %}>Vencidas</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="filter-label mb-2" for="q">Busca</label>
+                <div class="input-group">
+                    <input type="search" class="form-control" id="q" name="q" value="{{ busca }}" placeholder="Federado ou plano">
+                    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-filter"></i><span class="d-none d-sm-inline ms-2">Aplicar</span></button>
+                </div>
+            </div>
+        </div>
+        {% if erro_periodo %}<div class="alert alert-warning mt-3 mb-0 py-2 small">As datas foram invertidas automaticamente para formar um período válido.</div>{% endif %}
+    </form>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3"><div class="kpi"><span class="kpi-icon"><i class="fa-solid fa-bullseye"></i></span><div class="kpi-label mt-3">Previsto</div><div class="kpi-value">R$ {{ total_previsto|floatformat:2 }}</div><div class="kpi-subtitle">{{ qtd_cobrancas }} cobrança(s) no período</div></div></div>
+        <div class="col-6 col-xl-3"><div class="kpi kpi-success"><span class="kpi-icon"><i class="fa-solid fa-arrow-trend-up"></i></span><div class="kpi-label mt-3">Recebido</div><div class="kpi-value">R$ {{ total_recebido|floatformat:2 }}</div><div class="kpi-subtitle">Pagamentos confirmados</div></div></div>
+        <div class="col-6 col-xl-3"><div class="kpi kpi-warning"><span class="kpi-icon"><i class="fa-solid fa-hourglass-half"></i></span><div class="kpi-label mt-3">Em aberto</div><div class="kpi-value">R$ {{ total_aberto|floatformat:2 }}</div><div class="kpi-subtitle">Aguardando recebimento</div></div></div>
+        <div class="col-6 col-xl-3"><div class="kpi kpi-danger"><span class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></span><div class="kpi-label mt-3">Inadimplência</div><div class="kpi-value">R$ {{ total_vencido|floatformat:2 }}</div><div class="kpi-subtitle">{{ taxa_inadimplencia|floatformat:1 }}% das cobranças vencidas</div></div></div>
+    </div>
+
+    <div class="report-note mb-4"><i class="fa-solid fa-circle-info me-2"></i><strong>Critério:</strong> inadimplência considera cobranças em aberto com vencimento anterior a {{ hoje|date:'d/m/Y' }}. Cancelamentos e estornos ficam fora do previsto.</div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-xl-7">
+            <div class="report-card">
+                <div class="report-card-head">
+                    <div><h2><i class="fa-solid fa-chart-column me-2 text-success"></i>Fluxo por competência</h2><p>Comparativo entre previsto, recebido e em aberto.</p></div>
+                    <div class="legend d-flex flex-wrap gap-2"><span><i class="legend-dot dot-blue"></i>Previsto</span><span><i class="legend-dot dot-green"></i>Recebido</span><span><i class="legend-dot dot-yellow"></i>Aberto</span></div>
+                </div>
+                <div class="report-card-body">
+                    {% for item in fluxo %}
+                        <div class="flow-item">
+                            <div class="flow-label">{{ item.mes|date:'M/Y' }}</div>
+                            <div class="flow-line"><span class="flow-name">Previsto</span><div class="flow-track"><div class="flow-fill fill-blue" style="width: {{ item.percentual_previsto|floatformat:0 }}%;"></div></div><span class="flow-value">R$ {{ item.previsto|floatformat:2 }}</span></div>
+                            <div class="flow-line"><span class="flow-name">Recebido</span><div class="flow-track"><div class="flow-fill fill-green" style="width: {{ item.percentual_recebido|floatformat:0 }}%;"></div></div><span class="flow-value">R$ {{ item.recebido|floatformat:2 }}</span></div>
+                            <div class="flow-line"><span class="flow-name">Aberto</span><div class="flow-track"><div class="flow-fill fill-yellow" style="width: {{ item.percentual_aberto|floatformat:0 }}%;"></div></div><span class="flow-value">R$ {{ item.aberto|floatformat:2 }}</span></div>
+                        </div>
+                    {% empty %}<div class="empty-state">Nenhuma cobrança encontrada no período selecionado.</div>{% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-5">
+            <div class="report-card">
+                <div class="report-card-head"><div><h2><i class="fa-solid fa-user-clock me-2 text-danger"></i>Resumo da inadimplência</h2><p>Federados com uma ou mais cobranças vencidas.</p></div></div>
+                <div class="report-card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3"><span class="text-muted small">Federados inadimplentes</span><strong class="fs-4 text-danger">{{ qtd_inadimplentes }}</strong></div>
+                    <div class="d-flex justify-content-between align-items-center mb-3"><span class="text-muted small">Cobranças vencidas</span><strong class="fs-4 text-danger">{{ qtd_cobrancas_vencidas }}</strong></div>
+                    <div class="d-flex justify-content-between align-items-center"><span class="text-muted small">Taxa sobre vencidas</span><strong class="fs-4 text-danger">{{ taxa_inadimplencia|floatformat:1 }}%</strong></div>
+                    <hr>
+                    <p class="small text-muted mb-0"><i class="fa-solid fa-arrow-down-wide-short me-1"></i>A lista abaixo está ordenada pelo maior valor em aberto.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="report-card mb-4">
+        <div class="report-card-head"><div><h2><i class="fa-solid fa-users me-2 text-danger"></i>Federados inadimplentes</h2><p>Consolidação por usuário para orientar o acompanhamento da secretaria.</p></div><span class="soft-badge badge-danger">{{ qtd_inadimplentes }} pessoa(s)</span></div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead><tr><th>Federado</th><th>Plano</th><th>Cobranças</th><th>Vencimento mais antigo</th><th class="text-end">Em aberto</th></tr></thead>
+                <tbody>
+                {% for item in inadimplentes %}
+                    <tr><td><strong>{{ item.nome }}</strong><br><small class="text-muted">{{ item.email|default:'E-mail não informado' }}</small></td><td>{{ item.plano }}</td><td>{{ item.quantidade }}</td><td>{{ item.vencimento_mais_antigo|date:'d/m/Y' }}</td><td class="text-end"><strong class="text-danger">R$ {{ item.total|floatformat:2 }}</strong></td></tr>
+                {% empty %}<tr><td colspan="5" class="empty-state">Nenhum federado inadimplente no período selecionado.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if inadimplentes.has_other_pages %}<div class="p-3 border-top"><nav aria-label="Paginação de inadimplência"><ul class="pagination pagination-sm justify-content-center mb-0"><li class="page-item {% if not inadimplentes.has_previous %}disabled{% endif %}"><a class="page-link" href="?inicio={{ inicio|date:'Y-m-d' }}&fim={{ fim|date:'Y-m-d' }}&situacao={{ situacao }}&q={{ busca|urlencode }}&inadimplentes_page={% if inadimplentes.has_previous %}{{ inadimplentes.previous_page_number }}{% else %}1{% endif %}">Anterior</a></li><li class="page-item disabled"><span class="page-link">Página {{ inadimplentes.number }} de {{ inadimplentes.paginator.num_pages }}</span></li><li class="page-item {% if not inadimplentes.has_next %}disabled{% endif %}"><a class="page-link" href="?inicio={{ inicio|date:'Y-m-d' }}&fim={{ fim|date:'Y-m-d' }}&situacao={{ situacao }}&q={{ busca|urlencode }}&inadimplentes_page={% if inadimplentes.has_next %}{{ inadimplentes.next_page_number }}{% else %}{{ inadimplentes.paginator.num_pages }}{% endif %}">Próxima</a></li></ul></nav></div>{% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -147,6 +147,7 @@ urlpatterns = [
     path('financeiro/cobrancas/nova/', views.gerenciar_cobranca_financeira, name='nova_cobranca_financeira'),
     path('financeiro/cobrancas/editar/<int:id>/', views.gerenciar_cobranca_financeira, name='editar_cobranca_financeira'),
     path('financeiro/auditoria/', views.listar_auditoria_financeira, name='listar_auditoria_financeira'),
+    path('financeiro/relatorio/', views.relatorio_financeiro, name='relatorio_financeiro'),
 
     # --- ADMINISTRAÇÃO ---
     path('usuarios/', views.gerenciar_usuarios, name='gerenciar_usuarios'),

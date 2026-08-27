@@ -115,7 +115,10 @@
                 </div>
                 <h6 class="fw-bold mb-1">Mensalidades</h6>
                 <p class="text-muted small mb-3">Planos, adesões e histórico.</p>
-                <a href="{% url 'financeiro_hub' %}" class="btn btn-success rounded-pill text-white w-100 btn-sm fw-bold">Abrir Financeiro</a>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'financeiro_hub' %}" class="btn btn-success rounded-pill text-white w-100 btn-sm fw-bold">Abrir Financeiro</a>
+                    <a href="{% url 'relatorio_financeiro' %}" class="btn btn-outline-success rounded-pill w-100 btn-sm fw-bold">Ver relatório</a>
+                </div>
             </div>
         </div>
     </div>
