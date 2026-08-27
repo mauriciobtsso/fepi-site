@@ -1,16 +1,19 @@
 from datetime import date, timedelta
 from decimal import Decimal
+import hashlib
+import hmac
+import json
 
+from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
-from painel.forms.financeiro import PlanoMensalidadeForm
 from financeiro.admin import PlanoMensalidadeAdmin
-from django.contrib import admin
+from painel.forms.financeiro import PlanoMensalidadeForm
 
 from .models import (
     AcaoAuditoria,
@@ -22,10 +25,13 @@ from .models import (
     FormaPagamento,
     Gateway,
     GatewayConfiguracao,
+    Pagamento,
     PlanoMensalidade,
     StatusAdesao,
     StatusCobranca,
     StatusConexaoGateway,
+    StatusEvento,
+    StatusPagamento,
 )
 
 
@@ -263,6 +269,112 @@ class FinanceiroPainelTests(TestCase):
             usuario=self.admin,
             acao=AcaoAuditoria.ALTERACAO,
         ).exists())
+
+    @override_settings(PAGBANK_WEBHOOK_TOKEN="token-pagbank-teste")
+    def test_webhook_pagbank_autentica_processa_e_e_idempotente(self):
+        self.plano.gateway = Gateway.PAGBANK
+        self.plano.save(update_fields=["gateway", "atualizado_em"])
+        adesao = AdesaoMensalidade.objects.create(
+            federado=self.federado_sem_acesso,
+            plano=self.plano,
+            forma_pagamento=FormaPagamento.PIX,
+            valor_contratado=Decimal("25.00"),
+            dia_vencimento=15,
+            gateway=Gateway.PAGBANK,
+            gateway_reference="adesao-pagbank-1",
+        )
+        cobranca = CobrancaMensalidade.objects.create(
+            adesao=adesao,
+            competencia=date(2026, 8, 1),
+            vencimento=date(2026, 8, 15),
+            valor=Decimal("25.00"),
+            forma_pagamento=FormaPagamento.PIX,
+            gateway=Gateway.PAGBANK,
+            gateway_charge_id="CH_PAGBANK_001",
+        )
+        GatewayConfiguracao.objects.create(gateway=Gateway.PAGBANK, ativo=True)
+        payload = {
+            "id": "evt-pagbank-001",
+            "status": "PAID",
+            "charge_id": "CH_PAGBANK_001",
+            "amount": {"value": 2500},
+            "payment_method": {"type": "PIX"},
+        }
+        body = json.dumps(payload, separators=(",", ":")).encode()
+        assinatura = hashlib.sha256(b"token-pagbank-teste-" + body).hexdigest()
+        url = reverse("gateway_webhook", kwargs={"gateway": "pagbank"})
+
+        response = self.client.post(url, body, content_type="application/json", HTTP_X_AUTHENTICITY_TOKEN=assinatura)
+        self.assertEqual(response.status_code, 200)
+        cobranca.refresh_from_db()
+        adesao.refresh_from_db()
+        self.assertEqual(cobranca.status, StatusCobranca.PAGO)
+        self.assertEqual(cobranca.pagamentos.count(), 1)
+        self.assertEqual(cobranca.pagamentos.get().status, StatusPagamento.PAGO)
+        self.assertEqual(adesao.status, StatusAdesao.ATIVA)
+        evento = EventoGateway.objects.get(evento_id="evt-pagbank-001")
+        self.assertEqual(evento.status, StatusEvento.PROCESSADO)
+        self.assertTrue(evento.assinatura_validada)
+
+        response = self.client.post(url, body, content_type="application/json", HTTP_X_AUTHENTICITY_TOKEN=assinatura)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(cobranca.pagamentos.count(), 1)
+
+    @override_settings(PAGBANK_WEBHOOK_TOKEN="token-pagbank-teste")
+    def test_webhook_pagbank_rejeita_assinatura_invalida_sem_baixar_cobranca(self):
+        GatewayConfiguracao.objects.create(gateway=Gateway.PAGBANK, ativo=True)
+        payload = {"id": "evt-pagbank-invalido", "status": "PAID", "charge_id": "CH_INEXISTENTE"}
+        body = json.dumps(payload).encode()
+        response = self.client.post(
+            reverse("gateway_webhook", kwargs={"gateway": "pagbank"}),
+            body,
+            content_type="application/json",
+            HTTP_X_AUTHENTICITY_TOKEN="assinatura-errada",
+        )
+        self.assertEqual(response.status_code, 401)
+        evento = EventoGateway.objects.get(evento_id="evt-pagbank-invalido")
+        self.assertEqual(evento.status, StatusEvento.ERRO)
+        self.assertFalse(evento.assinatura_validada)
+
+    @override_settings(PAGARME_WEBHOOK_SECRET="segredo-pagarme-teste")
+    def test_webhook_pagarme_processa_cobranca_por_hmac(self):
+        self.plano.gateway = Gateway.PAGARME
+        self.plano.save(update_fields=["gateway", "atualizado_em"])
+        adesao = AdesaoMensalidade.objects.create(
+            federado=self.federado_sem_acesso,
+            plano=self.plano,
+            forma_pagamento=FormaPagamento.BOLETO,
+            valor_contratado=Decimal("25.00"),
+            dia_vencimento=15,
+            gateway=Gateway.PAGARME,
+        )
+        cobranca = CobrancaMensalidade.objects.create(
+            adesao=adesao,
+            competencia=date(2026, 8, 1),
+            vencimento=date(2026, 8, 15),
+            valor=Decimal("25.00"),
+            forma_pagamento=FormaPagamento.BOLETO,
+            gateway=Gateway.PAGARME,
+            gateway_charge_id="CH_PAGARME_001",
+        )
+        GatewayConfiguracao.objects.create(gateway=Gateway.PAGARME, ativo=True)
+        payload = {
+            "id": "evt-pagarme-001",
+            "event": "charge.paid",
+            "data": {"id": "CH_PAGARME_001", "amount": 2500, "payment_method": "boleto"},
+        }
+        body = json.dumps(payload, separators=(",", ":")).encode()
+        assinatura = hmac.new(b"segredo-pagarme-teste", body, hashlib.sha256).hexdigest()
+        response = self.client.post(
+            reverse("gateway_webhook", kwargs={"gateway": "pagarme"}),
+            body,
+            content_type="application/json",
+            HTTP_X_PAGARME_SIGNATURE=assinatura,
+        )
+        self.assertEqual(response.status_code, 200)
+        cobranca.refresh_from_db()
+        self.assertEqual(cobranca.status, StatusCobranca.PAGO)
+        self.assertEqual(cobranca.pagamentos.get().valor, Decimal("25.00"))
 
     def test_historico_financeiro_lista_movimentacoes(self):
         auditoria = AuditoriaFinanceira.objects.create(

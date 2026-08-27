@@ -15,6 +15,7 @@ from django.views.generic.base import TemplateView
 # Views diretas
 from recursos.views import links_uteis, downloads
 from doacoes.views import doacoes_view
+from financeiro.views import gateway_webhook
 from core.views import home, institucional, fale_conosco, privacidade
 from usuarios import views as usuarios_views
 
@@ -45,6 +46,7 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('painel/', include('painel.urls')),
+    path('webhooks/<str:gateway>/', gateway_webhook, name='gateway_webhook'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', home, name='home'),
     path('editorjs/', include('django_editorjs_fields.urls')),
