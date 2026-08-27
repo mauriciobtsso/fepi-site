@@ -263,8 +263,14 @@
 
             <div class="news-row__thumb">
               {% if noticia.imagem %}
-                <!-- OTIMIZAÇÃO APLICADA AQUI -->
-                <img src="{{ noticia.imagem.url|cloudinary_transform:'w_440,h_260,c_fill,f_auto,q_auto' }}" alt="{{ noticia.titulo }}" loading="lazy">
+                <img src="{{ noticia.imagem.url|cloudinary_transform:'w_440,h_260,c_fill,f_auto,q_auto:eco' }}"
+                     srcset="{{ noticia.imagem.url|cloudinary_transform:'w_320,h_189,c_fill,f_auto,q_auto:eco' }} 320w, {{ noticia.imagem.url|cloudinary_transform:'w_440,h_260,c_fill,f_auto,q_auto:eco' }} 440w"
+                     sizes="(max-width: 720px) 100vw, 220px"
+                     alt="{{ noticia.titulo }}"
+                     width="440"
+                     height="260"
+                     decoding="async"
+                     loading="lazy">
               {% else %}
                 <div class="news-placeholder">📰</div>
               {% endif %}

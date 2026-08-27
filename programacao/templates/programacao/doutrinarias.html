@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load cloudinary_tags %}
 
 {% block title %}FEPI | Palestras Públicas{% endblock %}
 
@@ -123,8 +124,10 @@
                         <div class="card-palestra">
                             <div class="img-container">
                                 {% if palestra.imagem %}
-                                    <div class="img-blur-bg" style="background-image: url('{{ palestra.imagem.url }}');"></div>
-                                    <img src="{{ palestra.imagem.url }}" alt="{{ palestra.tema }}" class="img-main">
+                                    {% with imagem_palestra=palestra.imagem.url|cloudinary_transform:'w_640,h_640,c_limit,f_auto,q_auto:eco' %}
+                                        <div class="img-blur-bg" style="background-image: url('{{ imagem_palestra }}');"></div>
+                                        <img src="{{ imagem_palestra }}" alt="{{ palestra.tema }}" class="img-main" width="640" height="640" decoding="async" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" fetchpriority="{% if forloop.first %}high{% else %}auto{% endif %}">
+                                    {% endwith %}
                                 {% else %}
                                     <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#999; z-index:2; position:relative;">Sem Cartaz</div>
                                 {% endif %}
@@ -149,8 +152,10 @@
                             <div class="card-palestra past">
                                 <div class="img-container">
                                     {% if palestra.imagem %}
-                                        <div class="img-blur-bg" style="background-image: url('{{ palestra.imagem.url }}');"></div>
-                                        <img src="{{ palestra.imagem.url }}" alt="{{ palestra.tema }}" class="img-main">
+                                        {% with imagem_palestra=palestra.imagem.url|cloudinary_transform:'w_480,h_480,c_limit,f_auto,q_auto:eco' %}
+                                            <div class="img-blur-bg" style="background-image: url('{{ imagem_palestra }}');"></div>
+                                            <img src="{{ imagem_palestra }}" alt="{{ palestra.tema }}" class="img-main" width="480" height="480" decoding="async" loading="lazy">
+                                        {% endwith %}
                                     {% else %}
                                         <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#999; z-index:2; position:relative;">Sem Cartaz</div>
                                     {% endif %}

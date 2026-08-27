@@ -11,11 +11,13 @@
 
 {% block og_description %}{{ noticia.resumo|default:noticia.conteudo|striptags|truncatechars:150 }}{% endblock %}
 
-{% block og_image %}
+{% block og_image_tag %}
     {% if noticia.imagem %}
-        {{ noticia.imagem.url }}
+        <meta property="og:image" content="{{ noticia.imagem.url|cloudinary_transform:'w_1200,h_630,c_fill,f_auto,q_auto:eco' }}">
+        <meta property="og:image:alt" content="Imagem de {{ noticia.titulo }}">
     {% else %}
-        {{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}">
+        <meta property="og:image:alt" content="Logomarca da FEPI">
     {% endif %}
 {% endblock %}
 
@@ -23,7 +25,7 @@
 {% block twitter_description %}{{ noticia.resumo|default:noticia.conteudo|striptags|truncatechars:150 }}{% endblock %}
 {% block twitter_image_tag %}
     {% if noticia.imagem %}
-        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ noticia.imagem.url }}">
+        <meta name="twitter:image" content="{{ noticia.imagem.url|cloudinary_transform:'w_1200,h_630,c_fill,f_auto,q_auto:eco' }}">
     {% endif %}
 {% endblock %}
 
@@ -34,7 +36,7 @@
       "@type": "NewsArticle",
       "headline": "{{ noticia.titulo|escapejs }}",
       "image": [
-        "{% if noticia.imagem %}{{ request.scheme }}://{{ request.get_host }}{{ noticia.imagem.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}{% endif %}"
+        "{% if noticia.imagem %}{{ noticia.imagem.url|cloudinary_transform:'w_1200,h_630,c_fill,f_auto,q_auto:eco' }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.webp' %}{% endif %}"
       ],
       "datePublished": "{{ noticia.data_publicacao|date:'Y-m-d\\TH:i:s' }}",
       "dateModified": "{{ noticia.data_publicacao|date:'Y-m-d\\TH:i:s' }}",
@@ -108,7 +110,15 @@
 
         {% if noticia.imagem %}
             <div class="news-img-container">
-                <img src="{{ noticia.imagem.url|cloudinary_transform:'w_1200,h_800,c_limit,f_auto,q_auto' }}" alt="Imagem de {{ noticia.titulo }}" class="news-img-full" fetchpriority="high">
+                <img src="{{ noticia.imagem.url|cloudinary_transform:'w_1200,h_800,c_limit,f_auto,q_auto:eco' }}"
+                     srcset="{{ noticia.imagem.url|cloudinary_transform:'w_640,h_427,c_limit,f_auto,q_auto:eco' }} 640w, {{ noticia.imagem.url|cloudinary_transform:'w_960,h_640,c_limit,f_auto,q_auto:eco' }} 960w, {{ noticia.imagem.url|cloudinary_transform:'w_1200,h_800,c_limit,f_auto,q_auto:eco' }} 1200w"
+                     sizes="(max-width: 900px) calc(100vw - 40px), 900px"
+                     alt="Imagem de {{ noticia.titulo }}"
+                     class="news-img-full"
+                     width="1200"
+                     height="800"
+                     decoding="async"
+                     fetchpriority="high">
             </div>
         {% endif %}
 
@@ -132,9 +142,9 @@
                         {% elif block.type == 'image' %}
                             <figure style="margin: 2rem 0; text-align: center;">
                                 {% if block.data.file.url %}
-                                    <img src="{{ block.data.file.url|cloudinary_transform:'w_1000,c_limit,f_auto,q_auto' }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="Imagem da notícia" loading="lazy">
+                                    <img src="{{ block.data.file.url|cloudinary_transform:'w_1000,c_limit,f_auto,q_auto:eco' }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="Imagem da notícia" loading="lazy" decoding="async">
                                 {% elif block.data.url %}
-                                    <img src="{{ block.data.url|cloudinary_transform:'w_1000,c_limit,f_auto,q_auto' }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="Imagem da notícia" loading="lazy">
+                                    <img src="{{ block.data.url|cloudinary_transform:'w_1000,c_limit,f_auto,q_auto:eco' }}" style="max-width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" alt="Imagem da notícia" loading="lazy" decoding="async">
                                 {% endif %}
                                 
                                 {% if block.data.caption %}
@@ -154,7 +164,7 @@
                             
                         {% elif block.type == 'embed' %}
                             <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 2rem 0; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-                                <iframe src="{{ block.data.embed }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen></iframe>
+                                <iframe src="{{ block.data.embed }}" title="Conteúdo incorporado na notícia" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen></iframe>
                             </div>
                             
                         {% elif block.type == 'list' %}

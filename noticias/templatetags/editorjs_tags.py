@@ -62,7 +62,9 @@ def embed_media(text):
         return (
             f'<div style="display: flex; justify-content: center; margin: 20px 0;">'
             f'<iframe src="{embed_url}" width="400" height="480" frameborder="0" '
-            f'scrolling="no" allowtransparency="true" '
+            f'scrolling="no" allowtransparency="true" loading="lazy" '
+            f'title="Publicação incorporada do Instagram" '
+            f'referrerpolicy="strict-origin-when-cross-origin" '
             f'style="border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></iframe>'
             f'</div>'
         )
@@ -82,7 +84,9 @@ def embed_media(text):
             f'<div style="display: flex; justify-content: center; margin: 20px 0;">'
             f'<iframe width="560" height="315" src="{embed_url}" frameborder="0" '
             f'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" '
-            f'allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></iframe>'
+            f'allowfullscreen loading="lazy" title="Vídeo incorporado do YouTube" '
+            f'referrerpolicy="strict-origin-when-cross-origin" '
+            f'style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"></iframe>'
             f'</div>'
         )
 

@@ -49,14 +49,18 @@ def home(request):
 
     ultimas_noticias = Noticia.objects.all().order_by('-data_publicacao')[:4]
     
-    # Tratamento para SQLite Timezone no Home
-    todos_cursos = CursoEvento.objects.all().order_by('data_evento')
-    proximos_cursos = [c for c in todos_cursos if c.data_evento.replace(tzinfo=None) >= agora.replace(tzinfo=None)][:3]
-    
+    # Filtra no banco para evitar carregar todo o histórico e fazer o filtro em Python.
+    proximos_cursos = list(
+        CursoEvento.objects.filter(data_evento__gte=agora)
+        .order_by('data_evento')[:3]
+    )
+
     lista_carrossel = list(chain(ultimas_noticias, proximos_cursos))
 
-    todas_palestras = Doutrinaria.objects.all().order_by('data_hora')
-    palestras_agenda = [p for p in todas_palestras if p.data_hora.replace(tzinfo=None) >= agora.replace(tzinfo=None)]
+    palestras_agenda = list(
+        Doutrinaria.objects.filter(data_hora__gte=agora)
+        .order_by('data_hora')[:3]
+    )
 
     eventos_agenda_temp = sorted(
         chain(palestras_agenda, proximos_cursos),
@@ -75,7 +79,10 @@ def home(request):
         eventos_agenda.append(item)
 
     livros_vitrine = Livro.objects.filter(ativo_na_vitrine=True)
-    lista_livros = list(livros_vitrine.filter(destaque_home=True).order_by('?')[:12])
+    lista_livros = list(
+        livros_vitrine.filter(destaque_home=True)
+        .order_by('-id')[:12]
+    )
     if len(lista_livros) < 12:
         faltam = 12 - len(lista_livros)
         extras = list(

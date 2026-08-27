@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load cloudinary_tags %}
 
 {% block title %}FEPI | Cursos e Eventos{% endblock %}
 
@@ -286,7 +287,14 @@
                     <a href="{% url 'detalhe_curso' curso.slug %}" class="course-row">
                         <div class="course-row__thumb">
                             {% if curso.imagem %}
-                                <img src="{{ curso.imagem.url }}" alt="{{ curso.titulo }}">
+                                <img src="{{ curso.imagem.url|cloudinary_transform:'w_480,h_300,c_fill,f_auto,q_auto:eco' }}"
+                                     srcset="{{ curso.imagem.url|cloudinary_transform:'w_320,h_200,c_fill,f_auto,q_auto:eco' }} 320w, {{ curso.imagem.url|cloudinary_transform:'w_480,h_300,c_fill,f_auto,q_auto:eco' }} 480w"
+                                     sizes="(max-width: 720px) 100vw, 240px"
+                                     alt="{{ curso.titulo }}"
+                                     width="480"
+                                     height="300"
+                                     decoding="async"
+                                     loading="lazy">
                             {% else %}
                                 <div class="course-placeholder">📚</div>
                             {% endif %}
@@ -327,7 +335,12 @@
                     <a href="{% url 'detalhe_curso' curso.slug %}" class="history-card">
                         <div class="history-card__thumb">
                             {% if curso.imagem %}
-                                <img src="{{ curso.imagem.url }}" alt="{{ curso.titulo }}">
+                                <img src="{{ curso.imagem.url|cloudinary_transform:'w_160,h_160,c_fill,f_auto,q_auto:eco' }}"
+                                     alt="{{ curso.titulo }}"
+                                     width="160"
+                                     height="160"
+                                     decoding="async"
+                                     loading="lazy">
                             {% else %}
                                 <div class="course-placeholder" style="font-size: 1.5rem;">🎓</div>
                             {% endif %}

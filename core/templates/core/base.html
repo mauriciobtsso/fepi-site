@@ -70,11 +70,7 @@
 
     <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap">
-    
+    <!-- Fontes não críticas: carregamento assíncrono para não bloquear o primeiro paint. -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" media="print" onload="this.media='all'">
     
     <noscript>
@@ -176,7 +172,7 @@
         }
 
         a { text-decoration: none; color: inherit; transition: 0.2s; }
-        img { max-width: 100%; display: block; }
+        img { max-width: 100%; height: auto; display: block; }
 
         /* --- CABEÇALHO --- */
         header {
@@ -367,7 +363,7 @@
     <div class="navbar">
         <a href="/" class="brand">
             <div class="brand-logo">
-                <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI" width="50" height="50" loading="eager">
+                <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI" width="50" height="50" loading="eager" decoding="async">
             </div>
             <div class="brand-text">
                 <small>Federação Espírita</small>
@@ -375,7 +371,7 @@
             </div>
         </a>
 
-        <button class="nav-toggle" aria-expanded="false" onclick="toggleMenu()">☰ Menu</button>
+        <button class="nav-toggle" type="button" aria-label="Abrir menu principal" aria-expanded="false" onclick="toggleMenu()">☰ Menu</button>
 
         <nav aria-label="Menu Principal">
             <ul id="menu-principal">
@@ -454,7 +450,7 @@
         <div>
             <div class="brand" style="margin-bottom: 1rem;">
                 <div class="brand-logo" style="width:30px; height:30px;">
-                    <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI" width="30" height="30" loading="lazy">
+                    <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI" width="30" height="30" loading="lazy" decoding="async">
                 </div>
                 <div class="brand-text"><strong>FEPI</strong></div>
             </div>
@@ -560,16 +556,41 @@
 </script>
 
 <div vw class="enabled">
-    <div vw-access-button class="active"></div>
+    <div vw-access-button class="active" aria-label="Abrir acessibilidade em Libras"></div>
     <div vw-plugin-wrapper>
         <div class="vw-plugin-top-wrapper"></div>
     </div>
 </div>
 <script defer src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (window.VLibras) new window.VLibras.Widget('https://vlibras.gov.br/app');
-    });
+    (function() {
+        function improveVlibrasSemantics() {
+            const popup = document.getElementById('vlibras-popup');
+            if (popup && !popup.hasAttribute('alt')) {
+                popup.setAttribute('alt', 'Aviso de acessibilidade em Libras');
+            }
+
+            const button = document.getElementById('vlibras-button');
+            if (button && !button.hasAttribute('aria-label')) {
+                button.setAttribute('aria-label', 'Abrir acessibilidade em Libras');
+            }
+
+            document.querySelectorAll('#vlibras-button img').forEach(function(img) {
+                if (!img.hasAttribute('alt')) {
+                    img.setAttribute('alt', 'Acessibilidade em Libras');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.VLibras) new window.VLibras.Widget('https://vlibras.gov.br/app');
+            improveVlibrasSemantics();
+
+            const observer = new MutationObserver(improveVlibrasSemantics);
+            observer.observe(document.body, { childList: true, subtree: true });
+            window.setTimeout(function() { observer.disconnect(); }, 10000);
+        });
+    })();
 </script>
 
 <script type="application/ld+json">
