@@ -1,0 +1,63 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block title %}Manual financeiro | Painel FEPI{% endblock %}
+
+{% block content %}
+<style>
+    .manual-page { color: #334155; }
+    .manual-shell { background: #fff; border: 1px solid #e7edf1; border-radius: 22px; box-shadow: 0 12px 30px rgba(32,57,74,.06); overflow: hidden; }
+    .manual-content { padding: clamp(20px, 4vw, 42px); }
+    .manual-intro { border-bottom: 1px solid #edf1f4; padding-bottom: 28px; }
+    .manual-kicker { color: #16847e; font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .manual-intro h1 { color: #173b65; font-size: clamp(1.75rem, 4vw, 2.6rem); font-weight: 850; margin: .45rem 0 .7rem; }
+    .manual-intro p { color: #627383; font-size: 1rem; line-height: 1.7; max-width: 850px; }
+    .manual-callout { background: #f0f8f7; border-left: 4px solid #16847e; border-radius: 0 12px 12px 0; color: #365e5b; font-size: .88rem; line-height: 1.6; margin-top: 18px; padding: 13px 16px; }
+    .manual-callout i { color: #16847e; }
+    .manual-callout-warning { background: #fff8e6; border-left-color: #d8a62a; color: #715b28; }
+    .manual-callout-warning i { color: #b38317; }
+    .manual-toc { background: #f8fbfc; border: 1px solid #e7eff0; border-radius: 16px; display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 34px; padding: 15px; }
+    .manual-toc strong { color: #173b65; flex-basis: 100%; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; }
+    .manual-toc a { background: #fff; border: 1px solid #dce8e9; border-radius: 999px; color: #287b78; font-size: .76rem; padding: 7px 10px; text-decoration: none; }
+    .manual-toc a:hover { background: #e9f5f4; border-color: #a9d8d4; }
+    .manual-section { border-top: 1px solid #edf1f4; margin-top: 32px; padding-top: 30px; scroll-margin-top: 20px; }
+    .manual-section-heading { align-items: flex-start; display: flex; gap: 13px; margin-bottom: 17px; }
+    .manual-section-heading > span { align-items: center; background: #e8f4f3; border-radius: 10px; color: #16847e; display: inline-flex; flex: 0 0 38px; font-size: .75rem; font-weight: 850; height: 38px; justify-content: center; }
+    .manual-section-heading h2 { color: #173b65; font-size: 1.25rem; font-weight: 850; margin: 0; }
+    .manual-section-heading p { color: #84919c; font-size: .82rem; margin: 3px 0 0; }
+    .manual-section h3 { color: #225b78; font-size: 1rem; font-weight: 800; margin: 21px 0 8px; }
+    .manual-section p, .manual-section li { font-size: .9rem; line-height: 1.7; }
+    .manual-steps { counter-reset: manual-step; list-style: none; margin: 0; padding: 0; }
+    .manual-steps li { counter-increment: manual-step; margin: 0 0 14px; padding-left: 42px; position: relative; }
+    .manual-steps li::before { align-items: center; background: #e8f4f3; border-radius: 50%; color: #16847e; content: counter(manual-step); display: inline-flex; font-size: .75rem; font-weight: 850; height: 26px; justify-content: center; left: 0; position: absolute; top: 1px; width: 26px; }
+    .manual-list { padding-left: 20px; }
+    .manual-list li { margin-bottom: 6px; }
+    .manual-table { border-collapse: collapse; font-size: .82rem; margin: 16px 0; width: 100%; }
+    .manual-table th { background: #f5f8fa; color: #607182; font-size: .7rem; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
+    .manual-table td, .manual-table th { border: 1px solid #e5ecef; padding: 10px 11px; vertical-align: top; }
+    .manual-table td:first-child { color: #173b65; font-weight: 750; }
+    .manual-code { background: #192b3d; border-radius: 10px; color: #d9f3ef; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78rem; line-height: 1.7; margin: 15px 0; overflow-x: auto; padding: 14px 16px; white-space: pre-wrap; }
+    .manual-footer { background: #f8fbfc; border-top: 1px solid #edf1f4; color: #627383; font-size: .8rem; line-height: 1.6; padding: 17px clamp(20px, 4vw, 42px); }
+    .manual-footer i { color: #16847e; }
+    @media (max-width: 767.98px) {
+        .manual-shell { border-radius: 17px; }
+        .manual-content { padding: 20px 17px; }
+        .manual-table { display: block; overflow-x: auto; white-space: normal; }
+        .manual-table th, .manual-table td { min-width: 135px; }
+        .manual-toc { gap: 6px; }
+        .manual-toc a { font-size: .72rem; }
+    }
+</style>
+
+<div class="manual-page">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div><span class="text-muted small"><i class="fa-solid fa-book-open me-1"></i> Financeiro / Documentação</span></div>
+        <a href="{% url 'financeiro_hub' %}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-arrow-left me-1"></i>Voltar ao financeiro</a>
+    </div>
+    <div class="manual-shell">
+        <div class="manual-content">
+            {% include 'painel/financeiro/manual_conteudo.html' %}
+        </div>
+        <div class="manual-footer"><i class="fa-solid fa-robot me-2"></i>O conteúdo desta página também orienta o assistente de IA do painel. Quando o sistema não tiver dados suficientes, ele deve informar a limitação em vez de inventar uma operação ou um status financeiro.</div>
+    </div>
+</div>
+{% endblock %}

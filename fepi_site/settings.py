@@ -20,10 +20,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-#up2mw6n4z7=cl@*$c$y@!!la*(*-!idc+0y_dabnogc$2zjj(')
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-3-flash-preview')
+GEMINI_TIMEOUT_MS = int(os.environ.get('GEMINI_TIMEOUT_MS', '30000'))
+GEMINI_MAX_RETRIES = int(os.environ.get('GEMINI_MAX_RETRIES', '2'))
 
 # --- INTEGRAÇÃO IA (GROQ) ---
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
-GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
+GROQ_MODEL = os.environ.get('GROQ_MODEL', 'openai/gpt-oss-20b')
+GROQ_TIMEOUT_SECONDS = float(os.environ.get('GROQ_TIMEOUT_SECONDS', '25'))
+GROQ_MAX_RETRIES = int(os.environ.get('GROQ_MAX_RETRIES', '1'))
+AI_MAX_MESSAGE_CHARS = int(os.environ.get('AI_MAX_MESSAGE_CHARS', '4000'))
 
 # --------------------------------------------------------
 # 🚀 SEGURANÇA GLOBAL - CSRF E HOSTS

@@ -1,124 +1,187 @@
 import json
+import logging
+import re
+import time
+from functools import lru_cache
+from html import unescape
+from pathlib import Path
+
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.utils.html import strip_tags
 from google import genai as google_genai
 from groq import Groq
-from django.conf import settings
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+
+
+logger = logging.getLogger(__name__)
+
+
+PROMPT_BASE = """Você é o Assistente Executivo de Inteligência Artificial da Federação Espírita Piauiense (FEPI). Você ajuda administradores, secretários, diretores e redatores a utilizar o painel do site, redigir conteúdos e compreender os fluxos internos.
+
+CONTEXTO INSTITUCIONAL DA FEPI:
+- Instagram: https://www.instagram.com/fepiaui/
+- Facebook: https://www.facebook.com/fepiaui
+- Site oficial: https://fepiaui.org.br/
+- Endereço: Rua Olavo Bilac, 1394 - Centro - Teresina - PI - CEP: 64001-280
+- Telefone: (86) 3221-2500
+
+REGRAS DE CONTEÚDO:
+1. Para notícia, responda com TÍTULO, RESUMO de até 250 caracteres e CONTEÚDO.
+2. Para evento, responda com TÍTULO e DESCRIÇÃO detalhada, incluindo data, horário e convite à participação.
+3. Para coluna ou artigo, responda com TÍTULO, RESUMO de até 300 caracteres e CONTEÚDO.
+4. Para o Editor.js: texto normal é digitado diretamente; subtítulo usa Heading; imagem usa Image; vídeo do YouTube usa Embed; citação usa Quote; lista usa List; linha divisória usa Delimiter. O menu também pode ser aberto com + ou pela tecla TAB.
+
+DIRETRIZES DE RESPOSTA:
+- Responda em Português do Brasil, com clareza, cordialidade e objetividade.
+- Não use jargões religiosos exagerados nem saudações longas.
+- Prefira instruções numeradas quando explicar um procedimento do painel.
+- Não invente telas, links, valores, permissões, pagamentos, status ou funcionalidades que não estejam no contexto fornecido.
+- Não solicite, repita ou revele tokens, chaves privadas, senhas, dados de cartão ou segredos de webhook.
+- Em dúvidas financeiras, diferencie o que já existe do que está planejado e recomende conferir o registro interno quando a pergunta depender de um dado individual.
+"""
+
+
+TERMOS_FINANCEIROS = (
+    "finance", "mensal", "plano", "adesão", "adesao", "cobrança", "cobranca",
+    "pagamento", "pagar", "boleto", "pix", "gateway", "pagbank", "pagar.me",
+    "inadimpl", "doador", "doação", "doacao", "federado", "associado",
+    "webhook", "conciliação", "conciliacao", "relatório financeiro", "relatorio financeiro",
+)
+
+
+@lru_cache(maxsize=1)
+def _manual_financeiro_texto():
+    """Carrega o mesmo conteúdo apresentado na página interna do manual."""
+    caminho = Path(settings.BASE_DIR) / "painel" / "templates" / "painel" / "financeiro" / "manual_conteudo.html"
+    try:
+        conteudo = caminho.read_text(encoding="utf-8")
+        conteudo = re.sub(r"<\s*(br\s*/?|/(?:p|li|h[1-6]|tr|section|div))\s*>", "\n", conteudo, flags=re.IGNORECASE)
+        conteudo = re.sub(r"<\s*/(?:td|th)\s*>", "\t", conteudo, flags=re.IGNORECASE)
+        texto = unescape(strip_tags(conteudo))
+        texto = re.sub(r"[ \t]+\n", "\n", texto)
+        texto = re.sub(r"\n{3,}", "\n\n", texto)
+        return texto.strip()
+    except OSError:
+        logger.exception("Não foi possível carregar o manual financeiro para o assistente.")
+        return "O manual financeiro interno não está disponível neste momento. Não invente procedimentos financeiros; informe a limitação e oriente o administrador a consultar a equipe responsável."
+
+
+def _pergunta_financeira(texto):
+    texto_normalizado = texto.casefold()
+    return any(termo in texto_normalizado for termo in TERMOS_FINANCEIROS)
+
+
+def _prompt_sistema(mensagem_usuario):
+    if not _pergunta_financeira(mensagem_usuario):
+        return PROMPT_BASE
+
+    return (
+        f"{PROMPT_BASE}\n\n"
+        "BASE DE CONHECIMENTO INTERNA — MANUAL DO MÓDULO FINANCEIRO:\n"
+        f"{_manual_financeiro_texto()}\n\n"
+        "Use o manual acima como fonte prioritária para perguntas financeiras. "
+        "Se a pergunta exigir um dado individual que não esteja no texto, explique que o assistente não consulta registros privados nessa conversa e indique a tela administrativa apropriada. "
+        "Não transforme uma função futura em função já disponível."
+    )
+
+
+def _texto_gemini(response):
+    texto = getattr(response, "text", None)
+    if not texto or not texto.strip():
+        raise RuntimeError("O Gemini retornou uma resposta vazia.")
+    return texto.strip()
+
+
+def _texto_groq(response):
+    escolhas = getattr(response, "choices", None) or []
+    if not escolhas or not getattr(escolhas[0], "message", None):
+        raise RuntimeError("O Groq retornou uma resposta vazia.")
+    texto = getattr(escolhas[0].message, "content", None)
+    if not texto or not texto.strip():
+        raise RuntimeError("O Groq retornou uma resposta vazia.")
+    return texto.strip()
+
 
 @login_required
 def chat_assistente_ia(request):
-    """
-    Endpoint com sistema de fallback automático: tenta Gemini primeiro pelo tom,
-    se falhar aciona o Groq (GPT OSS 20B) como plano B estável.
-    Contém Injeção de Contexto da FEPI e Regras Estruturais de Conteúdo.
-    """
-    if request.method == 'POST':
+    if request.method != "POST":
+        return JsonResponse({"erro": "Método não permitido."}, status=405)
+
+    if len(request.body) > 64 * 1024:
+        return JsonResponse({"erro": "A mensagem excede o limite permitido de 64 KB."}, status=413)
+
+    try:
+        data = json.loads(request.body or b"{}")
+    except (TypeError, json.JSONDecodeError):
+        return JsonResponse({"erro": "Envie uma mensagem em formato JSON válido."}, status=400)
+
+    mensagem_usuario = data.get("mensagem", "")
+    if not isinstance(mensagem_usuario, str):
+        return JsonResponse({"erro": "A mensagem precisa ser um texto."}, status=400)
+
+    mensagem_usuario = mensagem_usuario.strip()
+    limite_mensagem = max(500, int(getattr(settings, "AI_MAX_MESSAGE_CHARS", 4000)))
+    if not mensagem_usuario:
+        return JsonResponse({"erro": "Mensagem vazia."}, status=400)
+    if len(mensagem_usuario) > limite_mensagem:
+        return JsonResponse({"erro": f"A mensagem deve ter no máximo {limite_mensagem} caracteres."}, status=413)
+
+    prompt_sistema = _prompt_sistema(mensagem_usuario)
+    erros = []
+    inicio = time.monotonic()
+    chave_gemini = getattr(settings, "GEMINI_API_KEY", "")
+    chave_groq = getattr(settings, "GROQ_API_KEY", "")
+
+    if chave_gemini:
         try:
-            data = json.loads(request.body)
-            mensagem_usuario = data.get('mensagem', '')
-
-            if not mensagem_usuario:
-                return JsonResponse({'erro': 'Mensagem vazia'}, status=400)
-
-            # ==========================================
-            # SUPER PROMPT (REGRAS E CONTEXTO DA FEPI)
-            # ==========================================
-            prompt_base = (
-                "Você é o Assistente Executivo de Inteligência Artificial da Federação Espírita Piauiense (FEPI). "
-                "Sua função principal é ajudar a equipe (secretários, diretores e redatores) a utilizar o painel do site, sendo sempre muito acolhedor, paciente e claro, além de redigir e revisar conteúdos.\n\n"
-                
-                "DADOS INSTITUCIONAIS DA FEPI (Incorpore aos textos quando fizer sentido ou quando solicitado):\n"
-                "- Instagram: https://www.instagram.com/fepiaui/\n"
-                "- Facebook: https://www.facebook.com/fepiaui\n"
-                "- Site Oficial: http://fepiaui.org.br/site/\n"
-                "- Endereço: Rua Olavo Bilac, 1394 - Centro - Teresina - PI - CEP: 64001-280\n"
-                "- Telefone/Contato: (86) 3221-2500\n\n"
-                
-                "REGRAS ESTRUTURAIS OBRIGATÓRIAS PARA CRIAÇÃO DE CONTEÚDO:\n"
-                "1. QUANDO FOR NOTÍCIA: Você DEVE retornar a estrutura com:\n"
-                "   - TÍTULO:\n"
-                "   - RESUMO: (rigorosamente até 250 caracteres)\n"
-                "   - CONTEÚDO: (o texto completo da notícia).\n"
-                "2. QUANDO FOR EVENTO: Você DEVE retornar a estrutura com:\n"
-                "   - TÍTULO:\n"
-                "   - DESCRIÇÃO: (detalhada, incluindo datas, horários e apelos de participação).\n"
-                "3. QUANDO FOR COLUNA/ARTIGO: Você DEVE retornar a estrutura com:\n"
-                "   - TÍTULO:\n"
-                "   - RESUMO: (rigorosamente até 300 caracteres)\n"
-                "   - CONTEÚDO: (texto completo do artigo reflexivo ou doutrinário).\n\n"
-                
-                "INFORMAÇÃO CRUCIAL SOBRE O PAINEL DE NOTÍCIAS (MANUAL DO EDITOR.JS):\n"
-                "Nós utilizamos um editor de texto moderno baseado em blocos chamado 'Editor.js'. A interface dele está em Inglês. Como os nossos usuários falam Português, você DEVE atuar como um tradutor e guia quando eles tiverem dúvidas sobre como inserir conteúdos na página de notícias.\n"
-                "QUANDO LHE PERGUNTAREM COMO INSERIR ALGO NAS NOTÍCIAS, USE ESTE GUIA DE TRADUÇÃO:\n"
-                "1. Para inserir Texto normal: Diga para clicarem na área em branco e simplesmente começarem a digitar.\n"
-                "2. Para inserir Subtítulos: Diga para clicarem no botão `+` (à esquerda) e escolherem 'Heading'.\n"
-                "3. Para inserir uma Foto/Imagem: Diga para clicarem no botão `+` e escolherem 'Image'.\n"
-                "4. Para inserir um Vídeo do YouTube: Diga para clicarem no botão `+` e escolherem 'Embed', e depois colarem o link do YouTube.\n"
-                "5. Para inserir uma Citação/Frase de destaque: Diga para clicarem no botão `+` e escolherem 'Quote'.\n"
-                "6. Para inserir uma Lista (tópicos): Diga para clicarem no botão `+` e escolherem 'List'.\n"
-                "7. Para inserir uma Linha Divisória: Diga para clicarem no botão `+` e escolherem 'Delimiter'.\n"
-                "DICA DE OURO: Lembre sempre ao usuário que ele pode simplesmente clicar na página vazia, apertar a tecla 'TAB' no teclado, e começar a digitar o nome da ferramenta em inglês (ex: 'Image' ou 'Heading') para o menu aparecer mais rápido.\n\n"
-                
-                "DIRETRIZES DE TOM E ESTILO:\n"
-                "- Responda em Português do Brasil natural, fluente e simpático.\n"
-                "- Seja prático, direto e moderno. Vá direto ao ponto.\n"
-                "- SEMPRE incentive o uso do novo sistema de blocos, dizendo que ele deixa as notícias com aparência de portal profissional e não quebra no celular.\n"
-                "- NÃO seja 'meloso' e NÃO utilize jargões religiosos exagerados ou saudações doutrinárias longas.\n"
-                "- Nunca utilize traduções literais estranhas (ex: use sempre 'Rodas de Conversa' e nunca 'rondas')."
+            client_google = google_genai.Client(
+                api_key=chave_gemini,
+                http_options={
+                    "timeout": getattr(settings, "GEMINI_TIMEOUT_MS", 30000),
+                    "retry_options": {
+                        "attempts": getattr(settings, "GEMINI_MAX_RETRIES", 2),
+                        "initial_delay": 0.5,
+                        "max_delay": 3.0,
+                    },
+                },
             )
+            response = client_google.models.generate_content(
+                model=getattr(settings, "GEMINI_MODEL", "gemini-3-flash-preview"),
+                contents=f"{prompt_sistema}\n\nMENSAGEM DO USUÁRIO:\n{mensagem_usuario}",
+            )
+            resposta = _texto_gemini(response)
+            logger.info("Assistente IA respondeu via Gemini para usuário=%s em %.2fs", request.user.pk, time.monotonic() - inicio)
+            return JsonResponse({"resposta": resposta, "provedor": "gemini"})
+        except Exception as exc:
+            erros.append("gemini")
+            logger.warning("Falha controlada no Gemini para usuário=%s: %s", request.user.pk, type(exc).__name__)
 
-            # ------------------------------------------------------------
-            # TENTATIVA 1: GOOGLE GEMINI (Tom ideal do painel)
-            # ------------------------------------------------------------
-            chave_gemini = getattr(settings, 'GEMINI_API_KEY', None)
-            if chave_gemini:
-                try:
-                    # TIMEOUT ESTRATÉGICO: 45 segundos. 
-                    # Dá bastante tempo ao Gemini, mas "desiste" antes que o Gunicorn mate o processo.
-                    client_google = google_genai.Client(
-                        api_key=chave_gemini,
-                        http_options={'timeout': 45.0} 
-                    )
-
-                    response = client_google.models.generate_content(
-                        model='gemini-3.5-flash',
-                        contents=f"{prompt_base}\n\nMENSAGEM DO USUÁRIO: {mensagem_usuario}"
-                    )
-                    
-                    return JsonResponse({'resposta': response.text})
-                    
-                except Exception as e_google:
-                    print(f"[IA FEPI] Gemini falhou ou excedeu 45s ({str(e_google)}). Acionando plano B (Groq)...")
-                    pass # Passa silenciosamente para o bloco do Groq abaixo
-
-            # ------------------------------------------------------------
-            # TENTATIVA 2 (FALLBACK): GROQ GPT OSS 20B (Estabilidade máxima)
-            # ------------------------------------------------------------
-            chave_groq = getattr(settings, 'GROQ_API_KEY', None)
-            if not chave_groq:
-                return JsonResponse({'erro': 'O serviço de inteligência artificial está temporariamente indisponível.'}, status=500)
-
-            client_groq = Groq(api_key=chave_groq)
-            
-            # ATUALIZAÇÃO FEITA AQUI: Alterado de 'llama-3.1-8b-instant' para 'gpt-oss-20b'
-            modelo_groq = getattr(settings, 'GROQ_MODEL', 'gpt-oss-20b')
-
+    if chave_groq:
+        try:
+            client_groq = Groq(
+                api_key=chave_groq,
+                timeout=getattr(settings, "GROQ_TIMEOUT_SECONDS", 25.0),
+                max_retries=getattr(settings, "GROQ_MAX_RETRIES", 1),
+            )
             chat_completion = client_groq.chat.completions.create(
                 messages=[
-                    {"role": "system", "content": prompt_base},
-                    {"role": "user", "content": mensagem_usuario}
+                    {"role": "system", "content": prompt_sistema},
+                    {"role": "user", "content": mensagem_usuario},
                 ],
-                model=modelo_groq,
+                model=getattr(settings, "GROQ_MODEL", "openai/gpt-oss-20b"),
+                max_tokens=1400,
+                temperature=0.2,
             )
-            
-            resposta_groq = chat_completion.choices[0].message.content
-            return JsonResponse({'resposta': resposta_groq})
+            resposta = _texto_groq(chat_completion)
+            logger.info("Assistente IA respondeu via Groq para usuário=%s em %.2fs; fallback=%s", request.user.pk, time.monotonic() - inicio, bool(erros))
+            return JsonResponse({"resposta": resposta, "provedor": "groq", "fallback": bool(erros)})
+        except Exception as exc:
+            erros.append("groq")
+            logger.warning("Falha controlada no Groq para usuário=%s: %s", request.user.pk, type(exc).__name__)
 
-        except Exception as e:
-            erro_str = str(e)
-            if '503' in erro_str or 'UNAVAILABLE' in erro_str:
-                msg_amigavel = "Puxa, meus servidores estão um pouco sobrecarregados neste exato segundo! Poderia tentar enviar sua mensagem de novo em alguns instantes?"
-                return JsonResponse({'erro': msg_amigavel}, status=503)
-            return JsonResponse({'erro': f'Ocorreu um erro geral de comunicação com o assistente: {erro_str}'}, status=500)
-            
-    return JsonResponse({'erro': 'Método não permitido'}, status=405)
+    if not chave_gemini and not chave_groq:
+        logger.error("Assistente IA sem credenciais configuradas para usuário=%s", request.user.pk)
+    else:
+        logger.error("Todos os provedores do assistente falharam para usuário=%s; provedores=%s", request.user.pk, ",".join(erros))
+    return JsonResponse({"erro": "O assistente está temporariamente indisponível. Tente novamente em alguns instantes."}, status=503)

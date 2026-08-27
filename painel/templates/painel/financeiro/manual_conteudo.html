@@ -1,0 +1,102 @@
+<div class="manual-intro">
+    <span class="manual-kicker">Guia operacional FEPI</span>
+    <h1>Manual do módulo financeiro</h1>
+    <p>Este manual orienta administradores e voluntários autorizados a cadastrar planos, associar federados, registrar cobranças, acompanhar o fluxo financeiro e preparar a futura integração com PagBank ou Pagar.me.</p>
+    <div class="manual-callout"><i class="fa-solid fa-circle-info me-2"></i><strong>Estado atual:</strong> o módulo está em fase administrativa. As telas organizam os dados internos, mas ainda não emitem boleto, Pix ou cobrança real automaticamente.</div>
+</div>
+
+<div class="manual-toc">
+    <strong>Neste manual</strong>
+    <a href="#primeiros-passos">Primeiros passos</a>
+    <a href="#usuarios">Federados, associados e doadores</a>
+    <a href="#planos">Cadastrar planos</a>
+    <a href="#adesoes">Associar federados</a>
+    <a href="#cobrancas">Registrar cobranças</a>
+    <a href="#gateway">Configurar gateway</a>
+    <a href="#webhook">Webhooks e confirmação</a>
+    <a href="#relatorio">Relatório financeiro</a>
+    <a href="#auditoria">Auditoria e segurança</a>
+    <a href="#problemas">Solução de problemas</a>
+</div>
+
+<section id="primeiros-passos" class="manual-section">
+    <div class="manual-section-heading"><span>01</span><div><h2>Primeiros passos</h2><p>Ordem recomendada para iniciar a organização financeira.</p></div></div>
+    <ol class="manual-steps">
+        <li><strong>Confirme o acesso.</strong> O módulo financeiro é restrito a administradores autorizados no painel. Se o menu Financeiro não aparecer, solicite a revisão da permissão da conta.</li>
+        <li><strong>Revise os usuários.</strong> O federado precisa existir no cadastro de usuários, mas não precisa estar ativo nem ter acesso à Área do Federado para ser associado a uma mensalidade.</li>
+        <li><strong>Cadastre os planos.</strong> Crie os planos oficiais antes de registrar adesões. Evite criar vários planos com nomes diferentes para o mesmo valor e regra.</li>
+        <li><strong>Associe cada pessoa a um plano.</strong> A adesão preserva o valor e o dia de vencimento contratados, mesmo que o plano-base seja alterado depois.</li>
+        <li><strong>Registre as competências.</strong> Crie as cobranças de cada período somente quando houver uma adesão correspondente e revise vencimento, valor e forma de pagamento.</li>
+        <li><strong>Confira o relatório.</strong> Use o relatório financeiro para revisar recebimentos, valores em aberto e inadimplência antes de qualquer contato de cobrança.</li>
+    </ol>
+</section>
+
+<section id="usuarios" class="manual-section">
+    <div class="manual-section-heading"><span>02</span><div><h2>Federados, associados e doadores</h2><p>Diferença entre cadastro de usuário, adesão e doação.</p></div></div>
+    <h3>Como cadastrar um federado ou associado</h3>
+    <p>No painel, acesse <strong>Administração → Gestão de Usuários → Novo usuário</strong>. Preencha os dados de identificação, e-mail e demais informações disponíveis. O usuário pode ser associado ao financeiro mesmo que esteja inativo ou não consiga entrar na Área do Federado. O status de acesso ao site não deve ser usado como substituto da situação financeira.</p>
+    <h3>Como cadastrar uma forma de doação</h3>
+    <p>Para configurar a página pública de doações, acesse <strong>Site e Redes → Doações / PIX</strong>. Nessa área, você pode editar os textos da página e cadastrar uma forma de doação, como Pix, conta bancária ou outro link.</p>
+    <div class="manual-callout manual-callout-warning"><i class="fa-solid fa-triangle-exclamation me-2"></i><strong>Importante:</strong> atualmente, <code>FormaDoacao</code> configura instruções e meios públicos de doação; ela não representa um cadastro individual de doadores. O futuro cadastro de doadores deverá ser criado como um fluxo separado, com consentimento e regras próprias de privacidade.</div>
+    <table class="manual-table"><thead><tr><th>Conceito</th><th>Onde é gerenciado</th><th>O que representa</th></tr></thead><tbody><tr><td>Usuário</td><td>Gestão de Usuários</td><td>Pessoa cadastrada no sistema.</td></tr><tr><td>Federado / associado</td><td>Financeiro → Adesões</td><td>Pessoa vinculada a um plano de mensalidade.</td></tr><tr><td>Doador</td><td>Doações / PIX</td><td>Hoje, apenas o meio ou instrução pública de doação; não há cadastro individual.</td></tr></tbody></table>
+</section>
+
+<section id="planos" class="manual-section">
+    <div class="manual-section-heading"><span>03</span><div><h2>Cadastrar planos</h2><p>Defina a regra que servirá de referência para as adesões.</p></div></div>
+    <p>Acesse <strong>Financeiro → Mensalidades → Novo plano</strong>. Informe nome, identificador, descrição, valor, dia padrão de vencimento, gateway de referência e se o plano está ativo.</p>
+    <table class="manual-table"><thead><tr><th>Campo</th><th>Como preencher</th></tr></thead><tbody><tr><td>Nome</td><td>Use um nome claro, por exemplo “Contribuinte mensal”.</td></tr><tr><td>Identificador</td><td>Use um slug único, sem espaços e fácil de reconhecer.</td></tr><tr><td>Valor</td><td>Informe o valor mensal em reais, com duas casas decimais.</td></tr><tr><td>Dia de vencimento</td><td>Escolha um dia entre 1 e 28 para evitar problemas em fevereiro.</td></tr><tr><td>Gateway</td><td>É uma referência do plano. A configuração global do gateway é feita em tela própria.</td></tr><tr><td>Ativo</td><td>Planos inativos deixam de ser recomendados para novas adesões, mas permanecem no histórico.</td></tr></tbody></table>
+    <p>Salvar um plano não cria cobrança nem envia dados a PagBank ou Pagar.me. A alteração é registrada no histórico administrativo.</p>
+</section>
+
+<section id="adesoes" class="manual-section">
+    <div class="manual-section-heading"><span>04</span><div><h2>Associar federados às mensalidades</h2><p>Crie o vínculo financeiro sem depender do acesso à intranet.</p></div></div>
+    <p>Acesse <strong>Financeiro → Mensalidades → Associar federado</strong>. Selecione qualquer usuário cadastrado e o plano correspondente. O formulário aceita usuários inativos ou sem acesso à Área do Federado.</p>
+    <p>Confira especialmente o valor contratado, dia de vencimento, data de início, forma de pagamento e situação da adesão. O sistema registra um snapshot do valor e da regra contratada para preservar o histórico. Use <strong>Pendente</strong> quando a adesão estiver cadastrada, mas ainda não confirmada; use <strong>Ativa</strong> somente quando a relação estiver vigente.</p>
+    <div class="manual-callout"><i class="fa-solid fa-shield-halved me-2"></i>Uma adesão não deve ser criada apenas para “testar” o sistema em produção. Para testes, utilize o ambiente local ou sandbox e identifique os registros de homologação.</div>
+</section>
+
+<section id="cobrancas" class="manual-section">
+    <div class="manual-section-heading"><span>05</span><div><h2>Registrar cobranças</h2><p>Organize as competências e preserve a situação de cada cobrança.</p></div></div>
+    <p>Acesse <strong>Financeiro → Mensalidades → Registrar cobrança</strong>. Selecione a adesão, informe a competência, o vencimento, o valor, a forma de pagamento e a situação. Uma adesão não pode ter duas cobranças para a mesma competência.</p>
+    <table class="manual-table"><thead><tr><th>Status</th><th>Uso recomendado</th></tr></thead><tbody><tr><td>Pendente</td><td>Cobrança criada e aguardando pagamento.</td></tr><tr><td>Processando</td><td>Pagamento ou confirmação em andamento.</td></tr><tr><td>Paga</td><td>Use somente após confirmação confiável do gateway ou baixa manual autorizada.</td></tr><tr><td>Vencida</td><td>Cobrança em aberto cujo vencimento passou.</td></tr><tr><td>Falha</td><td>O gateway ou a conferência indicou falha no pagamento.</td></tr><tr><td>Cancelada / Estornada</td><td>Não entram no previsto do relatório e devem ter justificativa quando alteradas manualmente.</td></tr><tr><td>Conciliação manual</td><td>Baixa excepcional realizada por administrador com comprovante e justificativa.</td></tr></tbody></table>
+    <div class="manual-callout manual-callout-warning"><i class="fa-solid fa-circle-exclamation me-2"></i>Nunca marque uma cobrança como paga apenas porque o usuário afirma ter realizado o pagamento ou porque retornou de uma página de checkout. Aguarde a confirmação do gateway ou faça uma conciliação manual documentada.</div>
+</section>
+
+<section id="gateway" class="manual-section">
+    <div class="manual-section-heading"><span>06</span><div><h2>Configurar o gateway</h2><p>PagBank e Pagar.me sem expor segredos.</p></div></div>
+    <p>Acesse <strong>Financeiro → Configurar gateway</strong>. Escolha o provedor, o ambiente sandbox ou produção, os métodos aceitos e a URL pública de webhook. Ao trocar provedor ou ambiente, a conexão volta para “Ainda não testada” até nova homologação.</p>
+    <p>A tela não deve receber tokens secretos. As credenciais ficam nas variáveis protegidas do Railway ou Render:</p>
+    <pre class="manual-code">PAYMENT_GATEWAY=pagbank
+PAGBANK_WEBHOOK_TOKEN=...
+PAGARME_WEBHOOK_SECRET=...</pre>
+    <p>Ativar a configuração no painel não significa que o checkout já está funcionando. A integração só deve ser considerada pronta após testar criação de cobrança, retorno, webhook, idempotência, falha e estorno em sandbox.</p>
+</section>
+
+<section id="webhook" class="manual-section">
+    <div class="manual-section-heading"><span>07</span><div><h2>Webhooks e confirmação</h2><p>Como o sistema recebe mudanças de pagamento.</p></div></div>
+    <p>Os endpoints públicos preparados para os gateways são:</p>
+    <pre class="manual-code">POST /webhooks/pagbank/
+POST /webhooks/pagarme/</pre>
+    <p>O webhook valida autenticidade, registra o evento, evita duplicidade, atualiza a cobrança e cria ou atualiza o pagamento interno. Eventos antigos não devem rebaixar uma cobrança já confirmada.</p>
+    <p>O histórico de eventos e erros fica no domínio financeiro. Em caso de dúvida, consulte primeiro o identificador externo e o status do evento antes de fazer qualquer baixa manual.</p>
+</section>
+
+<section id="relatorio" class="manual-section">
+    <div class="manual-section-heading"><span>08</span><div><h2>Relatório financeiro</h2><p>Fluxo de caixa e inadimplência.</p></div></div>
+    <p>Acesse <strong>Financeiro → Relatório financeiro</strong>. Escolha o período de competência, situação e busca. A tela apresenta:</p>
+    <ul class="manual-list"><li><strong>Previsto:</strong> cobranças não canceladas nem estornadas no período.</li><li><strong>Recebido:</strong> cobranças pagas ou conciliadas manualmente.</li><li><strong>Em aberto:</strong> cobranças pendentes, processando, vencidas ou com falha.</li><li><strong>Inadimplência:</strong> cobranças em aberto com vencimento anterior à data atual.</li><li><strong>Fluxo mensal:</strong> comparação visual entre previsto, recebido e aberto por competência.</li><li><strong>Ranking:</strong> federados agrupados por valor em aberto e vencimento mais antigo.</li></ul>
+    <p>O relatório é uma ferramenta de conferência administrativa. Ele não substitui a conciliação bancária nem deve ser usado como prova isolada de recebimento.</p>
+</section>
+
+<section id="auditoria" class="manual-section">
+    <div class="manual-section-heading"><span>09</span><div><h2>Auditoria e segurança</h2><p>O histórico é parte do controle financeiro.</p></div></div>
+    <p>O sistema registra quem criou ou alterou planos, adesões, cobranças, configurações e registros administrativos. O histórico pode ser consultado em <strong>Financeiro → Histórico de movimentações</strong>.</p>
+    <ul class="manual-list"><li>Não apague registros financeiros para corrigir um erro; faça uma alteração justificada.</li><li>Não compartilhe tokens, chaves privadas ou segredos de webhook pelo chat, e-mail ou planilha.</li><li>Não armazene dados de cartão, CVV ou validade no sistema da FEPI.</li><li>Use o ambiente sandbox para homologação e marque qualquer dado de teste.</li><li>Em uma baixa manual, mantenha o comprovante no procedimento interno definido pela secretaria.</li></ul>
+</section>
+
+<section id="problemas" class="manual-section">
+    <div class="manual-section-heading"><span>10</span><div><h2>Solução de problemas</h2><p>Checklist rápido antes de solicitar suporte.</p></div></div>
+    <table class="manual-table"><thead><tr><th>Sintoma</th><th>Verificações</th></tr></thead><tbody><tr><td>Menu Financeiro não aparece</td><td>Confirme se o usuário é administrador autorizado e se o login está correto.</td></tr><tr><td>Usuário não aparece na adesão</td><td>Verifique se ele existe em Gestão de Usuários; estar inativo não impede a associação.</td></tr><tr><td>Cobrança não aparece no relatório</td><td>Confira a competência, o período selecionado e se ela não está cancelada ou estornada.</td></tr><tr><td>Pagamento não foi baixado</td><td>Consulte o status do evento, o identificador externo, a assinatura e o log do webhook.</td></tr><tr><td>Gateway aparece não testado</td><td>Isso é esperado após alterar provedor ou ambiente; a etapa de teste de credenciais ainda não foi criada/realizada.</td></tr><tr><td>Valor do relatório parece diferente</td><td>Compare competência, vencimento, status, pagamento confirmado e eventuais baixas manuais.</td></tr></tbody></table>
+</section>
+
+<div class="manual-footer"><i class="fa-solid fa-rotate me-2"></i>Este manual acompanha a evolução do módulo. Sempre confirme a versão publicada e não presuma que uma função futura — como emissão automática de boleto ou checkout — já esteja ativa apenas porque existe um campo de configuração.</div>

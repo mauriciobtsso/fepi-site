@@ -310,6 +310,9 @@
                 <a href="{% url 'relatorio_financeiro' %}">
                     <i class="fas fa-chart-pie me-2" style="width: 18px;"></i>Relatório financeiro
                 </a>
+                <a href="{% url 'manual_financeiro' %}">
+                    <i class="fas fa-book-open me-2" style="width: 18px;"></i>Manual financeiro
+                </a>
                 <a href="{% url 'gerenciar_configuracao_gateway' %}">
                     <i class="fas fa-plug me-2" style="width: 18px;"></i>Configurar gateway
                 </a>
@@ -362,6 +365,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 
     <script>
         $(document).ready(function(){
@@ -406,48 +410,74 @@
             if (e.key === 'Enter') sendMessage();
         }
 
+                let iaEmProcessamento = false;
+
+        function adicionarMensagemChat(classe, texto, comoHtml = false) {
+            const chatBody = document.getElementById('ai-chat-body');
+            const elemento = document.createElement('div');
+            elemento.className = classe;
+            if (comoHtml && window.DOMPurify) {
+                elemento.innerHTML = DOMPurify.sanitize(texto, { USE_PROFILES: { html: true } });
+            } else {
+                elemento.textContent = texto;
+            }
+            chatBody.appendChild(elemento);
+            chatBody.scrollTop = chatBody.scrollHeight;
+            return elemento;
+        }
+
         async function sendMessage() {
             const inputField = document.getElementById('ai-chat-input');
+            const sendButton = document.getElementById('ai-send-btn');
             const text = inputField.value.trim();
-            if (!text) return;
+            if (!text || iaEmProcessamento) return;
 
-            const chatBody = document.getElementById('ai-chat-body');
-            
-            // Adiciona a mensagem do usuário na tela
-            chatBody.innerHTML += `<div class="user-msg">${text}</div>`;
+            iaEmProcessamento = true;
+            inputField.disabled = true;
+            sendButton.disabled = true;
+            adicionarMensagemChat('user-msg', text);
             inputField.value = '';
-            
-            // Indicador de digitação
-            const typingId = 'typing-' + Date.now();
-            chatBody.innerHTML += `<div class="ai-msg" id="${typingId}">Pensando...</div>`;
-            chatBody.scrollTop = chatBody.scrollHeight;
+            const typingElement = adicionarMensagemChat('ai-msg', 'Pensando...');
+            const controller = new AbortController();
+            const timeoutId = window.setTimeout(() => controller.abort(), 45000);
 
             try {
                 const response = await fetch("{% url 'assistente_ia' %}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}' 
+                        'X-CSRFToken': '{{ csrf_token }}'
                     },
-                    body: JSON.stringify({ mensagem: text })
+                    body: JSON.stringify({ mensagem: text }),
+                    signal: controller.signal
                 });
+                const data = await response.json().catch(() => ({}));
+                typingElement.remove();
 
-                const data = await response.json();
-                document.getElementById(typingId).remove();
-
-                if (data.resposta) {
-                    const formatado = marked.parse(data.resposta);
-                    chatBody.innerHTML += `<div class="ai-msg">${formatado}</div>`;
+                if (!response.ok || !data.resposta) {
+                    const erro = data.erro || 'Não foi possível obter uma resposta agora.';
+                    adicionarMensagemChat('ai-msg', `Erro: ${erro}`);
                 } else {
-                    chatBody.innerHTML += `<div class="ai-msg" style="color:red;">Erro: ${data.erro}</div>`;
+                    const formatado = window.marked
+                        ? marked.parse(data.resposta, { breaks: true })
+                        : data.resposta;
+                    adicionarMensagemChat('ai-msg', formatado, Boolean(window.marked && window.DOMPurify));
                 }
             } catch (error) {
-                document.getElementById(typingId).remove();
-                chatBody.innerHTML += `<div class="ai-msg" style="color:red;">Erro na conexão com a IA. Verifique sua chave API.</div>`;
+                typingElement.remove();
+                const mensagem = error.name === 'AbortError'
+                    ? 'A resposta demorou mais que o esperado. Tente novamente com uma pergunta mais curta.'
+                    : 'Não foi possível conectar ao assistente. Tente novamente em alguns instantes.';
+                adicionarMensagemChat('ai-msg', mensagem);
+            } finally {
+                window.clearTimeout(timeoutId);
+                iaEmProcessamento = false;
+                inputField.disabled = false;
+                sendButton.disabled = false;
+                inputField.focus();
             }
-            
-            chatBody.scrollTop = chatBody.scrollHeight;
         }
+
     </script>
 </body>
 </html>
