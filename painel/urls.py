@@ -139,6 +139,7 @@ urlpatterns = [
 
     # --- FINANCEIRO / MENSALIDADES ---
     path('financeiro/', views.financeiro_hub, name='financeiro_hub'),
+    path('financeiro/gateway/', views.gerenciar_configuracao_gateway, name='gerenciar_configuracao_gateway'),
     path('financeiro/planos/novo/', views.gerenciar_plano_financeiro, name='novo_plano_financeiro'),
     path('financeiro/planos/editar/<int:id>/', views.gerenciar_plano_financeiro, name='editar_plano_financeiro'),
     path('financeiro/adesoes/nova/', views.gerenciar_adesao_financeira, name='nova_adesao_financeira'),

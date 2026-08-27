@@ -1,7 +1,12 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
-from financeiro.models import AdesaoMensalidade, CobrancaMensalidade, PlanoMensalidade
+from financeiro.models import (
+    AdesaoMensalidade,
+    CobrancaMensalidade,
+    GatewayConfiguracao,
+    PlanoMensalidade,
+)
 
 
 User = get_user_model()
@@ -16,6 +21,31 @@ class FederadoChoiceField(forms.ModelChoiceField):
         if not obj.is_active:
             identificacao = f"{identificacao} (acesso inativo)"
         return identificacao
+
+
+class GatewayConfiguracaoForm(forms.ModelForm):
+    class Meta:
+        model = GatewayConfiguracao
+        fields = [
+            "gateway",
+            "ambiente",
+            "ativo",
+            "aceita_cartao",
+            "aceita_boleto",
+            "aceita_pix",
+            "webhook_url",
+            "observacoes",
+        ]
+        widgets = {
+            "gateway": forms.Select(attrs={"class": "form-select"}),
+            "ambiente": forms.Select(attrs={"class": "form-select"}),
+            "ativo": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            "aceita_cartao": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            "aceita_boleto": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            "aceita_pix": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            "webhook_url": forms.URLInput(attrs={"class": "form-control", "placeholder": "https://.../financeiro/webhooks/..."}),
+            "observacoes": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+        }
 
 
 class PlanoMensalidadeForm(forms.ModelForm):

@@ -13,7 +13,9 @@ from financeiro.models import (
     AdesaoMensalidade,
     AuditoriaFinanceira,
     CobrancaMensalidade,
+    GatewayConfiguracao,
     StatusAdesao,
+    StatusConexaoGateway,
     StatusCobranca,
     PlanoMensalidade,
 )
@@ -21,6 +23,7 @@ from painel.forms.financeiro import (
     AdesaoMensalidadeForm,
     CobrancaMensalidadeForm,
     PlanoMensalidadeForm,
+    GatewayConfiguracaoForm,
 )
 
 from .auth import is_admin
@@ -106,8 +109,49 @@ def financeiro_hub(request):
             status__in=[StatusCobranca.PENDENTE, StatusCobranca.VENCIDA]
         ).count(),
         "cobrancas_pagas": CobrancaMensalidade.objects.filter(status=StatusCobranca.PAGO).count(),
+        "gateway_config": GatewayConfiguracao.objects.first(),
     }
     return render(request, "painel/financeiro/hub.html", contexto)
+
+
+@login_required(login_url="/login/")
+@user_passes_test(is_admin, login_url=PAINEL_LOGIN)
+def gerenciar_configuracao_gateway(request):
+    """Edita a configuração única do provedor sem persistir tokens ou chaves privadas."""
+    instancia = GatewayConfiguracao.objects.first() or GatewayConfiguracao(chave=1)
+    antes = _json_snapshot(instancia) if instancia.pk else {}
+
+    if request.method == "POST":
+        form = GatewayConfiguracaoForm(request.POST, instance=instancia)
+        if form.is_valid():
+            with transaction.atomic():
+                configuracao = form.save(commit=False)
+                # Uma mudança de provedor ou de ambiente exige nova verificação em sandbox/produção.
+                configuracao.status_conexao = StatusConexaoGateway.NAO_TESTADO
+                configuracao.ultima_verificacao_em = None
+                configuracao.mensagem_conexao = "Aguardando teste das credenciais no ambiente da aplicação."
+                configuracao.atualizado_por = request.user
+                configuracao.save()
+                depois = _json_snapshot(configuracao)
+                acao = AcaoAuditoria.ALTERACAO if antes else AcaoAuditoria.CRIACAO
+                descricao = (
+                    f"Configuração do gateway alterada para {configuracao.get_gateway_display()} ({configuracao.get_ambiente_display()})."
+                    if antes
+                    else f"Configuração do gateway criada com {configuracao.get_gateway_display()} ({configuracao.get_ambiente_display()})."
+                )
+                _registrar_auditoria(request.user, configuracao, acao, descricao, antes, depois)
+            messages.success(request, "Configuração do gateway salva. As credenciais continuam sendo lidas do ambiente seguro.")
+            return redirect("financeiro_hub")
+    else:
+        form = GatewayConfiguracaoForm(instance=instancia)
+
+    return render(request, "painel/financeiro/gateway_form.html", {
+        "form": form,
+        "configuracao": instancia if instancia.pk else None,
+        "titulo": "Configuração do gateway",
+        "subtitulo": "Escolha o provedor e o ambiente; os segredos permanecem fora do banco de dados.",
+        "voltar_url": "financeiro_hub",
+    })
 
 
 @login_required(login_url="/login/")

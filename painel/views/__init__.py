@@ -19,6 +19,7 @@ from .financeiro import (
     gerenciar_adesao_financeira,
     gerenciar_cobranca_financeira,
     listar_auditoria_financeira,
+    gerenciar_configuracao_gateway,
 )
 from .blogs import (
     blogs_hub, 

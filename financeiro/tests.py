@@ -15,14 +15,17 @@ from django.contrib import admin
 from .models import (
     AcaoAuditoria,
     AdesaoMensalidade,
+    AmbienteGateway,
     AuditoriaFinanceira,
     CobrancaMensalidade,
     EventoGateway,
     FormaPagamento,
     Gateway,
+    GatewayConfiguracao,
     PlanoMensalidade,
     StatusAdesao,
     StatusCobranca,
+    StatusConexaoGateway,
 )
 
 
@@ -188,6 +191,47 @@ class FinanceiroPainelTests(TestCase):
             usuario=self.admin,
             acao=AcaoAuditoria.CRIACAO,
         ).exists())
+
+    def test_admin_pode_criar_e_alternar_gateway_sem_persistir_segredos(self):
+        dados_base = {
+            "gateway": Gateway.PAGBANK,
+            "ambiente": AmbienteGateway.SANDBOX,
+            "ativo": "",
+            "aceita_cartao": "on",
+            "aceita_boleto": "on",
+            "aceita_pix": "on",
+            "webhook_url": "",
+            "observacoes": "Homologação inicial.",
+        }
+        response = self.client.post(reverse("gerenciar_configuracao_gateway"), dados_base)
+        self.assertRedirects(response, reverse("financeiro_hub"))
+        config = GatewayConfiguracao.objects.get()
+        self.assertEqual(config.gateway, Gateway.PAGBANK)
+        self.assertEqual(config.status_conexao, StatusConexaoGateway.NAO_TESTADO)
+        self.assertEqual(config.atualizado_por, self.admin)
+        self.assertFalse(hasattr(config, "access_token"))
+
+        dados_base.update({
+            "gateway": Gateway.PAGARME,
+            "ambiente": AmbienteGateway.PRODUCAO,
+            "ativo": "on",
+        })
+        response = self.client.post(reverse("gerenciar_configuracao_gateway"), dados_base)
+        self.assertRedirects(response, reverse("financeiro_hub"))
+        config.refresh_from_db()
+        self.assertEqual(config.gateway, Gateway.PAGARME)
+        self.assertEqual(config.ambiente, AmbienteGateway.PRODUCAO)
+        self.assertTrue(config.ativo)
+        self.assertEqual(config.status_conexao, StatusConexaoGateway.NAO_TESTADO)
+        self.assertEqual(AuditoriaFinanceira.objects.filter(object_id=config.pk).count(), 2)
+
+    def test_formulario_gateway_renderiza_sem_campos_de_segredo(self):
+        response = self.client.get(reverse("gerenciar_configuracao_gateway"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "PagBank")
+        self.assertContains(response, "Pagar.me")
+        self.assertNotContains(response, "PAGBANK_ACCESS_TOKEN")
+        self.assertNotContains(response, "PAGARME_API_KEY")
 
     def test_formularios_financeiros_renderizam(self):
         for nome_url in ("novo_plano_financeiro", "nova_adesao_financeira", "nova_cobranca_financeira"):

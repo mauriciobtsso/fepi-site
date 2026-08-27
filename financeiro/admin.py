@@ -10,6 +10,7 @@ from .models import (
     AuditoriaFinanceira,
     CobrancaMensalidade,
     EventoGateway,
+    GatewayConfiguracao,
     Pagamento,
     PlanoMensalidade,
     StatusAdesao,
@@ -69,6 +70,31 @@ class FinanceiroAuditAdminMixin:
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(GatewayConfiguracao)
+class GatewayConfiguracaoAdmin(FinanceiroAuditAdminMixin, admin.ModelAdmin):
+    list_display = (
+        "gateway",
+        "ambiente",
+        "ativo",
+        "status_conexao",
+        "atualizado_por",
+        "atualizado_em",
+    )
+    list_filter = ("gateway", "ambiente", "ativo", "status_conexao")
+    readonly_fields = (
+        "chave",
+        "status_conexao",
+        "ultima_verificacao_em",
+        "mensagem_conexao",
+        "atualizado_por",
+        "criado_em",
+        "atualizado_em",
+    )
+
+    def has_add_permission(self, request):
+        return not GatewayConfiguracao.objects.exists()
 
 
 @admin.register(PlanoMensalidade)

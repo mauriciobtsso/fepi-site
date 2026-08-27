@@ -16,6 +16,99 @@ class Gateway(models.TextChoices):
     PAGARME = "pagarme", "Pagar.me"
 
 
+class AmbienteGateway(models.TextChoices):
+    SANDBOX = "sandbox", "Sandbox / testes"
+    PRODUCAO = "producao", "Produção"
+
+
+class StatusConexaoGateway(models.TextChoices):
+    NAO_TESTADO = "nao_testado", "Ainda não verificada"
+    CONFIGURADO = "configurado", "Configurada"
+    ERRO = "erro", "Com erro"
+
+
+class GatewayConfiguracao(models.Model):
+    """Configuração global do provedor; segredos ficam nas variáveis da infraestrutura."""
+
+    chave = models.PositiveSmallIntegerField(default=1, unique=True, editable=False)
+    gateway = models.CharField(
+        max_length=20,
+        choices=Gateway.choices,
+        default=Gateway.NENHUM,
+        verbose_name="Gateway ativo",
+    )
+    ambiente = models.CharField(
+        max_length=20,
+        choices=AmbienteGateway.choices,
+        default=AmbienteGateway.SANDBOX,
+        verbose_name="Ambiente",
+    )
+    ativo = models.BooleanField(
+        default=False,
+        verbose_name="Integração ativa",
+        help_text="Ative somente depois de configurar e homologar as credenciais no ambiente da aplicação.",
+    )
+    aceita_cartao = models.BooleanField(default=True, verbose_name="Aceita cartão")
+    aceita_boleto = models.BooleanField(default=True, verbose_name="Aceita boleto")
+    aceita_pix = models.BooleanField(default=True, verbose_name="Aceita Pix")
+    webhook_url = models.URLField(
+        blank=True,
+        verbose_name="URL do webhook",
+        help_text="Endpoint público que receberá atualizações do gateway quando a integração estiver ativa.",
+    )
+    status_conexao = models.CharField(
+        max_length=20,
+        choices=StatusConexaoGateway.choices,
+        default=StatusConexaoGateway.NAO_TESTADO,
+        verbose_name="Status da conexão",
+    )
+    ultima_verificacao_em = models.DateTimeField(blank=True, null=True, verbose_name="Última verificação")
+    mensagem_conexao = models.TextField(blank=True, verbose_name="Mensagem da conexão")
+    observacoes = models.TextField(blank=True, verbose_name="Observações internas")
+    atualizado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="configuracoes_gateway_atualizadas",
+        verbose_name="Último administrador",
+    )
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Configuração de gateway"
+        verbose_name_plural = "Configurações de gateway"
+        ordering = ["-atualizado_em"]
+        constraints = [
+            models.CheckConstraint(condition=Q(chave=1), name="gateway_config_chave_unica"),
+            models.CheckConstraint(
+                condition=Q(ativo=False) | ~Q(gateway=Gateway.NENHUM),
+                name="gateway_config_ativo_provedor",
+            ),
+            models.CheckConstraint(
+                condition=Q(ativo=False) | Q(aceita_cartao=True) | Q(aceita_boleto=True) | Q(aceita_pix=True),
+                name="gateway_config_metodo_ativo",
+            ),
+        ]
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        if self.ativo and self.gateway == Gateway.NENHUM:
+            raise ValidationError({"gateway": "Escolha PagBank ou Pagar.me antes de ativar a integração."})
+        if self.ativo and not any((self.aceita_cartao, self.aceita_boleto, self.aceita_pix)):
+            raise ValidationError("Ative pelo menos um meio de pagamento para habilitar a integração.")
+
+    def save(self, *args, **kwargs):
+        self.chave = 1
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.get_gateway_display()} — {self.get_ambiente_display()}"
+
+
 class FormaPagamento(models.TextChoices):
     CARTAO = "cartao", "Cartão de crédito"
     BOLETO = "boleto", "Boleto bancário"

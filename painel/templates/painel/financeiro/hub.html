@@ -73,7 +73,15 @@
         <div class="col-6 col-xl-3"><div class="metric-card"><div class="d-flex justify-content-between align-items-start"><span class="metric-label">Pagas</span><span class="metric-icon"><i class="fa-solid fa-circle-check"></i></span></div><div class="metric-value mt-3">{{ cobrancas_pagas }}</div><small class="text-muted">conforme registro interno</small></div></div>
     </div>
 
-    <div class="finance-note mb-4"><i class="fa-solid fa-circle-info me-2"></i><strong>Modo administrativo inicial:</strong> os registros abaixo são internos. Nenhum boleto, Pix ou cobrança é emitido automaticamente até a homologação do gateway.</div>
+    <div class="finance-note mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <i class="fa-solid fa-circle-info me-2"></i><strong>Modo administrativo inicial:</strong> os registros abaixo são internos. Nenhum boleto, Pix ou cobrança é emitido automaticamente até a homologação do gateway.
+                {% if gateway_config %}<div class="mt-2 small"><i class="fa-solid fa-plug me-1"></i>Configuração atual: <strong>{{ gateway_config.get_gateway_display }}</strong> — {{ gateway_config.get_ambiente_display }} — {% if gateway_config.ativo %}integração ativada{% else %}integração desativada{% endif %}</div>{% endif %}
+            </div>
+            <a href="{% url 'gerenciar_configuracao_gateway' %}" class="btn btn-sm btn-outline-success text-nowrap"><i class="fa-solid fa-sliders me-1"></i>Configurar gateway</a>
+        </div>
+    </div>
 
     <form method="get" class="filter-bar mb-4">
         <div class="input-group">

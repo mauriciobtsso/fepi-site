@@ -14,6 +14,7 @@ O aplicativo `financeiro` foi criado para separar mensalidades associativas de d
 | `Pagamento` | Registra uma tentativa ou confirmação de pagamento de uma cobrança. | Pertence a uma cobrança. |
 | `EventoGateway` | Guarda o webhook recebido, sua validação, processamento, erro e vínculo interno. | Pode apontar para uma adesão e/ou cobrança. |
 | `AuditoriaFinanceira` | Registra ações administrativas e snapshots antes/depois. | Usa `ContentType` para auditar qualquer objeto financeiro. |
+| `GatewayConfiguracao` | Mantém uma única configuração global, com provedor, ambiente, métodos habilitados, webhook e estado técnico. | Relaciona-se ao último administrador que alterou a configuração. |
 
 ## Decisões de integridade
 
@@ -22,6 +23,14 @@ Os valores monetários usam `DecimalField` com duas casas decimais e validação
 A combinação de adesão e competência é única, impedindo duas cobranças para o mesmo federado no mesmo mês. IDs externos de plano, assinatura, fatura e cobrança possuem unicidade condicional quando preenchidos. O evento externo é único por gateway e `evento_id`, permitindo receber o mesmo identificador em gateways diferentes e, ao mesmo tempo, impedir processamento duplicado no mesmo gateway.
 
 Os relacionamentos financeiros usam `PROTECT` quando a remoção apagaria histórico. Eventos e auditorias não podem ser apagados pelo Django Admin. Credenciais, tokens de cartão, CVV e números de cartão não fazem parte do modelo.
+
+## Configuração do gateway
+
+`GatewayConfiguracao` é um singleton lógico: a coluna `chave` é sempre igual a 1 e o painel reutiliza o mesmo registro ao alternar entre PagBank e Pagar.me. A configuração pode ser desativada sem apagar o histórico. O provedor e o ambiente são persistidos, assim como a habilitação de cartão, boleto e Pix, a URL pública do webhook e o status da última verificação.
+
+Tokens, chaves privadas, segredos de webhook e dados de cartão não são armazenados nesse modelo. Eles deverão ser configurados como variáveis protegidas no ambiente de execução da aplicação. A interface administrativa não possui campos para esses segredos; a futura rotina de teste apenas atualizará `status_conexao`, `ultima_verificacao_em` e `mensagem_conexao`.
+
+Alterar o gateway ou o ambiente redefine o estado técnico para **Ainda não verificada**, exigindo nova homologação antes de ativar a integração. Os planos, adesões, cobranças e eventos conservam seus próprios valores de gateway para que a troca de provedor não altere o histórico.
 
 ## Status internos
 
@@ -36,9 +45,11 @@ Os status internos não dependem dos nomes específicos do gateway. Isso permite
 
 ## Arquivos implementados
 
-`financeiro/models.py` contém o domínio, `financeiro/admin.py` registra filtros e pesquisas no painel, `financeiro/migrations/0001_initial.py` cria o schema inicial e `financeiro/migrations/0002_cobrancamensalidade_documento_pagador_and_more.py` adiciona os snapshots de pagador e a expiração do Pix. O app foi adicionado a `INSTALLED_APPS` em `fepi_site/settings.py`.
+`financeiro/models.py` contém o domínio, `financeiro/admin.py` registra filtros e pesquisas no painel, `financeiro/migrations/0001_initial.py` cria o schema inicial, `financeiro/migrations/0002_cobrancamensalidade_documento_pagador_and_more.py` adiciona os snapshots de pagador e a expiração do Pix, e `financeiro/migrations/0003_gatewayconfiguracao.py` cria a configuração global do gateway. O app foi adicionado a `INSTALLED_APPS` em `fepi_site/settings.py`.
 
-Os testes em `financeiro/tests.py` cobrem a unicidade por competência, a propriedade de vencimento, a idempotência de eventos e a possibilidade de IDs iguais em gateways distintos.
+A gestão administrativa está disponível em `/painel/financeiro/`, e a configuração do provedor em `/painel/financeiro/gateway/`. Ambas as rotas são restritas a superadministradores e salvam auditoria financeira.
+
+Os testes em `financeiro/tests.py` cobrem a unicidade por competência, a propriedade de vencimento, a idempotência de eventos, a possibilidade de IDs iguais em gateways distintos, a alternância entre provedores, a validação do singleton, a ausência de campos secretos na interface e a auditoria das alterações.
 
 ## Próximas extensões
 

@@ -1,0 +1,90 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<style>
+    .gateway-shell { max-width: 980px; margin: 0 auto; }
+    .gateway-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:22px; }
+    .gateway-heading h1 { color:#173b65; font-size:clamp(1.45rem,3vw,2rem); font-weight:800; margin:0; }
+    .gateway-heading p { color:#718096; margin:5px 0 0; }
+    .gateway-icon { width:48px; height:48px; border-radius:15px; display:grid; place-items:center; background:#e4f3f1; color:#16847e; font-size:1.25rem; flex:0 0 auto; }
+    .gateway-card { background:#fff; border:1px solid #e6edf1; border-radius:20px; box-shadow:0 12px 30px rgba(23,59,101,.06); }
+    .gateway-card .card-body { padding:26px; }
+    .gateway-section { color:#173b65; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; font-weight:800; border-bottom:1px solid #edf1f4; padding-bottom:10px; margin:7px 0 18px; }
+    .gateway-card label { color:#425466; font-size:.83rem; font-weight:700; margin-bottom:6px; }
+    .gateway-card .form-control, .gateway-card .form-select { border-color:#dce5ea; border-radius:10px; min-height:42px; font-size:.9rem; }
+    .gateway-card .form-control:focus, .gateway-card .form-select:focus { border-color:#31a59b; box-shadow:0 0 0 .2rem rgba(49,165,155,.13); }
+    .gateway-switch { background:#f8fbfc; border:1px solid #e5eef0; border-radius:13px; padding:13px 14px; height:100%; }
+    .gateway-switch .form-check { margin:0; }
+    .gateway-switch .form-check-label { font-size:.84rem; }
+    .gateway-help { color:#7b8996; font-size:.76rem; margin-top:5px; }
+    .gateway-warning { background:#fff8e6; border:1px solid #f4df9e; color:#7b5a13; border-radius:12px; padding:13px 14px; font-size:.82rem; }
+    .gateway-status { border-radius:14px; padding:16px; background:#f8fbfc; border:1px solid #e5eef0; }
+    .gateway-status-label { color:#748292; text-transform:uppercase; letter-spacing:.06em; font-size:.7rem; font-weight:800; }
+    .gateway-status-value { color:#173b65; font-size:1.1rem; font-weight:800; }
+    .status-dot { width:9px; height:9px; display:inline-block; border-radius:50%; background:#d9a72a; margin-right:6px; }
+    .status-dot.ok { background:#16847e; }
+    .status-dot.error { background:#c24141; }
+    .gateway-footer { border-top:1px solid #edf1f4; margin-top:24px; padding-top:18px; display:flex; justify-content:flex-end; gap:10px; }
+    @media (max-width:575.98px) {
+        .gateway-heading { align-items:center; }
+        .gateway-heading .btn { width:42px; height:42px; padding:0; display:grid; place-items:center; font-size:0; }
+        .gateway-heading .btn i { margin:0 !important; font-size:.9rem; }
+        .gateway-card .card-body { padding:18px 15px; }
+        .gateway-footer { flex-direction:column-reverse; }
+        .gateway-footer .btn { width:100%; }
+    }
+</style>
+
+<div class="gateway-shell">
+    {% if messages %}{% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow-sm" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
+
+    <div class="gateway-heading">
+        <div class="d-flex gap-3 align-items-start"><div class="gateway-icon"><i class="fa-solid fa-plug"></i></div><div><h1>{{ titulo }}</h1><p>{{ subtitulo }}</p></div></div>
+        <a href="{% url voltar_url|default:'financeiro_hub' %}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Voltar</a>
+    </div>
+
+    <div class="gateway-warning mb-3"><i class="fa-solid fa-shield-halved me-2"></i><strong>Segurança:</strong> esta tela não armazena tokens, chaves privadas ou dados de cartão. As credenciais serão lidas das variáveis protegidas do Railway/Render quando a integração for homologada.</div>
+
+    {% if configuracao %}
+    <div class="gateway-status mb-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-sm-4"><div class="gateway-status-label">Provedor selecionado</div><div class="gateway-status-value">{{ configuracao.get_gateway_display }}</div></div>
+            <div class="col-sm-4"><div class="gateway-status-label">Ambiente</div><div class="gateway-status-value">{{ configuracao.get_ambiente_display }}</div></div>
+            <div class="col-sm-4"><div class="gateway-status-label">Estado da conexão</div><div class="gateway-status-value"><span class="status-dot {% if configuracao.status_conexao == 'configurado' %}ok{% elif configuracao.status_conexao == 'erro' %}error{% endif %}"></span>{{ configuracao.get_status_conexao_display }}</div><small class="text-muted">{% if configuracao.ultima_verificacao_em %}Verificada em {{ configuracao.ultima_verificacao_em|date:'d/m/Y H:i' }}{% else %}Ainda não testada{% endif %}</small></div>
+        </div>
+        {% if configuracao.mensagem_conexao %}<div class="small text-muted mt-3"><i class="fa-solid fa-circle-info me-1"></i>{{ configuracao.mensagem_conexao }}</div>{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="gateway-card">
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+
+                <div class="gateway-section">Provedor e ambiente</div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6"><label for="{{ form.gateway.id_for_label }}">{{ form.gateway.label }} <span class="text-danger">*</span></label>{{ form.gateway }}{% if form.gateway.errors %}<div class="text-danger small mt-1">{{ form.gateway.errors.0 }}</div>{% endif %}</div>
+                    <div class="col-md-6"><label for="{{ form.ambiente.id_for_label }}">{{ form.ambiente.label }} <span class="text-danger">*</span></label>{{ form.ambiente }}{% if form.ambiente.errors %}<div class="text-danger small mt-1">{{ form.ambiente.errors.0 }}</div>{% endif %}</div>
+                </div>
+
+                <div class="gateway-section">Integração</div>
+                <div class="row g-3 mb-4">
+                    <div class="col-12"><div class="gateway-switch"><div class="form-check form-switch">{{ form.ativo }} <label class="form-check-label" for="{{ form.ativo.id_for_label }}">{{ form.ativo.label }}</label></div><div class="gateway-help">Deixe desativada até que as credenciais estejam configuradas e testadas no ambiente selecionado.</div></div></div>
+                    <div class="col-md-4"><div class="gateway-switch"><div class="form-check">{{ form.aceita_cartao }} <label class="form-check-label" for="{{ form.aceita_cartao.id_for_label }}">{{ form.aceita_cartao.label }}</label></div></div></div>
+                    <div class="col-md-4"><div class="gateway-switch"><div class="form-check">{{ form.aceita_boleto }} <label class="form-check-label" for="{{ form.aceita_boleto.id_for_label }}">{{ form.aceita_boleto.label }}</label></div></div></div>
+                    <div class="col-md-4"><div class="gateway-switch"><div class="form-check">{{ form.aceita_pix }} <label class="form-check-label" for="{{ form.aceita_pix.id_for_label }}">{{ form.aceita_pix.label }}</label></div></div></div>
+                </div>
+
+                <div class="gateway-section">Webhook e observações</div>
+                <div class="row g-3">
+                    <div class="col-12"><label for="{{ form.webhook_url.id_for_label }}">{{ form.webhook_url.label }}</label>{{ form.webhook_url }}<div class="gateway-help"><i class="fa-solid fa-circle-info me-1"></i>{{ form.webhook_url.help_text }}</div>{% if form.webhook_url.errors %}<div class="text-danger small mt-1">{{ form.webhook_url.errors.0 }}</div>{% endif %}</div>
+                    <div class="col-12"><label for="{{ form.observacoes.id_for_label }}">{{ form.observacoes.label }}</label>{{ form.observacoes }}{% if form.observacoes.errors %}<div class="text-danger small mt-1">{{ form.observacoes.errors.0 }}</div>{% endif %}</div>
+                </div>
+
+                <div class="gateway-footer"><a href="{% url voltar_url|default:'financeiro_hub' %}" class="btn btn-light px-4">Cancelar</a><button type="submit" class="btn btn-success px-4 fw-semibold"><i class="fa-solid fa-save me-2"></i>Salvar configuração</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
