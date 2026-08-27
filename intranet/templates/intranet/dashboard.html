@@ -1,134 +1,218 @@
 {% extends 'intranet/base_intranet.html' %}
 
-{% block title %}FEPI | Intranet Associado{% endblock %}
+{% block title %}Área do Federado | FEPI{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Apenas CSS da listagem e filtros */
-    .filter-section { background: #ffffff; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #f0f0f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-    .search-wrapper { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-    .search-input { flex: 1; min-width: 250px; padding: 12px 20px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 1rem; }
-    .search-input:focus { border-color: #1e3c72; outline: none; box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1); }
-    .btn-search { background: #1e3c72; color: #ffffff; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-    .btn-search:hover { background: #2a5298; }
-    .btn-clear { background: #f1f2f6; color: #e74c3c; border: none; padding: 12px 20px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; transition: 0.3s; }
-    .btn-clear:hover { background: #dfe4ea; }
+    :root {
+        --portal-navy: #173b63;
+        --portal-blue: #2867a3;
+        --portal-teal: #2c8c8c;
+        --portal-ink: #223247;
+        --portal-muted: #68788a;
+        --portal-line: #e7edf3;
+        --portal-surface: #ffffff;
+        --portal-soft: #f4f7fa;
+        --portal-gold: #bf8b35;
+    }
 
-    .category-pills { display: flex; gap: 10px; flex-wrap: wrap; }
-    .pill { text-decoration: none; padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; background: #f8f9fa; color: #555; border: 1px solid #ddd; font-weight: 600; transition: 0.2s; }
-    .pill:hover { border-color: #1e3c72; color: #1e3c72; }
-    .pill.active { background: #1e3c72; color: white; border-color: #1e3c72; }
+    .federado-page { max-width: 1180px; margin: 0 auto; }
+    .welcome-panel {
+        position: relative; overflow: hidden; border-radius: 24px; padding: clamp(1.5rem, 4vw, 2.6rem);
+        color: #fff; background: linear-gradient(120deg, #163d66 0%, #1e5c86 58%, #2c8c8c 100%);
+        box-shadow: 0 18px 45px rgba(23, 59, 99, .16); margin-bottom: 1.5rem;
+    }
+    .welcome-panel::after { content: ''; position: absolute; width: 280px; height: 280px; right: -85px; top: -125px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18); box-shadow: 0 0 0 24px rgba(255,255,255,.04), 0 0 0 50px rgba(255,255,255,.025); }
+    .welcome-panel > * { position: relative; z-index: 1; }
+    .welcome-kicker { text-transform: uppercase; letter-spacing: .14em; font-size: .72rem; font-weight: 800; color: #d7e8ef; margin-bottom: .6rem; }
+    .welcome-panel h1 { font-size: clamp(1.55rem, 4vw, 2.25rem); line-height: 1.15; font-weight: 750; margin-bottom: .7rem; }
+    .welcome-panel p { color: rgba(255,255,255,.84); max-width: 660px; margin-bottom: 0; }
+    .welcome-badge { display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.25rem; padding: .55rem .85rem; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(255,255,255,.1); font-size: .8rem; font-weight: 650; }
 
+    .section-label { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1.8rem 0 .85rem; }
+    .section-label h2 { color: var(--portal-ink); font-size: 1.08rem; font-weight: 800; margin: 0; }
+    .section-label p { color: var(--portal-muted); font-size: .84rem; margin: .2rem 0 0; }
+    .section-label .section-icon { width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; color: var(--portal-blue); background: #e9f2fa; }
+
+    .access-card { height: 100%; border: 1px solid var(--portal-line); border-radius: 17px; padding: 1.15rem; background: var(--portal-surface); box-shadow: 0 8px 24px rgba(30, 55, 80, .05); transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+    .access-card:hover { transform: translateY(-3px); border-color: #cbdce9; box-shadow: 0 13px 28px rgba(30, 55, 80, .09); }
+    .access-card--future { background: linear-gradient(145deg, #fbfcfd, #f3f7fa); border-style: dashed; }
+    .access-icon { width: 46px; height: 46px; display: inline-flex; align-items: center; justify-content: center; border-radius: 14px; color: var(--portal-blue); background: #eaf3fa; font-size: 1.05rem; }
+    .access-icon--teal { color: #237878; background: #e7f5f3; }
+    .access-icon--gold { color: #8c6426; background: #f8f0df; }
+    .access-card h3 { color: var(--portal-ink); font-size: .98rem; font-weight: 800; margin: .9rem 0 .35rem; }
+    .access-card p { color: var(--portal-muted); font-size: .82rem; line-height: 1.5; min-height: 2.45rem; margin-bottom: 1rem; }
+    .access-card .btn { font-size: .78rem; font-weight: 750; }
+    .access-card .badge { color: #7c8793 !important; font-size: .64rem; font-weight: 650; }
+    .coming-soon { display: inline-flex; align-items: center; gap: .35rem; color: #80622b; font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
+
+    .blog-card { position: relative; display: flex; align-items: center; gap: .9rem; min-height: 92px; padding: 1rem; overflow: hidden; border: 1px solid var(--portal-line); border-radius: 17px; background: #fff; box-shadow: 0 8px 22px rgba(30,55,80,.045); }
+    .blog-card::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--blog-color, var(--portal-teal)); }
+    .blog-logo { flex: 0 0 46px; width: 46px; height: 46px; display: inline-flex; align-items: center; justify-content: center; border-radius: 13px; background: #edf6f6; color: var(--portal-teal); overflow: hidden; }
+    .blog-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .blog-card h3 { color: var(--portal-ink); font-size: .9rem; font-weight: 800; margin: 0 0 .2rem; }
+    .blog-card p { color: var(--portal-muted); font-size: .76rem; margin: 0; }
+    .blog-card .blog-go { margin-left: auto; flex: 0 0 auto; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; color: var(--portal-blue); border-radius: 50%; background: #edf4fa; text-decoration: none; transition: .18s ease; }
+    .blog-card .blog-go:hover { color: #fff; background: var(--portal-blue); transform: translateX(2px); }
+
+    .documents-shell { border: 1px solid var(--portal-line); border-radius: 20px; background: var(--portal-surface); box-shadow: 0 8px 28px rgba(30,55,80,.05); overflow: hidden; }
+    .filter-section { padding: clamp(1rem, 3vw, 1.4rem); background: #fbfcfd; border-bottom: 1px solid var(--portal-line); }
+    .filter-heading { color: var(--portal-ink); font-size: .9rem; font-weight: 800; margin: 0 0 .8rem; }
+    .search-wrapper { display: flex; align-items: stretch; gap: .55rem; flex-wrap: wrap; }
+    .search-field { flex: 1 1 250px; position: relative; }
+    .search-field i { position: absolute; top: 50%; left: 1rem; color: #91a1b0; transform: translateY(-50%); }
+    .search-input { width: 100%; min-height: 45px; padding: .7rem 1rem .7rem 2.7rem; color: var(--portal-ink); background: #fff; border: 1px solid #dce5ec; border-radius: 11px; font-size: .86rem; }
+    .search-input:focus { border-color: var(--portal-blue); outline: none; box-shadow: 0 0 0 3px rgba(40,103,163,.12); }
+    .btn-search, .btn-clear { min-height: 45px; display: inline-flex; align-items: center; justify-content: center; border-radius: 11px; font-size: .8rem; font-weight: 750; text-decoration: none; transition: .18s ease; }
+    .btn-search { padding: .7rem 1.15rem; color: #fff; background: var(--portal-navy); border: 1px solid var(--portal-navy); }
+    .btn-search:hover { color: #fff; background: var(--portal-blue); }
+    .btn-clear { width: 45px; color: #b05454; background: #fff4f3; border: 1px solid #f2d8d5; }
+    .btn-clear:hover { color: #8e3f3f; background: #ffe9e6; }
+    .category-pills { display: flex; gap: .45rem; flex-wrap: wrap; margin-top: 1rem; }
+    .pill { text-decoration: none; padding: .45rem .75rem; border-radius: 999px; color: var(--portal-muted); background: #fff; border: 1px solid #dce5ec; font-size: .73rem; font-weight: 700; transition: .18s ease; }
+    .pill:hover { color: var(--portal-blue); border-color: #b8d0e3; }
+    .pill.active { color: #fff; background: var(--portal-blue); border-color: var(--portal-blue); }
+    .documents-content { padding: 0 clamp(1rem, 3vw, 1.4rem) 1.4rem; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1.35rem; padding: 0 0 .7rem; border-bottom: 1px solid var(--portal-line); }
+    .section-title { color: var(--portal-ink); font-size: .95rem; font-weight: 800; margin: 0; }
+    .section-count { padding: .3rem .55rem; color: var(--portal-blue); background: #edf4fa; border-radius: 999px; font-size: .7rem; font-weight: 800; white-space: nowrap; }
     .doc-list { list-style: none; padding: 0; margin: 0; }
-    .doc-item { display: flex; align-items: center; justify-content: space-between; background: white; border: 1px solid #eee; padding: 18px 25px; margin-bottom: 12px; border-radius: 10px; transition: 0.2s; border-left: 5px solid #1e3c72; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-    .doc-item:hover { transform: translateX(5px); box-shadow: 0 6px 15px rgba(0,0,0,0.06); border-color: #d1d8e0; }
+    .doc-item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem .25rem; border-bottom: 1px solid #eef2f5; transition: .18s ease; }
+    .doc-item:hover { padding-left: .4rem; padding-right: .4rem; background: #fbfcfd; }
+    .doc-main { min-width: 0; flex: 1; }
+    .doc-title { display: block; color: var(--portal-ink); font-size: .86rem; font-weight: 750; line-height: 1.4; }
+    .doc-title i { width: 21px; margin-right: .2rem; }
+    .doc-meta { margin-top: .25rem; color: #8797a6; font-size: .71rem; }
+    .doc-desc { display: block; margin-top: .35rem; color: var(--portal-muted); font-size: .76rem; line-height: 1.45; }
+    .doc-actions { display: flex; gap: .45rem; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; }
+    .btn-action-mini { display: inline-flex; align-items: center; gap: .35rem; padding: .48rem .65rem; border-radius: 9px; font-size: .72rem; font-weight: 750; text-decoration: none; transition: .18s ease; }
+    .btn-dl { color: var(--portal-blue); background: #edf4fa; border: 1px solid #dceaf4; }
+    .btn-lnk { color: #267a79; background: #edf8f7; border: 1px solid #d8eeec; }
+    .btn-dl:hover, .btn-lnk:hover { color: #fff; background: var(--portal-navy); border-color: var(--portal-navy); }
+    .empty-state { padding: 3.2rem 1rem; color: var(--portal-muted); text-align: center; }
+    .empty-state i { display: block; margin-bottom: .9rem; color: #cbd7e0; font-size: 2.8rem; }
+    .empty-state p { font-size: .85rem; margin-bottom: 0; }
 
-    .doc-main { flex: 1; padding-right: 20px; }
-    .doc-title { font-size: 1.15rem; font-weight: bold; color: #2c3e50; margin-bottom: 4px; display: block; }
-    .doc-meta { font-size: 0.85rem; color: #7f8c8d; }
-    
-    .doc-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn-action-mini { padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
-    .btn-dl { background: #eef2f7; color: #1e3c72; border: 1px solid #dae1e7; }
-    .btn-dl:hover { background: #dce4f0; }
-
-    .section-header { display: flex; align-items: center; gap: 12px; margin-top: 40px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #ecf0f1; }
-    .section-title { font-size: 1.5rem; color: #1e3c72; font-weight: 700; margin: 0; }
-    
-    .empty-state { text-align: center; padding: 60px 20px; background: #ffffff; border-radius: 12px; margin-top: 20px; border: 1px dashed #dcdde1; }
-
-    @media (max-width: 768px) {
-        .doc-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+    @media (max-width: 575.98px) {
+        .welcome-panel { border-radius: 18px; }
+        .section-label { align-items: flex-start; }
+        .section-label .section-icon { display: none; }
+        .search-wrapper { display: grid; grid-template-columns: 1fr auto; }
+        .search-field { grid-column: 1 / -1; }
+        .btn-search { width: 100%; }
+        .doc-item { align-items: flex-start; flex-direction: column; gap: .7rem; }
         .doc-actions { width: 100%; justify-content: flex-start; }
+        .btn-action-mini { flex: 1 1 auto; justify-content: center; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h2 class="fw-bold" style="color: #1e3c72;"><i class="fas fa-archive me-2"></i> Acervo de Documentos</h2>
-        <p class="text-muted">Acesse atas, estatutos, balancetes e documentos oficiais da Federação.</p>
-    </div>
-</div>
+<div class="federado-page">
+    <section class="welcome-panel" aria-labelledby="welcome-title">
+        <div class="welcome-kicker">Portal institucional FEPI</div>
+        <h1 id="welcome-title">Olá, {{ user.perfil.nome_razao_social|default:user.first_name|default:user.username|truncatechars:48 }}.</h1>
+        <p>Este é o seu espaço de relacionamento com a Federação Espírita do Piauí. Acesse documentos, conteúdos e serviços da instituição com praticidade.</p>
+        <span class="welcome-badge"><i class="fa-solid fa-shield-halved"></i> Ambiente exclusivo do federado</span>
+    </section>
 
-{% if blogs_do_usuario %}
-<div class="row g-3 mb-4">
-    {% for blog in blogs_do_usuario %}
-    <div class="col-md-6 col-xl-4">
-        <div class="card border-0 shadow-sm h-100" style="border-left:4px solid {{ blog.cor_primaria }} !important;">
-            <div class="card-body d-flex align-items-center gap-3 p-3">
-                {% if blog.logo %}<img src="{{ blog.logo.url }}" alt="" style="width:48px;height:48px;object-fit:contain;">{% else %}<span class="rounded-circle bg-primary-subtle text-primary p-3"><i class="fas fa-blog"></i></span>{% endif %}
-                <div class="flex-grow-1"><h3 class="h6 mb-1">{{ blog.nome }}</h3><div class="small text-muted">Acesse seu ambiente editorial</div></div>
-                <a href="{% url 'meu_blog_hub' %}?blog={{ blog.id }}" class="btn btn-sm btn-primary rounded-pill" title="Administrar blog"><i class="fas fa-arrow-right"></i></a>
+    <div class="section-label">
+        <div><h2>Acesso rápido</h2><p>Atalhos para os recursos mais importantes da sua área.</p></div>
+        <span class="section-icon"><i class="fa-solid fa-table-cells"></i></span>
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="access-card">
+                <span class="access-icon"><i class="fa-solid fa-folder-open"></i></span>
+                <h3>Documentos institucionais</h3>
+                <p>Consulte atas, estatutos, balancetes e comunicados oficiais da Federação.</p>
+                <a href="#documentos" class="btn btn-sm btn-outline-primary rounded-pill px-3">Consultar documentos</a>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="access-card">
+                <span class="access-icon"><i class="fa-solid fa-id-card"></i></span>
+                <h3>Meu cadastro</h3>
+                <p>Revise seus dados pessoais e mantenha seu cadastro atualizado.</p>
+                <a href="{% url 'minha_conta' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Ver meus dados</a>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="access-card">
+                <span class="access-icon access-icon--teal"><i class="fa-solid fa-hands-helping"></i></span>
+                <h3>Voluntariado</h3>
+                <p>Veja oportunidades e mantenha seus dados de participação atualizados.</p>
+                <a href="{% url 'voluntariado_intro' %}" class="btn btn-sm btn-outline-success rounded-pill px-3">Conhecer voluntariado</a>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="access-card access-card--future" id="mensalidades" data-module="mensalidades">
+                <div class="d-flex justify-content-between align-items-center gap-2"><span class="access-icon access-icon--gold"><i class="fa-solid fa-receipt"></i></span><span class="coming-soon"><i class="fa-regular fa-clock"></i> Em breve</span></div>
+                <h3>Mensalidades</h3>
+                <p>Consulte sua situação, emita comprovantes e gerencie suas contribuições.</p>
+                <div class="d-flex flex-wrap gap-1 mb-3"><span class="badge rounded-pill text-bg-light border fw-normal">Consultar</span><span class="badge rounded-pill text-bg-light border fw-normal">Emitir</span><span class="badge rounded-pill text-bg-light border fw-normal">Gerenciar</span></div>
+                <button type="button" class="btn btn-sm btn-light border rounded-pill px-3" disabled aria-disabled="true"><i class="fa-solid fa-lock me-1"></i> Em preparação</button>
             </div>
         </div>
     </div>
-    {% endfor %}
-</div>
-{% endif %}
 
-<div class="filter-section">
-    <form method="get">
-        <div class="search-wrapper">
-            <input type="text" name="q" value="{{ busca_atual }}" placeholder="Pesquisar documento..." class="search-input">
-            {% if categoria_atual %}
-                <input type="hidden" name="categoria" value="{{ categoria_atual }}">
-            {% endif %}
-            <button type="submit" class="btn-search"><i class="fas fa-search me-2"></i> Pesquisar</button>
-            
-            {% if busca_atual or categoria_atual %}
-                <a href="{% url 'area_federado' %}" class="btn-clear" title="Limpar Filtros">
-                    <i class="fa-solid fa-times"></i>
-                </a>
-            {% endif %}
+    {% if blogs_do_usuario %}
+    <div class="section-label">
+        <div><h2>Espaços editoriais</h2><p>Gerencie os blogs aos quais você possui autorização.</p></div>
+        <span class="section-icon"><i class="fa-solid fa-pen-nib"></i></span>
+    </div>
+    <div class="row g-3 mb-4">
+        {% for blog in blogs_do_usuario %}
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="blog-card" style="--blog-color: {{ blog.cor_primaria|default:'#2c8c8c' }};">
+                <span class="blog-logo">{% if blog.logo %}<img src="{{ blog.logo.url }}" alt="Logo de {{ blog.nome }}">{% else %}<i class="fa-solid fa-blog"></i>{% endif %}</span>
+                <div class="min-w-0"><h3>{{ blog.nome }}</h3><p>Ambiente editorial autorizado</p></div>
+                <a class="blog-go" href="{% url 'meu_blog_hub' %}?blog={{ blog.id }}" aria-label="Administrar {{ blog.nome }}"><i class="fa-solid fa-arrow-right"></i></a>
+            </div>
         </div>
-    </form>
-
-    <div class="category-pills">
-        <a href="?{% if busca_atual %}q={{ busca_atual }}{% endif %}" class="pill {% if not categoria_atual %}active{% endif %}">Todos</a>
-        {% for cat in categorias %}
-            <a href="?categoria={{ cat.id }}{% if busca_atual %}&q={{ busca_atual }}{% endif %}" 
-               class="pill {% if categoria_atual == cat.id %}active{% endif %}">{{ cat.nome }}</a>
         {% endfor %}
     </div>
-</div>
+    {% endif %}
 
-{% if modo_exibicao == 'agrupado' %}
-    {% if grupos %}
-        {% for grupo in grupos %}
-            <div class="section-header">
-                <h3 class="section-title">{{ grupo.titulo_categoria }}</h3>
-                <span style="background: #eef2f7; color: #1e3c72; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;">
-                    {{ grupo.lista|length }} arquivo(s)
-                </span>
+    <div class="section-label" id="documentos">
+        <div><h2>Acervo de documentos</h2><p>Encontre rapidamente os documentos disponíveis para os federados.</p></div>
+        <span class="section-icon"><i class="fa-solid fa-file-lines"></i></span>
+    </div>
+    <section class="documents-shell">
+        <div class="filter-section">
+            <h3 class="filter-heading">Pesquisar no acervo</h3>
+            <form method="get">
+                <div class="search-wrapper">
+                    <div class="search-field"><i class="fa-solid fa-search" aria-hidden="true"></i><input type="search" name="q" value="{{ busca_atual }}" placeholder="Pesquise por título ou descrição..." class="search-input" aria-label="Pesquisar documentos"></div>
+                    {% if categoria_atual %}<input type="hidden" name="categoria" value="{{ categoria_atual }}">{% endif %}
+                    <button type="submit" class="btn-search"><i class="fa-solid fa-search me-2"></i> Pesquisar</button>
+                    {% if busca_atual or categoria_atual %}<a href="{% url 'area_federado' %}" class="btn-clear" title="Limpar filtros" aria-label="Limpar filtros"><i class="fa-solid fa-xmark"></i></a>{% endif %}
+                </div>
+            </form>
+            <div class="category-pills" aria-label="Filtrar por categoria">
+                <a href="?{% if busca_atual %}q={{ busca_atual }}{% endif %}" class="pill {% if not categoria_atual %}active{% endif %}">Todos</a>
+                {% for cat in categorias %}<a href="?categoria={{ cat.id }}{% if busca_atual %}&q={{ busca_atual }}{% endif %}" class="pill {% if categoria_atual == cat.id %}active{% endif %}">{{ cat.nome }}</a>{% endfor %}
             </div>
-            <ul class="doc-list">
-                {% for doc in grupo.lista %}
-                    {% include "intranet/includes/doc_item.html" with doc=doc %}
-                {% endfor %}
-            </ul>
-        {% endfor %}
-    {% else %}
-        <div class="empty-state">
-            <i class="fa-regular fa-folder-open" style="font-size: 4rem; color: #e0e0e0; margin-bottom: 15px;"></i>
-            <p style="font-size: 1.1rem; color: #777;">Nenhum documento disponível na Intranet no momento.</p>
         </div>
-    {% endif %}
-{% else %}
-    {% if documentos %}
-        <h4 style="margin: 30px 0 20px 0; color: #555; font-size: 1.2rem;">Resultados encontrados:</h4>
-        <ul class="doc-list">
-            {% for doc in documentos %}
-                {% include "intranet/includes/doc_item.html" with doc=doc %}
-            {% endfor %}
-        </ul>
-    {% else %}
-        <div class="empty-state">
-            <i class="fa-solid fa-magnifying-glass" style="font-size: 4rem; color: #e0e0e0; margin-bottom: 15px;"></i>
-            <p style="font-size: 1.1rem; color: #777;">Nenhum documento encontrado para sua pesquisa.</p>
-            <a href="{% url 'area_federado' %}" class="btn btn-outline-primary mt-3">Limpar Filtros</a>
+        <div class="documents-content">
+            {% if modo_exibicao == 'agrupado' %}
+                {% if grupos %}
+                    {% for grupo in grupos %}
+                    <div class="section-header"><h3 class="section-title">{{ grupo.titulo_categoria }}</h3><span class="section-count">{{ grupo.lista|length }} arquivo(s)</span></div>
+                    <ul class="doc-list">{% for doc in grupo.lista %}{% include "intranet/includes/doc_item.html" with doc=doc %}{% endfor %}</ul>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state"><i class="fa-regular fa-folder-open"></i><p>Nenhum documento disponível na Intranet no momento.</p></div>
+                {% endif %}
+            {% else %}
+                {% if documentos %}
+                    <div class="section-header"><h3 class="section-title">Resultados encontrados</h3><span class="section-count">{{ documentos|length }} arquivo(s)</span></div>
+                    <ul class="doc-list">{% for doc in documentos %}{% include "intranet/includes/doc_item.html" with doc=doc %}{% endfor %}</ul>
+                {% else %}
+                    <div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i><p>Nenhum documento encontrado para sua pesquisa.</p><a href="{% url 'area_federado' %}" class="btn btn-sm btn-outline-primary rounded-pill mt-3">Limpar filtros</a></div>
+                {% endif %}
+            {% endif %}
         </div>
-    {% endif %}
-{% endif %} 
+    </section>
+</div>
 {% endblock %}
