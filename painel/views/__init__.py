@@ -13,6 +13,13 @@ from .doacoes import listar_doacoes, gerenciar_doacao, excluir_doacao, config_pa
 from .recursos import recursos_hub, gerenciar_recurso, excluir_recurso, gerenciar_secao_recurso, excluir_secao_recurso
 from .usuarios import gerenciar_usuarios, criar_usuario, editar_usuario, excluir_usuario, editar_pagina_membro
 from .colunas import listar_colunas, criar_coluna, editar_coluna, excluir_coluna
+from .financeiro import (
+    financeiro_hub,
+    gerenciar_plano_financeiro,
+    gerenciar_adesao_financeira,
+    gerenciar_cobranca_financeira,
+    listar_auditoria_financeira,
+)
 from .blogs import (
     blogs_hub, 
     gerenciar_post_blog, 

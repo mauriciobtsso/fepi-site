@@ -1,0 +1,163 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<style>
+    .finance-hero {
+        background: linear-gradient(135deg, #173b65 0%, #225b78 58%, #238b83 100%);
+        color: #fff;
+        border-radius: 22px;
+        padding: 28px;
+        box-shadow: 0 18px 35px rgba(23, 59, 101, .18);
+    }
+    .finance-hero .eyebrow { letter-spacing: .12em; font-size: .72rem; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,.72); }
+    .finance-hero h1 { font-size: clamp(1.55rem, 3vw, 2.2rem); font-weight: 800; margin: .35rem 0 .45rem; }
+    .finance-hero p { max-width: 680px; color: rgba(255,255,255,.78); margin-bottom: 0; }
+    .metric-card { border: 1px solid #e9eef2; border-radius: 16px; background: #fff; padding: 18px; height: 100%; box-shadow: 0 8px 22px rgba(32, 57, 74, .05); }
+    .metric-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: #e8f4f3; color: #16847e; }
+    .metric-label { color: #647384; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
+    .metric-value { color: #173b65; font-size: 1.65rem; font-weight: 800; line-height: 1.1; }
+    .section-card { border: 1px solid #e9eef2; border-radius: 18px; background: #fff; box-shadow: 0 8px 24px rgba(32, 57, 74, .045); overflow: hidden; }
+    .section-head { padding: 18px 20px; border-bottom: 1px solid #edf1f4; display: flex; gap: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .section-head h2 { font-size: 1rem; font-weight: 800; color: #173b65; margin: 0; }
+    .section-head p { margin: 3px 0 0; color: #748292; font-size: .83rem; }
+    .table { margin-bottom: 0; }
+    .table thead th { font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: #748292; white-space: nowrap; border-bottom-width: 1px; }
+    .table tbody td { color: #334155; vertical-align: middle; font-size: .88rem; }
+    .badge-soft { padding: .42rem .64rem; border-radius: 999px; font-size: .72rem; font-weight: 700; }
+    .badge-active { color: #14766c; background: #e2f4ef; }
+    .badge-inactive { color: #6b7280; background: #eef1f4; }
+    .badge-pending { color: #9a6911; background: #fff4d5; }
+    .badge-paid { color: #14766c; background: #e2f4ef; }
+    .badge-danger { color: #a23a3a; background: #fde8e8; }
+    .table-actions { white-space: nowrap; }
+    .table-actions .btn { border-radius: 9px; }
+    .finance-note { background: #f8fbfc; border: 1px dashed #c9dde1; color: #4e6674; border-radius: 14px; padding: 14px 16px; font-size: .85rem; }
+    .finance-note i { color: #16847e; }
+    .filter-bar { background: #fff; border: 1px solid #e9eef2; border-radius: 14px; padding: 12px; }
+    @media (max-width: 767.98px) {
+        .finance-hero { padding: 22px 18px; border-radius: 17px; }
+        .finance-hero .btn { width: 100%; margin-top: 12px; }
+        .table-responsive { border-radius: 0 0 18px 18px; }
+        .metric-value { font-size: 1.4rem; }
+    }
+</style>
+
+<div class="container-fluid px-0">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="finance-hero mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div>
+                <div class="eyebrow"><i class="fa-solid fa-shield-halved me-1"></i> Administração restrita</div>
+                <h1>Gestão de mensalidades</h1>
+                <p>Cadastre planos, associe federados e acompanhe o histórico financeiro. A integração com o gateway será ativada em uma etapa posterior.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'nova_adesao_financeira' %}" class="btn btn-light fw-semibold"><i class="fa-solid fa-user-plus me-2"></i>Associar federado</a>
+                <a href="{% url 'novo_plano_financeiro' %}" class="btn btn-outline-light fw-semibold"><i class="fa-solid fa-plus me-2"></i>Novo plano</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3"><div class="metric-card"><div class="d-flex justify-content-between align-items-start"><span class="metric-label">Planos ativos</span><span class="metric-icon"><i class="fa-solid fa-layer-group"></i></span></div><div class="metric-value mt-3">{{ planos_ativos }}</div><small class="text-muted">de {{ total_planos }} cadastrados</small></div></div>
+        <div class="col-6 col-xl-3"><div class="metric-card"><div class="d-flex justify-content-between align-items-start"><span class="metric-label">Adesões ativas</span><span class="metric-icon"><i class="fa-solid fa-user-check"></i></span></div><div class="metric-value mt-3">{{ adesoes_ativas }}</div><small class="text-muted">vínculos em andamento</small></div></div>
+        <div class="col-6 col-xl-3"><div class="metric-card"><div class="d-flex justify-content-between align-items-start"><span class="metric-label">Em aberto</span><span class="metric-icon"><i class="fa-solid fa-clock"></i></span></div><div class="metric-value mt-3">{{ cobrancas_pendentes }}</div><small class="text-muted">pendentes ou vencidas</small></div></div>
+        <div class="col-6 col-xl-3"><div class="metric-card"><div class="d-flex justify-content-between align-items-start"><span class="metric-label">Pagas</span><span class="metric-icon"><i class="fa-solid fa-circle-check"></i></span></div><div class="metric-value mt-3">{{ cobrancas_pagas }}</div><small class="text-muted">conforme registro interno</small></div></div>
+    </div>
+
+    <div class="finance-note mb-4"><i class="fa-solid fa-circle-info me-2"></i><strong>Modo administrativo inicial:</strong> os registros abaixo são internos. Nenhum boleto, Pix ou cobrança é emitido automaticamente até a homologação do gateway.</div>
+
+    <form method="get" class="filter-bar mb-4">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+            <input type="search" name="q" value="{{ query }}" class="form-control border-start-0" placeholder="Buscar plano, federado, e-mail ou identificador de cobrança...">
+            <button class="btn btn-primary px-4" type="submit">Buscar</button>
+            {% if query %}<a href="{% url 'financeiro_hub' %}" class="btn btn-outline-secondary ms-2">Limpar</a>{% endif %}
+        </div>
+    </form>
+
+    <div class="section-card mb-4">
+        <div class="section-head">
+            <div><h2><i class="fa-solid fa-layer-group me-2 text-success"></i>Planos de mensalidade</h2><p>Valores e regras disponíveis para novas adesões.</p></div>
+            <a href="{% url 'novo_plano_financeiro' %}" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-plus me-1"></i>Novo plano</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead><tr><th>Plano</th><th>Valor</th><th>Vencimento</th><th>Gateway</th><th>Situação</th><th class="text-end">Ação</th></tr></thead>
+                <tbody>
+                {% for plano in planos %}
+                    <tr>
+                        <td><strong>{{ plano.nome }}</strong><br><small class="text-muted">{{ plano.slug }}</small></td>
+                        <td>R$ {{ plano.valor|floatformat:2 }}</td>
+                        <td>Dia {{ plano.dia_vencimento }}</td>
+                        <td>{{ plano.get_gateway_display }}</td>
+                        <td>{% if plano.ativo %}<span class="badge-soft badge-active">Ativo</span>{% else %}<span class="badge-soft badge-inactive">Inativo</span>{% endif %}</td>
+                        <td class="text-end table-actions"><a href="{% url 'editar_plano_financeiro' plano.id %}" class="btn btn-sm btn-light" title="Editar plano"><i class="fa-solid fa-pen"></i></a></td>
+                    </tr>
+                {% empty %}<tr><td colspan="6" class="text-center text-muted py-4">Nenhum plano encontrado.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section-card mb-4">
+        <div class="section-head">
+            <div><h2><i class="fa-solid fa-users me-2 text-success"></i>Adesões e federados</h2><p>Associações podem ser feitas para qualquer usuário cadastrado.</p></div>
+            <a href="{% url 'nova_adesao_financeira' %}" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-user-plus me-1"></i>Nova adesão</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead><tr><th>Federado</th><th>Plano</th><th>Valor</th><th>Pagamento</th><th>Situação</th><th>Próxima cobrança</th><th class="text-end">Ação</th></tr></thead>
+                <tbody>
+                {% for adesao in adesoes %}
+                    <tr>
+                        <td><strong>{% if adesao.federado.get_full_name %}{{ adesao.federado.get_full_name }}{% else %}{{ adesao.federado.username }}{% endif %}</strong><br><small class="text-muted">{{ adesao.federado.email|default:'E-mail não informado' }}</small></td>
+                        <td>{{ adesao.plano.nome }}</td>
+                        <td>R$ {{ adesao.valor_contratado|floatformat:2 }}</td>
+                        <td>{{ adesao.get_forma_pagamento_display }}</td>
+                        <td>{% if adesao.status == 'ativa' %}<span class="badge-soft badge-active">{{ adesao.get_status_display }}</span>{% elif adesao.status == 'inadimplente' %}<span class="badge-soft badge-danger">{{ adesao.get_status_display }}</span>{% else %}<span class="badge-soft badge-pending">{{ adesao.get_status_display }}</span>{% endif %}</td>
+                        <td>{{ adesao.proxima_cobranca|date:'d/m/Y'|default:'—' }}</td>
+                        <td class="text-end table-actions"><a href="{% url 'editar_adesao_financeira' adesao.id %}" class="btn btn-sm btn-light" title="Editar adesão"><i class="fa-solid fa-pen"></i></a></td>
+                    </tr>
+                {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">Nenhuma adesão encontrada.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section-card mb-4">
+        <div class="section-head">
+            <div><h2><i class="fa-solid fa-receipt me-2 text-success"></i>Cobranças</h2><p>Controle interno das competências e dos status registrados.</p></div>
+            <a href="{% url 'nova_cobranca_financeira' %}" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-plus me-1"></i>Registrar cobrança</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead><tr><th>Federado</th><th>Competência</th><th>Vencimento</th><th>Valor</th><th>Situação</th><th>Gateway</th><th class="text-end">Ação</th></tr></thead>
+                <tbody>
+                {% for cobranca in cobrancas %}
+                    <tr>
+                        <td><strong>{% if cobranca.adesao.federado.get_full_name %}{{ cobranca.adesao.federado.get_full_name }}{% else %}{{ cobranca.adesao.federado.username }}{% endif %}</strong><br><small class="text-muted">{{ cobranca.adesao.plano.nome }}</small></td>
+                        <td>{{ cobranca.competencia|date:'m/Y' }}</td>
+                        <td>{{ cobranca.vencimento|date:'d/m/Y' }}</td>
+                        <td>R$ {{ cobranca.valor|floatformat:2 }}</td>
+                        <td>{% if cobranca.status == 'pago' %}<span class="badge-soft badge-paid">{{ cobranca.get_status_display }}</span>{% elif cobranca.status == 'vencida' or cobranca.status == 'falha' %}<span class="badge-soft badge-danger">{{ cobranca.get_status_display }}</span>{% else %}<span class="badge-soft badge-pending">{{ cobranca.get_status_display }}</span>{% endif %}</td>
+                        <td>{{ cobranca.get_gateway_display }}</td>
+                        <td class="text-end table-actions"><a href="{% url 'editar_cobranca_financeira' cobranca.id %}" class="btn btn-sm btn-light" title="Editar cobrança"><i class="fa-solid fa-pen"></i></a></td>
+                    </tr>
+                {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">Nenhuma cobrança encontrada.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mb-4"><a href="{% url 'listar_auditoria_financeira' %}" class="btn btn-outline-secondary"><i class="fa-solid fa-clock-rotate-left me-2"></i>Ver histórico de movimentações</a></div>
+</div>
+{% endblock %}

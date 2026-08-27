@@ -1,0 +1,83 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<style>
+    .finance-form-shell { max-width: 980px; margin: 0 auto; }
+    .finance-form-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+    .finance-form-heading h1 { color: #173b65; font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800; margin: 0; }
+    .finance-form-heading p { color: #718096; margin: 5px 0 0; font-size: .9rem; }
+    .finance-form-icon { width: 48px; height: 48px; border-radius: 15px; background: #e4f3f1; color: #16847e; display: grid; place-items: center; font-size: 1.25rem; flex: 0 0 auto; }
+    .finance-form-card { background: #fff; border: 1px solid #e6edf1; border-radius: 20px; box-shadow: 0 12px 30px rgba(23,59,101,.06); }
+    .finance-form-card .card-body { padding: 24px; }
+    .finance-section-title { color: #173b65; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 800; border-bottom: 1px solid #edf1f4; padding-bottom: 10px; margin: 8px 0 18px; }
+    .finance-form-card label { color: #425466; font-size: .82rem; font-weight: 700; margin-bottom: 6px; }
+    .finance-form-card .form-control, .finance-form-card .form-select { border-color: #dce5ea; border-radius: 10px; min-height: 42px; font-size: .9rem; }
+    .finance-form-card textarea.form-control { min-height: 90px; }
+    .finance-form-card .form-control:focus, .finance-form-card .form-select:focus { border-color: #31a59b; box-shadow: 0 0 0 .2rem rgba(49,165,155,.13); }
+    .finance-help { color: #7b8996; font-size: .76rem; margin-top: 5px; }
+    .finance-help i { color: #16847e; }
+    .field-errors { color: #b42318; font-size: .78rem; font-weight: 600; margin-top: 5px; }
+    .finance-warning { background: #fff8e6; border: 1px solid #f4df9e; color: #7b5a13; border-radius: 12px; padding: 12px 14px; font-size: .82rem; }
+    .finance-form-footer { border-top: 1px solid #edf1f4; margin-top: 24px; padding-top: 18px; display: flex; justify-content: flex-end; gap: 10px; }
+    @media (max-width: 575.98px) {
+        .finance-form-heading { align-items: center; }
+        .finance-form-heading .btn { font-size: 0; width: 42px; height: 42px; padding: 0; display: grid; place-items: center; }
+        .finance-form-heading .btn i { margin: 0 !important; font-size: .9rem; }
+        .finance-form-card .card-body { padding: 18px 15px; }
+        .finance-form-footer { flex-direction: column-reverse; }
+        .finance-form-footer .btn { width: 100%; }
+    }
+</style>
+
+<div class="finance-form-shell">
+    {% if messages %}
+        {% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow-sm" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}
+    {% endif %}
+
+    <div class="finance-form-heading">
+        <div class="d-flex gap-3 align-items-start">
+            <div class="finance-form-icon"><i class="fa-solid {{ icone|default:'fa-wallet' }}"></i></div>
+            <div><h1>{{ titulo }}</h1><p>{{ subtitulo }}</p></div>
+        </div>
+        <a href="{% url voltar_url|default:'financeiro_hub' %}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Voltar</a>
+    </div>
+
+    <div class="finance-warning mb-3"><i class="fa-solid fa-lock me-2"></i>Esta tela é exclusiva para administradores. Toda alteração salva gera um registro no histórico de movimentações.</div>
+
+    <div class="finance-form-card">
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+
+                <div class="finance-section-title">Dados principais</div>
+                <div class="row g-3">
+                    {% for field in form %}
+                        {% if field.name == 'descricao' or field.name == 'observacoes' or field.name == 'pix_copia_cola' %}
+                            <div class="col-12">
+                        {% elif field.name == 'gateway_plan_id' or field.name == 'gateway_customer_id' or field.name == 'gateway_subscription_id' or field.name == 'gateway_reference' or field.name == 'gateway_invoice_id' or field.name == 'gateway_charge_id' %}
+                            <div class="col-md-6 gateway-field">
+                        {% else %}
+                            <div class="col-md-6">
+                        {% endif %}
+                            {% if field.field.widget.input_type == 'checkbox' %}
+                                <div class="form-check mt-2 pt-2">{{ field }} <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label></div>
+                            {% else %}
+                                <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                                {{ field }}
+                            {% endif %}
+                            {% if field.help_text %}<div class="finance-help"><i class="fa-solid fa-circle-info me-1"></i>{{ field.help_text }}</div>{% endif %}
+                            {% if field.errors %}<div class="field-errors">{% for error in field.errors %}<div><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>{% endfor %}</div>{% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="finance-form-footer">
+                    <a href="{% url voltar_url|default:'financeiro_hub' %}" class="btn btn-light px-4">Cancelar</a>
+                    <button type="submit" class="btn btn-success px-4 fw-semibold"><i class="fa-solid fa-save me-2"></i>Salvar e registrar histórico</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

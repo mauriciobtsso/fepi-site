@@ -8,6 +8,7 @@ from .livraria import LivroForm, CategoriaLivroForm, LivrariaConfigForm
 from .equipe import CargoForm, TipoDiretoriaForm, MembroDiretoriaForm
 from .centros import CentroForm
 from .doacoes import FormaDoacaoForm, PaginaDoacaoConfigForm
+from .financeiro import PlanoMensalidadeForm, AdesaoMensalidadeForm, CobrancaMensalidadeForm
 from .recursos import SecaoLinkForm, LinkItemForm
 from .usuarios import PerfilForm
 from .colunas import ColunaForm

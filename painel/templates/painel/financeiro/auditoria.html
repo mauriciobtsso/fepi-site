@@ -1,0 +1,62 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block content %}
+<style>
+    .audit-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+    .audit-heading h1 { color: #173b65; font-size: clamp(1.45rem, 3vw, 2rem); font-weight: 800; margin: 0; }
+    .audit-heading p { color: #718096; margin: 5px 0 0; }
+    .audit-card { background: #fff; border: 1px solid #e6edf1; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 26px rgba(23,59,101,.05); }
+    .audit-table th { color: #748292; font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+    .audit-table td { vertical-align: middle; color: #334155; font-size: .87rem; }
+    .audit-action { color: #16847e; background: #e4f3f1; border-radius: 999px; padding: 5px 9px; font-size: .7rem; font-weight: 800; white-space: nowrap; }
+    .audit-target { color: #647384; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .76rem; }
+    .audit-empty { padding: 48px 20px; text-align: center; color: #748292; }
+    .pagination .page-link { border-radius: 8px; margin: 0 2px; border-color: #e1e8ec; color: #225b78; }
+    .pagination .active .page-link { background: #16847e; border-color: #16847e; color: #fff; }
+</style>
+
+<div class="container-fluid px-0">
+    <div class="audit-heading">
+        <div><h1><i class="fa-solid fa-clock-rotate-left me-2 text-success"></i>Histórico de movimentações</h1><p>Registro das ações administrativas realizadas no módulo financeiro.</p></div>
+        <a href="{% url 'financeiro_hub' %}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Voltar ao financeiro</a>
+    </div>
+
+    <form method="get" class="bg-white border rounded-3 p-2 mb-4 shadow-sm">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+            <input type="search" name="q" value="{{ query }}" class="form-control border-start-0" placeholder="Buscar por administrador, ação ou descrição...">
+            <button class="btn btn-primary px-4" type="submit">Buscar</button>
+            {% if query %}<a href="{% url 'listar_auditoria_financeira' %}" class="btn btn-outline-secondary ms-2">Limpar</a>{% endif %}
+        </div>
+    </form>
+
+    <div class="audit-card">
+        <div class="table-responsive">
+            <table class="table audit-table align-middle mb-0">
+                <thead><tr><th class="ps-3">Quando</th><th>Administrador</th><th>Ação</th><th>Objeto</th><th>Descrição</th></tr></thead>
+                <tbody>
+                {% for registro in auditorias %}
+                    <tr>
+                        <td class="ps-3"><strong>{{ registro.criado_em|date:'d/m/Y' }}</strong><br><small class="text-muted">{{ registro.criado_em|date:'H:i' }}</small></td>
+                        <td>{% if registro.usuario %}{{ registro.usuario.get_full_name|default:registro.usuario.username }}<br><small class="text-muted">{{ registro.usuario.username }}</small>{% else %}<span class="text-muted">Usuário removido</span>{% endif %}</td>
+                        <td><span class="audit-action">{{ registro.get_acao_display }}</span></td>
+                        <td class="audit-target">{{ registro.content_type.model }} #{{ registro.object_id }}</td>
+                        <td>{{ registro.descricao }}</td>
+                    </tr>
+                {% empty %}<tr><td colspan="5" class="audit-empty"><i class="fa-solid fa-clock-rotate-left fa-2x mb-3 d-block opacity-50"></i>Nenhuma movimentação encontrada.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if auditorias.has_other_pages %}
+    <nav class="mt-4" aria-label="Paginação do histórico">
+        <ul class="pagination justify-content-center">
+            {% if auditorias.has_previous %}<li class="page-item"><a class="page-link" href="?q={{ query|urlencode }}&page={{ auditorias.previous_page_number }}">Anterior</a></li>{% endif %}
+            <li class="page-item active"><span class="page-link">Página {{ auditorias.number }} de {{ auditorias.paginator.num_pages }}</span></li>
+            {% if auditorias.has_next %}<li class="page-item"><a class="page-link" href="?q={{ query|urlencode }}&page={{ auditorias.next_page_number }}">Próxima</a></li>{% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

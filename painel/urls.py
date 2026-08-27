@@ -137,6 +137,16 @@ urlpatterns = [
     path('site/recursos/secao/editar/<int:id>/', views.gerenciar_secao_recurso, name='editar_secao_recurso'),
     path('site/recursos/secao/excluir/<int:id>/', views.excluir_secao_recurso, name='excluir_secao_recurso'),
 
+    # --- FINANCEIRO / MENSALIDADES ---
+    path('financeiro/', views.financeiro_hub, name='financeiro_hub'),
+    path('financeiro/planos/novo/', views.gerenciar_plano_financeiro, name='novo_plano_financeiro'),
+    path('financeiro/planos/editar/<int:id>/', views.gerenciar_plano_financeiro, name='editar_plano_financeiro'),
+    path('financeiro/adesoes/nova/', views.gerenciar_adesao_financeira, name='nova_adesao_financeira'),
+    path('financeiro/adesoes/editar/<int:id>/', views.gerenciar_adesao_financeira, name='editar_adesao_financeira'),
+    path('financeiro/cobrancas/nova/', views.gerenciar_cobranca_financeira, name='nova_cobranca_financeira'),
+    path('financeiro/cobrancas/editar/<int:id>/', views.gerenciar_cobranca_financeira, name='editar_cobranca_financeira'),
+    path('financeiro/auditoria/', views.listar_auditoria_financeira, name='listar_auditoria_financeira'),
+
     # --- ADMINISTRAÇÃO ---
     path('usuarios/', views.gerenciar_usuarios, name='gerenciar_usuarios'),
     path('usuarios/novo/', views.criar_usuario, name='criar_usuario'),
