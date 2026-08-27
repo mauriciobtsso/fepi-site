@@ -10,9 +10,40 @@ import html
 
 from .models import DocumentoRestrito, CategoriaDocumento
 from core.models import Coluna
+from blogs.models import BlogDepartamento, BlogMembro, PostBlog
 from voluntarios.models import DocumentoVoluntario, ModeloTermoVoluntario
 from voluntarios.forms import VoluntarioForm, DocumentoVoluntarioForm
 from .forms import ColunaIntranetForm
+
+
+def membro_blog_usuario(user, blog):
+    if user.is_superuser:
+        return None
+    return BlogMembro.objects.filter(usuario=user, blog=blog, ativo=True).first()
+
+
+def pode_publicar_blog(user, blog):
+    membro = membro_blog_usuario(user, blog)
+    return user.is_superuser or (membro and membro.papel in (BlogMembro.PAPEL_REVISOR, BlogMembro.PAPEL_GESTOR))
+
+
+def blogs_do_usuario(user):
+    """Retorna blogs ativos vinculados ao usuário, com compatibilidade legada."""
+    if user.is_superuser:
+        return BlogDepartamento.objects.filter(ativo=True)
+    blogs = BlogDepartamento.objects.filter(
+        membros__usuario=user,
+        membros__ativo=True,
+        ativo=True,
+    ).distinct()
+    perfil = getattr(user, 'perfil', None)
+    if perfil and perfil.departamento_blog_id:
+        blogs = (blogs | BlogDepartamento.objects.filter(
+            pk=perfil.departamento_blog_id,
+            ativo=True,
+        )).distinct()
+    return blogs
+
 
 @login_required(login_url='/login/')
 def area_federado(request):
@@ -52,6 +83,7 @@ def area_federado(request):
         'grupos': grupos,
         'busca_atual': busca_atual,
         'categoria_atual': categoria_id,
+        'blogs_do_usuario': blogs_do_usuario(request.user),
     })
 
 # ==========================================
@@ -219,45 +251,62 @@ def voluntariado_imprimir_termo(request):
 # ==========================================
 # GESTÃO DO BLOG DE DEPARTAMENTO (INTRANET)
 # ==========================================
-from blogs.models import PostBlog
 from .forms import IntranetPostBlogForm
 from django.utils.text import slugify
 
 @login_required(login_url='/login/')
 def meu_blog_hub(request):
-    """ Exibe a lista de postagens apenas do departamento do usuário """
-    perfil = getattr(request.user, 'perfil', None)
-    
-    # Trava de Segurança: Se não tiver departamento, joga pra fora.
-    if not perfil or not perfil.departamento_blog:
-        messages.error(request, "Sua conta não possui vínculo com nenhum Blog de Departamento.")
+    """Central editorial dos blogs vinculados ao usuário."""
+    blogs = blogs_do_usuario(request.user)
+    if not blogs.exists():
+        messages.error(request, "Sua conta ainda não possui vínculo com nenhum Blog de Departamento.")
         return redirect('area_federado')
 
-    departamento = perfil.departamento_blog
+    blog_id = request.GET.get('blog')
+    if blog_id:
+        departamento = get_object_or_404(blogs, pk=blog_id)
+    elif blogs.count() == 1:
+        departamento = blogs.first()
+    else:
+        return render(request, 'intranet/meus_blogs.html', {'blogs': blogs})
+
     posts = PostBlog.objects.filter(departamento=departamento).order_by('-data_publicacao')
-    
     return render(request, 'intranet/meu_blog_hub.html', {
-        'departamento': departamento, 
-        'posts': posts
+        'departamento': departamento,
+        'posts': posts,
+        'blogs': blogs,
     })
 
 @login_required(login_url='/login/')
 def redigir_post_blog(request, id=None):
-    """ View segura para criar/editar postagens, atrelando ao departamento automaticamente """
-    perfil = getattr(request.user, 'perfil', None)
-    if not perfil or not perfil.departamento_blog:
+    """Cria/edita um post apenas dentro de um blog autorizado."""
+    blogs = blogs_do_usuario(request.user)
+    if not blogs.exists():
         return redirect('area_federado')
 
-    departamento = perfil.departamento_blog
-    # Se for edição, exige que o post pertença ao departamento do usuário
-    instancia = get_object_or_404(PostBlog, id=id, departamento=departamento) if id else None
+    blog_id = request.GET.get('blog') or request.POST.get('blog_id')
+    if id:
+        instancia = get_object_or_404(PostBlog, id=id, departamento__in=blogs)
+        departamento = instancia.departamento
+        membro = membro_blog_usuario(request.user, departamento)
+        if membro and membro.papel == BlogMembro.PAPEL_EDITOR and instancia.publicado:
+            messages.warning(request, "Editores podem alterar apenas rascunhos. Solicite revisão para modificar uma publicação no ar.")
+            return redirect(f"/intranet/meu-blog/?blog={departamento.id}")
+    else:
+        departamento = get_object_or_404(blogs, pk=blog_id) if blog_id else blogs.first()
+        instancia = None
 
     if request.method == 'POST':
         form = IntranetPostBlogForm(request.POST, request.FILES, instance=instancia)
+        if not request.user.is_superuser and not pode_publicar_blog(request.user, departamento):
+            form.fields['publicado'].initial = False
+            form.fields['publicado'].disabled = True
         if form.is_valid():
             post = form.save(commit=False)
+            if not pode_publicar_blog(request.user, departamento):
+                post.publicado = False
             
-            # MAGIA DA SEGURANÇA: Injeta o departamento de forma invisível
+            # O departamento é sempre injetado no servidor, nunca confiado ao formulário.
             post.departamento = departamento
             if not post.slug:
                 post.slug = slugify(post.titulo)
@@ -274,17 +323,15 @@ def redigir_post_blog(request, id=None):
     return render(request, 'intranet/redigir_post_blog.html', {
         'form': form, 
         'titulo': titulo, 
-        'departamento': departamento
+        'departamento': departamento,
+        'blogs': blogs,
     })
 
 @login_required(login_url='/login/')
 def excluir_post_blog(request, id):
-    """ Exclui apenas se o post for do departamento da pessoa """
-    perfil = getattr(request.user, 'perfil', None)
-    if not perfil or not perfil.departamento_blog:
-        return redirect('area_federado')
-
-    post = get_object_or_404(PostBlog, id=id, departamento=perfil.departamento_blog)
+    """Exclui apenas posts pertencentes a blogs autorizados."""
+    blogs = blogs_do_usuario(request.user)
+    post = get_object_or_404(PostBlog, id=id, departamento__in=blogs)
     post.delete()
     messages.success(request, "Publicação excluída permanentemente.")
     return redirect('meu_blog_hub')

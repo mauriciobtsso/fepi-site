@@ -1,0 +1,28 @@
+{% extends 'intranet/base_intranet.html' %}
+
+{% block title %}Meus Blogs | FEPI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <span class="text-uppercase small fw-bold text-primary">Área editorial</span>
+        <h1 class="h3 mt-1 mb-2">Meus Blogs</h1>
+        <p class="text-muted mb-0">Escolha o blog que você deseja administrar.</p>
+    </div>
+    <div class="row g-4">
+        {% for blog in blogs %}
+        <div class="col-md-6 col-xl-4">
+            <div class="card h-100 border-0 shadow-sm overflow-hidden">
+                <div style="height:8px; background:{{ blog.cor_primaria }};"></div>
+                <div class="card-body p-4 d-flex flex-column">
+                    {% if blog.logo %}<img src="{{ blog.logo.url }}" alt="Logo de {{ blog.nome }}" style="height:54px; width:auto; object-fit:contain; object-position:left; margin-bottom:1rem;">{% endif %}
+                    <h2 class="h5">{{ blog.nome }}</h2>
+                    <p class="small text-muted flex-grow-1">{{ blog.descricao|default:'Blog institucional da Federação Espírita Piauiense.'|truncatechars:120 }}</p>
+                    <a href="{% url 'meu_blog_hub' %}?blog={{ blog.id }}" class="btn btn-primary rounded-pill w-100"><i class="fas fa-pen-nib me-1"></i> Administrar blog</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -52,6 +52,22 @@
     </div>
 </div>
 
+{% if blogs_do_usuario %}
+<div class="row g-3 mb-4">
+    {% for blog in blogs_do_usuario %}
+    <div class="col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100" style="border-left:4px solid {{ blog.cor_primaria }} !important;">
+            <div class="card-body d-flex align-items-center gap-3 p-3">
+                {% if blog.logo %}<img src="{{ blog.logo.url }}" alt="" style="width:48px;height:48px;object-fit:contain;">{% else %}<span class="rounded-circle bg-primary-subtle text-primary p-3"><i class="fas fa-blog"></i></span>{% endif %}
+                <div class="flex-grow-1"><h3 class="h6 mb-1">{{ blog.nome }}</h3><div class="small text-muted">Acesse seu ambiente editorial</div></div>
+                <a href="{% url 'meu_blog_hub' %}?blog={{ blog.id }}" class="btn btn-sm btn-primary rounded-pill" title="Administrar blog"><i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="filter-section">
     <form method="get">
         <div class="search-wrapper">
