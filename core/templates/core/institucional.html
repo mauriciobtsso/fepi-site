@@ -87,24 +87,36 @@
         padding-bottom: 60px;
     }
 
-    /* ===== SEÇÃO HISTÓRIA (FLEXBOX) ===== */
+    /* ===== SEÇÃO HISTÓRIA (IMAGEM NO TOPO, TEXTO EMBAIXO) ===== */
     .secao-historia {
-        padding: 80px 20px;
+        padding: 60px 20px;
         display: flex;
-        flex-wrap: wrap;
-        gap: 50px;
+        flex-direction: column; /* Coloca a imagem em cima e o texto embaixo */
         align-items: center;
-        max-width: 1100px;
+        max-width: 900px; /* Largura ideal para leitura */
         margin: 0 auto;
     }
 
+    .imagem-historia {
+        width: 100%;
+        margin-bottom: 40px; /* Dá um respiro entre a foto e o texto */
+    }
+
+    .imagem-historia img {
+        width: 100%;
+        max-height: 450px;
+        border-radius: 16px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        object-fit: cover;
+        display: block;
+    }
+
     .texto-historia {
-        flex: 1; 
-        min-width: 300px; 
+        width: 100%;
         text-align: justify;
         color: #4b5563;
         line-height: 1.8;
-        font-size: 1.1rem;
+        font-size: 1.15rem;
     }
 
     .texto-historia p {
@@ -112,7 +124,7 @@
     }
 
     .texto-historia p:first-of-type::first-letter {
-        font-size: 1.5em;
+        font-size: 1.8em;
         font-weight: 800;
         color: var(--destaque);
         margin-right: 2px;
@@ -129,25 +141,6 @@
         font-size: 1.1rem;
         font-weight: 600;
         box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    }
-
-    .imagem-historia {
-        flex: 1;
-        min-width: 300px;
-        max-width: 500px;
-        margin: 0 auto;
-    }
-
-    .imagem-historia img {
-        width: 100%;
-        border-radius: 16px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-        transition: transform 0.3s ease;
-        object-fit: cover;
-    }
-
-    .imagem-historia img:hover {
-        transform: translateY(-5px);
     }
 
     /* ===== SEÇÃO DIRETORIA E DEPARTAMENTOS ===== */
@@ -270,7 +263,7 @@
     }
     .depto-titulo i { color: var(--destaque); }
 
-    /* --- NOVOS CARTÕES DOS DEPARTAMENTOS (4 POR LINHA - DESIGN MAIS LIMPO) --- */
+    /* --- NOVOS CARTÕES DOS DEPARTAMENTOS --- */
     .departamentos-master-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -358,7 +351,6 @@
         .departamentos-master-grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 900px) {
-        .secao-historia { grid-template-columns: 1fr; gap: 40px; padding: 50px 20px; }
         .hero-institucional h1 { font-size: 2.5rem; }
         .departamentos-master-grid { grid-template-columns: repeat(2, 1fr); }
     }
@@ -389,6 +381,13 @@
 <div class="pagina-conteudo">
     
     <section class="secao-historia">
+        
+        <!-- AQUI ESTÁ A IMAGEM NO TOPO USANDO SEU CÓDIGO EXATO -->
+        <div class="imagem-historia">
+            <img src="{% static 'img/fepi-sede.webp' %}" alt="Sede da FEPI" loading="lazy" onerror="this.parentElement.style.display='none'">
+        </div>
+
+        <!-- E O TEXTO LOGO ABAIXO DA IMAGEM -->
         <div class="texto-historia">
             {% if pagina.conteudo %}
                 {{ pagina.conteudo|safe }}
@@ -405,9 +404,6 @@
             {% endif %}
         </div>
         
-        <div class="imagem-historia">
-            <img src="{% static 'img/fepi-sede.webp' %}" alt="Sede da FEPI" loading="lazy" onerror="this.parentElement.style.display='none'">
-        </div>
     </section>
 
     <section class="secao-diretoria">
