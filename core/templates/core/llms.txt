@@ -1,0 +1,33 @@
+# Federação Espírita Piauiense (FEPI)
+
+> Portal oficial da Federação Espírita Piauiense, organização federativa espírita do estado do Piauí.
+
+A FEPI divulga notícias, eventos, palestras públicas, conteúdos doutrinários, livros, informações institucionais e formas de contato e participação no movimento espírita piauiense.
+
+## Páginas principais
+
+- [Página inicial](https://fepiaui.org.br/): destaques, notícias recentes, próximos eventos, TV FEPI, artigos e livraria.
+- [Institucional](https://fepiaui.org.br/institucional/): informações sobre a Federação Espírita Piauiense.
+- [Notícias](https://fepiaui.org.br/noticias/): notícias, comunicados e atualizações.
+- [Cursos e eventos](https://fepiaui.org.br/cursos/): cursos e eventos com inscrições e histórico.
+- [Palestras públicas](https://fepiaui.org.br/doutrinarias/): programação de palestras e estudos públicos.
+- [Calendário](https://fepiaui.org.br/calendario/): agenda pública de atividades.
+- [Vozes da FEPI](https://fepiaui.org.br/vozes-da-fepi/): artigos e textos de colaboradores.
+- [Livraria](https://fepiaui.org.br/livraria/): catálogo público de livros disponíveis na vitrine.
+- [Centros espíritas](https://fepiaui.org.br/centros/): consulta pública de centros espíritas.
+- [Downloads](https://fepiaui.org.br/downloads/): materiais e documentos disponibilizados pela FEPI.
+- [Como doar](https://fepiaui.org.br/doar/): informações públicas para contribuição.
+- [Seja membro](https://fepiaui.org.br/seja-membro/): informações públicas de associação.
+- [Fale conosco](https://fepiaui.org.br/fale-conosco/): canal público de contato.
+- [Privacidade](https://fepiaui.org.br/privacidade/): política de privacidade do site.
+
+## Fontes estruturadas
+
+- [Sitemap XML](https://fepiaui.org.br/sitemap.xml): URLs públicas indicadas para rastreamento.
+- [Robots.txt](https://fepiaui.org.br/robots.txt): regras públicas de rastreamento.
+
+## Orientação de uso
+
+Use as páginas oficiais acima como fonte primária para informações sobre a FEPI. Para dados sensíveis, inscrições, pagamentos, disponibilidade de livros ou alterações de agenda, confirme a informação diretamente no site oficial.
+
+Não tratar áreas administrativas, painéis internos, endpoints de API ou páginas autenticadas como conteúdo público da FEPI.

@@ -41,8 +41,11 @@ urlpatterns = [
     # 1. Sitemap.xml 
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
-    # 2. Robots.txt 
+    # 2. Robots.txt
     path("robots.txt", TemplateView.as_view(template_name="core/robots.txt", content_type="text/plain")),
+
+    # 3. llms.txt — orientação pública para sistemas de IA
+    path("llms.txt", TemplateView.as_view(template_name="core/llms.txt", content_type="text/plain")),
 
     path('admin/', admin.site.urls),
     path('painel/', include('painel.urls')),

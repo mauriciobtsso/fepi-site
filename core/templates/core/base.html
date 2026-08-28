@@ -8,13 +8,18 @@
     
     <title>{% block title %}Federação Espírita Piauiense{% endblock %}</title>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EW3NGGQK1Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-EW3NGGQK1Z');
+
+      window.addEventListener('load', function() {
+        var analyticsScript = document.createElement('script');
+        analyticsScript.async = true;
+        analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-EW3NGGQK1Z';
+        document.head.appendChild(analyticsScript);
+      }, { once: true });
     </script>
     
     <meta name="description" content="{% block description %}Portal oficial da Federação Espírita Piauiense. Unindo corações, esclarecendo mentes e consolando almas.{% endblock %}">
@@ -69,6 +74,9 @@
     {% endblock %}
 
     <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+
+    {% block preload_lcp %}{% endblock %}
     
     <!-- Fontes não críticas: carregamento assíncrono para não bloquear o primeiro paint. -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" media="print" onload="this.media='all'">
@@ -77,8 +85,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap">
     </noscript>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
 
     <style>
         /* --- POP-UP MODAL MARKETING --- */
@@ -561,16 +568,15 @@
         <div class="vw-plugin-top-wrapper"></div>
     </div>
 </div>
-<script defer src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 <script>
     (function() {
         function improveVlibrasSemantics() {
-            const popup = document.getElementById('vlibras-popup');
+            var popup = document.getElementById('vlibras-popup');
             if (popup && !popup.hasAttribute('alt')) {
                 popup.setAttribute('alt', 'Aviso de acessibilidade em Libras');
             }
 
-            const button = document.getElementById('vlibras-button');
+            var button = document.getElementById('vlibras-button');
             if (button && !button.hasAttribute('aria-label')) {
                 button.setAttribute('aria-label', 'Abrir acessibilidade em Libras');
             }
@@ -582,14 +588,30 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.VLibras) new window.VLibras.Widget('https://vlibras.gov.br/app');
-            improveVlibrasSemantics();
+        function loadVlibras() {
+            if (window.__fepiVlibrasLoaded) return;
+            window.__fepiVlibrasLoaded = true;
 
-            const observer = new MutationObserver(improveVlibrasSemantics);
-            observer.observe(document.body, { childList: true, subtree: true });
-            window.setTimeout(function() { observer.disconnect(); }, 10000);
-        });
+            var script = document.createElement('script');
+            script.src = 'https://vlibras.gov.br/app/vlibras-plugin.js';
+            script.onload = function() {
+                if (window.VLibras) new window.VLibras.Widget('https://vlibras.gov.br/app');
+                improveVlibrasSemantics();
+
+                var observer = new MutationObserver(improveVlibrasSemantics);
+                observer.observe(document.body, { childList: true, subtree: true });
+                window.setTimeout(function() { observer.disconnect(); }, 10000);
+            };
+            document.head.appendChild(script);
+        }
+
+        window.addEventListener('load', function() {
+            if ('requestIdleCallback' in window) {
+                window.requestIdleCallback(loadVlibras, { timeout: 2500 });
+            } else {
+                window.setTimeout(loadVlibras, 1500);
+            }
+        }, { once: true });
     })();
 </script>
 

@@ -256,6 +256,8 @@ STORAGES = {
 
 # Compatibilidade forçada para bibliotecas antigas
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Assets com hash do manifest podem ser armazenados por um ano; HTML permanece dinâmico.
+WHITENOISE_MAX_AGE = 31536000
 
 # Opcional: Diga ao WhiteNoise para usar nomes de arquivo imutáveis
 WHITENOISE_IMMUTABLE_FILE_TEST = lambda path, url: ('.' in url and url.rsplit('.', 1)[1] in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'css', 'js', 'woff', 'woff2', 'ttf', 'eot'])
