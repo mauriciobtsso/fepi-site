@@ -85,7 +85,14 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap">
     </noscript>
 
-    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}" media="print" onload="this.media='all'">
+    <script>
+      window.addEventListener('load', function() {
+        var iconStyles = document.createElement('link');
+        iconStyles.rel = 'stylesheet';
+        iconStyles.href = '{% static 'vendor/fontawesome/css/all.min.css' %}';
+        document.head.appendChild(iconStyles);
+      }, { once: true });
+    </script>
     <noscript><link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}"></noscript>
 
     <style>
