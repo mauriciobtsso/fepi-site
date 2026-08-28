@@ -82,12 +82,18 @@
     /* Botão Voltar */
     .btn-voltar-news { display: inline-flex; margin-bottom: 30px; color: #64748b; text-decoration: none; font-weight: 700; background: #f1f5f9; padding: 10px 20px; border-radius: 50px; transition: 0.3s ease; font-size: 0.95rem; align-items: center; gap: 8px; }
     .btn-voltar-news:hover { background-color: var(--azul-escuro); color: white; transform: translateX(-5px); }
+
+    /* Banner Google Follow */
+    .google-follow-box { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 5px solid #4285F4; border-radius: 12px; padding: 25px; margin: 50px 0 20px 0; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: transform 0.2s; }
+    .google-follow-box:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+    .google-icon-wrapper { background: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); flex-shrink: 0; }
     
     /* Responsivo */
     @media (max-width: 768px) { 
         .news-title { font-size: 1.8rem; } 
         .news-content { font-size: 1.05rem; }
         .news-content iframe { height: 250px; } 
+        .google-follow-box { flex-direction: column; text-align: center; gap: 15px; padding: 20px 15px; }
     }
 </style>
 {% endblock %}
@@ -203,7 +209,23 @@
             {% endwith %}
         </div>
 
-        <div class="share-section" style="margin-top: 60px; padding-top: 30px; border-top: 2px solid #f1f5f9; display: flex; flex-direction: column; align-items: center;">
+        <!-- ==========================================
+             BANNER PREFERÊNCIAS DE FONTE GOOGLE
+             ========================================== -->
+        <div class="google-follow-box">
+            <div class="google-icon-wrapper">
+                <i class="fa-brands fa-google fs-2" style="color: #4285F4;"></i>
+            </div>
+            <div>
+                <h4 style="margin: 0 0 5px 0; font-size: 1.2rem; color: var(--azul-escuro); font-weight: 800;">Destaque a FEPI no seu Google</h4>
+                <p style="margin: 0; font-size: 1rem; color: #475569; line-height: 1.5;">
+                    O Google agora permite escolher suas fontes de informação preferidas. 
+                    <a href="https://www.google.com/preferences/source?q=fepiaui.org.br&hl=pt-br" target="_blank" style="color: #4285F4; font-weight: 700; text-decoration: underline;">Clique aqui</a> para acessar direto e marque a caixa ao lado de <strong>fepiaui.org.br</strong> para receber nossos conteúdos sempre em primeira mão.
+                </p>
+            </div>
+        </div>
+
+        <div class="share-section" style="margin-top: 30px; padding-top: 30px; border-top: 2px solid #f1f5f9; display: flex; flex-direction: column; align-items: center;">
             <h4 style="font-size: 1.2rem; color: var(--azul-escuro); margin-bottom: 20px; font-weight: 800;">Compartilhe esta notícia</h4>
             <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
                 <a href="https://api.whatsapp.com/send?text=*{{ noticia.titulo|urlencode }}*%0A{{ request.build_absolute_uri|urlencode }}" target="_blank" style="background: #25D366; color: white; padding: 12px 25px; border-radius: 50px; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: transform 0.2s;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
