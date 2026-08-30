@@ -8,18 +8,13 @@
     
     <title>{% block title %}Federação Espírita Piauiense{% endblock %}</title>
 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EW3NGGQK1Z"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-EW3NGGQK1Z');
 
-      window.addEventListener('load', function() {
-        var analyticsScript = document.createElement('script');
-        analyticsScript.async = true;
-        analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-EW3NGGQK1Z';
-        document.head.appendChild(analyticsScript);
-      }, { once: true });
+      gtag('config', 'G-EW3NGGQK1Z');
     </script>
     
     <meta name="description" content="{% block description %}Portal oficial da Federação Espírita Piauiense. Unindo corações, esclarecendo mentes e consolando almas.{% endblock %}">
@@ -74,26 +69,20 @@
     {% endblock %}
 
     <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}">
-    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
-
-    {% block preload_lcp %}{% endblock %}
     
-    <!-- Fontes não críticas: carregamento assíncrono para não bloquear o primeiro paint. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap">
+    
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" media="print" onload="this.media='all'">
     
     <noscript>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap">
     </noscript>
 
-    <script>
-      window.addEventListener('load', function() {
-        var iconStyles = document.createElement('link');
-        iconStyles.rel = 'stylesheet';
-        iconStyles.href = '{% static 'vendor/fontawesome/css/all.min.css' %}';
-        document.head.appendChild(iconStyles);
-      }, { once: true });
-    </script>
-    <noscript><link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}"></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
     <style>
         /* --- POP-UP MODAL MARKETING --- */
@@ -187,7 +176,7 @@
         }
 
         a { text-decoration: none; color: inherit; transition: 0.2s; }
-        img { max-width: 100%; height: auto; display: block; }
+        img { max-width: 100%; display: block; }
 
         /* --- CABEÇALHO --- */
         header {
@@ -378,7 +367,7 @@
     <div class="navbar">
         <a href="/" class="brand">
             <div class="brand-logo">
-                <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI" width="50" height="50" loading="eager" decoding="async">
+                <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI" width="50" height="50" loading="eager">
             </div>
             <div class="brand-text">
                 <small>Federação Espírita</small>
@@ -386,7 +375,7 @@
             </div>
         </a>
 
-        <button class="nav-toggle" type="button" aria-label="Abrir menu principal" aria-expanded="false" onclick="toggleMenu()">☰ Menu</button>
+        <button class="nav-toggle" aria-expanded="false" onclick="toggleMenu()">☰ Menu</button>
 
         <nav aria-label="Menu Principal">
             <ul id="menu-principal">
@@ -408,7 +397,7 @@
                     </ul>
                 </li>
                                     
-                <li><a href="{% url 'lista_centros' %}">Encontre um Centro</a></li>
+                <li><a href="{% url 'lista_centros' %}">Centros</a></li>
                 <li><a href="{% url 'lista_noticias' %}">Notícias</a></li>
 
                 <li class="has-submenu">
@@ -465,7 +454,7 @@
         <div>
             <div class="brand" style="margin-bottom: 1rem;">
                 <div class="brand-logo" style="width:30px; height:30px;">
-                    <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI" width="30" height="30" loading="lazy" decoding="async">
+                    <img src="{% static 'img/logo.webp' %}" alt="Logo FEPI" width="30" height="30" loading="lazy">
                 </div>
                 <div class="brand-text"><strong>FEPI</strong></div>
             </div>
@@ -571,56 +560,16 @@
 </script>
 
 <div vw class="enabled">
-    <div vw-access-button class="active" aria-label="Abrir acessibilidade em Libras"></div>
+    <div vw-access-button class="active"></div>
     <div vw-plugin-wrapper>
         <div class="vw-plugin-top-wrapper"></div>
     </div>
 </div>
+<script defer src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 <script>
-    (function() {
-        function improveVlibrasSemantics() {
-            var popup = document.getElementById('vlibras-popup');
-            if (popup && !popup.hasAttribute('alt')) {
-                popup.setAttribute('alt', 'Aviso de acessibilidade em Libras');
-            }
-
-            var button = document.getElementById('vlibras-button');
-            if (button && !button.hasAttribute('aria-label')) {
-                button.setAttribute('aria-label', 'Abrir acessibilidade em Libras');
-            }
-
-            document.querySelectorAll('#vlibras-button img').forEach(function(img) {
-                if (!img.hasAttribute('alt')) {
-                    img.setAttribute('alt', 'Acessibilidade em Libras');
-                }
-            });
-        }
-
-        function loadVlibras() {
-            if (window.__fepiVlibrasLoaded) return;
-            window.__fepiVlibrasLoaded = true;
-
-            var script = document.createElement('script');
-            script.src = 'https://vlibras.gov.br/app/vlibras-plugin.js';
-            script.onload = function() {
-                if (window.VLibras) new window.VLibras.Widget('https://vlibras.gov.br/app');
-                improveVlibrasSemantics();
-
-                var observer = new MutationObserver(improveVlibrasSemantics);
-                observer.observe(document.body, { childList: true, subtree: true });
-                window.setTimeout(function() { observer.disconnect(); }, 10000);
-            };
-            document.head.appendChild(script);
-        }
-
-        window.addEventListener('load', function() {
-            if ('requestIdleCallback' in window) {
-                window.requestIdleCallback(loadVlibras, { timeout: 2500 });
-            } else {
-                window.setTimeout(loadVlibras, 1500);
-            }
-        }, { once: true });
-    })();
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.VLibras) new window.VLibras.Widget('https://vlibras.gov.br/app');
+    });
 </script>
 
 <script type="application/ld+json">

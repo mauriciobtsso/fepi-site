@@ -2,16 +2,6 @@
 {% load static %}
 {% load cloudinary_tags %}
 
-{% block preload_lcp %}
-    {% if carrossel.0.imagem %}
-        <link rel="preload" as="image"
-              href="{{ carrossel.0.imagem.url|cloudinary_transform:'w_640,h_357,c_fill,f_auto,q_auto:eco' }}"
-              imagesrcset="{{ carrossel.0.imagem.url|cloudinary_transform:'w_360,h_201,c_fill,f_auto,q_auto:eco' }} 360w, {{ carrossel.0.imagem.url|cloudinary_transform:'w_640,h_357,c_fill,f_auto,q_auto:eco' }} 640w, {{ carrossel.0.imagem.url|cloudinary_transform:'w_815,h_455,c_fill,f_auto,q_auto:eco' }} 815w"
-              imagesizes="(max-width: 900px) 100vw, 66.667vw"
-              fetchpriority="high">
-    {% endif %}
-{% endblock %}
-
 {% block extra_css %}
 <style>
     /* --- ESTRUTURA GERAL --- */
@@ -91,11 +81,8 @@
     .agenda-day { font-weight: 800; font-size: 1.4rem; display: block; }
     .agenda-month { font-size: 0.7rem; text-transform: uppercase; font-weight: 600; margin-top: 2px; display: block;}
 
-    .youtube-embed-wrap { border-radius: 14px; overflow: hidden; background: #111827; aspect-ratio: 16 / 9; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+    .youtube-embed-wrap { border-radius: 14px; overflow: hidden; background: #000; aspect-ratio: 16 / 9; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
     .youtube-embed-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
-    .youtube-load-button { width: 100%; height: 100%; border: 0; background: linear-gradient(135deg, #111827, #334155); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font: inherit; font-weight: 800; cursor: pointer; }
-    .youtube-load-button:hover { background: linear-gradient(135deg, #1f2937, #475569); }
-    .youtube-play-icon { width: 54px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: #dc2626; color: #fff; font-size: 1.2rem; padding-left: 3px; }
 
     /* --- 4. LIVRARIA --- */
     .books-slider-container { display: flex; overflow-x: auto; gap: 18px; padding-bottom: 16px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--azul-medio) #f0f0f0; }
@@ -142,14 +129,9 @@
             <a href="{% if item.data_publicacao %}{% url 'detalhe_noticia' item.slug %}{% else %}{% url 'detalhe_curso' item.slug %}{% endif %}"
                class="carousel-slide {% if forloop.first %}active{% endif %}">
                 {% if item.imagem %}
-                    <img src="{{ item.imagem.url|cloudinary_transform:'w_815,h_455,c_fill,f_auto,q_auto:eco' }}"
-                         srcset="{{ item.imagem.url|cloudinary_transform:'w_360,h_201,c_fill,f_auto,q_auto:eco' }} 360w, {{ item.imagem.url|cloudinary_transform:'w_640,h_357,c_fill,f_auto,q_auto:eco' }} 640w, {{ item.imagem.url|cloudinary_transform:'w_815,h_455,c_fill,f_auto,q_auto:eco' }} 815w"
-                         sizes="(max-width: 900px) 100vw, 66.667vw"
-                         class="slide-img"
-                         alt="{{ item.titulo }}"
-                         width="815"
-                         height="455"
-                         decoding="async"
+                    <img src="{{ item.imagem.url|cloudinary_transform:'w_815,h_455,c_fill,f_auto,q_auto' }}" 
+                         class="slide-img" 
+                         alt="{{ item.titulo }}" 
                          loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
                          fetchpriority="{% if forloop.first %}high{% else %}auto{% endif %}">
                 {% else %}
@@ -198,7 +180,7 @@
                                     <span class="insta-mini-meta"><i class="fa-brands fa-instagram"></i> FEPI</span>
 
                                     {% if post.imagem %}
-                                        <img src="{{ post.imagem.url|cloudinary_transform:'w_480,h_270,c_fill,f_auto,q_auto:eco' }}" alt="{{ post.legenda|default:'Post do Instagram' }}" width="480" height="270" decoding="async" loading="lazy">
+                                        <img src="{{ post.imagem.url|cloudinary_transform:'w_400,h_400,c_fill,f_auto,q_auto' }}" alt="{{ post.legenda|default:'Post do Instagram' }}" loading="lazy">
                                     {% else %}
                                         <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:2rem;">📷</div>
                                     {% endif %}
@@ -228,7 +210,7 @@
             {% for noticia in noticias %}
             <a href="{% url 'detalhe_noticia' noticia.slug %}" class="news-card">
                 {% if noticia.imagem %}
-                    <img src="{{ noticia.imagem.url|cloudinary_transform:'w_160,h_160,c_fill,f_auto,q_auto:eco' }}" class="news-thumb" alt="{{ noticia.titulo }}" width="160" height="160" decoding="async" loading="lazy">
+                    <img src="{{ noticia.imagem.url|cloudinary_transform:'w_160,h_160,c_fill,f_auto,q_auto' }}" class="news-thumb" alt="{{ noticia.titulo }}" loading="lazy">
                 {% else %}
                     <div class="news-thumb"></div>
                 {% endif %}
@@ -313,11 +295,16 @@
                     </div>
 
                 {% elif youtube_video_id %}
-                    <div class="youtube-embed-wrap" data-youtube-id="{{ youtube_video_id }}">
-                        <button type="button" class="youtube-load-button" aria-label="Carregar último vídeo da FEPI">
-                            <span class="youtube-play-icon" aria-hidden="true">▶</span>
-                            <span>Carregar vídeo da TV FEPI</span>
-                        </button>
+                    <div class="youtube-embed-wrap">
+                        <iframe
+                            src="https://www.youtube-nocookie.com/embed/{{ youtube_video_id }}?rel=0&controls=1"
+                            srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:65px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black; transition: 0.2s;} a:hover span { color: #F39C12; transform: scale(1.1); }</style><a href=https://www.youtube.com/embed/{{ youtube_video_id }}?autoplay=1><img src=https://img.youtube.com/vi/{{ youtube_video_id }}/hqdefault.jpg alt='Vídeo TV FEPI' style='object-fit:cover;'><span>▶</span></a>"
+                            title="Último vídeo da FEPI no YouTube"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            loading="lazy"
+                            style="width: 100%; height: 100%; border: none;">
+                        </iframe>
                     </div>
 
                 {% else %}
@@ -339,7 +326,7 @@
             {% for livro in livros %}
                 <a href="{% url 'detalhe_livro' livro.slug %}" class="book-card">
                     {% if livro.capa %}
-                        <img src="{{ livro.capa.url|cloudinary_transform:'w_300,h_245,c_fill,f_auto,q_auto:eco' }}" alt="{{ livro.titulo }}" class="book-cover" width="300" height="245" decoding="async" loading="lazy">
+                        <img src="{{ livro.capa.url|cloudinary_transform:'w_360,h_500,c_fill,f_auto,q_auto' }}" alt="{{ livro.titulo }}" class="book-cover" loading="lazy">
                     {% else %}
                         <div class="book-cover" style="background:#eee;"></div>
                     {% endif %}
@@ -406,22 +393,9 @@
         timer = setInterval(() => { showSlide(slideIndex + 1); }, 5000);
     }
 
-    // O primeiro slide já é marcado como ativo no HTML para ser descoberto/renderizado imediatamente.
-    // Evitamos remover e readicionar a classe durante o primeiro paint.
-    if (slides.length > 1) startTimer();
-
-    document.querySelectorAll('.youtube-embed-wrap[data-youtube-id]').forEach(function(container) {
-        var button = container.querySelector('.youtube-load-button');
-        if (!button) return;
-        button.addEventListener('click', function() {
-            var iframe = document.createElement('iframe');
-            iframe.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(container.dataset.youtubeId) + '?rel=0&controls=1';
-            iframe.title = 'Último vídeo da FEPI no YouTube';
-            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-            iframe.allowFullscreen = true;
-            iframe.loading = 'eager';
-            container.replaceChildren(iframe);
-        }, { once: true });
-    });
+    if (slides.length > 0) {
+        showSlide(0);
+        if (slides.length > 1) startTimer();
+    }
 </script>
 {% endblock %}
